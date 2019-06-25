@@ -1,0 +1,308 @@
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{ifthen}
+%\usepackage{hyperref}
+\usepackage{etoolbox}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{everyshi}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+
+\pagenumbering{gobble}
+\renewcommand{\labelenumi}{\alph{enumi})}
+
+\definecolor{col1}{RGB}{25, 118, 188}
+\definecolor{col2}{RGB}{70, 196, 67}
+\definecolor{col3}{RGB}{237, 69, 40}
+\definecolor{col4}{RGB}{237, 170, 30}
+\definecolor{col5}{RGB}{84, 192, 219}
+
+%Booleans for showing only legend entries we use. One must be declared for icon we use, and they must have the same name as the icon's file name (minus the extension).
+\newbool{solo}
+\newbool{group}
+\newbool{class}
+\newbool{reading}
+\newbool{research}
+\newbool{upload}
+\newbool{write}
+\newbool{problem}
+\newbool{discuss}
+\newbool{debate}
+\newbool{peerreview}
+\newbool{evaluate}
+\newbool{present}
+\newbool{instruct}
+\newbool{experiment}
+\newbool{demonstrate}
+\newbool{simulation}
+\newbool{clicker}
+\newbool{quiz}
+\newbool {video}
+\newbool{practice}
+\newbool{create}
+\newbool{play}
+
+%We set all the entries to not show by default. Changing any of these to true will cause it to show up in our legend regardless of whether or not it is used in the file.
+\setbool{solo}{false}
+\setbool{group}{false}
+\setbool{class}{false}
+\setbool{reading}{false}
+\setbool{research}{false}
+\setbool{upload}{false}
+\setbool{write}{false}
+\setbool{problem}{false}
+\setbool{discuss}{false}
+\setbool{debate}{false}
+\setbool{peerreview}{false}
+\setbool{evaluate}{false}
+\setbool{present}{false}
+\setbool{instruct}{false}
+\setbool{experiment}{false}
+\setbool{demonstrate}{false}
+\setbool{simulation}{false}
+\setbool{clicker}{false} 
+\setbool{quiz}{false} 
+\setbool{video}{false}
+\setbool{practice}{false}
+\setbool{create}{false}
+\setbool{play}{false}
+
+\newbool{hasratings}
+\setbool{hasratings}{true}
+
+%disables the display of ratings
+\newcommand{\noratings}{\setbool{hasratings}{false}}
+
+
+%This defines an entry with two icons, one before and one after
+\newcommand{\entry}[3]{
+%The following two lines are used to tell our legend that the icons have been used
+\ifthenelse{\equal{#1}{}}{}{
+\global\setbool{#1}{true}
+\parbox{1.5cm}{\begin{center}\includegraphics[scale=0.2]{data/#1}\end{center}}}
+\parbox{10.5cm}{\Large #2
+}
+\ifthenelse{\equal{#3}{}}{}{
+\global\setbool{#3}{true}
+\parbox{1.5cm}{\begin{center}\includegraphics[scale=0.2]{data/#3}\end{center}}}
+}
+
+
+
+
+\newcommand{\simpleentry}[1]{
+\parbox{13cm}{\Large #1} 
+}
+
+
+%This command places the start block. The argument is the column it should start under
+\newcommand{\start}[1]{
+\node (start) [entry, below= of #1,fill=none] {\simpleentry{\huge \center \textbf{Begin Here.}}};
+}
+
+%This is a command used by the legend creation command below to draw each line
+\newcommand{\legendline}[2]{
+\centering\arraybackslash\includegraphics[scale=0.2]{data/#1}&\centering\Large #2&\vphantom{\parbox[m]{1cm}{\Huge H}}\\
+}
+
+%Same, but for Bloom's taxonomy star ratings
+\newcommand{\bloomline}[2]{
+&\raggedright\Large #2&\vphantom{\parbox[m]{1cm}{\Huge H}}\\
+}
+
+%This block writes the legend, only creating entries for icons that have been used.
+\newcommand{\legend}[1]{
+\tikzset{node distance = 1cm and 1cm}
+\node (legend) [rectangle, text width = 8cm, text centered, draw=black, line width = 0.1cm, inner sep = 0.3cm, fill = black!10, #1]{
+\begin{tabular}{ m{2cm}m{5cm}c }
+\ifbool{solo}{\legendline{solo}{Individual Work}\\}{}
+\ifbool{group}{\legendline{group}{Work in Groups}\\}{}
+\ifbool{class}{\legendline{class}{Whole Class}\\}{}
+\hline
+\tiny{~}\\
+\ifbool{reading}{\legendline{reading}{Reading}\\}{}
+\ifbool{research}{\legendline{research}{Research}}{}
+\ifbool{upload}{\legendline{upload}{Upload}\\}{}
+\ifbool{write}{\legendline{write}{Writing}\\}{}
+\ifbool{problem}{\legendline{problem}{Problem Solving}\\}{}
+\ifbool{discuss}{\legendline{discuss}{Discussion}\\}{}
+\ifbool{debate}{\legendline{debate}{Debate}\\}{}
+\ifbool{peerreview}{\legendline{peerreview}{Peer-Review}\\}{}
+\ifbool{evaluate}{\legendline{evaluate}{Instructor Evaluation}\\}{}
+\ifbool{present}{\legendline{present}{Present}\\}{}
+\ifbool{experiment}{\legendline{experiment}{Experiment}\\}{}
+\ifbool{demonstrate}{\legendline{demonstrate}{Demonstrate}\\}{}
+\ifbool{clicker}{\legendline{clicker}{Clicker}\\}{}
+\ifbool{simulation}{\legendline{simulation}{Simulation}\\}{}
+\ifbool{instruct}{\legendline{instruct}{Instruction}\\}{}
+\ifbool{quiz}{\legendline{quiz}{Quiz}\\}{}
+\ifbool{video}{\legendline{video}{Video}\\}{}
+\ifbool{practice}{\legendline{practice}{Practice}\\}{}
+\ifbool{create}{\legendline{create}{Create}\\}{}
+\ifbool{play}{\legendline{create}{Play}\\}{}
+\ifbool{hasratings}{\hline}{}
+\end{tabular}
+\ifbool{hasratings}{
+\begin{tabular}{ m{4cm}m{3cm}c }
+\multicolumn{2}{c}{\Large Bloom's Taxonomy\vphantom{\parbox[m]{1cm}{\Huge H\newline H}}}\\
+\bloomline{1}{Remember}\\
+\bloomline{2}{Understand}\\
+\bloomline{3}{Apply}\\
+\bloomline{4}{Analyze}\\
+\bloomline{5}{Evaluate}\\
+\bloomline{6}{Create}\\
+\end{tabular}}{}
+};
+
+\ifbool{hasratings}{
+\legendratingfirst{legend.south west}{6}
+\legendrating{legstar6.north west}{5}
+\legendrating{legstar5.north west}{4}
+\legendrating{legstar4.north west}{3}
+\legendrating{legstar3.north west}{2}
+\legendrating{legstar2.north west}{1}
+}{}
+}
+
+%These are our tikz styles, which tell latex what we want the boxes and lines to look like.
+\tikzstyle{default} = [rectangle, rounded corners, minimum width=5cm, minimum height=2cm, text width = 14.4cm, text centered, draw=black, line width = 1.5pt, double, inner xsep = 0.0cm, inner ysep=0.5cm]
+
+\tikzstyle{ghost} = [default, draw=none]
+
+\tikzstyle{entry} = [default, fill=red!10]
+%redundant with entry
+\tikzstyle{redentry} = [default, fill=red!10]
+
+\tikzstyle{blueentry} = [default, fill=blue!10]
+
+\tikzstyle{greenentry} = [default, fill=green!10]
+
+\tikzstyle{whiteentry} = [default, fill=white!10]
+
+\tikzstyle{coldefault} = [rectangle, minimum width=14.5cm, text centered]
+
+\tikzstyle{colstart} = [coldefault, minimum height=2cm]
+
+\tikzstyle{colhead} = [coldefault, minimum height=1cm]
+
+\tikzstyle{arrow} = [thick,->,>=stealth, line width = 0.1cm]
+
+\tikzstyle{dasharrow} = [arrow, dash pattern=on 6pt off 6pt]
+
+%Creates the titles, arg 1 is title and arg 2 is name
+\newcommand{\addtitle}[2]{
+\begin{tabularx}{\textwidth}{XX}
+\Huge \textbf{#1} &\raggedleft \Huge \textbf{By #2}\\
+~\\
+~\\
+\end{tabularx}
+}
+
+%Creates title for strategies with no author
+\newcommand{\strategytitle}[2]{
+	\begin{tabularx}{\textwidth}{Xr}
+		\Huge \textbf{#1}
+		~\\
+		~\\
+	\end{tabularx}
+}
+
+%This is used as a default to create the first column independently of any others
+\tikzstyle{addcolumn} = [colstart]
+
+%This entire block is used to create our columns. Each time it is called, it creates the column you choose, then redefines the addcolumn tikz style so that the next one (if any) will be placed to the right of the one you just made. I don't recommend messing around with this unless you know what you're doing.
+\newcommand{\column}[1]{
+
+\ifthenelse{\equal{#1}{OOC}}{
+\node (home) [addcolumn] {\includegraphics[scale=0.8]{data/home}};
+\node (ooc) [colhead, below=of home] {\huge \underline{\textbf{Out of Class}}};
+\tikzstyle{addcolumn} = [colstart, right = of home]
+}{}
+
+\ifthenelse{\equal{#1}{ICI}}{
+\node (instructor) [addcolumn] {\hspace{0.7cm}\includegraphics[scale=1.0]{data/instructor}};
+\node (ici) [colhead, below=of instructor] {\huge \underline{\textbf{In Class (Instructor)}}};
+\tikzstyle{addcolumn} = [colstart, right = of instructor]
+}{}
+
+\ifthenelse{\equal{#1}{ICS}}{
+\node (students) [addcolumn] {\hspace{0.7cm}\includegraphics[scale=1.0]{data/noinstructor}};
+\node (ics) [colhead, below=of students] {\huge \underline{\textbf{In Class (Students)}}};
+\tikzstyle{addcolumn} = [colstart, right = of students]
+}{}
+
+\ifthenelse{\equal{#1}{OOCI}}{
+\node (outofclassinstructor) [addcolumn] {\hspace{0.7cm}\includegraphics[scale=1.0]{data/instructor}};
+\node (ooci) [colhead, below=of outofclassinstructor] {\huge \underline{\textbf{Out of Class (Instructor)}}};
+\tikzstyle{addcolumn} = [colstart, right = of outofclassinstructor]
+}{}
+
+\ifthenelse{\equal{#1}{OOCS}}{
+\node (outofclassstudents) [addcolumn] {\includegraphics[scale=0.8]{data/home}};
+\node (oocs) [colhead, below=of outofclassstudents] {\huge \underline{\textbf{Out of Class (Students)}}};
+\tikzstyle{addcolumn} = [colstart, right = of outofclassstudents]
+}{}
+}
+
+
+%This command, along with the next one, are used to create the star ratings for Bloom's taxonomy
+\newcommand\rating[2]{
+\ifbool{hasratings}{\node[rectangle, rounded corners=1pt,draw=black,line width=2pt,fill=white,anchor=center] at ($ (#1.south) + (0,1pt) $) {\score{#2}{6}};}{}
+}
+
+\newcommand\score[2]{
+\pgfmathsetmacro\pgfxa{#1+1}
+\tikzstyle{scorestars}=[star, star points=5, star point ratio=2.5,line width=1pt, draw,rounded corners=1pt,anchor=outer point 3,scale=0.7]
+  \begin{tikzpicture}[baseline]
+    \foreach \i in {1,...,#2} {
+    \pgfmathparse{(\i<=#1?"yellow":"gray")}
+    \edef\starcolor{\pgfmathresult}
+    \draw (\i*0.6-0.1,0) node[name=star\i,scorestars,fill=\starcolor]  {};
+   }
+  \end{tikzpicture}
+}
+
+%This one is used to create the portion of the legend dealing with Bloom's taxonomy
+\newcommand\legendratingfirst[2]{
+\node (legstar#2) [rectangle,rounded corners,anchor=south west] at ($ (#1) + (0.0,0.8cm) $) {\score{#2}{6}};
+}
+\newcommand\legendrating[2]{
+\node (legstar#2) [rectangle,rounded corners,anchor=south west] at ($ (#1) + (0,0.2cm) $) {\score{#2}{6}};
+}
+
+%These commands create arrows that wrap around. The "big" versions are long enough to go past a whole block.
+%First argument is the arrow style, the second is the start node, the third is the end node
+\newcommand{\wrapleft}[3]{
+\draw [#1] (#2.west) --++ (-2cm,0cm) |- (#3);
+}
+
+\newcommand{\wrapright}[3]{
+\draw [#1] (#2.east) --++ (2cm,0cm) |- (#3);
+}
+
+\newcommand{\bigwrapleft}[3]{
+\draw [#1] (#2.west) --++ (-12.2cm,0cm) |- (#3);
+}
+
+\newcommand{\bigwrapright}[3]{
+\draw [#1] (#2.east) --++ (12.2cm,0cm) |- (#3);
+}
+
+
+%Creates text at the base of an arrow. The arguments are complicated: the first one determines which corner of the textbox is considered the "anchor" used for relative positioning, and should be something like south east. The second argument is where it should be positioned, in the format condition.north, where condition is your node (flowchart block) and north can be any of north, south, east, or west (it determines which side of the block the text is on). The third argument is just the text.
+\newcommand{\arrowtext}[3]{
+\node (text) [anchor=#1, inner sep = 10pt] at (#2) {\LARGE #3};
+}
+
+
+%Creates the pedagogical components. Arguments are: 1) The number (colour will be chosen automatically to correspond to the tabs on the website), 2) The uppermost node to be included, 3) The bottom node, 4) The node that you want it to be next to (this can be a column (ici, ics, ooc) or any other node, as it just takes the x component of the right side of the node as the starting point to draw).
+
+\newcommand{\pedcomp}[4]{
+\draw[line width = 0.1cm] ($(#2.north east-|#4.east) + (0.5cm,0.0)$) -- ($(#2.north east-|#4.east) + (1.5cm,0.0)$) -- ($(#3.south east-|#4.east) + (1.5cm,0.0)$)  node (ped)[fill = col#1, minimum width = 2cm, minimum height = 2cm, midway, right]{}  -- ($(#3.south east-|#4.east) + (0.5cm,0.0)$);
+\node(tri)[diamond, minimum height = 2cm, minimum width = 2cm, fill=col#1] at (ped.west){};
+\node(circ)[circle, minimum height = 1.5cm, minimum width = 1.5cm, fill=white] at (ped){\Huge \textbf{0#1}};
+}
+

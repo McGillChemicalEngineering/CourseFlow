@@ -1,0 +1,215 @@
+<!--
+  A javascript program to plan and prepare classes.
+-->
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<style>
+        
+    h2{
+		text-align: center;
+		color: rgb(25,118,188);
+	}
+	h3{
+		color: rgb(25,118,188);
+	}
+	body, html{
+		height: 98%;
+        overflow:auto;
+	}
+    
+    .Layout{
+        white-space: nowrap;
+        overflow: hidden;
+        color: black;
+    }
+    
+	button{
+		text-align: center;
+		color: rgb(25,118,188);
+		border-color: rgb(25,118,188);
+		background-color: white;
+		padding: 16px;
+		font-size: 16px;
+		width: 100%;
+	}
+        
+    .activeLayout{
+        overflow: hidden;
+        white-space: nowrap;
+        
+    }
+    .LayoutDiv{
+        position:relative;
+        left: 10%;
+        width: 90%;
+    }
+    
+    .topnav{
+        height:100px;
+        width:100%;
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        color: white;
+        background: #1976bc;
+        border-width: 1px;
+        border-style: solid;
+        border-color:black;
+    }
+    .sidenav{
+        height:100%;
+        width:160px;
+        position: fixed;
+        float: left;
+        z-index: 2;
+        top: 102px;
+        left: 0;
+        box-shadow: 20px 0px 3px -20px;
+        overflow-x:hidden;
+        overflow-y:auto;
+        padding: 20px;
+        background: #ffffff;
+    }
+    .nodebar{
+        position : fixed;
+        overflow : hidden;
+        display : none;
+        padding : 20px;
+        right : 20px;
+        float:right;
+        z-index:3;
+        box-shadow: -1px 0px 3px -1px;
+        width : 120px;
+        bottom : 0px;
+        background : white;
+        transition: width 2s;
+
+    }
+    .nameinput{
+        width:100%;
+    }
+    .toplink{
+        left:0;
+        bottom:0;
+    }
+        
+     .topdropwrapper{
+        display:inline-block;
+        padding-left:20px;
+    }
+        
+    .topdropbutton{
+        background:inherit;
+        color:white;
+        border:inherit;
+        font:inherit;
+        height:40px;
+        padding:0px;
+        left:0;
+        bottom:0;
+    }
+    .topdropdiv{
+        display:none;
+        position:absolute;
+        color: black;
+        background:white;
+        min-width:100px;
+    }
+    .topdropdiv a{
+        float:none;
+        display:block;
+        text-align:left;
+        cursor:pointer;
+    }
+    
+    .topdropwrapper:hover .topdropdiv{
+        display:block;
+    }
+        
+    .topdropdiv a:hover{
+        color: rgb(25,118,188);
+    }
+	</style>
+
+	<title>Course Planner</title>
+    <!-- Initialize jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- Sets the basepath for the mxGraph library if not in same directory -->
+		<script type="text/javascript">
+			mxBasePath = 'resources/mxgraph-master/javascript/src';
+	</script>
+    <!-- Quill Stylesheet-->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+	<!-- Loads and initializes mxGraph -->
+		<script type="text/javascript" src="resources/mxgraph-master/javascript/src/js/mxClient.js"></script>
+    
+    
+	<!-- Loads and initializes all our classes -->
+		<script type="text/javascript" src="Constants.js"></script>
+		<script type="text/javascript" src="Week.js"></script>
+		<script type="text/javascript" src="Column.js"></script>
+		<script type="text/javascript" src="CFNode.js"></script>
+		<script type="text/javascript" src="Editbar.js"></script>
+		<script type="text/javascript" src="Workflow.js"></script>
+		<script type="text/javascript" src="Project.js"></script>
+<!--    	<script src="resources/pdftex.js"></script> -->
+<!--    	<script src="resources/promise/promise.js"></script> -->
+
+	<!-- Begin code -->
+	<script type="text/javascript" src="initcourseplanner.js">
+	</script>
+</head>
+
+<!-- Page passes the container for the graph to the program -->
+<body onload="main(document.getElementById('graphContainer'),document.getElementById('outlineContainer'))">
+    <div class="topnav">
+        <div style="position:absolute;bottom:0">
+            <div class="topdropwrapper">
+                <div class="toplink"><font size="6"><b>CourseFlow</b></font></div>
+            </div>
+            <div class="topdropwrapper">
+                <button class = "topdropbutton">File</button>
+                <div class="topdropdiv">
+                    <a id="new">New</a>
+                    <a id="save">Save</a>
+                    <a id="open">Open</a>
+                </div>
+            </div>
+            <div class="topdropwrapper">
+                <div class=toplink>Edit</div>
+            </div>
+            <div class="topdropwrapper">
+                <div class=toplink>Help</div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="sidenav" id="sidenav">
+          <h3>Layout:</h3>
+        <div id="layout"></div>
+        <hr>
+        <div id="newWFDiv">
+        </div>
+    </div>
+    <div class="nodebar" id="nbContainer">
+        <h3>Add Nodes:</h3>
+    </div>
+    <div class="nodebar" id="ebContainer">
+        <h3>Edit Node:</h3>
+    </div>
+	<!-- Creates a container for the graph-->
+	<div id="graphContainer"
+		style="position:absolute;left:202px; top:102px;overflow:hidden;cursor:default;bottom:0px;right:0px;">
+	</div>
+	<!-- Creates a container for the outline -->
+		<div id="outlineContainer"
+			style="z-index:1;position:fixed;overflow:hidden;top:102px;right:20px;width:160px;height:120px;background:white;border-style:solid;border-color:lightgray;">
+	</div>
+</body>
+</html>
