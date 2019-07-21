@@ -38,6 +38,7 @@ class Week {
         this.box.isWeek=true;
         this.box.week=this;
         this.graph.orderCells(true,[this.box]);
+        this.box.cellOverlays=[];
         this.addPlusOverlay();
         this.addDelOverlay();
     }
@@ -63,12 +64,12 @@ class Week {
         var index=this.nodes.indexOf(node);
         this.nodes.splice(index,1);
         this.resizeWeek(-1*node.vertex.h()-cellSpacing,origin);
-        if(index<this.nodes.length-1)this.pushNodes(index);
+        if(index<this.nodes.length)this.pushNodes(index);
     }
     
     pushNodes(startIndex,endIndex=-1){
         if(startIndex==0) {this.nodes[0].makeFlushWithAbove(0);startIndex++;}
-        if(startIndex>this.nodes.lenth-1)return;
+        if(startIndex>this.nodes.length-1)return;
         var dy = this.nodes[startIndex-1].vertex.b()+cellSpacing-this.nodes[startIndex].vertex.y();
         for(var i=startIndex;i<this.nodes.length;i++){
             this.nodes[i].moveNode(0,dy);
@@ -133,8 +134,7 @@ class Week {
     resizeWeek(dy,origin){
         var rect;
         if(dy*origin>0) rect = new mxRectangle(this.box.x(),this.box.y()-dy,this.box.w(),this.box.h()+dy);
-        else rect = new mxRectangle(this.box.x(),this.box.y(),this.box.w(),this.box.h()+dy);
-        this.graph.resizeCells([this.box],[rect]);
+        this.box.resize(this.graph,0,dy);
         if(origin==0 && this.index<this.wf.weeks.length-1){this.wf.pushWeeks(this.index+1);}
         return;
         
@@ -163,17 +163,19 @@ class Week {
             graph.clearSelection();
             w.insertBelow();
         });
-        this.graph.addCellOverlay(this.box, overlay);
+        this.box.cellOverlays.push(overlay);
+        //this.graph.addCellOverlay(this.box, overlay);
     }
     
     //Add the overlay to delete the week
     addDelOverlay(){
         var w = this;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/del48.png', 24, 24), 'Delete this week');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this week');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.y = pt.y-bounds.width/2-w.box.h()/2;
+            bounds.y = pt.y-w.box.h()/2;
+            bounds.x = pt.x-bounds.width+w.box.w()/2;
             return bounds;
         }
         var graph = this.graph;
@@ -184,7 +186,8 @@ class Week {
                 w.deleteSelf();
             }
         });
-        this.graph.addCellOverlay(this.box, overlay);
+        this.box.cellOverlays.push(overlay);
+        //this.graph.addCellOverlay(this.box, overlay);
     }
     
     //Causes the week to delete itself and all its contents

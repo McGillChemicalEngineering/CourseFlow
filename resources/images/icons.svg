@@ -162,6 +162,26 @@
        r="137.21431"
        gradientTransform="matrix(1.996985,-0.04952113,0.04143727,1.6709953,579.20016,277.28094)"
        gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8236"
+       id="radialGradient8166-4-9"
+       cx="183.74792"
+       cy="578.68164"
+       fx="183.74792"
+       fy="578.68164"
+       r="137.21431"
+       gradientTransform="matrix(1.996985,-0.04952113,0.04143727,1.6709953,-311.92083,-880.30353)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8236"
+       id="linearGradient8252"
+       x1="838.5"
+       y1="831.36218"
+       x2="1096.5"
+       y2="1092.3622"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -170,9 +190,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35355339"
-     inkscape:cx="-1120.2032"
-     inkscape:cy="249.00012"
+     inkscape:zoom="0.70710677"
+     inkscape:cx="-490.04623"
+     inkscape:cy="744.86875"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1387,5 +1407,43 @@
        inkscape:export-filename="C:\Users\Jeremie\Dropbox\saltise\WorkflowMaker\resources\data\comment48.png"
        inkscape:export-xdpi="13.166818"
        inkscape:export-ydpi="13.166818" />
+    <path
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path8226"
+       d="m -1132.17,967.74059 55.668,31.25644 -111.4403,-0.11059 z"
+       style="fill:#e6e6e6;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-xdpi="17.569817"
+       inkscape:export-ydpi="17.569817" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient8252);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:5.80000067;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect8225"
+       width="244"
+       height="244"
+       x="838"
+       y="834.36218"
+       inkscape:export-xdpi="17.489878"
+       inkscape:export-ydpi="17.489878" />
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:5.80000067;stroke-opacity:1"
+       d="m 917.31663,881.10148 -33.75,33.74805 42.30469,42.30664 -43.30469,43.30473 33.75,33.748 43.30469,-43.30468 43.30468,43.30468 33.75,-33.748 -43.30468,-43.30473 42.30468,-42.30664 -33.75,-33.74805 -42.30468,42.30469 -42.30469,-42.30469 z"
+       id="rect8171-5-2"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="17.489878"
+       inkscape:export-ydpi="17.489878" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#1976bc;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:5.80000067;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="path8229"
+       sodipodi:type="arc"
+       sodipodi:cx="-548.71484"
+       sodipodi:cy="329.69907"
+       sodipodi:rx="67.882248"
+       sodipodi:ry="67.882248"
+       sodipodi:start="0.0060806573"
+       sodipodi:end="0.0036851929"
+       sodipodi:open="true"
+       d="m -480.83385,330.11183 a 67.882248,67.882248 0 0 1 -68.25311,67.46846 67.882248,67.882248 0 0 1 -67.50932,-68.21269 67.882248,67.882248 0 0 1 68.17225,-67.55016 67.882248,67.882248 0 0 1 67.59097,68.13178"
+       inkscape:export-xdpi="14.81842"
+       inkscape:export-ydpi="14.81842" />
   </g>
 </svg>

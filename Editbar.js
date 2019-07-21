@@ -34,10 +34,10 @@ class EditBar{
         });
         quill2.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
-            if(eb.node!=null)eb.node.setText(quill2.getText().slice(0,-1));
+            if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML);
           }
         });
-        this.textField=quill2;
+        this.textField=quillDiv2.childNodes[0];
         this.linkedWF = document.createElement('select');
         this.container.appendChild(this.linkedWF);
         this.node;
@@ -47,8 +47,8 @@ class EditBar{
     enable(node){
         if(node.name!=null)this.nameField.setText(node.name);
         else this.nameField.setText("<Name>");
-        if(node.text!=null)this.textField.setText(node.text);
-        else this.textField.setText("Insert a description here.");
+        if(node.text!=null)this.textField.innerHTML=node.text;
+        else this.textField.innerHTML="Insert a description here.";
         this.container.style.display="inline";
         var iconList = node.getLeftIconList();
         if(iconList!=null){

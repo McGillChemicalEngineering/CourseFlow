@@ -3,6 +3,8 @@ class Workflow{
     constructor(container,project){
         this.weeks=[];
         this.columns=[];
+        this.brackets=[];
+        this.comments=[];
         this.usedWF=[];
         this.xmlData;
         this.project=project;
@@ -23,6 +25,12 @@ class Workflow{
             xml+=this.weeks[i].toXML();
         }
         xml+=makeXML(this.usedWF.join(","),"usedwfARRAY");
+        for(i=0;i<this.brackets.length;i++){
+            xml+=this.brackets[i].toXML();
+        }
+        for(i=0;i<this.comments.length;i++){
+            xml+=this.comments[i].toXML();
+        }
         var xmlData = makeXML(xml,"workflow");
         var parser = new DOMParser();
         this.xmlData = parser.parseFromString(xmlData,"text/xml");
@@ -40,6 +48,18 @@ class Workflow{
         this.updateWeekIndices();
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
         this.makeConnectionsFromIds();
+        var xmlbrackets = xmlData.getElementsByTagName("bracket");
+        for(i=0;i<xmlbrackets.length;i++){
+            var br = new Bracket(this.graph,this);
+            br.fromXML(xmlbrackets[i]);
+            this.brackets.push(br);
+        }
+        var xmlcomments = xmlData.getElementsByTagName("comment");
+        for(var i=0;i<xmlcomments.length;i++){
+            var com = new WFComment(this.graph,this,0,0);
+            com.fromXML(xmlcomments[i]);
+            this.addComment(com);
+        }
     }
     
     typeToXML(){return "";}
@@ -86,19 +106,15 @@ class Workflow{
         var nbContainer = document.getElementById('nbContainer');
         nbContainer.style.display="inline";
         while(nbContainer.firstChild)nbContainer.removeChild(nbContainer.firstChild);
-        nbContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
-        
-        
-        
-        var nodebar = new mxToolbar(nbContainer);
-		nodebar.enabled = false;
-        
+        //nbContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
         
         //Add the first cells
         // Adds cells to the model in a single step
         graph.getModel().beginUpdate();
         try
         {
+            //Create the title boxes
+            this.createTitleNode();
             //Create all the columns
             this.createInitialColumns();
             for(i=0;i<columns.length;i++){columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);}
@@ -112,30 +128,12 @@ class Workflow{
             // Updates the display
             graph.getModel().endUpdate();
         }
-        //Set up the nodes toolbar
+        
         var wf = this;
-        var addNBType = function(icon, w, h, col)
-        {
-            var img = wf.addNBItem( nodebar, col, icon);
-            img.enabled = true;
-
-            graph.getSelectionModel().addListener(mxEvent.CHANGE, function()
-            {
-                var tmp = graph.isSelectionEmpty();
-                mxUtils.setOpacity(img, (tmp) ? 100 : 20);
-                img.enabled = tmp;
-            });
-            
-        };
-        
-        for(i=0;i<columns.length;i++){
-            addNBType('resources/data/'+columns[i].image+'24.png',24,24,columns[i].name);
-        }
-        
-        
-        
         // Installs a popupmenu handler.
         graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){return wf.createPopupMenu(menu, cell, evt);};
+        
+        this.generateToolbars(nbContainer);
     }
     
     makeInactive(){
@@ -150,16 +148,34 @@ class Workflow{
         if(this.graph!=null)this.graph.destroy();
     }
     
+    createTitleNode(){
+        var wf = this;
+        var title = "[Insert Title Here]";
+        if(this.name!=null)title = this.name;
+        this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,cellSpacing,300,50,defaultTitleStyle);
+        this.titleNode.valueChanged = function(value){
+            //value = value.replace(/[^\w]/gi,'')
+            wf.setName(value);
+            mxCell.prototype.valueChanged.apply(this,arguments);
+            
+        }
+    }
+    
     createPopupMenu(menu,cell,evt){
         var graph = this.graph;
+        var wf = this;
         var model = graph.getModel();
-        graph.clearSelection();
         
         if (cell != null){
             if (graph.isPart(cell)){
                 if(cell.getParent().isNode)cell.getParent().node.populateMenu(menu,cell);
             }
         }
+        menu.addItem('Add Comment','resources/images/comment24.png',function(){
+            var com = new WFComment(graph,wf,evt.clientX-int(wf.project.container.style.left)-graph.view.getTranslate().x,evt.clientY-int(wf.project.container.style.top)-graph.view.getTranslate().y);
+            com.createVertex();
+            wf.addComment(com);
+        });
         menu.addSeparator();
 
         menu.addItem("What's this?",'resources/images/info24.png',function(){
@@ -223,6 +239,7 @@ class Workflow{
         if(column=="LO") node = new LONode(graph,wf);
         else if(column=="AC") node = new ACNode(graph,wf);
         else if(column=="SA"||column=="FA") node = new ASNode(graph,wf);
+        else if (column=="CO") node = new CONode(graph,wf);
         else if(column=="OOC"||column=="ICI"||column=="ICS")node = new WFNode(graph,wf);
         else node = new CFNode(graph,wf);
         return node;
@@ -244,34 +261,61 @@ class Workflow{
         return null;
     }
     
-    addNBItem(toolbar, col, image)
-    {
+    //Executed when we generate all the toolbars
+    generateToolbars(container){
+        this.generateNodeBar(container);
+        this.generateBracketBar(container);
+        this.generateTagBar(container);
+    }
+    
+    generateNodeBar(container){ 
+        var header = document.createElement('h3');
+        header.innerHTML="Nodes:";
+        container.appendChild(header);
+        
+        var nodebar = new mxToolbar(container);
+		nodebar.enabled = false;
+        
         // Function that is executed when the image is dropped on
         // the graph. The cell argument points to the cell under
         // the mousepointer if there is one.
-        var graph = this.graph;
-        var wf = this;
-        var funct = function(graph, evt, cell, x, y)
-        {
-            var column=col;
-            cell = graph.getCellAt(x,y);
-            graph.stopEditing(false);
-            if(cell!=null && cell.isWeek){
-                var node=wf.createNodeOfType(column);
-                node.createVertex(x,y);
-                node.setColumn(column);
-                node.setWeek(cell.week);
-                cell.week.addNode(node);
+        var makeDropFunction=function(col,workflow){
+            var dropfunction = function(graph, evt, filler, x, y)
+            {
+                var wf = workflow;
+                var column=col;
+                var cell = graph.getCellAt(x,y);
+                graph.stopEditing(false);
+                if(cell!=null && cell.isWeek){
+                    var node=wf.createNodeOfType(column);
+                    node.createVertex(x,y);
+                    node.setColumn(column);
+                    node.setWeek(cell.week);
+                    cell.week.addNode(node);
+
+                }
 
             }
-
+            return dropfunction;
         }
-
+        
+        for(var i=0;i<this.columns.length;i++){
+            this.addNodebarItem(container,this.columns[i].text,'resources/data/'+this.columns[i].image+'24.png',makeDropFunction(this.columns[i].name,this));
+        }
+    }
+    
+    generateBracketBar(){}
+    generateTagBar(){}
+    
+    /*addToolbarItem(toolbar,image, dropfunction)
+    {
+       
+        var graph = this.graph;
         // Creates the image which is used as the drag icon (preview)
         var img = toolbar.addMode(null, image, function(evt, cell)
         {
             var pt = this.graph.getPointForEvent(evt);
-            funct(graph, evt, cell, pt.x, pt.y);
+            dropfunction(graph,evt, filler, pt.x, pt.y);
         });
 
         // Disables dragging if element is disabled. This is a workaround
@@ -292,9 +336,67 @@ class Workflow{
             }
         });
 
-        mxUtils.makeDraggable(img, graph, funct);
+        mxUtils.makeDraggable(img, graph, dropfunction);
 
         return img;
+    }*/
+    
+    addNodebarItem(container,name,image, dropfunction)
+    {
+       
+        var graph = this.graph;
+        // Creates the image which is used as the drag icon (preview)
+        var line = document.createElement("button");
+        var img = document.createElement("img");
+        var namediv = document.createElement("div");
+        img.setAttribute('src',image);
+        namediv.innerText = name;
+        line.appendChild(img);
+        line.appendChild(namediv);
+        container.appendChild(line);
+        var dragimg = img.cloneNode(true);
+        
+
+        mxUtils.makeDraggable(line, graph, dropfunction,dragimg);
+
+        return line;
+    }
+    
+    addBracket(icon,cell){
+        var bracket = new Bracket(this.graph,this);
+        bracket.createVertex();
+        bracket.changeNode(cell.node,true);
+        bracket.changeNode(cell.node,false);
+        bracket.setIcon(icon);
+        bracket.updateHorizontal();
+        this.brackets.push(bracket);
+    }
+    
+    addComment(com){
+        this.comments.push(com);
+    }
+    
+    
+    //Since the XML file may not originate from the program, there may be some overlap in the IDs. We therefore flip each ID to negative temporarily, assign everything, then use the IDs that were generated in the initial creation of the nodes.
+    addNodesFromXML(week,startIndex,xml){
+        if(startIndex==-1)startIndex++;
+        xml = this.project.assignNewIDsToXML(xml);
+        //Add everything
+        var xmlnodes = xml.getElementsByTagName("node");
+        var xmlbrackets = xml.getElementsByTagName("bracket");
+        for(var i=0;i<xmlnodes.length;i++){
+            var xmlnode = xmlnodes[i];
+            var column = getXMLVal(xmlnode,"column");
+            var node = this.createNodeOfType(column);
+            node.week = week;
+            node.fromXML(xmlnode);
+            week.addNode(node,0,startIndex+i);
+        }
+        for(i=0;i<xmlbrackets.length;i++){
+            var br = new Bracket(this.graph,this);
+            br.fromXML(xmlbrackets[i]);
+            this.brackets.push(br);
+        }
     }
 
     
@@ -305,10 +407,10 @@ class Courseflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"LO","Learning Objectives","reading"));
-        columns.push(new Column(graph,this,"AC","Activities","instruct"));
-        columns.push(new Column(graph,this,"FA","Formative Assessments","quiz"));
-        columns.push(new Column(graph,this,"SA","Assessments","evaluate"));
+        //columns.push(new Column(graph,this,"LO","Learning Objectives","reading"));
+        columns.push(new Column(graph,this,"AC","Activities","instruct","Activity"));
+        columns.push(new Column(graph,this,"FA","Artifacts","quiz","Artifact"));
+        columns.push(new Column(graph,this,"SA","Assessments","evaluate","Assessment"));
     }
     
     getDefaultName(){return "New Course"};
@@ -321,9 +423,9 @@ class Activityflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"OOC","Out of Class","home"));
-        columns.push(new Column(graph,this,"ICI","In Class (Instructor)","instruct"));
-        columns.push(new Column(graph,this,"ICS","In Class (Students)","noinstructor"));
+        columns.push(new Column(graph,this,"OOC","Out of Class","home","Home"));
+        columns.push(new Column(graph,this,"ICI","In Class (Instructor)","instruct","Instructor"));
+        columns.push(new Column(graph,this,"ICS","In Class (Students)","noinstructor","Students"));
     }
     
     createBaseWeek(){
@@ -338,5 +440,66 @@ class Activityflow extends Workflow{
     typeToXML(){return makeXML("activity","wftype");}
     
     getDefaultName(){return "New Activity"};
+    
+    generateBracketBar(container){ 
+        
+        var header = document.createElement('h3');
+        header.innerHTML="Strategies:";
+        container.appendChild(header);
+        
+        var bracketbar = new mxToolbar(container);
+		bracketbar.enabled = false;
+        
+        var makeDropFunction=function(strat,workflow){
+            var dropfunction = function(graph, evt, filler, x, y)
+            {
+                var wf = workflow;
+                var strategy=strat;
+                var cell = graph.getCellAt(x,y);
+                graph.stopEditing(false);
+                if(cell!=null&&graph.isPart(cell))cell=graph.getModel().getParent(cell);
+                if(cell!=null && cell.isNode){
+                    wf.addBracket(strategy,cell);
+                }
+                if(cell!=null&&cell.isWeek){
+                    var xml = tempXMLStorage[0][1];
+                    var startIndex = cell.week.getNearestNode(y);
+                    wf.addNodesFromXML(cell.week,startIndex,xml);
+                }
+
+            }
+            return dropfunction;
+        }
+        
+        var stratlist = strategyIconsArray;
+        
+        for(var i=0;i<stratlist.length;i++){
+            this.addNodebarItem(container,stratlist[i][0],'resources/data/'+stratlist[i][1]+'24.png',makeDropFunction(stratlist[i][1],this));
+        }
+    }
+    
+}
+
+class Programflow extends Workflow{
+    
+    createInitialColumns(){
+        var columns = this.columns;
+        var graph = this.graph;
+        columns.push(new Column(graph,this,"CO","Course","instruct"));
+        columns.push(new Column(graph,this,"SA","Assessments","evaluate"));
+    }
+    
+    createBaseWeek(){
+        var baseWeek = new WFArea(this.graph,this);
+        baseWeek.index=0;
+        this.weeks.push(baseWeek);
+        baseWeek.createBox(cellSpacing,this.columns[0].head.b()+cellSpacing,weekWidth);
+    }
+    
+    updateWeekIndices(){};
+    
+    typeToXML(){return makeXML("program","wftype");}
+    
+    getDefaultName(){return "New Program"};
     
 }

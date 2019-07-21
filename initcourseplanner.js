@@ -10,6 +10,10 @@ function main(container)
     }
     else
     {
+        
+        window.onbeforeunload = function() {
+          return "Are you sure you want to navigate away?";
+        }
         var project = new Project(container);
         
         
@@ -23,9 +27,7 @@ function main(container)
 
 
 
-function mapWeekVertices(value,index,array){
-    return value.vertex;
-}
+
 
 
 

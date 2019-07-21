@@ -1,0 +1,34 @@
+<strategy>
+<node><name>undefined</name>
+<id>3</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<text>Instructor divides students into small groups of five or six students.</text>
+<linkedwf>undefined</linkedwf>
+<fixedlinkARRAY/>
+</node>
+<node><name>undefined</name>
+<id>5</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<text>Instructor prepares an assignment and divides it into as many parts as there are students in each group. Each member of the group is assigned a portion of the assignment or research project to complete.</text>
+<linkedwf>undefined</linkedwf>
+<fixedlinkARRAY/>
+</node>
+<node><name>undefined</name>
+<id>6</id>
+<lefticon>group</lefticon>
+<righticon>research</righticon>
+<column>ICS</column>
+<text>In groups, students research the material(s) pertaining to their section of the assignment and prepare to discuss it with their classmates.</text>
+<linkedwf>undefined</linkedwf>
+<fixedlinkARRAY/>
+</node>
+<bracket><id>4</id>
+<icon>jigsaw</icon>
+<topnode>3</topnode>
+<bottomnode>6</bottomnode>
+</bracket>
+</strategy>

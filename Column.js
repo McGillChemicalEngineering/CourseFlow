@@ -1,8 +1,9 @@
 
 class Column {
-    constructor(graph,wf,name,text,image){
+    constructor(graph,wf,name,text,image,nodetext){
         this.name=name;
         this.text=text;
+        this.nodetext=nodetext;
         this.image=image;
         this.head;
         this.pos=0;

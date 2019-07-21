@@ -28,7 +28,7 @@ class Project{
         var minimap = document.getElementById('outlineContainer');
         
         var ebContainer = document.getElementById('ebContainer');
-        ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
+        //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
         ebContainer.style.zIndex='3';
         ebContainer.style.width = '400px';
         
@@ -147,6 +147,7 @@ class Project{
     addWorkflow(type){
         var wf;
         if(type=="activity")wf = new Activityflow(this.container,this);
+        else if(type=="program")wf = new Programflow(this.container,this);
         else wf = new Courseflow(this.container,this);
         this.addButton(wf,this.layout);
         this.workflows.push(wf);
@@ -197,6 +198,10 @@ class Project{
         opt = document.createElement('option');
         opt.text="Activity";
         opt.value="activity";
+        select.add(opt);
+        opt = document.createElement('option');
+        opt.text="Program";
+        opt.value="program";
         select.add(opt);
     }
     
@@ -249,7 +254,7 @@ class Project{
         //graph.panningHandler.useLeftButtonForPanning = true;
         graph.setAllowDanglingEdges(false);
         graph.connectionHandler.select = false;
-        graph.view.setTranslate(20, 20);
+        //graph.view.setTranslate(20, 20);
         graph.setHtmlLabels(true);
         graph.foldingEnabled = false;
         graph.setTooltips(true);
@@ -259,9 +264,8 @@ class Project{
         graph.extendParents = false;
         graph.resizeContainer=true;
         
-        //connections
-        graph.setConnectable(true);
-        mxConnectionHandler.prototype.connectImage = new mxImage('resources/images/add24.png', 16, 16);
+        
+        //mxConnectionHandler.prototype.connectImage = new mxImage('resources/images/add24.png', 16, 16);
         
         //display a popup menu when user right clicks on cell, but do not select the cell
         graph.panningHandler.popupMenuHandler = false;
@@ -273,6 +277,11 @@ class Project{
         
         //Disable cell movement associated with user events
         graph.moveCells = function (cells, dx,dy,clone,target,evt,mapping){
+            if(cells.length==1&&cells[0].isComment){
+                cells[0].comment.x+=dx;
+                cells[0].comment.y+=dy;
+                return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
+            }
             if(evt!=null && (evt.type=='mouseup' || evt.type=='pointerup')){
                 dx=0;dy=0;
             }
@@ -336,18 +345,53 @@ class Project{
 
         }
         
-        mxConnectionHandler.prototype.connect = function(source, target, evt, dropTarget){
-            if(source.isNode && target.isNode){
-                source.node.addFixedLinkOut(target.node);
+        //Alters the way the drawPreview function is handled on resize, so that the brackets can snap as they are resized. Also disables horizontal resizing.
+        var drawPreviewPrototype = mxVertexHandler.prototype.drawPreview;
+        mxVertexHandler.prototype.drawPreview = function(){
+            var cell = this.state.cell;
+            if(this.selectionBorder.offsetx==null){this.selectionBorder.offsetx=this.bounds.x-cell.x();this.selectionBorder.offsety=this.bounds.y-cell.y();}
+            if(cell.isNode||cell.isBracket){
+                this.bounds.width = this.state.cell.w();
+                this.bounds.x = this.state.cell.x()+this.selectionBorder.offsetx;
             }
+            if(this.state.cell!=null&&!graph.ffL){
+                if(cell.isBracket){
+                    graph.ffL=true;
+                    var br = cell.bracket;
+                    var wf = br.wf;
+                    var bounds = this.bounds;
+                    if(Math.abs(bounds.height-cell.h())>minCellHeight/2+cellSpacing){
+                        var dy = bounds.y-cell.y()-this.selectionBorder.offsety;
+                        var db = (bounds.height+bounds.y)-cell.b()-this.selectionBorder.offsety;
+                        var dh = bounds.height-cell.h();
+                        var isTop = (dy!=0);
+                        var next = wf.findNextNodeOfSameType(br.getNode(isTop),int((dy+db)/Math.abs(dy+db)));
+                        if(next!=null){
+                            if(Math.abs(dh)>cellSpacing+next.vertex.h()/2){
+                                this.bounds.height = cell.h();
+                                br.changeNode(next,isTop);
+                                //Required because of the way in which mxvertex handler tracks rescales. I don't think this breaks anything else.
+                                this.startY = this.startY +dh*(!isTop)-dh*(isTop);
+                            }
+                        }
+                        
+                    }
+                    graph.ffL=false;
+                }
+
+            }
+            drawPreviewPrototype.apply(this,arguments);
+        }
+        //disable cell resize for the bracket
+        var resizeCellPrototype = mxVertexHandler.prototype.resizeCell;
+        mxVertexHandler.prototype.resizeCell = function(cell,dx,dy,index,gridEnabled,constrained,recurse){
+            if(cell.isBracket)return;
+            else return resizeCellPrototype.apply(this,arguments);
         }
         
-        //Change default graph behaviour to make vertices not connectable
-        graph.insertVertex = function(par,id,value,x,y,width,height,style,relative){
-            var vertex = mxGraph.prototype.insertVertex.apply(this,arguments);
-            vertex.setConnectable(false);
-            return vertex;            
-        }
+        
+        
+        
         
         //Disable horizontal resize
         graph.resizeCell = function (cell, bounds, recurse){
@@ -361,6 +405,7 @@ class Project{
                 cell.node.resizeBy(dy);
                 return returnval;
             }
+            if(cell.isBracket){bounds.width=cell.w();bounds.x=cell.x();}
             return mxGraph.prototype.resizeCell.apply(this,arguments);
         }
         
@@ -382,17 +427,219 @@ class Project{
             var style = (state != null) ? state.style : this.getCellStyle(cell);
             return style['constituent']=='1';
         }
-        //Redirect drag to parent
+        //Redirect clicks and drags to parent
         var graphHandlerGetInitialCellForEvent = mxGraphHandler.prototype.getInitialCellForEvent;
         mxGraphHandler.prototype.getInitialCellForEvent = function(me){
             var cell = graphHandlerGetInitialCellForEvent.apply(this, arguments);
-            if (this.graph.isPart(cell)){
+            while (this.graph.isPart(cell)){
                 cell = this.graph.getModel().getParent(cell)
             }
             return cell;
         };
         
+        graph.addListener(mxEvent.CLICK,function(sender,evt){
+            var cell = evt.getProperty('cell');
+           if(cell!=null&&cell.isDrop){
+               cell.node.toggleDropDown();
+           }else if (cell!=null&&cell.isComment){
+               cell.comment.show();
+           }
+        });
+        
+        graph.addMouseListener(
+            {
+                mouseDown: function(sender,me){},
+                mouseUp: function(sender,me){},
+                mouseMove: function(sender,me){
+                    var cell=me.getCell();
+                    if(cell==null)return;
+                    while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
+                    if(cell.cellOverlays!=null){
+                        if(graph.getCellOverlays(cell)==null){
+                            //check if you are in bounds, if so create overlays. Because of a weird offset between the graph view and the graph itself, we have to use the cell's view state instead of its own bounds
+                            var mouserect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
+                            if(mxUtils.intersects(mouserect,graph.view.getState(cell))){
+                                for(var i=0;i<cell.cellOverlays.length;i++){
+                                    graph.addCellOverlay(cell,cell.cellOverlays[i]);
+                                }
+                                //add the listener that will remove these once the mouse exits
+                                graph.addMouseListener({
+                                    mouseDown: function(sender,me){},
+                                    mouseUp: function(sender,me){},
+                                    mouseMove: function(sender,me){
+                                        if(graph.view.getState(cell)==null){graph.removeMouseListener(this);return;}
+                                        var exitrect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
+                                        if(!mxUtils.intersects(exitrect,graph.view.getState(cell))){
+                                            graph.removeCellOverlay(cell);
+                                            graph.removeMouseListener(this);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        );
+        
+        //Change default graph behaviour to make vertices not connectable
+        graph.insertVertex = function(par,id,value,x,y,width,height,style,relative){
+            var vertex = mxGraph.prototype.insertVertex.apply(this,arguments);
+            vertex.setConnectable(false);
+            return vertex;            
+        }
+        //Setting up ports for the cell connections
+        graph.setConnectable(true);
+        // Replaces the port image
+			graph.setPortsEnabled(false);
+			mxConstraintHandler.prototype.pointImage = new mxImage('resources/images/port24.png', 10, 10);
+        var ports = new Array();
+        ports['OUTw'] = {x: 0, y: 0.6, perimeter: true, constraint: 'west'};
+        ports['OUTe'] = {x: 1, y: 0.6, perimeter: true, constraint: 'east'};
+        ports['HIDDENs'] = {x: 0.5, y: 1, perimeter: true, constraint: 'south'};
+        ports['INw'] = {x: 0, y: 0.4, perimeter: true, constraint: 'west'};
+        ports['INe'] = {x: 1, y: 0.4, perimeter: true, constraint: 'east'};
+        ports['INn'] = {x: 0.5, y: 0, perimeter: true, constraint: 'north'};
+        // Extends shapes classes to return their ports
+        mxShape.prototype.getPorts = function()
+        {
+            return ports;
+        };
+        
+        // Disables floating connections (only connections via ports allowed)
+        graph.connectionHandler.isConnectableCell = function(cell)
+        {
+           return false;
+        };
+        
+        
+        
+        mxEdgeHandler.prototype.isConnectableCell = function(cell)
+        {
+            return graph.connectionHandler.isConnectableCell(cell);
+        };
+        // Disables existing port functionality
+        graph.view.getTerminalPort = function(state, terminal, source)
+        {
+            return terminal;
+        };
+        
+        // Returns all possible ports for a given terminal
+        graph.getAllConnectionConstraints = function(terminal, source)
+        {
+            if (terminal != null && this.model.isVertex(terminal.cell))
+            {
+                if (terminal.shape != null)
+                {
+                    var ports = terminal.shape.getPorts();
+                    var cstrs = new Array();
+
+                    for (var id in ports)
+                    {
+                        if(id.indexOf("HIDDEN")>=0)continue;
+                        if((id.indexOf("IN")>=0&&source)||id.indexOf("OUT")>=0&&!source)continue;
+                        var port = ports[id];
+
+                        var cstr = new mxConnectionConstraint(new mxPoint(port.x, port.y), port.perimeter);
+                        cstr.id = id;
+                        cstrs.push(cstr);
+                    }
+
+                    return cstrs;
+                }
+            }
+
+            return null;
+        };
+
+        // Sets the port for the given connection
+        graph.setConnectionConstraint = function(edge, terminal, source, constraint)
+        {
+            if (constraint != null)
+            {
+                var key = (source) ? mxConstants.STYLE_SOURCE_PORT : mxConstants.STYLE_TARGET_PORT;
+                
+
+                if (constraint == null || constraint.id == null)
+                {
+                    this.setCellStyles(key, null, [edge]);
+                }
+                else if (constraint.id != null)
+                {
+                    this.setCellStyles(key, constraint.id, [edge]);
+                }
+            }
+        };
+
+        // Returns the port for the given connection
+        graph.getConnectionConstraint = function(edge, terminal, source)
+        {
+            var key = (source) ? mxConstants.STYLE_SOURCE_PORT : mxConstants.STYLE_TARGET_PORT;
+            var id = edge.style[key];
+            if (id != null)
+            {
+                var c =  new mxConnectionConstraint(null, null);
+                c.id = id;
+
+                return c;
+            }
+            
+            return null;
+        };
+
+        
+        initializeConnectionPointForGraph(graph);
+        
+        //make the non-default connections through our own functions, so that we can keep track of what is linked to what
+        var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;
+        mxConnectionHandler.prototype.insertEdge = function(parent,id,value,source,target,style){
+            var edge = insertEdgePrototype.apply(this,arguments);
+            if(source.isNode && target.isNode){
+                graph.setCellStyle(defaultEdgeStyle,[edge]);
+                source.node.addFixedLinkOut(target.node,edge);
+            }
+            return edge;
+        }
+        
+        
+        
         this.graph = graph;
         
+    }
+    //Since this assigns a bunch of IDs without actually increasing idNum, it should only be called when an xml file is about to be imported into the project and IDs generated.
+    assignNewIDsToXML(xml){
+        var xmlString = xml;//(new XMLSerializer()).serializeToString(xml);
+        var id = this.idNum+1;
+        while(xmlString.indexOf("<id>")>=0){
+            var startIndex=xmlString.indexOf("<id>");
+            var endIndex = xmlString.indexOf("</id>");
+            var replaceId=xmlString.substring(startIndex+4,endIndex);
+            xmlString=xmlString.substring(0,startIndex)+"<tempid>"+id+"</tempid>"+xmlString.substring(endIndex+5);
+            //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
+            while(xmlString.indexOf("<topnode>"+replaceId+"</topnode>")>=0){xmlString = xmlString.replace("<topnode>"+replaceId+"</topnode>","<topnode>temporaryID"+id+"</topnode>");}
+            while(xmlString.indexOf("<bottomnode>"+replaceId+"</bottomnode>")>=0){xmlString = xmlString.replace("<bottomnode>"+replaceId+"</bottomnode>","<bottomnode>temporaryID"+id+"</bottomnode>");}
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"usedwfARRAY",replaceId,""+id);
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"fixedLinkARRAY",replaceId,""+id);
+            id++;
+        }
+        //replace all those temp id tage with real ones.
+        while(xmlString.indexOf("tempid>")>=0)xmlString = xmlString.replace("tempid>","id>");
+        while(xmlString.indexOf("temporaryID")>=0)xmlString = xmlString.replace("temporaryID","");
+        //return to xml format
+        return (new DOMParser()).parseFromString(xmlString,"text/xml");
+        
+    }
+    
+    assignNewIDsToXMLArrays(xmlString,arrayName,newID,oldID){
+        var currentIndex=0;
+        while(xmlString.indexOf("<"+arrayName+">",currentIndex)>=0){
+            currentIndex = xmlString.indexOf("<"+arrayName+">",currentIndex);
+            var endIndex = xmlString.indexOf("</"+arrayName+">",currentIndex);
+            var indexArray= xmlString.substring(currentIndex+("<"+arrayName+">").length,endIndex).split(",");
+            while(indexArray.contains(oldID)){indexArray.splice(indexArray.indexOf(oldID),1,newID+"temporaryID");}
+            xmlString = xmlString.substring(0,currentIndex+("<"+arrayName+">").length) + indexArray.join('n') + xmlString.subString(endIndex);
+            currentIndex=endIndex;
+        }
+        return xmlString;
     }
 }
