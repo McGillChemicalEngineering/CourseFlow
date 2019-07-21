@@ -134,7 +134,8 @@ class Week {
     resizeWeek(dy,origin){
         var rect;
         if(dy*origin>0) rect = new mxRectangle(this.box.x(),this.box.y()-dy,this.box.w(),this.box.h()+dy);
-        this.box.resize(this.graph,0,dy);
+        else rect = new mxRectangle(this.box.x(),this.box.y(),this.box.w(),this.box.h()+dy);
+        this.graph.resizeCells([this.box],[rect]);
         if(origin==0 && this.index<this.wf.weeks.length-1){this.wf.pushWeeks(this.index+1);}
         return;
         
