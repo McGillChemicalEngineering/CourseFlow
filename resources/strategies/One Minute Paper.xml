@@ -1,0 +1,45 @@
+<project><workflow><wfname>One Minute Paper</wfname>
+<wfid>79</wfid>
+<wftype>activity</wftype>
+<week><weekid>80</weekid>
+<node><name>Assign reflection</name>
+<id>81</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor asks students to write a brief reflection on their understanding of a lesson or activity. A time limit is provided (1 min or more).</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>One minute response</name>
+<id>82</id>
+<lefticon>solo</lefticon>
+<righticon>write</righticon>
+<column>ICS</column>
+<textHTML><p>Individually, students provide written responses, addressing such issues as the most important thing learned during this class or what important questions remain unanswered.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Analysis of responses</name>
+<id>83</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor collects written reflections and uses them to determine the lesson plan for the next class, including which topics need further review or explanation and what activities or material can be used next.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>95</id>
+<icon>one-minute-paper</icon>
+<topnode>81</topnode>
+<bottomnode>83</bottomnode>
+</bracket>
+</workflow></project>

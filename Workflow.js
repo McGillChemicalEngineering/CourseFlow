@@ -69,6 +69,7 @@ class Workflow{
             for(var j=0;j<this.weeks[i].nodes.length;j++){
                 for(var k=0;k<this.weeks[i].nodes[j].fixedLinksOut.length;k++){
                     this.weeks[i].nodes[j].fixedLinksOut[k].redraw();
+                    this.weeks[i].nodes[j].fixedLinksOut[k].addDelOverlay();
                 }
             }
         }
@@ -145,6 +146,8 @@ class Workflow{
         this.toXML();
         this.weeks=[];
         this.columns=[];
+        this.comments=[];
+        this.brackets=[];
         if(this.graph!=null)this.graph.destroy();
     }
     
@@ -307,39 +310,7 @@ class Workflow{
     generateBracketBar(){}
     generateTagBar(){}
     
-    /*addToolbarItem(toolbar,image, dropfunction)
-    {
-       
-        var graph = this.graph;
-        // Creates the image which is used as the drag icon (preview)
-        var img = toolbar.addMode(null, image, function(evt, cell)
-        {
-            var pt = this.graph.getPointForEvent(evt);
-            dropfunction(graph,evt, filler, pt.x, pt.y);
-        });
-
-        // Disables dragging if element is disabled. This is a workaround
-        // for wrong event order in IE. Following is a dummy listener that
-        // is invoked as the last listener in IE.
-        mxEvent.addListener(img, 'mousedown', function(evt)
-        {
-            // do nothing
-        });
-
-        // This listener is always called first before any other listener
-        // in all browsers.
-        mxEvent.addListener(img, 'mousedown', function(evt)
-        {
-            if (img.enabled == false)
-            {
-                mxEvent.consume(evt);
-            }
-        });
-
-        mxUtils.makeDraggable(img, graph, dropfunction);
-
-        return img;
-    }*/
+   
     
     addNodebarItem(container,name,image, dropfunction)
     {
@@ -379,8 +350,7 @@ class Workflow{
     
     //Since the XML file may not originate from the program, there may be some overlap in the IDs. We therefore flip each ID to negative temporarily, assign everything, then use the IDs that were generated in the initial creation of the nodes.
     addNodesFromXML(week,startIndex,xml){
-        if(startIndex==-1)startIndex++;
-        xml = this.project.assignNewIDsToXML(xml);
+        xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");;
         //Add everything
         var xmlnodes = xml.getElementsByTagName("node");
         var xmlbrackets = xml.getElementsByTagName("bracket");
@@ -462,8 +432,8 @@ class Activityflow extends Workflow{
                     wf.addBracket(strategy,cell);
                 }
                 if(cell!=null&&cell.isWeek){
-                    var xml = tempXMLStorage[0][1];
-                    var startIndex = cell.week.getNearestNode(y);
+                    var xml = findStrategyXML(strategy);
+                    var startIndex = cell.week.getNextIndexFromPoint(y);
                     wf.addNodesFromXML(cell.week,startIndex,xml);
                 }
 

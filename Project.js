@@ -11,6 +11,7 @@ class Project{
         this.newWFDiv = document.getElementById("newWFDiv");
         var p = this;
         this.idNum=0;
+        this.loadAppend=false;
         this.name = "New Project";
         
         var newWFSelect = document.createElement('select');
@@ -21,6 +22,7 @@ class Project{
         newWF.onclick= function(){
             var type = newWFSelect.value;
             p.addWorkflow(type);
+            p.changeActive(p.workflows.length-1)
         }
         this.newWFDiv.appendChild(newWF);
         
@@ -39,12 +41,19 @@ class Project{
         
         var newfile = document.getElementById('new');
         newfile.onclick = function(){
-            p.clearProject();
+            if(mxUtils.confirm("Are you sure you want to continue? You will lose any unsaved work.")){
+                p.clearProject();
+            }
         }
         
         var save = document.getElementById('save');
         save.onclick = function(){
             p.saveProject();
+        }
+        
+        var duplicateWF = document.getElementById('duplicatewf');
+        duplicateWF.onclick = function(){
+            p.duplicateActiveWF();
         }
         
         var open = document.getElementById('open');
@@ -53,28 +62,46 @@ class Project{
             reader.readAsText(p.fileLoader.files[0]);
             reader.onload = function(evt){
                 var readData = evt.target.result;
-                p.fromXML(readData);
+                p.fromXML(readData,p.loadAppend);
 
             }
         }
+        
         this.fileLoader = document.createElement("input");
         this.fileLoader.type="file";
         this.fileLoader.accept=".xml";
         this.fileLoader.addEventListener('change',openProject);
         open.onclick = function(){
+            p.loadAppend=false;
             p.fileLoader.click();
         }
         
         
         
+        var exportWF = document.getElementById('export');
+        exportWF.onclick = function(){
+            p.exportCurrent();
+        }
+        
+        var importWF = document.getElementById('import');
+        
+        importWF.onclick = function(){
+            p.loadAppend=true;
+            p.fileLoader.click();
+        }
         
 		
     }
     
     saveProject(){
         this.toXML();
-        var file = new Blob([this.xmlData], {type: "data:text/xml;charset=utf-8;"});
         var filename = this.name+'.xml';
+        this.saveXML(this.xmlData,filename);
+        
+    }
+    
+    saveXML(xml,filename){
+        var file = new Blob([xml], {type: "data:text/xml;charset=utf-8;"});
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
@@ -92,6 +119,22 @@ class Project{
         }
     }
     
+    exportCurrent(){
+        this.workflows[this.activeIndex].toXML();
+        var xml = makeXML((new XMLSerializer()).serializeToString(this.workflows[this.activeIndex].xmlData),"project");
+        var filename = this.workflows[this.activeIndex].name+".xml";
+        this.saveXML(xml,filename);
+    }
+    
+    duplicateActiveWF(){
+        this.workflows[this.activeIndex].toXML();
+        var xml = this.workflows[this.activeIndex].xmlData;
+        xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue+" (Copy)";
+        console.log(xml);
+        this.addWorkflowFromXML(xml);
+        
+    }
+    
     setName(name){
         this.name=name;
     }
@@ -106,7 +149,7 @@ class Project{
         xml+=makeXML(this.idNum,"idnum");
         for(var i=0;i<this.workflows.length;i++){
             if(this.workflows[i].xmlData==null)this.workflows[i].toXML();
-            xml+=serializer.serializeToString(this.workflows[i].xmlData.documentElement);
+            xml+=serializer.serializeToString(this.workflows[i].xmlData);
         }
         this.xmlData = makeXML(xml,"project");
     }
@@ -120,17 +163,23 @@ class Project{
         
     }
     
-    fromXML(xmlData){
+    fromXML(xmlData,isAppend){
+        console.log(isAppend);
         var parser = new DOMParser();
+        if(isAppend)xmlData = this.assignNewIDsToXML(xmlData);
+        console.log(xmlData);
         var xmlDoc = parser.parseFromString(xmlData,"text/xml");
-        this.clearProject();
-        this.setName(getXMLVal(xmlDoc,"prname"));
-        this.idNum = int(getXMLVal(xmlDoc,"idnum"));
+        if(!isAppend){
+            this.clearProject();
+            this.setName(getXMLVal(xmlDoc,"prname"));
+            this.idNum = int(getXMLVal(xmlDoc,"idnum"));
+        }
+        var startWF = this.workflows.length;
         var xmlwfs = xmlDoc.getElementsByTagName("workflow");
         for(var i=0;i<xmlwfs.length;i++){
             this.addWorkflowFromXML(xmlwfs[i]);
         }
-        for(i=0;i<this.workflows.length;i++){
+        for(i=startWF;i<this.workflows.length;i++){
             var wf = this.workflows[i];
             for(var j=0;j<wf.usedWF.length;j++){
                 this.addChild(wf,this.getWFByID(wf.usedWF[j]));
@@ -368,10 +417,10 @@ class Project{
                         var next = wf.findNextNodeOfSameType(br.getNode(isTop),int((dy+db)/Math.abs(dy+db)));
                         if(next!=null){
                             if(Math.abs(dh)>cellSpacing+next.vertex.h()/2){
-                                this.bounds.height = cell.h();
+                                var delta = (next.vertex.y()-cell.y())*(isTop) + (next.vertex.b()-cell.b())*(!isTop);
                                 br.changeNode(next,isTop);
                                 //Required because of the way in which mxvertex handler tracks rescales. I don't think this breaks anything else.
-                                this.startY = this.startY +dh*(!isTop)-dh*(isTop);
+                                this.startY = this.startY +delta;
                             }
                         }
                         
@@ -453,7 +502,7 @@ class Project{
                 mouseMove: function(sender,me){
                     var cell=me.getCell();
                     if(cell==null)return;
-                    while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
+                    while (graph.isPart(cell)){if(cell.cellOverlays!=null)break;cell = graph.getModel().getParent(cell);}
                     if(cell.cellOverlays!=null){
                         if(graph.getCellOverlays(cell)==null){
                             //check if you are in bounds, if so create overlays. Because of a weird offset between the graph view and the graph itself, we have to use the cell's view state instead of its own bounds
@@ -610,7 +659,9 @@ class Project{
     assignNewIDsToXML(xml){
         var xmlString = xml;//(new XMLSerializer()).serializeToString(xml);
         var id = this.idNum+1;
+        //Nodes
         while(xmlString.indexOf("<id>")>=0){
+            console.log("Replacing an ID");
             var startIndex=xmlString.indexOf("<id>");
             var endIndex = xmlString.indexOf("</id>");
             var replaceId=xmlString.substring(startIndex+4,endIndex);
@@ -618,15 +669,34 @@ class Project{
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
             while(xmlString.indexOf("<topnode>"+replaceId+"</topnode>")>=0){xmlString = xmlString.replace("<topnode>"+replaceId+"</topnode>","<topnode>temporaryID"+id+"</topnode>");}
             while(xmlString.indexOf("<bottomnode>"+replaceId+"</bottomnode>")>=0){xmlString = xmlString.replace("<bottomnode>"+replaceId+"</bottomnode>","<bottomnode>temporaryID"+id+"</bottomnode>");}
-            xmlString = this.assignNewIDsToXMLArrays(xmlString,"usedwfARRAY",replaceId,""+id);
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"fixedLinkARRAY",replaceId,""+id);
+            id++;
+        }
+        //Weeks
+        while(xmlString.indexOf("<weekid>")>=0){
+            var startIndex=xmlString.indexOf("<weekid>");
+            var endIndex = xmlString.indexOf("</weekid>");
+            var replaceId=xmlString.substring(startIndex+8,endIndex);
+            xmlString=xmlString.substring(0,startIndex)+"<weektempid>"+id+"</weektempid>"+xmlString.substring(endIndex+9);
+            id++;
+        }
+        //Workflows
+        while(xmlString.indexOf("<wfid>")>=0){
+            var startIndex=xmlString.indexOf("<wfid>");
+            var endIndex = xmlString.indexOf("</wfid>");
+            var replaceId=xmlString.substring(startIndex+6,endIndex);
+            xmlString=xmlString.substring(0,startIndex)+"<wftempid>"+id+"</wftempid>"+xmlString.substring(endIndex+7);
+            //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"usedwfARRAY",replaceId,""+id);
             id++;
         }
         //replace all those temp id tage with real ones.
         while(xmlString.indexOf("tempid>")>=0)xmlString = xmlString.replace("tempid>","id>");
         while(xmlString.indexOf("temporaryID")>=0)xmlString = xmlString.replace("temporaryID","");
-        //return to xml format
-        return (new DOMParser()).parseFromString(xmlString,"text/xml");
+        //save the new id number
+        this.idNum=id;
+        //return to as string
+        return xmlString;
         
     }
     

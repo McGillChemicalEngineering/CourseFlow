@@ -1,0 +1,67 @@
+<project><workflow><wfname>Toolkit</wfname>
+<wfid>71</wfid>
+<wftype>activity</wftype>
+<week><weekid>72</weekid>
+<node><name>Give students a template</name>
+<id>73</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor provides students, at the end of a series of lessons/activities, with a template to support their identification and consolidation of the major intellectual tools learned and used in the preceding lessons.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Discussion of themes or principles</name>
+<id>74</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students discuss the lesson content and identify use-case examples of discipline-relevant principles, themes, rules/algorithms, etc.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Presentation of toolkit</name>
+<id>75</id>
+<lefticon>group</lefticon>
+<righticon>present</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students present their list to the whole class.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Feedback</name>
+<id>76</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor provides feedback on the relevance of the items to be included in the Toolkit list and guides students in their review, evaluation, and decision-making.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Discuss and consolidate</name>
+<id>77</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>As a class, students discuss, evaluate, and justify decisions for entry of items into a single list.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>78</id>
+<icon>toolkit</icon>
+<topnode>73</topnode>
+<bottomnode>77</bottomnode>
+</bracket>
+</workflow></project>

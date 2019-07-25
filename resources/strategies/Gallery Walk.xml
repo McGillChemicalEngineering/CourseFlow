@@ -1,0 +1,67 @@
+<project><workflow><wfname>Gallery Walk</wfname>
+<wfid>34</wfid>
+<wftype>activity</wftype>
+<week><weekid>35</weekid>
+<node><name>Assign problems</name>
+<id>36</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor assigns a problem to each group of students. Problems may be identical or distinct, but they generally address related content.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Solve problems</name>
+<id>37</id>
+<lefticon>group</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students try to solve their assigned problem.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Peer review</name>
+<id>38</id>
+<lefticon>group</lefticon>
+<righticon>peerreview</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students move around the classroom and peer-review the work completed by another group, making annotations and providing feedback.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Analyze feedback</name>
+<id>39</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students examine the feedback provided by their peers before finalizing their response.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Class discussion</name>
+<id>40</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor evaluates all responses with the class, highlighting any errors and distinct procedures for arriving at correct solutions.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>41</id>
+<icon>gallery-walk</icon>
+<topnode>36</topnode>
+<bottomnode>40</bottomnode>
+</bracket>
+</workflow></project>

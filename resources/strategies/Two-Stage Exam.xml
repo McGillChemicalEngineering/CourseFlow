@@ -1,0 +1,78 @@
+<project><workflow><wfname>Two-Stage Exam</wfname>
+<wfid>61</wfid>
+<wftype>activity</wftype>
+<week><weekid>62</weekid>
+<node><name>Preparation</name>
+<id>64</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Prior to class, instructor prepares two levels of assessment - individual and group, then in class distributes the individual assessment.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Individual assessment</name>
+<id>65</id>
+<lefticon>solo</lefticon>
+<righticon>quiz</righticon>
+<column>ICS</column>
+<textHTML><p>Individually, students complete the assessment.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Assign groups</name>
+<id>66</id>
+<lefticon/>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor collects the assessment then splits the students into small groups (3-4 students).</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Group discussion</name>
+<id>67</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>As groups, students discuss their answers then work together to answer the new questions.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Group assessment</name>
+<id>68</id>
+<lefticon>group</lefticon>
+<righticon>quiz</righticon>
+<column>ICS</column>
+<textHTML><p>As a group, students complete the group assessment.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Evaluation</name>
+<id>69</id>
+<lefticon>undefined</lefticon>
+<righticon>evaluate</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor collects the group assessment, and evaluates both.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>70</id>
+<icon>two-stage-exam</icon>
+<topnode>64</topnode>
+<bottomnode>69</bottomnode>
+</bracket>
+</workflow></project>

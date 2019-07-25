@@ -1,0 +1,100 @@
+<project><workflow><wfname>Distributed Problem Solving</wfname>
+<wfid>96</wfid>
+<wftype>activity</wftype>
+<week><weekid>97</weekid>
+<node><name>Assign groups</name>
+<id>98</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor divides the class into small groups (4-6 students) and assigns each to a shared writable surface (whiteboard or interactive board).</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Assign distinct problems</name>
+<id>99</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor assigns one problem for each group. Problems should be closely related but distinct, and there should be at least two different problems.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Begin problem solving</name>
+<id>100</id>
+<lefticon>group</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML><p>Groups begin their problem solving process, making sure to record their worked solutions on the surface, e.g. Group 1 working on Problem A, Group 2 working on Problem B, etc.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Interrupt process and switch groups</name>
+<id>101</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor interrupts the process and has students switch problems and take up another group's problem-solving process, e.g. Group 1 moves to Group 2's problem B, Group 2 moves to Group 1's Problem A.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Review work of other group</name>
+<id>102</id>
+<lefticon>group</lefticon>
+<righticon>peerreview</righticon>
+<column>ICS</column>
+<textHTML><p>Groups review and revise the solution of the first group and decide how they will continue the problem solving process.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Interrupt process again</name>
+<id>103</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor interrupts the process and instructs groups to return to their original problem and evaluated the completed solution.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Evaluate solution to original problem</name>
+<id>104</id>
+<lefticon>group</lefticon>
+<righticon>peerreview</righticon>
+<column>ICS</column>
+<textHTML><p>Groups review and evaluate the final solution to the original problem - e.g. Group 1 returns to Problem A, which was completed by Group 2.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Instructor evaluation and discussion</name>
+<id>105</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor evaluates all responses with the class, highlighting any errors and distinct procedures for arriving at correct solutions.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>106</id>
+<icon>distributed-problem-solving</icon>
+<topnode>98</topnode>
+<bottomnode>105</bottomnode>
+</bracket>
+</workflow></project>

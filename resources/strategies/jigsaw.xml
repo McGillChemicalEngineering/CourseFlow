@@ -1,34 +1,89 @@
-<strategy>
-<node><name>undefined</name>
+<project><workflow><wfname>Jigsaw</wfname>
+<wfid>1</wfid>
+<wftype>activity</wftype>
+<week><weekid>2</weekid>
+<node><name>Divide students into groups</name>
 <id>3</id>
 <lefticon>undefined</lefticon>
 <righticon>undefined</righticon>
 <column>ICI</column>
-<text>Instructor divides students into small groups of five or six students.</text>
+<textHTML><p>Instructor divides students into small groups of five or six students.</p></textHTML>
 <linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
 <fixedlinkARRAY/>
+<linkportARRAY/>
 </node>
-<node><name>undefined</name>
-<id>5</id>
+<node><name>Assign a portion of an assignment.</name>
+<id>4</id>
 <lefticon>undefined</lefticon>
 <righticon>undefined</righticon>
 <column>ICI</column>
-<text>Instructor prepares an assignment and divides it into as many parts as there are students in each group. Each member of the group is assigned a portion of the assignment or research project to complete.</text>
+<textHTML><p>Instructor prepares an assignment and divides it into as many parts as there are students in each group. Each member of the group is assigned a portion of the assignment or research project to complete.</p></textHTML>
 <linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
 <fixedlinkARRAY/>
+<linkportARRAY/>
 </node>
-<node><name>undefined</name>
-<id>6</id>
+<node><name>Research Material</name>
+<id>5</id>
 <lefticon>group</lefticon>
 <righticon>research</righticon>
 <column>ICS</column>
-<text>In groups, students research the material(s) pertaining to their section of the assignment and prepare to discuss it with their classmates.</text>
+<textHTML><p>In groups, students research the material(s) pertaining to their section of the assignment and prepare to discuss it with their classmates.</p></textHTML>
 <linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
 <fixedlinkARRAY/>
+<linkportARRAY/>
 </node>
-<bracket><id>4</id>
+<node><name>Expert Groups</name>
+<id>12</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>Students form temporary "expert groups" with others who have been assigned the same portion of the assignment and discuss the material they have covered, and prepare to present this material to their original "jigsaw" group.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Present to original group</name>
+<id>13</id>
+<lefticon>solo</lefticon>
+<righticon>present</righticon>
+<column>ICS</column>
+<textHTML><p>Students return to their original "jigsaw" group and present the material they have covered.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Complete assignment</name>
+<id>14</id>
+<lefticon>group</lefticon>
+<righticon>write</righticon>
+<column>ICS</column>
+<textHTML><p>Using their collective knowledge, students complete their assignment.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Evaluation</name>
+<id>15</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor evaluates the completed assignment. Option: Additional assessment of the students' knowledge (individual or group) can be added.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>6</id>
 <icon>jigsaw</icon>
 <topnode>3</topnode>
-<bottomnode>6</bottomnode>
+<bottomnode>15</bottomnode>
 </bracket>
-</strategy>
+</workflow></project>

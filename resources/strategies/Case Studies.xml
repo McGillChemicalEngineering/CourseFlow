@@ -1,0 +1,78 @@
+<project><workflow><wfname>Case Studies</wfname>
+<wfid>25</wfid>
+<wftype>activity</wftype>
+<week><weekid>26</weekid>
+<node><name>Distribute Case</name>
+<id>27</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor selects and distributes case study (or studies) that they want students to work with.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Read and prepare</name>
+<id>28</id>
+<lefticon>solo</lefticon>
+<righticon>reading</righticon>
+<column>ICS</column>
+<textHTML><p>Students - individually or in groups - read the case study and identify key components.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Discuss</name>
+<id>29</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students discuss key components and lessons learned - i.e., general principles or exceptions.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Distribute new case</name>
+<id>30</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Insert a description here.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Solve new case</name>
+<id>31</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>In groups, students work with the new case, applying lessons learned to solve it. Students apply general principles and reason as to whether or not the new case is typical or an exception.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Class discussion</name>
+<id>32</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>As a class, students discuss key components and lessons learned - i.e. general principles or exceptions.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>33</id>
+<icon>case-studies</icon>
+<topnode>27</topnode>
+<bottomnode>32</bottomnode>
+</bracket>
+</workflow></project>

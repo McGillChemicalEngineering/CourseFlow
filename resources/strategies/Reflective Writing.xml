@@ -1,0 +1,56 @@
+<project><workflow><wfname>Reflective Writing</wfname>
+<wfid>42</wfid>
+<wftype>activity</wftype>
+<week><weekid>43</weekid>
+<node><name>Assign reading</name>
+<id>44</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor assigns reading or viewing material(s) - a section of textbook, video, etc. Specific prompts are provided to guide this task, which can include:</p><ul><li>What is not understood or unclear and why it is unclear.</li><li>What is understood and how it might related to what the student already knows or to other ideas from the course.</li></ul></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Read material</name>
+<id>45</id>
+<lefticon>solo</lefticon>
+<righticon>reading</righticon>
+<column>OOC</column>
+<textHTML><p>Individually, students review the material with the intention of documenting in writing their understanding using the prompts.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Reflective writing</name>
+<id>46</id>
+<lefticon>solo</lefticon>
+<righticon>write</righticon>
+<column>OOC</column>
+<textHTML><p>Students:</p><ul><li>Reflect on the material, identifying the items they understand and those with which they are struggling</li><li>Formulate short paragraphs in response to the prompts</li><li>Submit their writings to the instructor</li></ul></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Evaluation and analysis</name>
+<id>47</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor reviews students' work and uses it to determine the lesson plan, such as which topics need further review and explanation or what activities or materials can be used next.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>60</id>
+<icon>reflective-writing</icon>
+<topnode>44</topnode>
+<bottomnode>47</bottomnode>
+</bracket>
+</workflow></project>

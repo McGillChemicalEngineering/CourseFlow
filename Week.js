@@ -91,6 +91,14 @@ class Week {
         return this.nodes.length-1; //we are past the last node
     }
     
+    getNextIndexFromPoint(y){
+        for(var i=0;i<this.nodes.length;i++){
+            var vertex = this.nodes[i].vertex;
+            if(vertex.y()>y)return i;
+        }
+        return this.nodes.length+1;
+    }
+    
     shiftNode(initIndex,finalIndex){
         if(initIndex==finalIndex)return;
         var prevNode = this.wf.findNextNodeOfSameType(this.nodes[initIndex],-1)

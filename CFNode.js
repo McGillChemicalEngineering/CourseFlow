@@ -30,6 +30,7 @@ class CFNode {
         var link = new WFLink(this,this.graph,edge);
         link.setTarget(target);
         if(edge==null)link.redraw();
+        link.addDelOverlay();
         this.fixedLinksOut.push(link)
     }
     
@@ -215,7 +216,7 @@ class CFNode {
     deleteSelf(){
         this.week.removeNode(this);
         if(this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
-        this.graph.removeCells([this.vertex,this.righticonnode,this.lefticonnode,this.namenode]);
+        this.graph.removeCells([this.vertex]);
     }
     
     insertBelow(){
@@ -275,9 +276,9 @@ class CFNode {
         var graph = this.graph;
         if(cell==this.lefticonnode)this.populateIconMenu(menu,this.getLeftIconList(),"left");
         else if (cell==this.righticonnode)this.populateIconMenu(menu,this.getRightIconList(),"right");
-        else if (cell==this.namenode)menu.addItem('Edit label', 'resources/images/text24.png', function(){
+        /*else if (cell==this.namenode)menu.addItem('Edit label', 'resources/images/text24.png', function(){
 				graph.startEditingAtCell(cell);
-        });
+        });*/
     }
     
     populateIconMenu(menu,iconArray,icon){
@@ -519,6 +520,32 @@ class WFLink{
             if(this.targetNode==null){this.id=null;return;}
         }
         this.vertex = this.graph.insertEdge(this.graph.getDefaultParent(),null,'',this.node.vertex,this.targetNode.vertex,defaultEdgeStyle+this.getPortStyle());
+    }
+    
+    //Add the overlay to delete the node
+    addDelOverlay(){
+        if(this.vertex.cellOverlays==null)this.vertex.cellOverlays=[];
+        var n = this;
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.y = pt.y-bounds.height/2;
+            bounds.x = pt.x-bounds.width/2;
+            return bounds;
+        }
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            n.deleteSelf();
+        });
+        this.vertex.cellOverlays.push(overlay);
+        //n.graph.addCellOverlay(n.vertex, overlay);
+    }
+    
+    deleteSelf(){
+        this.graph.removeCells([this.vertex]);
+        this.node.fixedLinksOut.splice(this.node.fixedLinksOut.indexOf(this),1);
     }
     
     

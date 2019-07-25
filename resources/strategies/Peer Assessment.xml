@@ -1,0 +1,45 @@
+<project><workflow><wfname>Peer Assessment</wfname>
+<wfid>107</wfid>
+<wftype>activity</wftype>
+<week><weekid>108</weekid>
+<node><name>Assign rubric to students for peer assessment</name>
+<id>131</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor assigns students, individually or in groups, to review the work produced by peers using a rubric or template.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Provide feedback using rubric</name>
+<id>132</id>
+<lefticon>solo</lefticon>
+<righticon>peerreview</righticon>
+<column>ICS</column>
+<textHTML><p>Individually or in small groups, students review another individual's or group's work using the rubric or template.</p><p>Students provide peers with feedback in writing or prepared for oral presentation.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Review and change work based on feedback</name>
+<id>133</id>
+<lefticon>solo</lefticon>
+<righticon>write</righticon>
+<column>ICS</column>
+<textHTML><p>Individually or in small groups, students review feedback and decide how to make changes.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>134</id>
+<icon>peer-assessment</icon>
+<topnode>131</topnode>
+<bottomnode>133</bottomnode>
+</bracket>
+</workflow></project>

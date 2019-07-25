@@ -37,7 +37,8 @@ class Bracket {
         var square = this.graph.insertVertex(this.label,null,'',bracketTriangleWidth,0,bracketTabWidth,bracketTabHeight,bracketSquareStyle);
         var circle = this.graph.insertVertex(square,null,'',5,5,bracketTabWidth-10,bracketTabHeight-10,bracketCircleStyle)
         this.iconVertex = this.graph.insertVertex(circle,null,'',0,0,circle.w(),circle.h(),bracketIconStyle);
-        
+        this.label.cellOverlays=[];
+        this.addDelOverlay();
         
     }
     
@@ -97,6 +98,33 @@ class Bracket {
         this.graph.moveCells([this.vertex],dx,0);
     }
     
+    
+    //Add the overlay to delete the node
+    addDelOverlay(){
+        var n = this;
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.y = pt.y-n.label.h()/2;
+            bounds.x = pt.x-bounds.width+n.label.w()/2;
+            return bounds;
+        }
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            n.deleteSelf();
+        });
+        this.label.cellOverlays.push(overlay);
+        //n.graph.addCellOverlay(n.vertex, overlay);
+    }
+    
+    deleteSelf(){
+        this.topNode.removeBracket(this);
+        this.bottomNode.removeBracket(this);
+        this.wf.brackets.splice(this.wf.brackets.indexOf(this),1);
+        this.graph.removeCells([this.vertex]);
+    }
     
     
 }

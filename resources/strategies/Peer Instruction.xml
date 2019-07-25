@@ -1,0 +1,78 @@
+<project><workflow><wfname>Peer Instruction</wfname>
+<wfid>16</wfid>
+<wftype>activity</wftype>
+<week><weekid>17</weekid>
+<node><name>Initial Content</name>
+<id>18</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor provides students with content (e.g., mini-lecture, pre-class reading).</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Multiple Choice</name>
+<id>19</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor prepares multiple choice questions/problems.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Individual answers</name>
+<id>20</id>
+<lefticon>solo</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML><p>Individually, students answer the question and enter their vote using a polling method or device (e.g., clickers or phone app).</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Group Discussion</name>
+<id>21</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML><p>Students, in pairs or small groups, discuss their answers and explain their reasoning.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Re-answer</name>
+<id>22</id>
+<lefticon>solo</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML><p>Individually, students vote again and select answer based on discussion - they can either keep their original answer or change.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+<node><name>Review</name>
+<id>23</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML><p>Instructor briefly reviews the concepts.</p></textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+</node>
+</week>
+<usedwfARRAY/>
+<bracket><id>24</id>
+<icon>peer-instruction</icon>
+<topnode>18</topnode>
+<bottomnode>23</bottomnode>
+</bracket>
+</workflow></project>
