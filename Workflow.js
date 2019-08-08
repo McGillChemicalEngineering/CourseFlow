@@ -38,7 +38,7 @@ class Workflow{
     
     fromXML(){
         var xmlData = this.xmlData;
-        this.name = getXMLVal(xmlData,"wfname");
+        this.setName(getXMLVal(xmlData,"wfname"));
         this.id = getXMLVal(xmlData,"wfid");
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(var i=0;i<xmlweeks.length;i++){
@@ -249,14 +249,14 @@ class Workflow{
         
     }
     
-    findNextNodeOfSameType(node,direction){
+    findNextNodeOfSameType(node,direction,sameType=true){
         var week = node.week;
         var nodeIndex = week.nodes.indexOf(node);
         var weekIndex = this.weeks.indexOf(week);
         nodeIndex+=direction;
         while(weekIndex<this.weeks.length&&weekIndex>=0){
             while(nodeIndex<this.weeks[weekIndex].nodes.length&&nodeIndex>=0){
-                if(this.weeks[weekIndex].nodes[nodeIndex].constructor===node.constructor)return(this.weeks[weekIndex].nodes[nodeIndex]);
+                if(!sameType||this.weeks[weekIndex].nodes[nodeIndex].constructor===node.constructor)return(this.weeks[weekIndex].nodes[nodeIndex]);
                 nodeIndex+=direction;
             }
             weekIndex+=direction;
@@ -379,8 +379,8 @@ class Courseflow extends Workflow{
         var graph = this.graph;
         //columns.push(new Column(graph,this,"LO","Learning Objectives","reading"));
         columns.push(new Column(graph,this,"AC","Activities","instruct","Activity"));
-        columns.push(new Column(graph,this,"FA","Artifacts","quiz","Artifact"));
-        columns.push(new Column(graph,this,"SA","Assessments","evaluate","Assessment"));
+        columns.push(new Column(graph,this,"FA","Artifacts","artifact","Artifact"));
+        columns.push(new Column(graph,this,"SA","Assessments","assessment","Assessment"));
     }
     
     getDefaultName(){return "New Course"};

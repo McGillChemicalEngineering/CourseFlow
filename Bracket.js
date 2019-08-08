@@ -53,7 +53,7 @@ class Bracket {
     
     setIcon(icon){
         this.icon = icon;
-        this.graph.setCellStyles("image",iconpath+icon+"48.png",[this.iconVertex]);
+        this.graph.setCellStyles("image",iconpath+icon+".png",[this.iconVertex]);
     }
     
     
@@ -124,6 +124,18 @@ class Bracket {
         this.bottomNode.removeBracket(this);
         this.wf.brackets.splice(this.wf.brackets.indexOf(this),1);
         this.graph.removeCells([this.vertex]);
+    }
+    
+    cellRemoved(node){
+        var isTop=false;
+        var isBottom=false;
+        if(this.topNode==node)isTop=true;
+        if(this.bottomNode==node)isBottom=true;
+        if(isTop&&isBottom)this.deleteSelf();
+        else{
+            var nextNode = this.wf.findNextNodeOfSameType(node,isTop-isBottom,false);
+            this.changeNode(nextNode,isTop);
+        }
     }
     
     

@@ -4,7 +4,7 @@ class EditBar{
         this.container=container;
         var quillDiv1 = document.createElement('div');
         quillDiv1.style.height='40px';
-        this.container.appendChild(quillDiv1);
+        document.getElementById("nameDiv").appendChild(quillDiv1);
         var toolbarOptions = null;
         var quill1 = new Quill(quillDiv1,{
             theme: 'snow',
@@ -18,13 +18,11 @@ class EditBar{
           }
         });
         this.nameField=quill1;
-        this.leftIcon = document.createElement('select');
-        this.rightIcon = document.createElement('select');
-        this.container.appendChild(this.leftIcon);
-        this.container.appendChild(this.rightIcon);
+        this.leftIcon = document.getElementById('leftIconSelect');
+        this.rightIcon = document.getElementById('rightIconSelect');
         var quillDiv2 = document.createElement('div');
         quillDiv2.style.height='200px';
-        this.container.appendChild(quillDiv2);
+        document.getElementById("descriptionDiv").appendChild(quillDiv2);
         toolbarOptions = [['bold','italic','underline'],[{'list':'bullet'},{'list':'ordered'}]];
         var quill2 = new Quill(quillDiv2,{
             theme: 'snow',
@@ -38,8 +36,7 @@ class EditBar{
           }
         });
         this.textField=quillDiv2.childNodes[0];
-        this.linkedWF = document.createElement('select');
-        this.container.appendChild(this.linkedWF);
+        this.linkedWF = document.getElementById('linkedWFSelect');
         this.node;
         
     }
@@ -50,39 +47,50 @@ class EditBar{
         if(node.text!=null)this.textField.innerHTML=node.text;
         else this.textField.innerHTML="Insert a description here.";
         this.container.style.display="inline";
+        this.container.style.width="400px";
         var iconList = node.getLeftIconList();
         if(iconList!=null){
-            this.leftIcon.style.display="inline";
+            this.showParent(this.leftIcon);
             this.fillIconSelect(this.leftIcon,iconList);
             if(node.lefticon!=null)this.leftIcon.value=node.lefticon;
             this.leftIcon.onchange = function(){
                 node.setLeftIcon(this.value);
-            };
-        }else this.leftIcon.style.display="none";
+            }
+        }else this.hideParent(this.leftIcon);
         iconList = node.getRightIconList();
         if(iconList!=null){
-            this.rightIcon.style.display="inline";
+            this.showParent(this.rightIcon);
             this.fillIconSelect(this.rightIcon,iconList);
             if(node.righticon!=null)this.rightIcon.value=node.righticon;
             this.rightIcon.onchange = function(){
                 node.setRightIcon(this.value);
-            };
-        }else this.rightIcon.style.display="none";
+            }
+        }else this.hideParent(this.rightIcon);
         var linkedWFList = node.getLinkedWFList();
         if(linkedWFList!=null){
-            this.linkedWF.style.display="inline";
+            this.showParent(this.linkedWF);
             this.fillWFSelect(linkedWFList);
             if(node.linkedWF!=null)this.linkedWF.value = node.linkedWF;
             this.linkedWF.onchange = function(){
                 node.setLinkedWF(this.value);
             }
-        }else this.linkedWF.style.display="none";
+        }else this.hideParent(this.linkedWF);
         this.node=node;
+    }
+    
+    hideParent(element){
+        var parent = element.parentElement;
+        parent.style.display="none";
+    }
+    showParent(element){
+        var parent = element.parentElement;
+        parent.style.display="inline";
     }
     
     disable(){
         this.node=null;
         this.container.style.display="none";
+        this.container.style.width="0px";
     }
     
     fillIconSelect(iconSelect,list){

@@ -100,14 +100,12 @@ class CFNode {
     setLinkedWF(value){
         if(value=="")value=null;
         if(value!=this.linkedWF){
-            if(value==null){
+            if(this.linkedWF!=null){
+                this.wf.removeUsedWF(this.linkedWF);
                 this.wf.project.removeChild(this.wf,this.wf.project.getWFByID(this.linkedWF));
-            }else{
-                if(this.linkedWF!=null){
-                    this.wf.removeUsedWF(this.linkedWF);
-                    this.wf.project.removeChild(this.wf,this.wf.project.getWFByID(this.linkedWF));
-                }
-                this.linkedWF = value;
+            }
+            this.linkedWF = value;
+            if(value!=null){
                 this.wf.addUsedWF(value);
                 this.wf.project.addChild(this.wf,this.wf.project.getWFByID(value));
             }
@@ -214,6 +212,7 @@ class CFNode {
     addLeftIcon(){return null;}
     
     deleteSelf(){
+        for(var i=0;i<this.brackets.length;i++)this.brackets[i].cellRemoved(this);
         this.week.removeNode(this);
         if(this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
         this.graph.removeCells([this.vertex]);

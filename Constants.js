@@ -36,14 +36,14 @@ getXMLVal = function(xml,name){
 const cellSpacing = 40;
 const colIconSize=100;
 const defaultCellWidth=280;
-const minCellHeight=40;
+const minCellHeight=50;
 const cellDropdownHeight=10;
 const cellDropdownPadding=2;
 const wfStartX=cellSpacing;
 const wfStartY=cellSpacing;
 const defaultIconPadding=4;
 const defaultTextPadding=4;
-const defaultIconWidth=32;
+const defaultIconWidth=36;
 const bracketWidth=10;
 const bracketTabWidth=80;
 const bracketTabHeight=80;
@@ -74,7 +74,7 @@ const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;
 
 //Icons
 const strategyIconsArray=[['Jigsaw','jigsaw'],['Peer Instruction','peer-instruction'],['Case Studies','case-studies'],['Gallery Walk','gallery-walk'],['Reflective Writing','reflective-writing'],['Two-Stage Exam','two-stage-exam'],['Toolkit','toolkit'],['One Minute Paper','one-minute-paper'],['Distributed Problem Solving','distributed-problem-solving'],['Peer Assessment','peer-assessment']];
-const taskIconsArray=[['Problem Solving','problem'],['Research','research'],['Reading','reading'],['Writing','write'],['Discussion','discuss'],['Present','present'],['Peer Review','peerreview'],['Instructor Evaluation','evaluate'],['Quiz','quiz'],['Play','play'],['Create','create'],['Iterate','practice']]
+const taskIconsArray=[['Gather Information','research'],['Discuss','discuss'],['Solve','problem'],['Analyze','analyze'],['Assess/Review Peers','peerreview'],['Evaluate Peers','evaluate'],['Debate','debate'],['Game/Roleplay','play'],['Create/Design','create'],['Revise/Improve','practice'],['Read','reading'],['Write','write'],['Present','present'],['Experiment/Inquiry','experiment'],['Quiz/Test','quiz'],['Other','other']]
 const contextIconsArray=[['Individual Work','solo'],['Work in Groups','group'],['Whole Class','class']]
 const iconpath='resources/data/';
 

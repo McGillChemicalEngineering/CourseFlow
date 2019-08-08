@@ -32,7 +32,7 @@ class Project{
         var ebContainer = document.getElementById('ebContainer');
         //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
         ebContainer.style.zIndex='3';
-        ebContainer.style.width = '400px';
+        ebContainer.style.width = '0px';
         
         var editbar = new EditBar(ebContainer);
         editbar.disable();
@@ -127,11 +127,14 @@ class Project{
     }
     
     duplicateActiveWF(){
-        this.workflows[this.activeIndex].toXML();
+        var wf = this.workflows[this.activeIndex];
+        wf.toXML();
         var xml = this.workflows[this.activeIndex].xmlData;
         xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue+" (Copy)";
-        console.log(xml);
-        this.addWorkflowFromXML(xml);
+        var wfcopy = this.addWorkflowFromXML(xml);
+        for(var i=0;i<wfcopy.usedWF.length;i++){
+            this.addButton(this.getWFByID(wfcopy.usedWF[i]),wfcopy.buttons[0]);
+        }
         
     }
     
@@ -164,10 +167,8 @@ class Project{
     }
     
     fromXML(xmlData,isAppend){
-        console.log(isAppend);
         var parser = new DOMParser();
         if(isAppend)xmlData = this.assignNewIDsToXML(xmlData);
-        console.log(xmlData);
         var xmlDoc = parser.parseFromString(xmlData,"text/xml");
         if(!isAppend){
             this.clearProject();
@@ -206,16 +207,18 @@ class Project{
     addWorkflowFromXML(xml){
         var wf = this.addWorkflow(getXMLVal(xml,"wftype"));
         wf.id=getXMLVal(xml,"wfid");
-        wf.setName=getXMLVal(xml,"wfname");
+        wf.setName(getXMLVal(xml,"wfname"));
         wf.usedWF = getXMLVal(xml,"usedwfARRAY");
         wf.xmlData=xml;
+        return wf;
     }
+    
+    
     
     addChild(wfp,wfc){
         //If child is at the root level, remove its button
-        if(wfc.buttons[0].parentElement.id=="layout"){
-            wfc.buttons[0].parentElement.removeChild(wfc.buttons[0]);
-            wfc.buttons.splice(0,1);
+        if(wfc.buttons!=null&&wfc.buttons.length>0&&wfc.buttons[0].parentElement.id=="layout"){
+            this.removeButton(wfc,wfc.buttons[0]);
         }
         //Add it to the parent at all locations in the tree
         for(var i=0;i<wfp.buttons.length;i++){
@@ -228,25 +231,23 @@ class Project{
         for(var i=0;i<wfp.buttons.length;i++){
             for(var j=0;j<wfc.buttons.length;j++){
                 if(wfc.buttons[j].parentElement == wfp.buttons[i]){
-                    wfp.removeUsedWF(wfc.id);
-                    wfp.buttons[i].removeChild(wfc.buttons[j]);
-                    wfc.buttons.splice(j,1)
-                    break;
+                    this.removeButton(wfc,wfc.buttons[j]);
                 }
             }
         }
+        wfp.removeUsedWF(wfc.id);
         //if no instances still exist, move it back into the root
         if(wfc.buttons.length==0)this.addButton(wfc,this.layout);
     }
     
     fillWFSelect(select){
         var opt = document.createElement('option');
-        opt.text="Course";
-        opt.value="course";
-        select.add(opt);
-        opt = document.createElement('option');
         opt.text="Activity";
         opt.value="activity";
+        select.add(opt);
+        opt = document.createElement('option');
+        opt.text="Course";
+        opt.value="course";
         select.add(opt);
         opt = document.createElement('option');
         opt.text="Program";
@@ -269,6 +270,23 @@ class Project{
         bdiv.appendChild(b);
         container.appendChild(bdiv);
         wf.buttons.push(bdiv);
+        for(var i=0;i<wf.usedWF.length;i++){
+            this.addButton(this.getWFByID(wf.usedWF[i]),bdiv);
+        }
+    }
+    
+    removeButton(wfp,button){
+        for(var i=0;i<wfp.usedWF.length;i++){
+            var wfc = this.getWFByID(wfp.usedWF[i]);
+            for(var j=0;j<wfc.buttons.length;j++){
+                if(wfc.buttons[j].parentElement==button){
+                    this.removeButton(wfc,wfc.buttons[j]);
+                    
+                }
+            }
+        }
+        wfp.buttons.splice(wfp.buttons.indexOf(button),1);
+        button.parentElement.removeChild(button);
     }
     
     getWFIndex(wf){
@@ -661,7 +679,6 @@ class Project{
         var id = this.idNum+1;
         //Nodes
         while(xmlString.indexOf("<id>")>=0){
-            console.log("Replacing an ID");
             var startIndex=xmlString.indexOf("<id>");
             var endIndex = xmlString.indexOf("</id>");
             var replaceId=xmlString.substring(startIndex+4,endIndex);
