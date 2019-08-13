@@ -1,5 +1,19 @@
-//Creates a bracket object. The object should float to the right (or left) of any object it brackets. It should be composed of a vertex (which shows an icon or text), and an invisible vertex that vertically spans it, upon which is drawn a set of lines that will create the bracket itself. The span vertex will have a resize function that snaps to vertices much like the vertex movement functions, and will itself be immovable.
-//The class stores the top and bottom nodes that the span is snapped to, and these will be exported to xml on save. Nodes will link to the Bracket as well, however that need not be exported to the xml as we will go back through and add the brackets after all the nodes
+//The bracket object, used primarily in labeling strategies.
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 
 class Bracket {

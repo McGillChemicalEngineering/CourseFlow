@@ -1,3 +1,20 @@
+//Definition of global variables and functions for ease of use.
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
+
 //A few logistical functions to more quickly grab the dimensions and sides of a cell
 mxCell.prototype.x = function(){return this.getGeometry().x;}
 mxCell.prototype.y = function(){return this.getGeometry().y;}
@@ -99,3 +116,6 @@ function initializeConnectionPointForGraph(graph){
         
         
 }
+
+
+var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;

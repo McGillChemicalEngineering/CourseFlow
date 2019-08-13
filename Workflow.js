@@ -1,3 +1,20 @@
+//The basic workflow class and extensions, which store each individual workflow (flowchart)
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
+
 
 class Workflow{
     constructor(container,project){
@@ -21,7 +38,10 @@ class Workflow{
         xml+=makeXML(this.name,"wfname");
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
-        for(var i=0;i<this.weeks.length;i++){
+        for(var i=0;i<this.columns.length;i++){
+            xml+=this.columns[i].toXML();
+        }
+        for(i=0;i<this.weeks.length;i++){
             xml+=this.weeks[i].toXML();
         }
         xml+=makeXML(this.usedWF.join(","),"usedwfARRAY");
@@ -42,7 +62,7 @@ class Workflow{
         this.id = getXMLVal(xmlData,"wfid");
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(var i=0;i<xmlweeks.length;i++){
-            if(i>0)this.weeks[0].insertBelow();
+            if(i>0)this.weeks[i-1].insertBelow();
             this.weeks[i].fromXML(xmlweeks[i]);
         }
         this.updateWeekIndices();
@@ -84,10 +104,18 @@ class Workflow{
         return null;
     }
     
-    setName(name){
+    setName(name,changeLabel=false){
+        //if active, we have to change the name tag label to this
+        if(this.project.workflows[this.project.activeIndex]==this&&changeLabel){
+            this.graph.labelChanged(this.titleNode,name);
+            //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
+            return;
+        }
+        //otherwise, we have to dig into the xml
+        else if(this.xmlData!=null&&changeLabel)this.xmlData.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=name;
         this.name=name;
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].firstElementChild.innerHTML=this.name;
+            this.buttons[i].firstElementChild.firstElementChild.innerHTML=this.name;
         }
     }
     
@@ -260,6 +288,8 @@ class Workflow{
                 nodeIndex+=direction;
             }
             weekIndex+=direction;
+            if(nodeIndex<0&&weekIndex>=0)nodeIndex=this.weeks[weekIndex].nodes.length-1;
+            else if(nodeIndex>0&&weekIndex<this.weeks.length)nodeIndex=0;
         }
         return null;
     }
@@ -303,9 +333,11 @@ class Workflow{
         }
         
         for(var i=0;i<this.columns.length;i++){
-            this.addNodebarItem(container,this.columns[i].text,'resources/data/'+this.columns[i].image+'24.png',makeDropFunction(this.columns[i].name,this));
+            this.addNodebarItem(container,this.columns[i].nodetext,'resources/data/'+this.columns[i].image+'24.png',makeDropFunction(this.columns[i].name,this));
         }
     }
+    
+    
     
     generateBracketBar(){}
     generateTagBar(){}
@@ -368,6 +400,67 @@ class Workflow{
             this.brackets.push(br);
         }
     }
+    
+    expandAllNodes(expand=true){
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                var node = this.weeks[i].nodes[j];
+                if(node.isDropped!=expand)node.toggleDropDown();
+            }
+        }
+    }
+    
+    //Purge the workflow from this one
+    purgeUsedWF(wf){
+        //if it's active, easy
+        if(this.project.workflows.indexOf(this)==this.project.activeIndex){
+            var checknodes=false;
+            while(this.usedWF.indexOf(wf.id)>=0){
+                this.usedWF.splice(this.usedWF.indexOf(wf.id),1);
+                checknodes=true;
+            }
+            if(checknodes){
+                for(var j=0;j<this.weeks.length;j++){
+                    for(var k=0;k<this.weeks[j].nodes.length;k++){
+                        var node = this.weeks[j].nodes[k];
+                        if(node.linkedWF==wf.id)node.linkedWF=null;
+                    }
+                }
+            }
+        }else{
+            //do it in the xmlvar 
+            if(this.xmlData==null)return;
+            var xmllinks = this.xmlData.getElementsByTagName("linkedwf");
+            for(var i=0;i<xmllinks.length;i++){
+                xmllinks[i].childNodes[0].nodeValue="";
+            }
+            var xmlused = this.xmlData.getElementsByTagName("usedwfARRAY");
+            for(i=0;i<xmlused.length;i++){
+                if(xmlused[i].childNodes.length==0)continue;
+                var usedArray = xmlused[i].childNodes[0].nodeValue.split(',');
+                while(usedArray.indexOf(wf.id)>=0){
+                    usedArray.splice(usedArray.indexOf(wf.id),1);
+                }
+                xmlused[i].childNodes[0].nodeValue = usedArray.join(',');
+            }
+            
+        }
+        
+    }
+    
+    //swap the two indices of the used workflows (used to rearrange the layout); since this could be called while the workflow is inactive we need to dig into the xml
+    swapUsedIndices(id1,id2){
+        if(this.project.workflows.indexOf(this)==this.project.activeIndex){
+            [this.usedWF[this.usedWF.indexOf(id1)],this.usedWF[this.usedWF.indexOf(id2)]]=[this.usedWF[this.usedWF.indexOf(id2)],this.usedWF[this.usedWF.indexOf(id1)]];
+        }else{
+            var xmlused = this.xmlData.getElementsByTagName("usedwfARRAY");
+            var usedWFArray = xmlused[0].childNodes[0].nodeValue.split(',');
+            [usedWFArray[usedWFArray.indexOf(id1)],usedWFArray[usedWFArray.indexOf(id2)]]=[usedWFArray[usedWFArray.indexOf(id2)],usedWFArray[usedWFArray.indexOf(id1)]];
+            xmlused[0].childNodes[0].nodeValue = usedWFArray.join(',');
+        }
+    }
+    
+    
 
     
 }

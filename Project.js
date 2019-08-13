@@ -1,3 +1,19 @@
+//Class for main project. Also controls most of what happens with regards to workflows, and as the top level object class includes a few logistical functions that didn't really fit as global.
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 class Project{
     constructor(container){
@@ -90,6 +106,15 @@ class Project{
             p.fileLoader.click();
         }
         
+        var printWF = document.getElementById("print");
+        printWF.onclick = function(){
+            p.printActiveWF();
+        }
+        
+        var expand = document.getElementById("expand");
+        var collapse = document.getElementById("collapse");
+        expand.onclick = function(){if(p.activeIndex!=null)p.workflows[p.activeIndex].expandAllNodes();}
+        collapse.onclick = function(){if(p.activeIndex!=null)p.workflows[p.activeIndex].expandAllNodes(false);}
 		
     }
     
@@ -97,7 +122,6 @@ class Project{
         this.toXML();
         var filename = this.name+'.xml';
         this.saveXML(this.xmlData,filename);
-        
     }
     
     saveXML(xml,filename){
@@ -120,6 +144,7 @@ class Project{
     }
     
     exportCurrent(){
+        if(this.activeIndex==null)return;
         this.workflows[this.activeIndex].toXML();
         var xml = makeXML((new XMLSerializer()).serializeToString(this.workflows[this.activeIndex].xmlData),"project");
         var filename = this.workflows[this.activeIndex].name+".xml";
@@ -136,6 +161,13 @@ class Project{
             this.addButton(this.getWFByID(wfcopy.usedWF[i]),wfcopy.buttons[0]);
         }
         
+    }
+    
+    printActiveWF(){
+        if(this.graph==null)return;
+        var scale = mxUtils.getScaleForPageCount(1, this.graph);
+        var preview = new mxPrintPreview(this.graph, scale);
+        preview.open();
     }
     
     setName(name){
@@ -240,6 +272,28 @@ class Project{
         if(wfc.buttons.length==0)this.addButton(wfc,this.layout);
     }
     
+    //Causes the workflow to delete itself and all its contents
+    deleteWF(wf){
+        for(var i=0;i<wf.usedWF.length;i++){
+            this.removeChild(wf,this.getWFByID(wf.usedWF[i]));
+        }
+        //Seek out all wf that use this one, remove it from usedWF and from any nodes that use it
+        for(i=0;i<this.workflows.length;i++){
+            var wfp = this.workflows[i];
+            wfp.purgeUsedWF(wf);
+        }
+        for(i=0;i<wf.buttons.length;i++){
+            this.removeButton(wf,wf.buttons[i]);
+        }
+        if(this.workflows.indexOf(wf)==this.activeIndex){
+            this.workflows[this.activeIndex].makeInactive();
+            this.activeIndex=null;
+        }else if(this.workflows.indexOf(wf)<this.activeIndex){
+            this.activeIndex--;
+        }
+        this.workflows.splice(this.workflows.indexOf(wf),1);
+    }
+    
     fillWFSelect(select){
         var opt = document.createElement('option');
         opt.text="Activity";
@@ -255,19 +309,94 @@ class Project{
         select.add(opt);
     }
     
-    
+    //moves the button up or down. If it's at the root level, this entails switching the workflow ordering and then switching the order of the buttons. If it's NOT at the root level, we have to switch it in usedWF of the parent, then switch the order of the buttons.
+    moveButton(button,wf,up){
+        var parent = button.parentElement;
+        var wf2;
+        var myindex = Array.prototype.indexOf.call(parent.childNodes,button);
+        if(up&&myindex>0&&parent.childNodes[myindex-1].className==button.className){
+            //move it up
+            wf2 = parent.childNodes[myindex-1].wf;
+            parent.insertBefore(parent.childNodes[myindex],parent.childNodes[myindex-1]);
+
+        }else if(!up&&myindex<parent.childNodes.length-1&&parent.childNodes[myindex+1].className==button.className){
+            //move it down
+            wf2 = parent.childNodes[myindex+1].wf;
+            parent.insertBefore(parent.childNodes[myindex+1],parent.childNodes[myindex]);
+        }
+        if(wf2!=null){
+            if(parent.className!=button.className){
+                [this.workflows[this.workflows.indexOf(wf)],this.workflows[this.workflows.indexOf(wf2)]] = [this.workflows[this.workflows.indexOf(wf2)],this.workflows[this.workflows.indexOf(wf)]];
+            }else{
+                var wfp = parent.wf;
+                wfp.swapUsedIndices(wf.id,wf2.id);
+                
+            }
+        }
+    }
     
     addButton(wf,container){
         var bdiv = document.createElement('div');
+        var bwrap = document.createElement('div');
         var b = document.createElement('button');
-        bdiv.className = "LayoutDiv";
+        bdiv.className = "layoutdiv";
+        bwrap.className = "layoutbuttonwrap";
         b.innerHTML=wf.name;
         b.className="Layout";
         var p = this;
         b.onclick=function(){
             p.changeActive(p.getWFIndex(wf));
         }
-        bdiv.appendChild(b);
+        bwrap.appendChild(b);
+        var edit = document.createElement('div');
+        edit.className = "editlayoutdiv";
+        var up = document.createElement('a');
+        up.className="layoutchange";
+        up.innerHTML="&#708";
+        up.href="#";
+        up.onclick=function(){
+            p.moveButton(bdiv,wf,true);
+        }
+        edit.appendChild(up);
+        var down = document.createElement('a');
+        down.className="layoutchange";
+        down.innerHTML="&#709";
+        down.href="#";
+        down.onclick=function(){
+            p.moveButton(bdiv,wf,false);
+        }
+        edit.appendChild(down);
+        bwrap.appendChild(edit);
+        var del = document.createElement('div');
+        del.className="deletelayoutdiv";
+        var nameIcon = document.createElement('img');
+        nameIcon.src="resources/images/edit16.png";
+        nameIcon.style.width='16px';
+        nameIcon.onclick=function(){
+            var tempfunc = b.onclick;
+            //create an input, on enter or exit make that the new name
+            b.innerHTML="<input type='text' value = '"+wf.name+"'placeholder='<type a new name here>' autofocus></input>";
+            b.onclick=null;
+            b.firstElementChild.onblur = function(){
+                b.onclick=tempfunc;
+                b.onblur=null;
+                if(b.firstElementChild.value=="")b.innerHTML=wf.name;
+                else wf.setName(b.firstElementChild.value,true);
+            }
+        }
+        del.appendChild(nameIcon);
+        var delicon = document.createElement('img');
+        delicon.src="resources/images/delrect16.png";
+        delicon.style.width='16px';
+        delicon.onclick=function(){
+            if(mxUtils.confirm("Delete this workflow? Warning: this will all contents (but not any workflows used by it)!")){
+                p.deleteWF(wf);
+            }
+        }
+        del.appendChild(delicon);
+        bwrap.appendChild(del);
+        bdiv.appendChild(bwrap);
+        bdiv.wf=wf;
         container.appendChild(bdiv);
         wf.buttons.push(bdiv);
         for(var i=0;i<wf.usedWF.length;i++){
@@ -657,8 +786,7 @@ class Project{
         
         initializeConnectionPointForGraph(graph);
         
-        //make the non-default connections through our own functions, so that we can keep track of what is linked to what
-        var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;
+        //make the non-default connections through our own functions, so that we can keep track of what is linked to what. The prototype is saved in mxConstants, so that we don't keep overwriting it.
         mxConnectionHandler.prototype.insertEdge = function(parent,id,value,source,target,style){
             var edge = insertEdgePrototype.apply(this,arguments);
             if(source.isNode && target.isNode){

@@ -1,3 +1,20 @@
+//The bar that is used to edit nodes
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
+
 class EditBar{
     constructor(container){
         var eb = this;
@@ -101,12 +118,10 @@ class EditBar{
         iconSelect.add(opt0);
         for(var i=0;i<list.length;i++){
             var opt = document.createElement('option');
-            opt.style = 'data-imagesrc="'+iconpath+list[i][1]+'24.png";';
             opt.text = list[i][0];
             opt.value = list[i][1];
             iconSelect.add(opt);
         }
-        //iconSelect.ddslick();
     }
     
     fillWFSelect(list){
@@ -122,5 +137,10 @@ class EditBar{
             this.linkedWF.add(opt);
         }
     }
+    
+    
+    
+    
+    
     
 }

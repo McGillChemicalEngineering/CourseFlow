@@ -1,6 +1,21 @@
 <!--
   A javascript program to plan and prepare classes.
 -->
+
+<!--   Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/> -->
 <!doctype html>
 <html>
 <head>
@@ -10,7 +25,8 @@
 
 	<title>Course Planner</title>
     <!-- Initialize jquery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>  
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<!-- Sets the basepath for the mxGraph library if not in same directory -->
 		<script type="text/javascript">
 			mxBasePath = 'resources/mxgraph-master/javascript/src';
@@ -57,7 +73,7 @@
                     <a id="save">Save Project</a>
                     <a id="open">Open Project</a>
                     <a id="export">Export Current Workflow</a>
-                    <a id="import">Import</a>
+                    <a id="import">Import a Workflow</a>
                 </div>
             </div>
             <div class="topdropwrapper">
@@ -67,7 +83,15 @@
                 </div>
             </div>
             <div class="topdropwrapper">
-                <div class=toplink>Help</div>
+                <button class="topdropbutton">View</button>
+                <div class="topdropdiv">
+                    <a id="expand">Expand All Nodes</a>
+                    <a id="collapse">Collapse All Nodes</a>
+                    <a id="print">Printer Friendly Version</a>
+                </div>
+            </div>
+            <div class="topdropwrapper">
+                <button class="topdropbutton">Help</button>
             </div>
             
         </div>
@@ -81,18 +105,17 @@
         </div>
     </div>
     <div class="nodebar" id="nbContainer">
-        <h3>Add Nodes:</h3>
     </div>
     <div class="nodebar" id="ebContainer">
         <h3>Edit Node:</h3>
         <div id="nameDiv">
             <h4>Title:</h4>
         </div>
-        <div style="display:inline-block;">
-            <div id="leftIconDiv">
+        <div style="display:inline-block;width:100%">
+            <div id="leftIconDiv" style="float:left;width:50%;">
                 <h4>Left Icon</h4>
                 <select id="leftIconSelect"></select>
-            </div><div id="rightIconDiv">
+            </div><div id="rightIconDiv" style="float:left;width:50%;">
                 <h4>Right Icon</h4>
                 <select id="rightIconSelect"></select>
             </div>

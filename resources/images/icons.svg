@@ -190,16 +190,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710677"
-     inkscape:cx="-490.04623"
-     inkscape:cy="744.86875"
+     inkscape:zoom="0.99999998"
+     inkscape:cx="-375.16109"
+     inkscape:cy="368.84354"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="1912"
-     inkscape:window-y="-8"
+     inkscape:window-width="1680"
+     inkscape:window-height="987"
+     inkscape:window-x="-8"
+     inkscape:window-y="18"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -1422,15 +1422,15 @@
        height="244"
        x="838"
        y="834.36218"
-       inkscape:export-xdpi="17.489878"
-       inkscape:export-ydpi="17.489878" />
+       inkscape:export-xdpi="5.8299594"
+       inkscape:export-ydpi="5.8299594" />
     <path
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:5.80000067;stroke-opacity:1"
        d="m 917.31663,881.10148 -33.75,33.74805 42.30469,42.30664 -43.30469,43.30473 33.75,33.748 43.30469,-43.30468 43.30468,43.30468 33.75,-33.748 -43.30468,-43.30473 42.30468,-42.30664 -33.75,-33.74805 -42.30468,42.30469 -42.30469,-42.30469 z"
        id="rect8171-5-2"
        inkscape:connector-curvature="0"
-       inkscape:export-xdpi="17.489878"
-       inkscape:export-ydpi="17.489878" />
+       inkscape:export-xdpi="5.8299594"
+       inkscape:export-ydpi="5.8299594" />
     <path
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#1976bc;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:5.80000067;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="path8229"
@@ -1445,5 +1445,40 @@
        d="m -480.83385,330.11183 a 67.882248,67.882248 0 0 1 -68.25311,67.46846 67.882248,67.882248 0 0 1 -67.50932,-68.21269 67.882248,67.882248 0 0 1 68.17225,-67.55016 67.882248,67.882248 0 0 1 67.59097,68.13178"
        inkscape:export-xdpi="14.81842"
        inkscape:export-ydpi="14.81842" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:12.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:5.80000067;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect8280"
+       width="181.01933"
+       height="181.01933"
+       x="-687.3078"
+       y="676.1814"
+       inkscape:export-xdpi="11.893456"
+       inkscape:export-ydpi="11.893456" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#1976bc;stroke-width:12.5;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m -659.24972,804.35473 105.01004,-122.94619 29.50711,25.20245 -105.01004,122.94619 -36.24784,12.89202 z"
+       id="rect8454-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="C:\Users\Jeremie\Dropbox\saltise\WorkflowMaker\resources\data\reflective-writing24.png"
+       inkscape:export-xdpi="11.893456"
+       inkscape:export-ydpi="11.893456" />
+    <path
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path8457-5"
+       d="m -629.23366,828.68628 -26.94445,10.62642 -7.9965,-6.47612 5.0731,-28.96684"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#1976bc;stroke-width:12.5;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="C:\Users\Jeremie\Dropbox\saltise\WorkflowMaker\resources\data\reflective-writing24.png"
+       inkscape:export-xdpi="11.893456"
+       inkscape:export-ydpi="11.893456" />
+    <path
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#1976bc;stroke-width:12.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -667.50882,851.54388 142.83557,0"
+       id="path8278"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="11.893456"
+       inkscape:export-ydpi="11.893456" />
   </g>
 </svg>

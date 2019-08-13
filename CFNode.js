@@ -1,3 +1,20 @@
+//The node and link classes, as well as the many extensions of each node. Each distinct node type is a separate extension of the base class, characterized by the ways in which it differs from default behaviours.
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
+
 class CFNode {
     constructor(graph,wf){
         this.vertex;
@@ -107,7 +124,9 @@ class CFNode {
             this.linkedWF = value;
             if(value!=null){
                 this.wf.addUsedWF(value);
-                this.wf.project.addChild(this.wf,this.wf.project.getWFByID(value));
+                var wfc = this.wf.project.getWFByID(value);
+                this.wf.project.addChild(this.wf,wfc);
+                this.setName(wfc.name);
             }
         }
         
@@ -311,6 +330,7 @@ class CFNode {
     autoLinkSameType(){
         var next = this.wf.findNextNodeOfSameType(this,1);
         var last = this.wf.findNextNodeOfSameType(this,-1);
+        
         this.autoLinkNodes(this,next);
         this.autoLinkNodes(last,this);
     }

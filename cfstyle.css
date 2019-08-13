@@ -1,3 +1,20 @@
+/*Style definitions*/
+
+/*    Copyright (C) 2019  SALTISE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>*/
+
 <style>
 
 h2{
@@ -43,16 +60,17 @@ button:hover{
     white-space: nowrap;
 
 }
-.LayoutDiv{
+.layoutdiv{
     position:relative;
     padding-bottom: 2px;
     padding-top: 2px;
 }
-.LayoutDiv button{
+
+.layoutdiv button{
     padding:4px;
 }
 
-.LayoutDiv div{
+.layoutdiv div:not(.editlayoutdiv):not(.deletelayoutdiv):not(.layoutbuttonwrap){
     left: 10%;
     width: 90%;
     
@@ -76,7 +94,6 @@ button:hover{
     width:160px;
     position: fixed;
     float: left;
-    overflow-x:hidden;
     overflow-y:auto;
     z-index: 2;
     top: 102px;
@@ -108,6 +125,17 @@ button:hover{
     transition: width 2s;
 
 }
+
+.nodebar h3{
+    margin-bottom:0px;
+}
+
+.nodebar h3::after{
+    content: "\A Drag and drop to add";
+    font-size: 10px;
+    color: grey;
+    white-space:pre;
+}
 .nodebar button{
     text-align: left;
     color: rgb(25,118,188);
@@ -136,6 +164,7 @@ button:hover{
     width: 100%;
     padding: 5px;
 }
+
 .commentDiv{
     padding: 4px;
     z-index: 3;
@@ -158,13 +187,13 @@ button:hover{
     width:100%;
 }
 
+
+
 /* A wrapper for each button in the menu */
 .topdropwrapper{
     display:inline-block;
     padding:0px;
 }
-
-
 
 /* A button at the top of the menu that will open the div below it */
 .topdropbutton{
@@ -179,7 +208,7 @@ button:hover{
     padding-right:20px;
 }
 
-/* A button at the top of the menu that will open the div below it */
+/* A tag at the top of the menu that does nothing*/
 .toplink{
     left:0;
     bottom:0;
@@ -192,11 +221,12 @@ button:hover{
 .topdropdiv{
     display:none;
     position:absolute;
+    border: 1px solid grey;
     border-top: 1px solid black;
     color: black;
     background:white;
     min-width:100px;
-    box-shadow: 0px 4px 4px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
 }
 
 .topdropdiv a{
@@ -223,6 +253,63 @@ button:hover{
     color: rgb(25,118,188);
 }
 
+.editLayoutWrapper{
+    display:inline-block;
+}
+
+/*Div that gets created next to a button in the layout on hover*/
+.editlayoutdiv{
+    left:100%;
+    width:auto;
+    display:none;
+    position:absolute;
+    min-width:12px;
+    padding:0px;
+    margin:0px;
+    color: black;
+}
+
+.deletelayoutdiv{
+    right:0px;
+    display:none;
+    position:absolute;
+    padding-top:4px;
+    padding-right:4px;
+    margin:0px;
+    color: black;
+}
+
+.layoutbuttonwrap{
+    
+}
+
+.layoutbuttonwrap:hover > .editlayoutdiv{
+    display:inline-block;
+}
+
+.layoutbuttonwrap:hover > .deletelayoutdiv{
+    display:inline-block;
+}
+
+.layoutchange{
+    text-decoration: none;
+    padding: 0px;
+    padding-left:4px;
+    padding-right:4px;
+    color:rgb(25,118,188);
+    font-size:16px;
+    display:table;
+    font-family:monospace;
+}
+.layoutchange:not(first-child){
+    margin-top:-1px;
+    
+}
+.layoutchange:hover{
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.15);
+}
+
+
 .bracketOverlayDiv{
     border-color: black;
     border-style: solid;
@@ -231,4 +318,5 @@ button:hover{
     z-index:2;
     position: absolute;
 }
+
 </style>
