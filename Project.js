@@ -534,6 +534,24 @@ class Project{
                     }else{
                         cell.node.changeWeek(weekChange,graph);
                     }
+                }else if(cells.length==1 && cells[0].isHead){
+                    //as above but with only the horizontal movement
+                    var cell = cells[0];
+                    var wf = cell.column.wf;
+                    var columns=wf.columns;
+                    //start from center of this cell
+                    newx=newx+cell.w()/2;
+                    //column index
+                    var colIndex=wf.columns.indexOf(cell.column);
+                    if(colIndex>0 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex-1].pos-newx)){
+                        //swap this column with that to the left
+                        wf.swapColumns(colIndex,colIndex-1);
+                    }
+                    if(colIndex<columns.length-1 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex+1].pos-newx)){
+                        //swap this column with that to the right
+                        wf.swapColumns(colIndex,colIndex+1);
+                    }
+                    
                 }
                 graph.ffL=false;
 
@@ -542,7 +560,6 @@ class Project{
         }
         
         //Alters the way the drawPreview function is handled on resize, so that the brackets can snap as they are resized. Also disables horizontal resizing.
-        var drawPreviewPrototype = mxVertexHandler.prototype.drawPreview;
         mxVertexHandler.prototype.drawPreview = function(){
             var cell = this.state.cell;
             if(this.selectionBorder.offsetx==null){this.selectionBorder.offsetx=this.bounds.x-cell.x();this.selectionBorder.offsety=this.bounds.y-cell.y();}
@@ -591,8 +608,10 @@ class Project{
         
         //Disable horizontal resize
         graph.resizeCell = function (cell, bounds, recurse){
+            console.log("resizeCell");
             if(cell.isNode) {
                 if(bounds.height<minCellHeight)bounds.height=minCellHeight;
+                console.log("isNode");
                 bounds.y=cell.y();
                 bounds.x=cell.x();
                 bounds.width=cell.w();

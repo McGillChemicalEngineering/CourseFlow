@@ -180,10 +180,11 @@ class CFNode {
     }
     
     resizeBy(dy){
+        
         if(this.isDropped&&this.textHeight+dy>0)this.textHeight=this.textHeight+dy;
         this.resizeChild(this.textnode,dy);
         this.graph.moveCells([this.dropNode],0,dy);
-        this.week.resizeWeek(dy);
+        this.week.resizeWeek(dy,0);
         var thisIndex = this.week.nodes.indexOf(this);
         if(thisIndex<this.week.nodes.length-1)this.week.pushNodes(thisIndex+1);
         for(var i=0;i<this.brackets.length;i++){this.brackets[i].updateVertical();}

@@ -156,6 +156,8 @@ class Week {
     }
     
     resizeWeek(dy,origin){
+        console.log("resizeWeek");
+        console.log(origin);
         var rect;
         if(dy*origin>0) rect = new mxRectangle(this.box.x(),this.box.y()-dy,this.box.w(),this.box.h()+dy);
         else rect = new mxRectangle(this.box.x(),this.box.y(),this.box.w(),this.box.h()+dy);
