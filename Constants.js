@@ -117,5 +117,6 @@ function initializeConnectionPointForGraph(graph){
         
 }
 
-
+// These should be defined only once, otherwise they end up iterating through themselves multiple times.
 var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;
+var drawPreviewPrototype = mxVertexHandler.prototype.drawPreview;

@@ -461,6 +461,19 @@ class Workflow{
     }
     
     
+    swapColumns(in1,in2){
+        [this.columns[in1].pos,this.columns[in2].pos]=[this.columns[in2].pos,this.columns[in1].pos];
+        [this.columns[in1],this.columns[in2]]=[this.columns[in2],this.columns[in1]];
+        this.columns[in1].updatePosition();
+        this.columns[in2].updatePosition();
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                this.weeks[i].nodes[j].updateColumn();
+            }
+        }
+    }
+    
+    
 
     
 }
