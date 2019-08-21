@@ -24,7 +24,7 @@ class EditBar{
         document.getElementById("nameDiv").appendChild(quillDiv1);
         var toolbarOptions = null;
         var quill1 = new Quill(quillDiv1,{
-            theme: 'snow',
+            theme: 'bubble',
             modules: {
                 toolbar: toolbarOptions
             }
@@ -40,7 +40,7 @@ class EditBar{
         var quillDiv2 = document.createElement('div');
         quillDiv2.style.height='200px';
         document.getElementById("descriptionDiv").appendChild(quillDiv2);
-        toolbarOptions = [['bold','italic','underline'],[{'list':'bullet'},{'list':'ordered'}]];
+        toolbarOptions = [['bold','italic','underline'],[{'list':'bullet'},{'list':'ordered'}],['link']];
         var quill2 = new Quill(quillDiv2,{
             theme: 'snow',
             modules: {
@@ -49,7 +49,7 @@ class EditBar{
         });
         quill2.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
-            if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML);
+            if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML.replace("<br>","\n"));
           }
         });
         this.textField=quillDiv2.childNodes[0];
