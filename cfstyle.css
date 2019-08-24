@@ -36,8 +36,6 @@ body, html{
 }
 
 .Layout{
-    white-space: nowrap;
-    overflow: hidden;
     color: black;
 }
 
@@ -56,8 +54,6 @@ button:hover{
 }
 
 .activeLayout{
-    overflow: hidden;
-    white-space: nowrap;
 
 }
 .layoutdiv{
@@ -68,6 +64,12 @@ button:hover{
 
 .layoutdiv button{
     padding:4px;
+    min-height:40px
+}
+
+.layoutdiv button input{
+    width:100%;
+    box-sizing:border-box;
 }
 
 .layoutdiv div:not(.editlayoutdiv):not(.deletelayoutdiv):not(.layoutbuttonwrap){

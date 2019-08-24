@@ -33,7 +33,8 @@ function mapWeekVertices(value,index,array){
 int = function(x){return parseInt(x,10);}
 //creates an xml line for the given name and value
 makeXML = function(value,name){
-    if(value==null)value="undefined";
+    if(value==null)value="undefined"
+    if(name.indexOf("HTML")>=0)value = cleanHTML(value);
     return "<"+name+">"+value+"</"+name+">\n";
 }
 getXMLVal = function(xml,name){
@@ -43,10 +44,28 @@ getXMLVal = function(xml,name){
     if(tags==null)return null;
     if(tags.childNodes.length==0)if(isARRAY)return [];else return null;
     var value = tags.childNodes[0].nodeValue;
-    if(isHTML)value = tags.innerHTML;
+    if(isHTML)value = makeHTML(tags.innerHTML);
     if(value == "undefined"){return null;}
     else if(isARRAY)return value.split(",");
     else return value;
+}
+cleanHTML = function(text){
+    console.log(text);
+    text = text.replace(/&/g,"&amp;");
+    text = text.replace(/'/g,"&apos;");
+    text = text.replace(/"/g,"&quot;");
+    text = text.replace(/</g,"&lt;");
+    text = text.replace(/>/g,"&gt;");
+    console.log(text);
+    return text;
+}
+makeHTML = function(text){
+    text = text.replace(/&apos;/g,"\'");
+    text = text.replace(/&quot;/g,"\"");
+    text = text.replace(/&lt;/g,"<");
+    text = text.replace(/&gt;/g,">");
+    text = text.replace(/&amp;/g,"&");
+    return text;
 }
 
 //constants declaration

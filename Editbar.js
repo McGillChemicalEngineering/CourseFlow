@@ -49,7 +49,7 @@ class EditBar{
         });
         quill2.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
-            if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML.replace("<br>","\n"));
+            if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML);
           }
         });
         this.textField=quillDiv2.childNodes[0];

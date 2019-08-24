@@ -375,14 +375,19 @@ class Project{
         nameIcon.onclick=function(){
             var tempfunc = b.onclick;
             //create an input, on enter or exit make that the new name
-            b.innerHTML="<input type='text' value = '"+wf.name+"'placeholder='<type a new name here>' autofocus></input>";
+            b.innerHTML="<input type='text' value = '"+wf.name+"'placeholder='<type a new name here>'></input>";
+            b.firstElementChild.focus();
+            b.firstElementChild.select();
             b.onclick=null;
-            b.firstElementChild.onblur = function(){
+            p.container.onclick=function(){
+                if(b.firstElementChild!=null)b.firstElementChild.blur();
+                p.container.onclick=null;
+            };
+            b.firstElementChild.addEventListener("focusout",function(){
                 b.onclick=tempfunc;
-                b.onblur=null;
                 if(b.firstElementChild.value=="")b.innerHTML=wf.name;
                 else wf.setName(b.firstElementChild.value,true);
-            }
+            });
         }
         del.appendChild(nameIcon);
         var delicon = document.createElement('img');
@@ -608,10 +613,8 @@ class Project{
         
         //Disable horizontal resize
         graph.resizeCell = function (cell, bounds, recurse){
-            console.log("resizeCell");
             if(cell.isNode) {
                 if(bounds.height<minCellHeight)bounds.height=minCellHeight;
-                console.log("isNode");
                 bounds.y=cell.y();
                 bounds.x=cell.x();
                 bounds.width=cell.w();
@@ -659,6 +662,7 @@ class Project{
            }else if (cell!=null&&cell.isComment){
                cell.comment.show();
            }
+            container.focus();
         });
         
         graph.addMouseListener(

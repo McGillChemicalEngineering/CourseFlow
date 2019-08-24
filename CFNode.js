@@ -109,6 +109,7 @@ class CFNode {
     }
     
     setText(text){
+        console.log(text);
         this.text=text;
         if(text!=null)this.graph.cellLabelChanged(this.textnode,text);
         
