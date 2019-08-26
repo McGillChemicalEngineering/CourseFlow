@@ -106,6 +106,7 @@ class Workflow{
     
     setName(name,changeLabel=false){
         //if active, we have to change the name tag label to this
+        name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
         if(this.project.workflows[this.project.activeIndex]==this&&changeLabel){
             this.graph.labelChanged(this.titleNode,name);
             //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
@@ -122,7 +123,7 @@ class Workflow{
     makeActive(graph){
         
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].firstElementChild.style.color="#1976bc";
+            this.buttons[i].firstElementChild.firstElementChild.classList.add("active");
         }
         
         
@@ -168,7 +169,7 @@ class Workflow{
     makeInactive(){
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].firstElementChild.style.color="black";
+            this.buttons[i].firstElementChild.firstElementChild.classList.remove("active");
         }
         nbContainer.style.display="none";
         this.toXML();
@@ -303,6 +304,7 @@ class Workflow{
     
     generateNodeBar(container){ 
         var header = document.createElement('h3');
+        header.className="nodebarh3";
         header.innerHTML="Nodes:";
         container.appendChild(header);
         
@@ -520,6 +522,7 @@ class Activityflow extends Workflow{
     generateBracketBar(container){ 
         
         var header = document.createElement('h3');
+        header.className="nodebarh3";
         header.innerHTML="Strategies:";
         container.appendChild(header);
         
@@ -561,8 +564,8 @@ class Programflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"CO","Course","instruct"));
-        columns.push(new Column(graph,this,"SA","Assessments","evaluate"));
+        columns.push(new Column(graph,this,"CO","Course","instruct","Course"));
+        columns.push(new Column(graph,this,"SA","Assessments","assessment","Assessment"));
     }
     
     createBaseWeek(){

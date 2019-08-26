@@ -342,7 +342,9 @@ class Project{
         bdiv.className = "layoutdiv";
         bwrap.className = "layoutbuttonwrap";
         b.innerHTML=wf.name;
-        b.className="Layout";
+        if(wf instanceof Programflow)b.className="layoutprogram";
+        else if(wf instanceof Courseflow)b.className="layoutcourse";
+        else b.className="layoutactivity";
         var p = this;
         b.onclick=function(){
             p.changeActive(p.getWFIndex(wf));

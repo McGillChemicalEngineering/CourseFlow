@@ -104,6 +104,7 @@ class CFNode {
     
     
     setName(name){
+        name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
         this.name=name;
         if(name!=null)this.graph.cellLabelChanged(this.namenode,name);
     }

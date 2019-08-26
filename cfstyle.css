@@ -35,9 +35,6 @@ body, html{
     overflow:auto;
 }
 
-.Layout{
-    color: black;
-}
 
 button{
     text-align: center;
@@ -53,14 +50,33 @@ button:hover{
     box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
 }
 
-.activeLayout{
-
-}
 .layoutdiv{
     position:relative;
     padding-bottom: 2px;
     padding-top: 2px;
 }
+
+.layoutactivity{
+    color: black;
+}
+
+.layoutcourse{
+    background: rgb(216, 229, 240);
+    color: black;
+}
+
+.layoutprogram{
+    background: rgb(177, 204, 224);
+    color: black;
+}
+
+.layoutdiv .active{
+    background: rgb(25,118,188);
+    color: white;
+}
+
+
+
 
 .layoutdiv button{
     padding:4px;
@@ -128,11 +144,11 @@ button:hover{
 
 }
 
-.nodebar h3{
+.nodebarh3{
     margin-bottom:0px;
 }
 
-.nodebar h3::after{
+.nodebarh3::after{
     content: "\A Drag and drop to add";
     font-size: 10px;
     color: grey;
