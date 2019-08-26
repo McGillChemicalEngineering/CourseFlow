@@ -156,7 +156,8 @@ class Project{
         wf.toXML();
         var xml = this.workflows[this.activeIndex].xmlData;
         xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue+" (Copy)";
-        var wfcopy = this.addWorkflowFromXML(xml);
+        xml.getElementsByTagName("wfid")[0].childNodes[0].nodeValue=this.genID;
+        var wfcopy = this.addWorkflowFromXML(xml,false);
         for(var i=0;i<wfcopy.usedWF.length;i++){
             this.addButton(this.getWFByID(wfcopy.usedWF[i]),wfcopy.buttons[0]);
         }
@@ -274,7 +275,7 @@ class Project{
     
     //Causes the workflow to delete itself and all its contents
     deleteWF(wf){
-        for(var i=0;i<wf.usedWF.length;i++){
+        for(var i=wf.usedWF.length-1;i>=0;i--){
             this.removeChild(wf,this.getWFByID(wf.usedWF[i]));
         }
         //Seek out all wf that use this one, remove it from usedWF and from any nodes that use it
@@ -827,7 +828,7 @@ class Project{
         
     }
     //Since this assigns a bunch of IDs without actually increasing idNum, it should only be called when an xml file is about to be imported into the project and IDs generated.
-    assignNewIDsToXML(xml){
+    assignNewIDsToXML(xml,doWorkflows=true){
         var xmlString = xml;//(new XMLSerializer()).serializeToString(xml);
         var id = this.idNum+1;
         //Nodes
@@ -851,7 +852,7 @@ class Project{
             id++;
         }
         //Workflows
-        while(xmlString.indexOf("<wfid>")>=0){
+        if(doWorkflows)while(xmlString.indexOf("<wfid>")>=0){
             var startIndex=xmlString.indexOf("<wfid>");
             var endIndex = xmlString.indexOf("</wfid>");
             var replaceId=xmlString.substring(startIndex+6,endIndex);

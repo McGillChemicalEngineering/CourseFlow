@@ -106,17 +106,19 @@ class Workflow{
     
     setName(name,changeLabel=false){
         //if active, we have to change the name tag label to this
-        name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
-        if(this.project.workflows[this.project.activeIndex]==this&&changeLabel){
+        if(name!=null && name!=""){
+            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            if(this.project.workflows[this.project.activeIndex]==this&&changeLabel){
             this.graph.labelChanged(this.titleNode,name);
             //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
             return;
-        }
-        //otherwise, we have to dig into the xml
-        else if(this.xmlData!=null&&changeLabel)this.xmlData.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=name;
-        this.name=name;
-        for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].firstElementChild.firstElementChild.innerHTML=this.name;
+            }
+            //otherwise, we have to dig into the xml
+            else if(this.xmlData!=null&&changeLabel)this.xmlData.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=name;
+            this.name=name;
+            for(var i=0;i<this.buttons.length;i++){
+                this.buttons[i].firstElementChild.firstElementChild.innerHTML=this.name;
+            }
         }
     }
     
