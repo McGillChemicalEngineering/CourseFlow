@@ -50,13 +50,11 @@ getXMLVal = function(xml,name){
     else return value;
 }
 cleanHTML = function(text){
-    console.log(text);
     text = text.replace(/&/g,"&amp;");
     text = text.replace(/'/g,"&apos;");
     text = text.replace(/"/g,"&quot;");
     text = text.replace(/</g,"&lt;");
     text = text.replace(/>/g,"&gt;");
-    console.log(text);
     return text;
 }
 makeHTML = function(text){

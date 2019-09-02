@@ -199,6 +199,7 @@ class Project{
         
     }
     
+    //Import a project from xml. isAppend will create new workflows, otherwise we clear the project first.
     fromXML(xmlData,isAppend){
         var parser = new DOMParser();
         if(isAppend)xmlData = this.assignNewIDsToXML(xmlData);
@@ -249,6 +250,8 @@ class Project{
     
     
     addChild(wfp,wfc){
+        console.log(wfp.name);
+        console.log(wfc.name);
         //If child is at the root level, remove its button
         if(wfc.buttons!=null&&wfc.buttons.length>0&&wfc.buttons[0].parentElement.id=="layout"){
             this.removeButton(wfc,wfc.buttons[0]);
@@ -260,15 +263,16 @@ class Project{
     }
     
     removeChild(wfp,wfc){
-        //Remove the button from all instances of the parent
+        //Remove the button from all instances of the parent, but only once (we might use the same activity twice in one course)
         for(var i=0;i<wfp.buttons.length;i++){
             for(var j=0;j<wfc.buttons.length;j++){
                 if(wfc.buttons[j].parentElement == wfp.buttons[i]){
                     this.removeButton(wfc,wfc.buttons[j]);
+                    break;
                 }
             }
         }
-        wfp.removeUsedWF(wfc.id);
+        //wfp.removeUsedWF(wfc.id);
         //if no instances still exist, move it back into the root
         if(wfc.buttons.length==0)this.addButton(wfc,this.layout);
     }
