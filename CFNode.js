@@ -429,7 +429,7 @@ class CONode extends CFNode {
 
 class ASNode extends CFNode {
     setColumn(col){
-        if(this.column!=col&&(col=="FA"||col=="SA")){
+        if(this.column!=col&&(col=="FA"||col=="SA"||col=="HW")){
             this.column=col;
             this.updateColumn();
         }
@@ -439,6 +439,7 @@ class ASNode extends CFNode {
         var colstyle="#FFFFFF";
         if(this.column=="FA")colstyle='#C4DAFF';
         else if(this.column=="SA")colstyle='#FFE5E5';
+        else if(this.column=="HW")colstyle='#FFFFFF';
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     

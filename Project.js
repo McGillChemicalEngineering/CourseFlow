@@ -532,8 +532,8 @@ class Project{
                     newy=newy+cell.h()/2;
                     //Start by checking whether we need to move in the x direction
                     var colIndex=wf.getColIndex(cell.node.column);
-                    if(colIndex>0 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex-1].pos-newx)){cell.node.setColumn(columns[colIndex-1].name,graph);}
-                    if(colIndex<columns.length-1 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex+1].pos-newx)){cell.node.setColumn(columns[colIndex+1].name,graph);}
+                    var newColName = wf.findNearestColumn(newx);
+                    if(newColName!=cell.node.column)cell.node.setColumn(newColName);
                     //Check the y
                     //First we check whether we are inside a new week; if we are then it hardly matters where we are relative to the nodes within the old week.
                     var node = cell.node;

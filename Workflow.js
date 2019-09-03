@@ -272,12 +272,27 @@ class Workflow{
         var wf = this;
         if(column=="LO") node = new LONode(graph,wf);
         else if(column=="AC") node = new ACNode(graph,wf);
-        else if(column=="SA"||column=="FA") node = new ASNode(graph,wf);
+        else if(column=="SA"||column=="FA"||column=="HW") node = new ASNode(graph,wf);
         else if (column=="CO") node = new CONode(graph,wf);
         else if(column=="OOC"||column=="ICI"||column=="ICS")node = new WFNode(graph,wf);
         else node = new CFNode(graph,wf);
         return node;
         
+    }
+    
+    findNearestColumn(x){
+        var dist = 99990;
+        var tdist = 0;
+        var name = null;
+        for(var i=0;i<this.columns.length;i++){
+            tdist = Math.abs(this.columns[i].pos-x);
+            if(tdist<dist){
+                dist=tdist;
+                name = this.columns[i].name;
+            }
+        }
+        if(name!=null)return name;
+        else return this.columns[0].name;
     }
     
     findNextNodeOfSameType(node,direction,sameType=true){
@@ -487,7 +502,7 @@ class Courseflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        //columns.push(new Column(graph,this,"LO","Learning Objectives","reading"));
+        columns.push(new Column(graph,this,"HW","Homework","reading","Homework"));
         columns.push(new Column(graph,this,"AC","Activities","instruct","Activity"));
         columns.push(new Column(graph,this,"FA","Artifacts","artifact","Artifact"));
         columns.push(new Column(graph,this,"SA","Assessments","assessment","Assessment"));
