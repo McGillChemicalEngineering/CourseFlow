@@ -77,7 +77,7 @@ button:hover{
     color: white;
 }
 
-.layoutdiv:not(.haschildren) > .expanddiv{
+.layoutdiv:not(.haschildren) > .expanddiv,.layoutdiv:not(.haschildren) > .hiddenchildrendiv{
     display:none;
 }
 
@@ -104,16 +104,26 @@ button:hover{
 }
 
 
-.layoutdiv.expanded{
-    
-}
 
-.layoutdiv.expanded > .layoutdiv,.layoutdiv.active > .layoutdiv,.layoutdiv.activechild > .layoutdiv{
+/*to automatically show children of the active workflow, add .layoutdiv.active > .layoutdiv, to these options*/
+.layoutdiv.expanded > .layoutdiv,.layoutdiv.activechild > .layoutdiv{
     display:inline-block;
 }
 
-.layoutdiv.active{
+
+/*use this to automatically show the button(s) for the active workflow*/
+/*.layoutdiv.active{
     display:inline-block;
+}*/
+
+.hiddenchildrendiv{
+    font-size: 10px;
+    color: grey;
+    white-space:pre;
+}
+
+.layoutdiv.expanded > .hiddenchildrendiv{
+    display:none;
 }
 
 

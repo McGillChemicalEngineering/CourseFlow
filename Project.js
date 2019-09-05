@@ -323,6 +323,36 @@ class Project{
         }
     }
     
+    updateHiddenChildren(wfp,button){
+        var des={};
+        des = this.getNumberOfDescendants(wfp,des);
+        console.log(des);
+        var text = "... ";
+        for (var propt in des){
+            var s = propt;
+            if(des[propt]!=1){
+                s=s.replace(/y$/,"ie");
+                s+="s";
+            }
+            text+=des[propt]+" ";
+            text+=s+", ";
+        }
+        text = text.replace(/, $/,"");
+        button.hiddenchildren.innerHTML = text;
+    }
+    
+    getNumberOfDescendants(wfp,des){
+        var usedWF = wfp.usedWF;
+        for(var i=0;i<usedWF.length;i++){
+            var wfc = this.getWFByID(usedWF[i]);
+            if(des[wfc.getType()]==null)des[wfc.getType()]=1;
+            else des[wfc.getType()]=des[wfc.getType()]+1;
+            des = this.getNumberOfDescendants(wfc,des);
+            
+        }
+        return des;
+    }
+    
     removeChild(wfp,wfc){
         //Remove the button from all instances of the parent, but only once (we might use the same activity twice in one course)
         for(var i=0;i<wfp.buttons.length;i++){
@@ -402,6 +432,7 @@ class Project{
     }
     
     addButton(wf,container,recurse=true){
+        if(container.wf!=null)this.updateHiddenChildren(container.wf,container);
         var bdiv = document.createElement('div');
         var bwrap = document.createElement('div');
         var b = document.createElement('button');
@@ -475,12 +506,18 @@ class Project{
         expandIcon.src="resources/images/plus16.png";
         expandIcon.style.width='16px';
         expandIcon.onclick=function(){
-            if(bdiv.classList.contains("expanded")){bdiv.classList.remove("expanded");expandIcon.src="resources/images/plus16.png";}
-            else {bdiv.classList.add("expanded");expandIcon.src="resources/images/minus16.png";}
+            if(bdiv.classList.contains("expanded")){p.collapseButton(bdiv);}
+            else {p.expandButton(bdiv);}
         }
         expandDiv.appendChild(expandIcon);
         bdiv.appendChild(expandDiv);
+        bdiv.expandIcon = expandIcon;
         
+        var hiddenchildren = document.createElement('div');
+        hiddenchildren.className = "hiddenchildrendiv";
+        hiddenchildren.onclick = expandIcon.onclick;
+        bdiv.appendChild(hiddenchildren);
+        bdiv.hiddenchildren=hiddenchildren;
         if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
         bdiv.wf=wf;
         container.appendChild(bdiv);
@@ -490,7 +527,17 @@ class Project{
         }
     }
     
+    collapseButton(button){
+        button.classList.remove("expanded");
+        button.expandIcon.src="resources/images/plus16.png";
+    }
+    expandButton(button){
+        button.classList.add("expanded");
+        button.expandIcon.src="resources/images/minus16.png";
+    }
+    
     removeButton(wfp,button){
+        if(button.parentElement.wf!=null)this.updateHiddenChildren(button.parentElement.wf,button.parentElement);
         for(var i=0;i<wfp.usedWF.length;i++){
             var wfc = this.getWFByID(wfp.usedWF[i]);
             for(var j=0;j<wfc.buttons.length;j++){

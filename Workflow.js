@@ -82,6 +82,8 @@ class Workflow{
         }
     }
     
+    getType(){return "other"};
+    
     typeToXML(){return "";}
     
     makeConnectionsFromIds(){
@@ -127,7 +129,8 @@ class Workflow{
         
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].classList.add("active");
-            this.activateParents(this.buttons[i],true);
+            //uncommenting this line will allow all parents of the activated workflow to automatically expand
+            //this.activateParents(this.buttons[i],true);
         }
         
         
@@ -174,7 +177,8 @@ class Workflow{
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].classList.remove("active");
-            this.activateParents(this.buttons[i],false);
+            //uncommenting this will revert automatic expansion of parents when a workflow is activated
+            //this.activateParents(this.buttons[i],false);
         }
         nbContainer.style.display="none";
         this.toXML();
@@ -521,6 +525,8 @@ class Courseflow extends Workflow{
     
     getDefaultName(){return "New Course"};
     
+    getType(){return "course"};
+    
     typeToXML(){return makeXML("course","wftype");}
 }
 
@@ -542,6 +548,8 @@ class Activityflow extends Workflow{
     }
     
     updateWeekIndices(){};
+    
+    getType(){return "activity"};
     
     typeToXML(){return makeXML("activity","wftype");}
     
@@ -604,6 +612,8 @@ class Programflow extends Workflow{
     }
     
     updateWeekIndices(){};
+    
+    getType(){return "program"};
     
     typeToXML(){return makeXML("program","wftype");}
     
