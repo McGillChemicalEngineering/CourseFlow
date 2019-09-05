@@ -46,6 +46,8 @@ class WFComment{
         this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',this.x,this.y,defaultCommentSize,defaultCommentSize,defaultCommentStyle);
         this.vertex.isComment=true;
         this.vertex.comment=this;
+        this.vertex.cellOverlays=[];
+        this.addDelOverlay();
     }
     
     show(){
@@ -87,6 +89,34 @@ class WFComment{
         document.addEventListener('click',outsideClickListener);
         
         
+    }
+    
+    //Add the overlay to delete the node
+    addDelOverlay(){
+        var n = this;
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 12, 12), 'Delete this comment');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.y = pt.y-n.vertex.h()/2;
+            bounds.x = pt.x-bounds.width+n.vertex.w()/2;
+            return bounds;
+        }
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            if(mxUtils.confirm("Delete this comment?")){
+                graph.clearSelection();
+                n.deleteSelf();
+            }
+        });
+        this.vertex.cellOverlays.push(overlay);
+        //n.graph.addCellOverlay(n.vertex, overlay);
+    }
+    
+    deleteSelf(){
+        this.wf.comments.splice(this.wf.comments.indexOf(this),1);
+        this.graph.removeCells([this.vertex]);
     }
     
 }

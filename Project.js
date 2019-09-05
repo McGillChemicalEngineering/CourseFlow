@@ -25,10 +25,44 @@ class Project{
         this.sidenav = document.getElementById("sidenav");
         this.layout = document.getElementById("layout");
         this.newWFDiv = document.getElementById("newWFDiv");
+        this.nameDiv = document.getElementById("prname")
         var p = this;
         this.idNum=0;
         this.loadAppend=false;
         this.name = "New Project";
+        
+        //Add the ability to edit the name of the project
+        var nameIcon = document.createElement('img');
+        nameIcon.src="resources/images/edit16.png";
+        nameIcon.style.width='16px';
+        var nameDiv = this.nameDiv;
+        nameDiv.parentElement.onclick=function(){
+            var tempfunc = nameDiv.onclick;
+            //create an input, on enter or exit make that the new name
+            nameDiv.innerHTML="<input type='text' class = 'fixedwidthinput' value = '"+p.name+"'placeholder='<type a new name here>'></input>";
+            nameDiv.firstElementChild.focus();
+            nameDiv.firstElementChild.select();
+            nameDiv.onclick=null;
+            container.onclick=function(){
+                if(nameDiv.firstElementChild!=null)nameDiv.firstElementChild.blur();
+                container.onclick=null;
+            };
+            nameDiv.firstElementChild.addEventListener("focusout",function(){
+                nameDiv.onclick=tempfunc;
+                console.log("focusout");
+                if(nameDiv.firstElementChild.value=="")nameDiv.innerHTML=p.name;
+                else p.setName(nameDiv.firstElementChild.value);
+            });
+        }
+        var editNameDiv = document.createElement('div');
+        editNameDiv.className="deletelayoutdiv";
+        editNameDiv.appendChild(nameIcon);
+        editNameDiv.style.display="inline-block";
+        editNameDiv.style.top="0px";
+        nameDiv.parentElement.style.position="relative";
+        nameDiv.parentElement.appendChild(editNameDiv);
+        
+        
         
         var newWFSelect = document.createElement('select');
         this.fillWFSelect(newWFSelect);
@@ -100,7 +134,6 @@ class Project{
         }
         
         var importWF = document.getElementById('import');
-        
         importWF.onclick = function(){
             p.loadAppend=true;
             p.fileLoader.click();
@@ -145,10 +178,32 @@ class Project{
     
     exportCurrent(){
         if(this.activeIndex==null)return;
-        this.workflows[this.activeIndex].toXML();
-        var xml = makeXML((new XMLSerializer()).serializeToString(this.workflows[this.activeIndex].xmlData),"project");
-        var filename = this.workflows[this.activeIndex].name+".xml";
+        var serializer = new XMLSerializer();
+        var wf = this.workflows[this.activeIndex];
+        var usedWF = this.getDependencies(wf);
+        var exported=[];
+        var xml = "";
+        wf.toXML();
+        xml+=makeXML(wf.name,"prname");
+        xml+=makeXML(this.idNum,"idnum");
+        xml+=serializer.serializeToString(wf.xmlData);
+        for(var i=0;i<usedWF.length;i++){
+            if(exported.indexOf(usedWF[i])>=0)continue;
+            exported.push(usedWF[i]);
+            if(this.getWFByID(usedWF[i]).xmlData==null)this.getWFByID(usedWF[i]).toXML();
+            xml+=serializer.serializeToString(this.getWFByID(usedWF[i]).xmlData);
+        }
+        xml = makeXML(xml,"project");
+        var filename = wf.name+".xml";
         this.saveXML(xml,filename);
+    }
+    
+    getDependencies(wf){
+        var array = wf.usedWF;
+        for(var i=0;i<wf.usedWF.length;i++){
+            array = array.concat(this.getDependencies(this.getWFByID(wf.usedWF[i])));
+        }
+        return array;
     }
     
     duplicateActiveWF(){
@@ -172,7 +227,9 @@ class Project{
     }
     
     setName(name){
+        name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
         this.name=name;
+        this.nameDiv.innerHTML=name;
     }
     
     
@@ -217,7 +274,8 @@ class Project{
         for(i=startWF;i<this.workflows.length;i++){
             var wf = this.workflows[i];
             for(var j=0;j<wf.usedWF.length;j++){
-                this.addChild(wf,this.getWFByID(wf.usedWF[j]));
+                console.log(wf.usedWF);
+                this.addChild(wf,this.getWFByID(wf.usedWF[j]),false);
             }
         }
         this.xmlData = xmlData;
@@ -249,7 +307,7 @@ class Project{
     
     
     
-    addChild(wfp,wfc){
+    addChild(wfp,wfc,recurse=true){
         console.log(wfp.name);
         console.log(wfc.name);
         //If child is at the root level, remove its button
@@ -257,8 +315,11 @@ class Project{
             this.removeButton(wfc,wfc.buttons[0]);
         }
         //Add it to the parent at all locations in the tree
+        console.log(wfp.buttons);
+        console.log(wfc.buttons);
         for(var i=0;i<wfp.buttons.length;i++){
-            this.addButton(wfc,wfp.buttons[i]);
+            console.log("adding button for "+wfc.name);
+            this.addButton(wfc,wfp.buttons[i],recurse);
         }
     }
     
@@ -340,7 +401,7 @@ class Project{
         }
     }
     
-    addButton(wf,container){
+    addButton(wf,container,recurse=true){
         var bdiv = document.createElement('div');
         var bwrap = document.createElement('div');
         var b = document.createElement('button');
@@ -408,10 +469,23 @@ class Project{
         del.appendChild(delicon);
         bwrap.appendChild(del);
         bdiv.appendChild(bwrap);
+        var expandDiv = document.createElement('div');
+        expandDiv.className="expanddiv";
+        var expandIcon = document.createElement('img');
+        expandIcon.src="resources/images/plus16.png";
+        expandIcon.style.width='16px';
+        expandIcon.onclick=function(){
+            if(bdiv.classList.contains("expanded")){bdiv.classList.remove("expanded");expandIcon.src="resources/images/plus16.png";}
+            else {bdiv.classList.add("expanded");expandIcon.src="resources/images/minus16.png";}
+        }
+        expandDiv.appendChild(expandIcon);
+        bdiv.appendChild(expandDiv);
+        
+        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
         bdiv.wf=wf;
         container.appendChild(bdiv);
         wf.buttons.push(bdiv);
-        for(var i=0;i<wf.usedWF.length;i++){
+        if(recurse)for(var i=0;i<wf.usedWF.length;i++){
             this.addButton(this.getWFByID(wf.usedWF[i]),bdiv);
         }
     }
@@ -426,8 +500,11 @@ class Project{
                 }
             }
         }
+        
+        if(button.parentElement.classList.contains("layoutdiv")&&button.parentElement.wf.usedWF.length==0){button.parentElement.classList.remove("haschildren");button.parentElement.classList.remove("expanded");}
         wfp.buttons.splice(wfp.buttons.indexOf(button),1);
         button.parentElement.removeChild(button);
+        
     }
     
     getWFIndex(wf){
@@ -451,7 +528,7 @@ class Project{
     initializeGraph(container){
         // Creates the graph inside the given container
         var graph = new mxGraph(container);
-        
+        var p = this;
 		//create minimap
         var minimap = document.getElementById('outlineContainer');
         var outln = new mxOutline(graph, minimap);
@@ -637,8 +714,7 @@ class Project{
         
         //handle the changing of the toolbar upon selection
         graph.selectCellForEvent = function(cell,evt){
-            if(cell.isWeek){graph.clearSelection();return;};
-            if(cell.isNode)editbar.enable(cell.node);
+            if(!cell.isNode){graph.clearSelection();return;};
             mxGraph.prototype.selectCellForEvent.apply(this,arguments);
         }
         graph.clearSelection = function(){
@@ -661,7 +737,8 @@ class Project{
             }
             return cell;
         };
-        
+       
+        //Adds an event listener to handle the drop down collapse/expand of nodes
         graph.addListener(mxEvent.CLICK,function(sender,evt){
             var cell = evt.getProperty('cell');
            if(cell!=null&&cell.isDrop){
@@ -672,10 +749,35 @@ class Project{
             container.focus();
         });
         
+        //Add an event listener to handle double clicks to nodes, which, if they have a linked wf, will change the active wf
+        graph.addListener(mxEvent.DOUBLE_CLICK,function(sender,evt){
+            var cell = evt.getProperty('cell');
+           if(cell!=null){
+               while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
+               if(cell.isNode){
+                   var node = cell.node;
+                   var linkedWF = node.linkedWF;
+                   if(linkedWF!=null)p.changeActive(p.workflows.indexOf(p.getWFByID(linkedWF)));
+               }
+           }
+        });
+        
+        //These will be used to distinguish between clicks and drags
+        var downx=0;
+        var downy=0;
         graph.addMouseListener(
             {
-                mouseDown: function(sender,me){},
-                mouseUp: function(sender,me){},
+                mouseDown: function(sender,me){downx=me.graphX;downy=me.graphY;},
+                mouseUp: function(sender,me){
+                    var cell = me.getCell();
+                    if(cell!=null){
+                        while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
+                        //check if this was a click, rather than a drag
+                        if(cell.isNode&&Math.sqrt(Math.pow(downx-me.graphX,2)+Math.pow(downy-me.graphY,2))<2){
+                            editbar.enable(cell.node);
+                        }
+                    }
+                },
                 mouseMove: function(sender,me){
                     var cell=me.getCell();
                     if(cell==null)return;
@@ -870,19 +972,19 @@ class Project{
         while(xmlString.indexOf("temporaryID")>=0)xmlString = xmlString.replace("temporaryID","");
         //save the new id number
         this.idNum=id;
-        //return to as string
+        //return as string
         return xmlString;
         
     }
     
-    assignNewIDsToXMLArrays(xmlString,arrayName,newID,oldID){
+    assignNewIDsToXMLArrays(xmlString,arrayName,oldID,newID){
         var currentIndex=0;
         while(xmlString.indexOf("<"+arrayName+">",currentIndex)>=0){
             currentIndex = xmlString.indexOf("<"+arrayName+">",currentIndex);
             var endIndex = xmlString.indexOf("</"+arrayName+">",currentIndex);
             var indexArray= xmlString.substring(currentIndex+("<"+arrayName+">").length,endIndex).split(",");
-            while(indexArray.contains(oldID)){indexArray.splice(indexArray.indexOf(oldID),1,newID+"temporaryID");}
-            xmlString = xmlString.substring(0,currentIndex+("<"+arrayName+">").length) + indexArray.join('n') + xmlString.subString(endIndex);
+            while(indexArray.indexOf(oldID)>=0){indexArray.splice(indexArray.indexOf(oldID),1,newID+"temporaryID");}
+            xmlString = xmlString.substring(0,currentIndex+("<"+arrayName+">").length) + indexArray.join(',') + xmlString.substring(endIndex);
             currentIndex=endIndex;
         }
         return xmlString;

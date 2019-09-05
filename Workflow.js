@@ -122,10 +122,12 @@ class Workflow{
         }
     }
     
+    
     makeActive(graph){
         
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].firstElementChild.firstElementChild.classList.add("active");
+            this.buttons[i].classList.add("active");
+            this.activateParents(this.buttons[i],true);
         }
         
         
@@ -171,7 +173,8 @@ class Workflow{
     makeInactive(){
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].firstElementChild.firstElementChild.classList.remove("active");
+            this.buttons[i].classList.remove("active");
+            this.activateParents(this.buttons[i],false);
         }
         nbContainer.style.display="none";
         this.toXML();
@@ -180,6 +183,14 @@ class Workflow{
         this.comments=[];
         this.brackets=[];
         if(this.graph!=null)this.graph.destroy();
+    }
+    
+    activateParents(b,add){
+        if(b.parentElement.classList.contains("layoutdiv")){
+            if(add)b.parentElement.classList.add("activechild");
+            else b.parentElement.classList.remove("activechild");
+            this.activateParents(b.parentElement,add);
+        }
     }
     
     createTitleNode(){
@@ -281,7 +292,7 @@ class Workflow{
     }
     
     findNearestColumn(x){
-        var dist = 99990;
+        var dist = 99999;
         var tdist = 0;
         var name = null;
         for(var i=0;i<this.columns.length;i++){

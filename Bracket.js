@@ -116,7 +116,7 @@ class Bracket {
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this bracket');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});

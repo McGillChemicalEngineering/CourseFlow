@@ -44,6 +44,7 @@ button{
     padding: 16px;
     font-size: 16px;
     width: 100%;
+    cursor: pointer;
 }
 
 button:hover{
@@ -54,6 +55,7 @@ button:hover{
     position:relative;
     padding-bottom: 2px;
     padding-top: 2px;
+    width:100%;
 }
 
 .layoutactivity{
@@ -70,13 +72,14 @@ button:hover{
     color: black;
 }
 
-.layoutdiv .active{
+.layoutdiv.active > div > button{
     background: rgb(25,118,188);
     color: white;
 }
 
-
-
+.layoutdiv:not(.haschildren) > .expanddiv{
+    display:none;
+}
 
 .layoutdiv button{
     padding:4px;
@@ -88,11 +91,31 @@ button:hover{
     box-sizing:border-box;
 }
 
-.layoutdiv div:not(.editlayoutdiv):not(.deletelayoutdiv):not(.layoutbuttonwrap){
+.layoutdiv > .layoutdiv{
     left: 10%;
     width: 90%;
+    display:none;
+}
+
+.expanddiv{
+    position:absolute;
+    left:-16px;
+    top:12px;
+}
+
+
+.layoutdiv.expanded{
     
 }
+
+.layoutdiv.expanded > .layoutdiv,.layoutdiv.active > .layoutdiv,.layoutdiv.activechild > .layoutdiv{
+    display:inline-block;
+}
+
+.layoutdiv.active{
+    display:inline-block;
+}
+
 
 .topnav{
     height:100px;
@@ -163,6 +186,7 @@ button:hover{
     font-size: 12px;
     overflow-x:hidden;
     white-space:nowrap;
+    cursor:grab;
     width: 100%;
     margin: 1px;
 }
@@ -203,6 +227,12 @@ button:hover{
 }
 .nameinput{
     width:100%;
+}
+
+
+.fixedwidthinput{
+    width:100%;
+    box-sizing:border-box;
 }
 
 
@@ -285,16 +315,18 @@ button:hover{
     padding:0px;
     margin:0px;
     color: black;
+    cursor:pointer;
 }
 
+/*Div that gets created on top of the button in the layout on hover*/
 .deletelayoutdiv{
     right:0px;
     display:none;
     position:absolute;
     padding-top:4px;
     padding-right:4px;
-    margin:0px;
     color: black;
+    cursor: pointer;
 }
 
 .layoutbuttonwrap{

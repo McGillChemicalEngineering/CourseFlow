@@ -119,8 +119,10 @@ class CFNode {
     
     setLinkedWF(value){
         if(value=="")value=null;
+        var oldvalue = null;
         if(value!=this.linkedWF){
             if(this.linkedWF!=null){
+                oldvalue = this.wf.project.getWFByID(this.linkedWF).name;
                 this.wf.removeUsedWF(this.linkedWF);
                 this.wf.project.removeChild(this.wf,this.wf.project.getWFByID(this.linkedWF));
             }
@@ -129,7 +131,7 @@ class CFNode {
                 this.wf.addUsedWF(value);
                 var wfc = this.wf.project.getWFByID(value);
                 this.wf.project.addChild(this.wf,wfc);
-                this.setName(wfc.name);
+                if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
             }
         }
         
