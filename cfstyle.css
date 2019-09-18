@@ -194,7 +194,7 @@ button:hover{
     white-space:pre;
 }
 
-.nodebar p{
+.emptytext{
     font-size: 10px;
     color: grey;
 }

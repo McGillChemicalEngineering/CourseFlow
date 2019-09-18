@@ -428,8 +428,9 @@ class Workflow{
             this.populateTagDiv(tagDiv,this.tagSets[i]);
         }
         if(this.tagSets.length==0){
-            this.tagBarDiv.innerHTML="<p><b>No outcomes have been added yet! Use the buttons below to add one.</b></p>"
-        }
+            this.tagBarDiv.classList.add("emptytext");
+            this.tagBarDiv.innerHTML="<b>No outcomes have been added yet! Use the buttons below to add one.</b>"
+        }else this.tagBarDiv.classList.remove("emptytext");
     }
     /*
     populateTagDiv(container,tag){
