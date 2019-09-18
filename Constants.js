@@ -46,7 +46,11 @@ getXMLVal = function(xml,name){
     var value = tags.childNodes[0].nodeValue;
     if(isHTML)value = makeHTML(tags.innerHTML);
     if(value == "undefined"){return null;}
-    else if(isARRAY)return value.split(",");
+    else if(isARRAY){
+        value = value.split(",");
+        if(value.length==1&&value[0]=="")return [];
+        else return value;
+    }
     else return value;
 }
 cleanHTML = function(text){
@@ -67,16 +71,17 @@ makeHTML = function(text){
 }
 
 //constants declaration
-const cellSpacing = 40;
+const cellSpacing = 20;
+const emptyWeekSize=60;
 const colIconSize=100;
 const defaultCellWidth=280;
 const minCellHeight=50;
-const cellDropdownHeight=10;
-const cellDropdownPadding=2;
+const cellDropdownHeight=16;
+const cellDropdownPadding=0;
 const wfStartX=cellSpacing;
 const wfStartY=cellSpacing;
-const defaultIconPadding=4;
-const defaultTextPadding=4;
+const defaultIconPadding=12;
+const defaultTextPadding=0;
 const defaultIconWidth=36;
 const bracketWidth=10;
 const bracketTabWidth=80;
@@ -84,18 +89,22 @@ const bracketTabHeight=80;
 const bracketTriangleWidth=30;
 const defaultCommentSize=36;
 const exitPadding=cellSpacing;
+const tagBoxPadding = 5;
+const tagHeight = 20;
 var weekWidth;
 
 //Styles
 const defaultWeekStyle = 'editable=0;fillColor=#e6e6e6;movable=0;resizable=0;strokeColor=none;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=14;fontStyle=1;fontColor=black;';
 const defaultWFAreaStyle = 'editable=0;fillColor=#FFFFFF;movable=0;resizable=0;strokeColor=black;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=14;fontStyle=1;fontColor=black;';
 const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-40)+";imageHeight="+(colIconSize-40)+";fontSize=16;editable=0;fontStyle=5;fontColor=black;";
-const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;";
+const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=14;fontFamily=Verdana;fontColor=white;fillColor=none;overflow=hidden;editable=0;";
 const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=black;strokeWidth=2;editable=0;fontColor=black;resizable=0;";
 const defaultIconStyle="shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=none;";
-const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
+const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
 const defaultTitleStyle="whiteSpace=wrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;";
-const defaultDropDownStyle="constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;shape=label;image=resources/images/droptriangle.png;imageWidth=12;imageHeight=4;imageAlign=center;";
+const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;align=left;verticalAlign=top;";
+const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
+const defaultDropDownStyle="constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=#FFFFFF;shape=label;image=resources/images/droptriangle.png;imageWidth=12;imageHeight=4;imageAlign=center;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
 const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=1;"
@@ -133,6 +142,20 @@ function initializeConnectionPointForGraph(graph){
         
         
 }
+
+//Overwrite Quill's default link sanitization to add http
+var Link = Quill.import('formats/link');
+var builtInFunc = Link.sanitize;
+Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+    var val = linkValueInput;
+
+    // do nothing, since this implies user's already using a custom protocol
+    if (/^\w+:/.test(val));
+    else if (!/^https?:/.test(val))
+        val = "http://" + val;
+
+    return builtInFunc.call(this, val); // retain the built-in logic
+};
 
 // These should be defined only once, otherwise they end up iterating through themselves multiple times.
 var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;

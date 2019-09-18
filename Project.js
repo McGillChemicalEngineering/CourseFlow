@@ -19,13 +19,17 @@ class Project{
     constructor(container){
         this.xmlData;
         this.workflows=[];
+        this.competencies=[];
         this.graph;
-        this.activeIndex;
+        this.activeWF;
+        this.activeComp;
         this.container=container;
         this.sidenav = document.getElementById("sidenav");
         this.layout = document.getElementById("layout");
         this.newWFDiv = document.getElementById("newWFDiv");
-        this.nameDiv = document.getElementById("prname")
+        this.compDiv = document.getElementById("competencydiv");
+        this.newCompDiv = document.getElementById("newCompDiv");
+        this.nameDiv = document.getElementById("prname");
         var p = this;
         this.idNum=0;
         this.loadAppend=false;
@@ -49,7 +53,6 @@ class Project{
             };
             nameDiv.firstElementChild.addEventListener("focusout",function(){
                 nameDiv.onclick=tempfunc;
-                console.log("focusout");
                 if(nameDiv.firstElementChild.value=="")nameDiv.innerHTML=p.name;
                 else p.setName(nameDiv.firstElementChild.value);
             });
@@ -76,6 +79,13 @@ class Project{
         }
         this.newWFDiv.appendChild(newWF);
         
+        var newComp = document.createElement('button');
+        newComp.innerHTML="Create New";
+        newComp.onclick = function(){
+            p.addCompetency();
+            p.changeActive(p.competencies.length-1,false);
+        }
+        this.newCompDiv.appendChild(newComp);
         
         var minimap = document.getElementById('outlineContainer');
         
@@ -146,8 +156,8 @@ class Project{
         
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
-        expand.onclick = function(){if(p.activeIndex!=null)p.workflows[p.activeIndex].expandAllNodes();}
-        collapse.onclick = function(){if(p.activeIndex!=null)p.workflows[p.activeIndex].expandAllNodes(false);}
+        expand.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes();}
+        collapse.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes(false);}
 		
     }
     
@@ -177,21 +187,27 @@ class Project{
     }
     
     exportCurrent(){
-        if(this.activeIndex==null)return;
         var serializer = new XMLSerializer();
-        var wf = this.workflows[this.activeIndex];
-        var usedWF = this.getDependencies(wf);
+        var wf;
+        if(this.activeWF!=null)wf = this.workflows[this.activeWF];
+        else if(this.activeComp!=null)wf = this.competencies[this.activeComp];
+        else return;
+        var usedWF=[];
+        if(wf instanceof Workflow) usedWF= this.getDependencies(wf);
         var exported=[];
         var xml = "";
-        wf.toXML();
         xml+=makeXML(wf.name,"prname");
         xml+=makeXML(this.idNum,"idnum");
-        xml+=serializer.serializeToString(wf.xmlData);
+        xml+=wf.toXML();
         for(var i=0;i<usedWF.length;i++){
             if(exported.indexOf(usedWF[i])>=0)continue;
             exported.push(usedWF[i]);
-            if(this.getWFByID(usedWF[i]).xmlData==null)this.getWFByID(usedWF[i]).toXML();
-            xml+=serializer.serializeToString(this.getWFByID(usedWF[i]).xmlData);
+            if(usedWF[i] instanceof Workflow){
+                if(usedWF[i].xmlData==null)usedWF[i].toXML();
+                xml+=serializer.serializeToString(usedWF[i].xmlData);
+            }else if(usedWF[i] instanceof Tag){
+                xml+=usedWF[i].toXML();
+            }
         }
         xml = makeXML(xml,"project");
         var filename = wf.name+".xml";
@@ -199,17 +215,28 @@ class Project{
     }
     
     getDependencies(wf){
-        var array = wf.usedWF;
+        var array = [];
         for(var i=0;i<wf.usedWF.length;i++){
-            array = array.concat(this.getDependencies(this.getWFByID(wf.usedWF[i])));
+            var wfc = this.getWFByID(wf.usedWF[i])
+            array.push(wfc);
+            array = array.concat(this.getDependencies(wfc));
         }
+        if(wf.tagSets.length>0){
+            for(i=0;i<wf.tagSets.length;i++)array.push(wf.tagSets[i]);
+        }else if(wf.xmlData!=null){
+            if(getXMLVal(wf.xmlData,"tagsetARRAY")!=null){
+                var tagset = getXMLVal(wf.xmlData,"tagsetARRAY");
+                for(i=0;i<tagset;i++)array.push(this.getCompByID(tagset[i]));
+            }
+        }
+        console.log(array);
         return array;
     }
     
     duplicateActiveWF(){
-        var wf = this.workflows[this.activeIndex];
+        var wf = this.workflows[this.activeWF];
         wf.toXML();
-        var xml = this.workflows[this.activeIndex].xmlData;
+        var xml = this.workflows[this.activeWF].xmlData;
         xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue+" (Copy)";
         xml.getElementsByTagName("wfid")[0].childNodes[0].nodeValue=this.genID;
         var wfcopy = this.addWorkflowFromXML(xml,false);
@@ -235,7 +262,7 @@ class Project{
     
     
     toXML(){
-        if(this.activeIndex!=null)this.workflows[this.activeIndex].toXML();
+        if(this.activeWF!=null)this.workflows[this.activeWF].toXML();
         var xml = "";
         var serializer = new XMLSerializer();
         xml+=makeXML(this.name,"prname");
@@ -244,13 +271,18 @@ class Project{
             if(this.workflows[i].xmlData==null)this.workflows[i].toXML();
             xml+=serializer.serializeToString(this.workflows[i].xmlData);
         }
+        for(var i=0;i<this.competencies.length;i++){
+            xml+=this.competencies[i].toXML();
+        }
         this.xmlData = makeXML(xml,"project");
     }
     
     clearProject(){
-        if(this.activeIndex!=null){this.workflows[this.activeIndex].makeInactive();this.activeIndex=null;}
+        if(this.activeWF!=null){this.workflows[this.activeWF].makeInactive();this.activeWF=null;}
         while(this.layout.childElementCount>0)this.layout.removeChild(this.layout.firstElementChild);
         this.workflows=[];
+        this.competencies=[];
+        while(this.compDiv.childElementCount>0)this.compDiv.removeChild(this.compDiv.firstElementChild);
         this.name=null;
         this.idNum="0";
         
@@ -267,14 +299,20 @@ class Project{
             this.idNum = int(getXMLVal(xmlDoc,"idnum"));
         }
         var startWF = this.workflows.length;
+        var xmltags = [];
+        for(var i=0;i<xmlDoc.childNodes[0].childNodes.length;i++){
+            if(xmlDoc.childNodes[0].childNodes[i].tagName=="tag")xmltags.push(xmlDoc.childNodes[0].childNodes[i]);
+        }
+        for(i=0;i<xmltags.length;i++){
+            this.addCompetencyFromXML(xmltags[i]);
+        }
         var xmlwfs = xmlDoc.getElementsByTagName("workflow");
-        for(var i=0;i<xmlwfs.length;i++){
+        for(i=0;i<xmlwfs.length;i++){
             this.addWorkflowFromXML(xmlwfs[i]);
         }
         for(i=startWF;i<this.workflows.length;i++){
             var wf = this.workflows[i];
             for(var j=0;j<wf.usedWF.length;j++){
-                console.log(wf.usedWF);
                 this.addChild(wf,this.getWFByID(wf.usedWF[j]),false);
             }
         }
@@ -296,6 +334,13 @@ class Project{
         return wf;
     }
     
+    addCompetency(){
+        var tag = new Tag(this,null);
+        this.addButton(tag,this.compDiv);
+        this.competencies.push(tag);
+        return tag;
+    }
+    
     addWorkflowFromXML(xml){
         var wf = this.addWorkflow(getXMLVal(xml,"wftype"));
         wf.id=getXMLVal(xml,"wfid");
@@ -305,28 +350,28 @@ class Project{
         return wf;
     }
     
+    addCompetencyFromXML(xml){
+        var tag = this.addCompetency();
+        tag.fromXML(xml);
+    }
     
     
     addChild(wfp,wfc,recurse=true){
-        console.log(wfp.name);
-        console.log(wfc.name);
         //If child is at the root level, remove its button
         if(wfc.buttons!=null&&wfc.buttons.length>0&&wfc.buttons[0].parentElement.id=="layout"){
             this.removeButton(wfc,wfc.buttons[0]);
         }
         //Add it to the parent at all locations in the tree
-        console.log(wfp.buttons);
-        console.log(wfc.buttons);
         for(var i=0;i<wfp.buttons.length;i++){
-            console.log("adding button for "+wfc.name);
             this.addButton(wfc,wfp.buttons[i],recurse);
         }
     }
     
-    updateHiddenChildren(wfp,button){
+    updateHiddenChildren(button){
+        console.log("Updating hidden children");
+        var wfp = button.wf;
         var des={};
         des = this.getNumberOfDescendants(wfp,des);
-        console.log(des);
         var text = "... ";
         for (var propt in des){
             var s = propt;
@@ -342,9 +387,9 @@ class Project{
     }
     
     getNumberOfDescendants(wfp,des){
-        var usedWF = wfp.usedWF;
-        for(var i=0;i<usedWF.length;i++){
-            var wfc = this.getWFByID(usedWF[i]);
+        var children = wfp.getChildren();
+        for(var i=0;i<children.length;i++){
+            var wfc = children[i];
             if(des[wfc.getType()]==null)des[wfc.getType()]=1;
             else des[wfc.getType()]=des[wfc.getType()]+1;
             des = this.getNumberOfDescendants(wfc,des);
@@ -381,13 +426,40 @@ class Project{
         for(i=0;i<wf.buttons.length;i++){
             this.removeButton(wf,wf.buttons[i]);
         }
-        if(this.workflows.indexOf(wf)==this.activeIndex){
-            this.workflows[this.activeIndex].makeInactive();
-            this.activeIndex=null;
-        }else if(this.workflows.indexOf(wf)<this.activeIndex){
-            this.activeIndex--;
+        if(this.activeWF!=null){
+            if(wf.isActive){
+                this.workflows[this.activeWF].makeInactive();
+                this.activeWF=null;
+            }else if(this.workflows.indexOf(wf)<this.activeWF){
+                this.activeWF--;
+            }
         }
         this.workflows.splice(this.workflows.indexOf(wf),1);
+    }
+    
+    //Causes the competency to delete itself and all its contents
+    deleteComp(tag){
+        //Seek out all wf that use this one, remove it from usedWF and from any nodes that use it
+        for(var i=0;i<this.workflows.length;i++){
+            var wf = this.workflows[i];
+            wf.removeTagSet(tag);
+        }
+        for(i=0;i<tag.buttons.length;i++){
+            this.removeButton(tag,tag.buttons[i]);
+        }
+        if(this.activeComp!=null){
+            if(tag.isActive){
+                this.competencies[this.activeComp].makeInactive(this.container);
+                this.activeComp=null;
+            }else if(this.competencies.indexOf(tag)<this.activeComp){
+                this.activeComp--;
+            }
+        }
+        this.competencies.splice(this.competencies.indexOf(tag),1);
+        if(this.activeWF!=null&&this.workflows[this.activeWF].tagSelect!=null){
+            this.workflows[this.activeWF].populateTagBar();
+            this.workflows[this.activeWF].populateTagSelect(this.competencies);
+        }
     }
     
     fillWFSelect(select){
@@ -407,22 +479,27 @@ class Project{
     
     //moves the button up or down. If it's at the root level, this entails switching the workflow ordering and then switching the order of the buttons. If it's NOT at the root level, we have to switch it in usedWF of the parent, then switch the order of the buttons.
     moveButton(button,wf,up){
+        console.log("Moving button");
         var parent = button.parentElement;
         var wf2;
         var myindex = Array.prototype.indexOf.call(parent.childNodes,button);
-        if(up&&myindex>0&&parent.childNodes[myindex-1].className==button.className){
+        if(up&&myindex>0&&parent.childNodes[myindex-1].classList.contains("layoutdiv")){
             //move it up
             wf2 = parent.childNodes[myindex-1].wf;
             parent.insertBefore(parent.childNodes[myindex],parent.childNodes[myindex-1]);
 
-        }else if(!up&&myindex<parent.childNodes.length-1&&parent.childNodes[myindex+1].className==button.className){
+        }else if(!up&&myindex<parent.childNodes.length-1&&parent.childNodes[myindex+1].classList.contains("layoutdiv")){
             //move it down
             wf2 = parent.childNodes[myindex+1].wf;
             parent.insertBefore(parent.childNodes[myindex+1],parent.childNodes[myindex]);
         }
         if(wf2!=null){
             if(parent.className!=button.className){
-                [this.workflows[this.workflows.indexOf(wf)],this.workflows[this.workflows.indexOf(wf2)]] = [this.workflows[this.workflows.indexOf(wf2)],this.workflows[this.workflows.indexOf(wf)]];
+                if(wf instanceof Workflow && wf2 instanceof Workflow){
+                    [this.workflows[this.workflows.indexOf(wf)],this.workflows[this.workflows.indexOf(wf2)]] = [this.workflows[this.workflows.indexOf(wf2)],this.workflows[this.workflows.indexOf(wf)]];
+                }else if(wf instanceof Tag && wf2 instanceof Tag){
+                    [this.competencies[this.competencies.indexOf(wf)],this.competencies[this.competencies.indexOf(wf2)]] = [this.competencies[this.competencies.indexOf(wf2)],this.competencies[this.competencies.indexOf(wf)]];
+                }
             }else{
                 var wfp = parent.wf;
                 wfp.swapUsedIndices(wf.id,wf2.id);
@@ -431,8 +508,11 @@ class Project{
         }
     }
     
-    addButton(wf,container,recurse=true){
-        if(container.wf!=null)this.updateHiddenChildren(container.wf,container);
+    //Adds a button to a layout. This can actually be for either a workflow or a competency.
+    /*addButton(wf,container,recurse=true){
+        var isWF = true;
+        if(wf instanceof Tag)isWF=false;
+        if(isWF&&container.wf!=null)this.updateHiddenChildren(container.wf,container);
         var bdiv = document.createElement('div');
         var bwrap = document.createElement('div');
         var b = document.createElement('button');
@@ -444,7 +524,8 @@ class Project{
         else b.className="layoutactivity";
         var p = this;
         b.onclick=function(){
-            p.changeActive(p.getWFIndex(wf));
+            if(isWF)p.changeActive(p.getWFIndex(wf),isWF);
+            else p.changeActive(p.getCompIndex(wf),isWF);
         }
         bwrap.appendChild(b);
         var edit = document.createElement('div');
@@ -493,8 +574,9 @@ class Project{
         delicon.src="resources/images/delrect16.png";
         delicon.style.width='16px';
         delicon.onclick=function(){
-            if(mxUtils.confirm("Delete this workflow? Warning: this will all contents (but not any workflows used by it)!")){
-                p.deleteWF(wf);
+            if(mxUtils.confirm("Delete this "+(isWF ? "workflow":"competency")+"? Warning: this will delete all contents"+(isWF ? "(but not any workflows used by it)!":"")+".")){
+                if(isWF)p.deleteWF(wf);
+                else p.deleteComp(wf);
             }
         }
         del.appendChild(delicon);
@@ -522,9 +604,152 @@ class Project{
         bdiv.wf=wf;
         container.appendChild(bdiv);
         wf.buttons.push(bdiv);
-        if(recurse)for(var i=0;i<wf.usedWF.length;i++){
+        if(isWF&&recurse)for(var i=0;i<wf.usedWF.length;i++){
             this.addButton(this.getWFByID(wf.usedWF[i]),bdiv);
         }
+    }*/
+    addButton(wf,container,recurse=true){
+        if(container.wf!=null&&container.hiddenchildren!=null)this.updateHiddenChildren(container);
+        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
+        var bdiv = this.makeLayoutButtonDiv(wf,container);
+        var bwrap = this.makeLayoutButtonWrapper(wf,bdiv);
+        var b = this.makeLayoutButton(wf);
+        bwrap.appendChild(b);
+        bwrap.appendChild(this.makeLayoutButtonEdit(wf,b,true,true,false));
+        bwrap.appendChild(this.makeLayoutButtonMove(wf,bdiv));
+        bdiv.appendChild(bwrap);
+        this.makeLayoutButtonExpandable(bdiv);
+        
+        container.appendChild(bdiv);
+        wf.buttons.push(bdiv);
+        if(wf instanceof Workflow&&recurse)for(var i=0;i<wf.usedWF.length;i++){
+            this.addButton(this.getWFByID(wf.usedWF[i]),bdiv);
+        }
+        return bdiv;
+    }
+    
+    makeLayoutButtonDiv(wf,container,expandable=true){
+        var p = this;    
+        var bdiv = document.createElement('div');
+        bdiv.wf=wf;
+        return bdiv;
+        
+    }
+    
+    makeLayoutButtonWrapper(wf,bdiv){
+        var p = this;
+        var bwrap = document.createElement('div');
+        bdiv.className = "layoutdiv";
+        bwrap.className = "layoutbuttonwrap";        
+        return bwrap;
+    }
+    
+    makeLayoutButton(wf){
+        var b = document.createElement('button');
+        b.innerHTML=wf.name;
+        b.className=wf.getButtonClass();
+        b.onclick=function(){
+            wf.clickButton();
+        }
+        return b;
+    }
+    
+    makeLayoutButtonEdit(wf,b,renamable=true,deletable=true,unassignable=true,parent=null){
+        var p = this;
+        var edit = document.createElement('div');
+        edit.className="deletelayoutdiv";
+        if(renamable){
+            var nameIcon = document.createElement('img');
+            nameIcon.src="resources/images/edit16.png";
+            nameIcon.style.width='16px';
+            nameIcon.onclick=function(){
+                var tempfunc = b.onclick;
+                //create an input, on enter or exit make that the new name
+                b.innerHTML="<input type='text' value = '"+wf.name+"'placeholder='<type a new name here>'></input>";
+                b.firstElementChild.focus();
+                b.firstElementChild.select();
+                b.onclick=null;
+                p.container.onclick=function(){
+                    if(b.firstElementChild!=null)b.firstElementChild.blur();
+                    p.container.onclick=null;
+                };
+                b.firstElementChild.addEventListener("focusout",function(){
+                    b.onclick=tempfunc;
+                    if(b.firstElementChild.value=="")b.innerHTML=wf.name;
+                    else wf.setName(b.firstElementChild.value,true);
+                    console.log("Setting Name");
+                });
+            }
+            edit.appendChild(nameIcon);
+        }
+        if(deletable){
+            var delicon = document.createElement('img');
+            delicon.src="resources/images/delrect16.png";
+            delicon.style.width='16px';
+            delicon.onclick=function(){
+                if(mxUtils.confirm(wf.getDeleteText())){
+                    wf.deleteSelf();
+                }
+            }
+            edit.appendChild(delicon);
+        }
+        if(unassignable){
+            var unassignicon = document.createElement('img');
+            unassignicon.src="resources/images/unassign16.png";
+            unassignicon.style.width='16px';
+            unassignicon.onclick=function(){
+                if(mxUtils.confirm(wf.getUnassignText())){
+                    wf.unassignFrom(parent);
+                }
+            }
+            edit.appendChild(unassignicon);
+        }
+        return edit;
+    }
+    
+    makeLayoutButtonMove(wf,bdiv){
+        var p = this;
+        var move = document.createElement('div');
+        move.className = "editlayoutdiv";
+        var up = document.createElement('a');
+        up.className="layoutchange";
+        up.innerHTML="&#708";
+        up.href="#";
+        up.onclick=function(){
+            p.moveButton(bdiv,wf,true);
+        }
+        move.appendChild(up);
+        var down = document.createElement('a');
+        down.className="layoutchange";
+        down.innerHTML="&#709";
+        down.href="#";
+        down.onclick=function(){
+            p.moveButton(bdiv,wf,false);
+        }
+        move.appendChild(down);
+        return move;
+    }
+    
+    makeLayoutButtonExpandable(bdiv){
+        var p = this;
+        var expandDiv = document.createElement('div');
+        expandDiv.className="expanddiv";
+        var expandIcon = document.createElement('img');
+        expandIcon.src="resources/images/plus16.png";
+        expandIcon.style.width='16px';
+        expandIcon.onclick=function(){
+            if(bdiv.classList.contains("expanded")){p.collapseButton(bdiv);}
+            else {p.expandButton(bdiv);}
+        }
+        expandDiv.appendChild(expandIcon);
+        bdiv.appendChild(expandDiv);
+        bdiv.expandIcon = expandIcon;
+
+        var hiddenchildren = document.createElement('div');
+        hiddenchildren.className = "hiddenchildrendiv";
+        hiddenchildren.onclick = expandIcon.onclick;
+        bdiv.appendChild(hiddenchildren);
+        bdiv.hiddenchildren=hiddenchildren;
     }
     
     collapseButton(button){
@@ -538,7 +763,7 @@ class Project{
     
     removeButton(wfp,button){
         if(button.parentElement.wf!=null)this.updateHiddenChildren(button.parentElement.wf,button.parentElement);
-        for(var i=0;i<wfp.usedWF.length;i++){
+        if(wfp.usedWF!=null)for(var i=0;i<wfp.usedWF.length;i++){
             var wfc = this.getWFByID(wfp.usedWF[i]);
             for(var j=0;j<wfc.buttons.length;j++){
                 if(wfc.buttons[j].parentElement==button){
@@ -554,8 +779,14 @@ class Project{
         
     }
     
+    
+    
     getWFIndex(wf){
         return this.workflows.indexOf(wf);
+    }
+    
+    getCompIndex(tag){
+        return this.competencies.indexOf(tag);
     }
     
     getWFByID(id){
@@ -565,11 +796,26 @@ class Project{
         return null;
     }
     
-    changeActive(index){
-        if(this.activeIndex!=null)this.workflows[this.activeIndex].makeInactive();
-        this.initializeGraph(this.container);
-        this.activeIndex=index;
-        this.workflows[this.activeIndex].makeActive(this.graph);
+    getCompByID(id){
+        for(var i=0;i<this.competencies.length;i++){
+            if(this.competencies[i].id==id)return this.competencies[i];
+        }
+        return null;
+    }
+    
+    changeActive(index,isWF=true){
+        if(this.activeWF!=null)this.workflows[this.activeWF].makeInactive();
+        if(this.activeComp!=null)this.competencies[this.activeComp].makeInactive(this.container);
+        if(isWF){
+            this.activeComp = null;
+            this.activeWF=index;
+            this.initializeGraph(this.container);
+            this.workflows[this.activeWF].makeActive(this.graph);
+        }else{
+            this.activeWF = null;
+            this.activeComp=index;
+            this.competencies[this.activeComp].makeActive(this.container);
+        }
     }
     
     initializeGraph(container){
@@ -610,8 +856,16 @@ class Project{
         //Disable cell movement associated with user events
         graph.moveCells = function (cells, dx,dy,clone,target,evt,mapping){
             if(cells.length==1&&cells[0].isComment){
-                cells[0].comment.x+=dx;
-                cells[0].comment.y+=dy;
+                var comment = cells[0].comment;
+                var wf = comment.wf;
+                var x = comment.x+dx;
+                var y = comment.y+dy;
+                if(x<wfStartX)dx=wfStartX-comment.x;
+                if(y<wfStartY)dy=wfStartY-comment.y;
+                if(x>wf.weeks[wf.weeks.length-1].box.r()+200)dx=wf.weeks[wf.weeks.length-1].box.r()+200-comment.x;
+                if(y>wf.weeks[wf.weeks.length-1].box.b()+200)dy=wf.weeks[wf.weeks.length-1].box.b()+200-comment.y;
+                comment.x+=dx;
+                comment.y+=dy;
                 return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
             }
             if(evt!=null && (evt.type=='mouseup' || evt.type=='pointerup')){
@@ -761,7 +1015,7 @@ class Project{
         
         //handle the changing of the toolbar upon selection
         graph.selectCellForEvent = function(cell,evt){
-            if(!cell.isNode){graph.clearSelection();return;};
+            if(cell.isWeek){graph.clearSelection();return;};
             mxGraph.prototype.selectCellForEvent.apply(this,arguments);
         }
         graph.clearSelection = function(){
@@ -787,12 +1041,6 @@ class Project{
        
         //Adds an event listener to handle the drop down collapse/expand of nodes
         graph.addListener(mxEvent.CLICK,function(sender,evt){
-            var cell = evt.getProperty('cell');
-           if(cell!=null&&cell.isDrop){
-               cell.node.toggleDropDown();
-           }else if (cell!=null&&cell.isComment){
-               cell.comment.show();
-           }
             container.focus();
         });
         
@@ -818,10 +1066,19 @@ class Project{
                 mouseUp: function(sender,me){
                     var cell = me.getCell();
                     if(cell!=null){
-                        while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
                         //check if this was a click, rather than a drag
-                        if(cell.isNode&&Math.sqrt(Math.pow(downx-me.graphX,2)+Math.pow(downy-me.graphY,2))<2){
-                            editbar.enable(cell.node);
+                        if(Math.sqrt(Math.pow(downx-me.graphX,2)+Math.pow(downy-me.graphY,2))<2){
+                            if(cell.isDrop){
+                                cell.node.toggleDropDown();
+                            }else if(cell.isComment){
+                                cell.comment.show();
+                            }else{
+                                while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
+                                //check if this was a click, rather than a drag
+                                if(cell.isNode){
+                                    editbar.enable(cell.node);
+                                }
+                            }
                         }
                     }
                 },
@@ -834,9 +1091,12 @@ class Project{
                             //check if you are in bounds, if so create overlays. Because of a weird offset between the graph view and the graph itself, we have to use the cell's view state instead of its own bounds
                             var mouserect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
                             if(mxUtils.intersects(mouserect,graph.view.getState(cell))){
+                                //Add the overlays
                                 for(var i=0;i<cell.cellOverlays.length;i++){
                                     graph.addCellOverlay(cell,cell.cellOverlays[i]);
                                 }
+                                //if it's a node with tags, also show those
+                                if(cell.isNode&&cell.node.tags.length>0)cell.node.toggleTags(true);
                                 //add the listener that will remove these once the mouse exits
                                 graph.addMouseListener({
                                     mouseDown: function(sender,me){},
@@ -845,7 +1105,12 @@ class Project{
                                         if(graph.view.getState(cell)==null){graph.removeMouseListener(this);return;}
                                         var exitrect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
                                         if(!mxUtils.intersects(exitrect,graph.view.getState(cell))){
+                                            if(cell.isNode&&graph.view.getState(cell.node.tagBox)!=null&&mxUtils.intersects(exitrect,graph.view.getState(cell.node.tagBox))){
+                                                
+                                                return;
+                                            }
                                             graph.removeCellOverlay(cell);
+                                            if(cell.isNode)cell.node.toggleTags(false);
                                             graph.removeMouseListener(this);
                                         }
                                     }
@@ -871,6 +1136,7 @@ class Project{
         var ports = new Array();
         ports['OUTw'] = {x: 0, y: 0.6, perimeter: true, constraint: 'west'};
         ports['OUTe'] = {x: 1, y: 0.6, perimeter: true, constraint: 'east'};
+        ports['OUTs'] = {x: 0.5, y: 1, perimeter: true, constraint: 'south'};
         ports['HIDDENs'] = {x: 0.5, y: 1, perimeter: true, constraint: 'south'};
         ports['INw'] = {x: 0, y: 0.4, perimeter: true, constraint: 'west'};
         ports['INe'] = {x: 1, y: 0.4, perimeter: true, constraint: 'east'};
@@ -1012,6 +1278,16 @@ class Project{
             xmlString=xmlString.substring(0,startIndex)+"<wftempid>"+id+"</wftempid>"+xmlString.substring(endIndex+7);
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"usedwfARRAY",replaceId,""+id);
+            id++;
+        }
+        if(doWorkflows)while(xmlString.indexOf("<tagid>")>=0){
+            var startIndex=xmlString.indexOf("<tagid>");
+            var endIndex = xmlString.indexOf("</tagid>");
+            var replaceId=xmlString.substring(startIndex+7,endIndex);
+            xmlString=xmlString.substring(0,startIndex)+"<tagtempid>"+id+"</tagtempid>"+xmlString.substring(endIndex+8);
+            //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"tagsetARRAY",replaceId,""+id);
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"tagARRAY",replaceId,""+id);
             id++;
         }
         //replace all those temp id tage with real ones.

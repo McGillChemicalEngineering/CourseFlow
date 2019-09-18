@@ -35,8 +35,8 @@ class WFComment{
     }
     
     fromXML(xml){
-        this.x=getXMLVal(xml,"x");
-        this.y=getXMLVal(xml,"y");
+        this.x=int(getXMLVal(xml,"x"));
+        this.y=int(getXMLVal(xml,"y"));
         var text = getXMLVal(xml,"textHTML");
         if(text!=null)this.text=text;
         this.createVertex();

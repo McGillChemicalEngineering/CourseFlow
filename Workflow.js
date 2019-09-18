@@ -29,6 +29,10 @@ class Workflow{
         this.buttons=[];
         this.name = this.getDefaultName();
         this.id = this.project.genID();
+        this.tagBarDiv;
+        this.tagSelect;
+        this.tagSets=[];
+        this.isActive=false;
     }
     
     getDefaultName(){return "Untitled Workflow"};
@@ -48,18 +52,28 @@ class Workflow{
         for(i=0;i<this.brackets.length;i++){
             xml+=this.brackets[i].toXML();
         }
+        var tagSets = [];
+        for(i=0;i<this.tagSets.length;i++){
+            tagSets.push(this.tagSets[i].id);
+        }
+        xml+=makeXML(tagSets.join(","),"tagsetARRAY");
         for(i=0;i<this.comments.length;i++){
             xml+=this.comments[i].toXML();
         }
         var xmlData = makeXML(xml,"workflow");
         var parser = new DOMParser();
         this.xmlData = parser.parseFromString(xmlData,"text/xml");
+        return xmlData;
     }
     
     fromXML(){
         var xmlData = this.xmlData;
         this.setName(getXMLVal(xmlData,"wfname"));
         this.id = getXMLVal(xmlData,"wfid");
+        var tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
+        if(tagsetArray!=null){
+            for(var i=0;i<tagsetArray.length;i++)this.addTagSet(this.project.getCompByID(tagsetArray[i]));
+        }
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(var i=0;i<xmlweeks.length;i++){
             if(i>0)this.weeks[i-1].insertBelow();
@@ -82,7 +96,18 @@ class Workflow{
         }
     }
     
+    clickButton(){
+        this.project.changeActive(this.project.getWFIndex(this),true);
+    }
+    
     getType(){return "other"};
+    getButtonClass(){return "layoutactivity";}
+    
+    getChildren(){
+        var children = [];
+        for(var i=0;i<this.usedWF.length;i++)children.push(this.project.getWFByID(this.usedWF[i]));
+        return children;
+    }
     
     typeToXML(){return "";}
     
@@ -110,7 +135,7 @@ class Workflow{
         //if active, we have to change the name tag label to this
         if(name!=null && name!=""){
             name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
-            if(this.project.workflows[this.project.activeIndex]==this&&changeLabel){
+            if(this.isActive&&changeLabel){
             this.graph.labelChanged(this.titleNode,name);
             //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
             return;
@@ -127,6 +152,7 @@ class Workflow{
     
     makeActive(graph){
         
+        this.isActive=true;
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].classList.add("active");
             //uncommenting this line will allow all parents of the activated workflow to automatically expand
@@ -159,6 +185,7 @@ class Workflow{
             weekWidth=columns[columns.length-1].pos+defaultCellWidth/2+cellSpacing;
             this.createBaseWeek();
             if(this.xmlData!=null)this.fromXML();
+            this.createSpanner();
         }
         finally
         {
@@ -174,6 +201,7 @@ class Workflow{
     }
     
     makeInactive(){
+        this.isActive=false;
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].classList.remove("active");
@@ -186,6 +214,7 @@ class Workflow{
         this.columns=[];
         this.comments=[];
         this.brackets=[];
+        this.tagSets=[];
         if(this.graph!=null)this.graph.destroy();
     }
     
@@ -221,7 +250,7 @@ class Workflow{
             }
         }
         menu.addItem('Add Comment','resources/images/comment24.png',function(){
-            var com = new WFComment(graph,wf,evt.clientX-int(wf.project.container.style.left)-graph.view.getTranslate().x,evt.clientY-int(wf.project.container.style.top)-graph.view.getTranslate().y);
+            var com = new WFComment(graph,wf,evt.pageX-int(wf.project.container.style.left)-graph.view.getTranslate().x,evt.pageY-int(wf.project.container.style.top)-graph.view.getTranslate().y);
             com.createVertex();
             wf.addComment(com);
         });
@@ -239,6 +268,13 @@ class Workflow{
         baseWeek.createBox(cellSpacing,this.columns[0].head.b()+cellSpacing,weekWidth);
         this.updateWeekIndices();
     }
+    
+    //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
+    createSpanner(){
+        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX,0,this.weeks[0].box.w()+600,1,invisibleStyle);
+        
+    }
+    
     updateWeekIndices(){
         var weeks = this.weeks;
         for(var i=0;i<weeks.length;i++){
@@ -271,6 +307,14 @@ class Workflow{
             if(this.columns[i].name==name)return i;
         }
         return 0;
+    }
+    
+    getTagByID(id){
+        var tag;
+        for(var i=0;i<this.tagSets.length;i++){
+            tag = this.tagSets[i].getTagByID(id);
+            if(tag!=null)return tag;
+        }
     }
     
     addUsedWF(value){
@@ -376,6 +420,127 @@ class Workflow{
     generateBracketBar(){}
     generateTagBar(){}
     
+    populateTagBar(){
+        this.tagBarDiv.innerHTML="";
+        for(var i=0;i<this.tagSets.length;i++){
+            var tagDiv = document.createElement('div');
+            this.tagBarDiv.appendChild(tagDiv);
+            this.populateTagDiv(tagDiv,this.tagSets[i]);
+        }
+        if(this.tagSets.length==0){
+            this.tagBarDiv.innerHTML="<p><b>No outcomes have been added yet! Use the buttons below to add one.</b></p>"
+        }
+    }
+    /*
+    populateTagDiv(container,tag){
+        var p = this.project;
+        var wf = this;
+        if(container.tag!=null)container.tag.updateHiddenChildren(container);
+        var tagDiv = document.createElement('div');
+        tagDiv.className="layoutdiv";
+        var bwrap = document.createElement('div');
+        bwrap.className = "layoutbuttonwrap";
+        //Creates the function that is called when you drop it on something
+        var makeDropFunction=function(addedtag,workflow){
+            var dropfunction = function(graph, evt, filler, x, y)
+            {
+                var wf = workflow;
+                var thistag =addedtag;
+                var cell = graph.getCellAt(x,y);
+                graph.stopEditing(false);
+                while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
+                if(cell!=null && cell.isNode){
+                    cell.node.addTag(thistag,cell);
+                }
+
+            }
+            return dropfunction;
+        }
+        
+        var b = this.addNodebarItem(bwrap,tag.name,'',makeDropFunction(tag,this));
+        tagDiv.appendChild(bwrap);
+        if(tag.depth==0){
+            var del = document.createElement('div');
+            del.className="deletelayoutdiv";
+            var delicon = document.createElement('img');
+            delicon.src="resources/images/delrect16.png";
+            delicon.style.width='16px';
+            delicon.onclick=function(){
+                if(mxUtils.confirm("Unassign this competency set from the workflow? Note: this will NOT delete the competency set, but WILL remove all references to it from the workflow.")){
+                    tagDiv.parentElement.removeChild(tagDiv);
+                    wf.removeTagSet(tag);
+                    wf.populateTagBar();
+                    wf.populateTagSelect(p.competencies);
+                }
+            }
+            del.appendChild(delicon);
+            bwrap.appendChild(del);
+        }
+        var expandDiv = document.createElement('div');
+        expandDiv.className="expanddiv";
+        var expandIcon = document.createElement('img');
+        expandIcon.src="resources/images/plus16.png";
+        expandIcon.style.width='16px';
+        expandIcon.onclick=function(){
+            if(tagDiv.classList.contains("expanded")){p.collapseButton(tagDiv);}
+            else {p.expandButton(tagDiv);}
+        }
+        expandDiv.appendChild(expandIcon);
+        tagDiv.appendChild(expandDiv);
+        tagDiv.expandIcon = expandIcon;
+        
+        var hiddenchildren = document.createElement('div');
+        hiddenchildren.className = "hiddenchildrendiv";
+        hiddenchildren.onclick = expandIcon.onclick;
+        tagDiv.appendChild(hiddenchildren);
+        tagDiv.hiddenchildren=hiddenchildren;
+        tagDiv.tag=tag;
+        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
+        
+        
+        for(var i=0;i<tag.subtags.length;i++){
+            this.populateTagDiv(tagDiv,tag.subtags[i]);
+        }
+        container.appendChild(tagDiv);
+    }*/
+    
+    populateTagDiv(container,tag){
+         var p = this.project;
+        if(container.wf!=null&&container.hiddenchildren!=null)p.updateHiddenChildren(container);
+        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
+        var bdiv = p.makeLayoutButtonDiv(tag,container);
+        var bwrap = p.makeLayoutButtonWrapper(tag,bdiv);
+        
+        //Creates the function that is called when you drop it on something
+        var makeDropFunction=function(addedtag,workflow){
+            var dropfunction = function(graph, evt, filler, x, y)
+            {
+                var wf = workflow;
+                var thistag =addedtag;
+                var cell = graph.getCellAt(x,y);
+                graph.stopEditing(false);
+                while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
+                if(cell!=null && cell.isNode){
+                    cell.node.addTag(thistag,cell);
+                }
+
+            }
+            return dropfunction;
+        }
+        
+        var b = this.addNodebarItem(bwrap,tag.name,'',makeDropFunction(tag,this));
+        bwrap.appendChild(b);
+        if(tag.depth==0)bwrap.appendChild(p.makeLayoutButtonEdit(tag,b,false,false,true,this));
+        bdiv.appendChild(bwrap);
+        p.makeLayoutButtonExpandable(bdiv);
+        
+        container.appendChild(bdiv);
+        for(var i=0;i<tag.subtags.length;i++){
+            this.populateTagDiv(bdiv,tag.subtags[i]);
+        }
+        return bdiv;
+    }
+    
    
     
     addNodebarItem(container,name,image, dropfunction)
@@ -413,6 +578,70 @@ class Workflow{
         this.comments.push(com);
     }
     
+    addTagSet(tag){
+        this.tagSets.push(tag);
+    }
+    
+    removeTagSet(tag){
+        
+        var idSet = [];
+        idSet = tag.getAllID(idSet);
+        if(idSet.length==0)return;
+        //if this is the active workflow, this is super easy
+        if(this.isActive){
+            if(this.tagSets.indexOf(tag)>=0){
+                this.tagSets.splice(this.tagSets.indexOf(tag),1);
+                for(var i=0;i<this.weeks.length;i++){
+                    for(var j=0;j<this.weeks[i].nodes.length;j++){
+                        var node = this.weeks[i].nodes[j];
+                        for(var k=0;k<idSet.length;k++){
+                            var id=idSet[k];
+                            for(var l=0;l<node.tags.length;l++){
+                                if(node.tags[l].id==id){
+                                    node.tags.splice(l,1);
+                                    l--;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            //otherwise not so much
+            if(this.xmlData==null)return;
+            for(var k =0;k<idSet.length;k++){
+                var id = idSet[k];
+                var xmlused = Array.prototype.slice.call(this.xmlData.getElementsByTagName("tagsetARRAY")).concat(Array.prototype.slice.call(this.xmlData.getElementsByTagName("tagARRAY")));
+                for(i=0;i<xmlused.length;i++){
+                    if(xmlused[i].childNodes.length==0)continue;
+                    var usedArray = xmlused[i].childNodes[0].nodeValue.split(',');
+                    while(usedArray.indexOf(id)>=0){
+                        usedArray.splice(usedArray.indexOf(id),1);
+                    }
+                    xmlused[i].childNodes[0].nodeValue = usedArray.join(',');
+                }
+            }
+        }
+        
+    }
+    
+    populateTagSelect(list){
+        var compSelect=this.tagSelect;
+        while(compSelect.length>0)compSelect.remove(0);
+        var opt = document.createElement('option');
+        opt.text = "Select set to add";
+        opt.value = "";
+        compSelect.add(opt);
+        for(var i=0;i<list.length;i++){
+            if(this.tagSets.indexOf(list[i])<0){
+                opt = document.createElement('option');
+                opt.text = list[i].name;
+                opt.value = list[i].id;
+                compSelect.add(opt);
+            }
+        }
+    }
+    
     
     //Since the XML file may not originate from the program, there may be some overlap in the IDs. We therefore flip each ID to negative temporarily, assign everything, then use the IDs that were generated in the initial creation of the nodes.
     addNodesFromXML(week,startIndex,xml){
@@ -447,7 +676,7 @@ class Workflow{
     //Purge the workflow from this one
     purgeUsedWF(wf){
         //if it's active, easy
-        if(this.project.workflows.indexOf(this)==this.project.activeIndex){
+        if(this.isActive){
             var checknodes=false;
             while(this.usedWF.indexOf(wf.id)>=0){
                 this.usedWF.splice(this.usedWF.indexOf(wf.id),1);
@@ -480,11 +709,35 @@ class Workflow{
             
         }
         
+        
     }
+    
+    
+    getDeleteText(){
+        return "Delete this workflow? Warning: this will delete all contents (but not any workflows used by it)!";
+    }
+    
+    getUnassignText(){
+        return "Unassign this workflow? Note: this will NOT delete the workflow, but WILL remove this reference to it from the parent workflow.";
+    }
+
+    deleteSelf(){
+        this.project.deleteWF(this);
+    }
+    
+    unassignFrom(parent){
+        if(parent instanceof Workflow){
+            this.project.removeChild(parent,this);
+            
+        }else{
+            console.log("I don't know what to do with this");
+        }
+    }
+
     
     //swap the two indices of the used workflows (used to rearrange the layout); since this could be called while the workflow is inactive we need to dig into the xml
     swapUsedIndices(id1,id2){
-        if(this.project.workflows.indexOf(this)==this.project.activeIndex){
+        if(this.isActive){
             [this.usedWF[this.usedWF.indexOf(id1)],this.usedWF[this.usedWF.indexOf(id2)]]=[this.usedWF[this.usedWF.indexOf(id2)],this.usedWF[this.usedWF.indexOf(id1)]];
         }else{
             var xmlused = this.xmlData.getElementsByTagName("usedwfARRAY");
@@ -526,8 +779,44 @@ class Courseflow extends Workflow{
     getDefaultName(){return "New Course"};
     
     getType(){return "course"};
+    getButtonClass(){return "layoutcourse";}
     
     typeToXML(){return makeXML("course","wftype");}
+    
+    generateTagBar(container){
+        var p=this.project;
+        var wf = this;
+        var header = document.createElement('h3');
+        header.className="nodebarh3";
+        header.innerHTML="Outcomes:";
+        container.appendChild(header);
+        
+        this.tagBarDiv =  document.createElement('div');
+        
+        
+        container.appendChild(this.tagBarDiv);
+        
+        var compSelect = document.createElement('select');
+        this.tagSelect=compSelect;
+        this.populateTagSelect(p.competencies);
+        
+        var addButton = document.createElement('button');
+        addButton.innerHTML = "Assign Outcome";
+        addButton.onclick=function(){
+            var value = compSelect.value;
+            if(value!=""){
+               var comp = p.getCompByID(value);
+               wf.addTagSet(comp);
+               wf.populateTagBar();
+                compSelect.remove(compSelect.selectedIndex);
+            }
+        }
+        
+        container.appendChild(compSelect);
+        container.appendChild(addButton);
+        
+        this.populateTagBar();
+    }
 }
 
 class Activityflow extends Workflow{
@@ -550,6 +839,7 @@ class Activityflow extends Workflow{
     updateWeekIndices(){};
     
     getType(){return "activity"};
+    getButtonClass(){return "layoutactivity";}
     
     typeToXML(){return makeXML("activity","wftype");}
     
@@ -614,6 +904,7 @@ class Programflow extends Workflow{
     updateWeekIndices(){};
     
     getType(){return "program"};
+    getButtonClass(){return "layoutprogram";}
     
     typeToXML(){return makeXML("program","wftype");}
     

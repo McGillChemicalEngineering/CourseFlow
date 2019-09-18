@@ -50,7 +50,7 @@ class Week {
     }
     
     createBox(x,y,width){
-        this.box = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,100,this.getStyle());
+        this.box = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,emptyWeekSize,this.getStyle());
         this.box.isWeek=true;
         this.box.week=this;
         this.graph.orderCells(true,[this.box]);

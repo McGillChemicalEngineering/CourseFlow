@@ -39,6 +39,9 @@ class CFNode {
         this.autoLinkOut.portStyle="sourcePort=HIDDENs;targetPort=INn;";
         this.fixedLinksOut=[];
         this.brackets=[];
+        this.tags=[];
+        this.tagVertices=[];
+        this.tagPreviews=[];
     }
     
     makeAutoLinks(){return false;}
@@ -71,6 +74,11 @@ class CFNode {
         }
         xml+=makeXML(linksOut,"fixedlinkARRAY");
         xml+=makeXML(linkOutPorts,"linkportARRAY");
+        var tagArray=[];
+        for(i=0;i<this.tags.length;i++){
+            tagArray.push(this.tags[i].id);
+        }
+        xml+=makeXML(tagArray.join(","),"tagARRAY");
         return makeXML(xml,"node");
     }
     
@@ -92,6 +100,10 @@ class CFNode {
             link.id=linksOut[i];
             if(linkOutPorts[i]!=null)link.portStyle=linkOutPorts[i];
             this.fixedLinksOut.push(link);
+        }
+        var tagArray = getXMLVal(xml,"tagARRAY");
+        if(tagArray!=null)for(i=0;i<tagArray.length;i++){
+            this.addTag(this.wf.getTagByID(tagArray[i]),false);
         }
     }
     
@@ -144,12 +156,12 @@ class CFNode {
     
     setLeftIcon(value){
         this.lefticon=value;
-        if(value!=null)this.graph.setCellStyles("image",iconpath+value+".png",[this.lefticonnode]);
+        if(value!=null)this.graph.setCellStyles("image",iconpath+value+"48.png",[this.lefticonnode]);
         else this.graph.setCellStyles("image",null,[this.lefticonnode]);
     }
     setRightIcon(value){
         this.righticon=value;
-        if(value!=null)this.graph.setCellStyles("image",iconpath+value+".png",[this.righticonnode]);
+        if(value!=null)this.graph.setCellStyles("image",iconpath+value+"48.png",[this.righticonnode]);
         else this.graph.setCellStyles("image",null,[this.righticonnode]);
     }
     
@@ -169,7 +181,7 @@ class CFNode {
     getRightIconList(){return null;}
     
     makeFlushWithAbove(index){
-        if(index==0) this.moveNode(0,this.week.box.y()+cellSpacing-this.vertex.y());
+        if(index==0) this.moveNode(0,this.week.box.y()+2*cellSpacing-this.vertex.y());
         else this.moveNode(0,this.week.nodes[index-1].vertex.b()+cellSpacing-this.vertex.y());
     }
     
@@ -217,6 +229,8 @@ class CFNode {
         this.dropNode = this.graph.insertVertex(this.vertex,null,'',0,this.namenode.b()+cellDropdownPadding,defaultCellWidth,cellDropdownHeight,defaultDropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this;
+        this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
+        this.graph.toggleCells(false,[this.tagBox]);
         this.vertex.cellOverlays=[];
         this.addPlusOverlay();
         this.addDelOverlay();
@@ -259,7 +273,7 @@ class CFNode {
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.x = pt.x - bounds.width / 2;
+            bounds.x = pt.x+n.vertex.w()/2 - bounds.width;
             return bounds;
         };
         var graph = this.graph;
@@ -349,6 +363,63 @@ class CFNode {
         this.brackets.splice(this.brackets.indexOf(br),1);
     }
     
+    addTag(tag,show=true){
+        var n = this;
+        this.tags.push(tag);
+        tag.nodes.push(this);
+        var tagLabel = this.graph.insertVertex(this.tagBox,null,tag.name,tagBoxPadding,tagBoxPadding,this.tagBox.w()-2*tagBoxPadding,tagHeight,defaultTagStyle);
+        var colstyle = this.graph.getCellStyle(this.vertex)['fillColor'];
+        this.graph.setCellStyles("strokeColor",colstyle,[tagLabel]);
+        var overlay = new mxCellOverlay(new mxImage('resources/images/del48.png', 16, 16), 'Remove this tag');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.y = pt.y-bounds.height/2;
+            bounds.x = pt.x-tagLabel.w()/2+2;
+            return bounds;
+        }
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            graph.clearSelection();
+            n.removeTag(tag);
+        });
+        tagLabel.cellOverlays = [overlay];
+        var tagPreview = this.graph.insertVertex(this.vertex,null,'',tagBoxPadding+this.vertex.w(),tagHeight/2-2+(tagBoxPadding+tagHeight)*this.tagPreviews.length,4,4,defaultTagStyle);
+        graph.orderCells(true,[tagPreview]);
+        this.graph.setCellStyles("strokeColor",colstyle,[tagPreview]);
+        this.tagVertices.push(tagLabel);
+        this.tagPreviews.push(tagPreview);
+        this.toggleTags(show);
+    }
+    
+    removeTag(tag){
+        var vertex = this.tagVertices[this.tags.indexOf(tag)];
+        this.tagVertices.splice(this.tags.indexOf(tag),1);
+        this.graph.removeCells([vertex,this.tagPreviews[this.tagPreviews.length-1]]);
+        this.tags.splice(this.tags.indexOf(tag),1);
+        this.tagPreviews.pop();
+        tag.nodes.splice(tag.nodes.indexOf(this),1);
+    }
+    
+    toggleTags(show){
+        if(show){
+            for(var i=0;i<this.tagVertices.length;i++){
+                this.graph.moveCells([this.tagVertices[i]],0,(tagHeight+tagBoxPadding)*i-this.tagVertices[i].y());
+            }
+            var bounds = this.tagBox.getGeometry();
+            bounds.height = this.tagVertices.length*(tagHeight+tagBoxPadding);
+
+            this.graph.resizeCells([this.tagBox],bounds);
+            this.graph.orderCells(false,[this.vertex]);
+        }else{
+            for(var i=0;i<this.tagVertices.length;i++){
+                this.graph.removeCellOverlays(this.tagVertices[i]);
+            }
+        }
+        this.graph.toggleCells(show,[this.tagBox]);
+    }
+    
 }
 
 class ACNode extends CFNode {
@@ -383,7 +454,7 @@ class ACNode extends CFNode {
     }
     
     styleForColumn(){
-        var colstyle='#E5FFE5';
+        var colstyle='#46c443';
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     
@@ -418,7 +489,7 @@ class CONode extends CFNode {
     }
     
     styleForColumn(){
-        var colstyle='#E5FFE5';
+        var colstyle='#46c443';
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     
@@ -439,10 +510,11 @@ class ASNode extends CFNode {
     
     styleForColumn(){
         var colstyle="#FFFFFF";
-        if(this.column=="FA")colstyle='#C4DAFF';
-        else if(this.column=="SA")colstyle='#FFE5E5';
-        else if(this.column=="HW")colstyle='#FFFFFF';
+        if(this.column=="FA")colstyle='#eba833';
+        else if(this.column=="SA")colstyle='#ed4528';
+        else if(this.column=="HW")colstyle='#54c0db';
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
+        this.graph.setCellStyles("strokeColor",colstyle,this.tagVertices.concat(this.tagPreviews));
     }
     
     getVertexStyle(){
@@ -489,9 +561,9 @@ class WFNode extends CFNode {
     
     styleForColumn(){
         var colstyle="#FFFFFF";
-        if(this.column=="OOC")colstyle='#C4DAFF';
-        else if(this.column=="ICI")colstyle='#FFE5E5';
-        else if(this.column=="ICS")colstyle='#E5FFE5';
+        if(this.column=="OOC")colstyle='#54c0db';
+        else if(this.column=="ICI")colstyle='#eba833';
+        else if(this.column=="ICS")colstyle='#46c443';
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     

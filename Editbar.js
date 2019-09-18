@@ -52,6 +52,18 @@ class EditBar{
             if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML);
           }
         });
+        //Making some changes to the way link creation works. By default if the user has nothing selected, the link button simply does nothing; this is undesirable behaviour.
+        var toolbar = quill2.getModule('toolbar');
+        toolbar.defaultLinkFunction=toolbar.handlers['link'];
+        toolbar.addHandler("link",function customLinkFunction(value){
+            var select = quill2.getSelection();
+            if(select['length']==0){
+                quill2.insertText(select['index'],'link');
+                quill2.setSelection(select['index'],4)
+            }
+           
+            this.defaultLinkFunction(value);
+        });
         this.textField=quillDiv2.childNodes[0];
         this.linkedWF = document.getElementById('linkedWFSelect');
         this.node;

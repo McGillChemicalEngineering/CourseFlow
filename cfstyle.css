@@ -97,6 +97,12 @@ button:hover{
     display:none;
 }
 
+.addsubtag{
+    position:relative;
+    left:10%;
+    width:90%;
+}
+
 .expanddiv{
     position:absolute;
     left:-16px;
@@ -170,7 +176,7 @@ button:hover{
     float:right;
     z-index:3;
     box-shadow: -1px 0px 3px -1px;
-    width : 160px;
+    width : 200px;
     bottom : 0px;
     background : white;
     transition: width 2s;
@@ -187,6 +193,12 @@ button:hover{
     color: grey;
     white-space:pre;
 }
+
+.nodebar p{
+    font-size: 10px;
+    color: grey;
+}
+
 .nodebar button{
     text-align: left;
     color: rgb(25,118,188);
@@ -237,6 +249,11 @@ button:hover{
 }
 .nameinput{
     width:100%;
+}
+
+.competencywrapper{
+    padding:20px;
+    
 }
 
 
