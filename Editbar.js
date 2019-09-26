@@ -66,11 +66,15 @@ class EditBar{
         });
         this.textField=quillDiv2.childNodes[0];
         this.linkedWF = document.getElementById('linkedWFSelect');
+        this.tagButtonsDiv = document.getElementById('tagButtonsDiv');
+        this.tagSelect=document.getElementById('tagSelect');
         this.node;
         
     }
     
     enable(node){
+        var eb = this;
+        this.node=node;
         if(node.name!=null)this.nameField.setText(node.name);
         else this.nameField.setText("<Name>");
         if(node.text!=null)this.textField.innerHTML=node.text;
@@ -104,7 +108,44 @@ class EditBar{
                 node.setLinkedWF(this.value);
             }
         }else this.hideParent(this.linkedWF);
-        this.node=node;
+        if(node.wf.tagSets.length>0){
+            this.showParent(this.tagButtonsDiv);
+            this.populateTags();
+        }else this.hideParent(this.tagButtonsDiv);
+        this.tagSelect.onchange = function(){
+            if(this.value=="")return;
+            else node.addTag(node.wf.getTagByID(this.value));
+            eb.populateTags();
+        }
+        
+    }
+    
+    populateTags(){
+        var i;
+        this.tagButtonsDiv.innerHTML="";
+        var tags = this.node.tags;
+        if(tags.length>0){
+            for(i=0;i<tags.length;i++){
+                tags[i].makeEditButton(this.tagButtonsDiv,this.node);
+            }
+        }
+        while(this.tagSelect.length>0){this.tagSelect.remove(0);}
+        var allTags = [];
+        for(i=0;i<this.node.wf.tagSets.length;i++){
+            allTags = this.node.wf.tagSets[i].getAllTags(allTags);
+        }
+        var opt0 = document.createElement('option');
+        opt0.text = "Select a tag to add";
+        opt0.value="";
+        this.tagSelect.add(opt0);
+        for(i=0;i<allTags.length;i++){
+            if(tags.indexOf(allTags[i])>=0)continue;
+            var opt = document.createElement('option');
+            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getType()[0]+" - "+allTags[i].name;
+            opt.value = allTags[i].id;
+            this.tagSelect.add(opt);
+        }
+        
     }
     
     hideParent(element){

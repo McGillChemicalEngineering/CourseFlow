@@ -41,6 +41,7 @@
     
 	<!-- Loads and initializes all our classes -->
 		<script type="text/javascript" src="Constants.js"></script>
+		<script type="text/javascript" src="Layout.js"></script>
 		<script type="text/javascript" src="Week.js"></script>
 		<script type="text/javascript" src="Column.js"></script>
 		<script type="text/javascript" src="CFNode.js"></script>
@@ -50,6 +51,7 @@
 		<script type="text/javascript" src="Bracket.js"></script>
 		<script type="text/javascript" src="Tag.js"></script>
 		<script type="text/javascript" src="Comment.js"></script>
+		<script type="text/javascript" src="Layoutbutton.js"></script>
         <script type="text/javascript" src="TempXMLStorage.js"></script>
 <!--    	<script src="resources/pdftex.js"></script> -->
 <!--    	<script src="resources/promise/promise.js"></script> -->
@@ -121,19 +123,24 @@
         </div>
         <div style="display:inline-block;width:100%">
             <div id="leftIconDiv" style="float:left;width:50%;">
-                <h4>Left Icon</h4>
+                <h4>Left Icon:</h4>
                 <select id="leftIconSelect"></select>
             </div><div id="rightIconDiv" style="float:left;width:50%;">
-                <h4>Right Icon</h4>
+                <h4>Right Icon:</h4>
                 <select id="rightIconSelect"></select>
             </div>
         </div>
         <div id="descriptionDiv">
-            <h4>Description</h4>
+            <h4>Description:</h4>
         </div>
         <div id="linkedWFDiv">
-            <h4>Linked Workflow</h4>
+            <h4>Linked Workflow:</h4>
             <select id="linkedWFSelect"></select>
+        </div>
+        <div id="tagsDiv">
+            <h4>Tags:</h4>
+            <div id = "tagButtonsDiv"></div>
+            <select id="tagSelect"></select>
         </div>
     </div>
 	<!-- Creates a container for the graph-->

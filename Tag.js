@@ -22,8 +22,9 @@ class Tag {
         this.name=this.getDefaultName();
         this.project = project;
         this.id = project.genID();
-        this.subtags=[];
+        this.children=[];
         this.nodes=[];
+        this.drops=[];
         this.buttons=[];
         this.parentTag=parentTag;
         this.depth;
@@ -36,8 +37,14 @@ class Tag {
             name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.name=name;
             for(var i=0;i<this.buttons.length;i++){
-                this.buttons[i].firstElementChild.firstElementChild.innerHTML=this.name;
+                this.buttons[i].namediv.innerHTML=this.name;
             }
+        }
+    }
+    
+    removeChild(child){
+        if(this.children.indexOf(child)>=0){
+            this.children.splice(this.children.indexOf(child),1);
         }
     }
     
@@ -45,9 +52,44 @@ class Tag {
         return "New "+this.getType();
     }
     
+    clearData(){
+        this.nodes=[];
+        this.drops=[];
+        for(var i=0;i<this.children.length;i++){
+            this.children[i].clearData();
+        }
+    }
+    
+    addButton(container,recurse=true){
+        var button = new Layoutbutton(this,container);
+        button.makeEditable(true,true,false);
+        button.makeMovable();
+        this.buttons.push(button);
+        if(recurse)for(var i=0;i<this.children.length;i++){
+            this.children[i].addButton(button.childdiv);
+        }
+    }
+    
+    removeButton(button){
+        this.buttons.splice(this.buttons.indexOf(button),1);
+        button.removeSelf();
+    }
+    
     getButtonClass(){return "layoutactivity";}
     
-    getChildren(){return this.subtags;}
+    getChildren(){return this.children;}
+    
+    getNumberOfDescendants(des){
+        var children = this.children;
+        for(var i=0;i<children.length;i++){
+            var wfc = children[i];
+            if(des[wfc.getType()]==null)des[wfc.getType()]=1;
+            else des[wfc.getType()]=des[wfc.getType()]+1;
+            des = wfc.getNumberOfDescendants(des);
+            
+        }
+        return des;
+    }
     
     getDeleteText(){
             return "Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!";
@@ -57,8 +99,15 @@ class Tag {
         return "Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.";
     }
     
-    deleteSelf(){
-        this.project.deleteComp(this);
+    deleteSelf(button){
+        if(this.depth==0)this.project.deleteComp(this);
+        else{
+            this.parentTag.removeChild(this);
+            if(button!=null)button.removeSelf();
+            for(var i=0;i<this.project.workflows.length;i++){
+                this.project.workflows[i].purgeTag(this);
+            }
+        }
     }
     
     unassignFrom(parent){
@@ -67,6 +116,12 @@ class Tag {
             parent.populateTagBar();
             parent.populateTagSelect(this.project.competencies);
             
+        }else if(parent instanceof CFNode){
+            parent.removeTag(this);
+            var eb = this.project.editbar;
+            if(eb.node==parent){
+                eb.populateTags();
+            }
         }else{
             console.log("I don't know what to do with this");
         }
@@ -85,12 +140,21 @@ class Tag {
         }
     }
     
+    getIcon(){
+        switch(this.depth){
+            case 0: return "program";
+            case 1: return "course";
+            case 2: return "activity";
+            default: return "";
+        }
+    }
+    
     toXML(){
         var xml = "";
         xml+=makeXML(this.name,"tagname");
         xml+=makeXML(this.id,"tagid");
-        for(var i=0;i<this.subtags.length;i++){
-            xml+=this.subtags[i].toXML();
+        for(var i=0;i<this.children.length;i++){
+            xml+=this.children[i].toXML();
         }
         return makeXML(xml,"tag");
     }
@@ -98,20 +162,21 @@ class Tag {
     fromXML(xml){
         this.setName(getXMLVal(xml,"tagname"));
         this.id=getXMLVal(xml,"tagid");
-        //var subtags = xml.querySelectorAll('tag>tag');
         for(var i = 0;i<xml.childNodes.length;i++){
             if(xml.childNodes[i].nodeName=="tag"){
                 var newtag = new Tag(this.project,this);
                 newtag.fromXML(xml.childNodes[i]);
-                this.subtags.push(newtag);
+                this.children.push(newtag);
             }
         }
     }
     
     makeActive(container){
+        container.style.height="initial";
+        container.style.overflow="initial";
         this.isActive=true;
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].classList.add("active");
+            this.buttons[i].makeActive();
         }
         this.wrapperDiv = document.createElement('div');
         this.wrapperDiv.innerHTML="<h3>Learning Outcomes (Under Development):</h3><p>This experimental feature is currently incomplete. Please use caution when making use of it: save often, and keep a backup of your file without the learning outcomes.</p>"
@@ -124,7 +189,7 @@ class Tag {
     makeInactive(container){
         this.isActive=false;
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].classList.remove("active");
+            this.buttons[i].makeInactive();
         } 
         container.removeChild(this.wrapperDiv);
         this.wrapperDiv = null;
@@ -133,8 +198,8 @@ class Tag {
     getTagByID(id){
         if(this.id==id)return this;
         var tag;
-        for(var i=0;i<this.subtags.length;i++){
-            tag = this.subtags[i].getTagByID(id);
+        for(var i=0;i<this.children.length;i++){
+            tag = this.children[i].getTagByID(id);
             if(tag!=null)return tag;
         }
         return null;
@@ -142,61 +207,76 @@ class Tag {
     
     getAllID(list){
         list.push(this.id);
-        for(var i=0;i<this.subtags.length;i++){
-            list = this.subtags[i].getAllID(list);
+        for(var i=0;i<this.children.length;i++){
+            list = this.children[i].getAllID(list);
+        }
+        return list;
+    }
+    
+    getAllTags(list){
+        list.push(this);
+        for(var i=0;i<this.children.length;i++){
+            list = this.children[i].getAllTags(list);
         }
         return list;
     }
     
     makeInitialLine(container){
         var button = this.makeButton(container);
-        for(var i=0;i<this.subtags.length;i++){
-            this.subtags[i].makeInitialLine(button);
+        for(var i=0;i<this.children.length;i++){
+            this.children[i].makeInitialLine(button);
         }
     }
     
     makeButton(container){
         var tag = this;
-        var p = tag.project;
-        if(container.wf!=null&&container.hiddenchildren!=null)p.updateHiddenChildren(container);
-        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
-        var bdiv = p.makeLayoutButtonDiv(tag,container);
-        var bwrap = p.makeLayoutButtonWrapper(tag,bdiv);
-        var b = p.makeLayoutButton(tag);
-        bwrap.appendChild(b);
-        bwrap.appendChild(p.makeLayoutButtonEdit(tag,b,true,true,false));
-        bwrap.appendChild(p.makeLayoutButtonMove(tag,bdiv));
-        bdiv.appendChild(bwrap);
-        p.makeLayoutButtonExpandable(bdiv);
-        
-        var addChild = document.createElement('button');
-        addChild.innerHTML = "+";
-        addChild.className = "addsubtag";
-        addChild.onclick = function(){
+        var button = new CompetencyEditButton(this,container);
+        button.makeEditable(true,this.depth>0,false);
+        button.makeMovable();
+        button.makeExpandable();
+        button.b.onclick=function(){button.renameClick();}
+        var createchildfunction = function(){
             var newtag = new Tag(tag.project,tag);
-            tag.subtags.push(newtag);
-            newtag.makeInitialLine(bdiv);
+            tag.children.push(newtag);
+            newtag.makeInitialLine(button.childdiv);
+            button.expand();
         }
-        bdiv.appendChild(addChild);
-        var prevAdd;
-        if(container.lastChild!=null&&container.lastChild.classList.contains("addsubtag"))prevAdd = container.lastChild;
-        bdiv.wf=tag;
-        container.insertBefore(bdiv,prevAdd);
-        return bdiv;
+        if(this.depth<2)button.makeCreateChild(createchildfunction);
+        return button.childdiv;
+    }
+    
+    addDrop(button){
+        var tag = this;
+        button.b.addEventListener("mouseover",function(evt){tag.highlight(true)});
+        button.b.addEventListener("mouseleave",function(evt){tag.highlight(false)});
+        this.drops.push(button);
     }
     
     
-    swapUsedIndices(id1,id2){
-        for(var i=0;i<this.subtags.length;i++){
-            if(this.subtags[i].id==id1){
-                for(var j=0;j<this.subtags.length;j++){
-                    if(this.subtags[j].id==id2){
-                        [this.subtags[i],this.subtags[j]]=[this.subtags[j],this.subtags[i]];
-                        return;
-                    }
-                }
-            }
+    //swap the two usedsubtags (used to rearrange the layout)
+    swapChildren(c1,c2){
+        var i1 = this.children.indexOf(c1);
+        var i2 = this.children.indexOf(c2);
+        [this.children[i1],this.children[i2]]=[this.children[i2],this.children[i1]];
+        
+    }
+    
+    highlight(on){
+        for(var i=0;i<this.nodes.length;i++){
+            this.nodes[i].highlight(on);
         }
+        for(i=0;i<this.drops.length;i++){
+            if(on&&this.nodes.length>0)this.drops[i].bwrap.classList.add("highlighted");
+            else this.drops[i].bwrap.classList.remove("highlighted");
+        }
+    }
+    
+    makeEditButton(container,node,editbar){
+        var tag = this;
+        var button = new EditBarTagButton(this,container);
+        button.makeEditable(false,false,true,node);
+        button.b.onclick=null;
+        return button.childdiv;
     }
     
 }

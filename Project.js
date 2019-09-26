@@ -35,6 +35,10 @@ class Project{
         this.loadAppend=false;
         this.name = "New Project";
         
+        
+        this.makeResizable(this.sidenav,"right");
+        
+        
         //Add the ability to edit the name of the project
         var nameIcon = document.createElement('img');
         nameIcon.src="resources/images/edit16.png";
@@ -90,6 +94,7 @@ class Project{
         var minimap = document.getElementById('outlineContainer');
         
         var ebContainer = document.getElementById('ebContainer');
+        this.makeResizable(ebContainer,"left");
         //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
         ebContainer.style.zIndex='3';
         ebContainer.style.width = '0px';
@@ -192,22 +197,17 @@ class Project{
         if(this.activeWF!=null)wf = this.workflows[this.activeWF];
         else if(this.activeComp!=null)wf = this.competencies[this.activeComp];
         else return;
-        var usedWF=[];
-        if(wf instanceof Workflow) usedWF= this.getDependencies(wf);
+        var children=[];
+        if(wf instanceof Workflow) children= this.getDependencies(wf);
         var exported=[];
         var xml = "";
         xml+=makeXML(wf.name,"prname");
         xml+=makeXML(this.idNum,"idnum");
         xml+=wf.toXML();
-        for(var i=0;i<usedWF.length;i++){
-            if(exported.indexOf(usedWF[i])>=0)continue;
-            exported.push(usedWF[i]);
-            if(usedWF[i] instanceof Workflow){
-                if(usedWF[i].xmlData==null)usedWF[i].toXML();
-                xml+=serializer.serializeToString(usedWF[i].xmlData);
-            }else if(usedWF[i] instanceof Tag){
-                xml+=usedWF[i].toXML();
-            }
+        for(var i=0;i<children.length;i++){
+            if(exported.indexOf(children[i])>=0)continue;
+            exported.push(children[i]);
+            xml+=children[i].toXML();
         }
         xml = makeXML(xml,"project");
         var filename = wf.name+".xml";
@@ -216,10 +216,9 @@ class Project{
     
     getDependencies(wf){
         var array = [];
-        for(var i=0;i<wf.usedWF.length;i++){
-            var wfc = this.getWFByID(wf.usedWF[i])
-            array.push(wfc);
-            array = array.concat(this.getDependencies(wfc));
+        for(var i=0;i<wf.children.length;i++){
+            array.push(wf.children[i]);
+            array = array.concat(this.getDependencies(wf.children[i]));
         }
         if(wf.tagSets.length>0){
             for(i=0;i<wf.tagSets.length;i++)array.push(wf.tagSets[i]);
@@ -229,19 +228,20 @@ class Project{
                 for(i=0;i<tagset;i++)array.push(this.getCompByID(tagset[i]));
             }
         }
-        console.log(array);
         return array;
     }
     
     duplicateActiveWF(){
+        if(this.activeWF==null)return;
         var wf = this.workflows[this.activeWF];
-        wf.toXML();
-        var xml = this.workflows[this.activeWF].xmlData;
-        xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=xml.getElementsByTagName("wfname")[0].childNodes[0].nodeValue+" (Copy)";
-        xml.getElementsByTagName("wfid")[0].childNodes[0].nodeValue=this.genID;
-        var wfcopy = this.addWorkflowFromXML(xml,false);
-        for(var i=0;i<wfcopy.usedWF.length;i++){
-            this.addButton(this.getWFByID(wfcopy.usedWF[i]),wfcopy.buttons[0]);
+        var xml = (new DOMParser()).parseFromString(this.assignNewIDsToXML(this.workflows[this.activeWF].toXML(),false),"text/xml");
+        var wfcopy = this.addWorkflowFromXML(xml);
+        wfcopy.setName(wf.name+" (Copy)");
+        wfcopy.id = this.genID;
+        wfcopy.children = wf.children;
+        wfcopy.tagSets = wf.tagSets;
+        for(var i=0;i<wfcopy.children.length;i++){
+            wfcopy.children[i].addButton(wfcopy.buttons[0].childdiv);
         }
         
     }
@@ -262,14 +262,12 @@ class Project{
     
     
     toXML(){
-        if(this.activeWF!=null)this.workflows[this.activeWF].toXML();
         var xml = "";
         var serializer = new XMLSerializer();
         xml+=makeXML(this.name,"prname");
         xml+=makeXML(this.idNum,"idnum");
         for(var i=0;i<this.workflows.length;i++){
-            if(this.workflows[i].xmlData==null)this.workflows[i].toXML();
-            xml+=serializer.serializeToString(this.workflows[i].xmlData);
+            xml+=this.workflows[i].toXML();
         }
         for(var i=0;i<this.competencies.length;i++){
             xml+=this.competencies[i].toXML();
@@ -313,7 +311,10 @@ class Project{
         for(i=startWF;i<this.workflows.length;i++){
             var wf = this.workflows[i];
             for(var j=0;j<wf.usedWF.length;j++){
-                this.addChild(wf,this.getWFByID(wf.usedWF[j]),false);
+                wf.addChild(this.getWFByID(wf.usedWF[j]),false);
+            }
+            if(wf.tagsetArray!=null)for(j=0;j<wf.tagsetArray.length;j++){
+                wf.addTagSet(this.getCompByID(wf.tagsetArray[j]));
             }
         }
         this.xmlData = xmlData;
@@ -329,24 +330,21 @@ class Project{
         if(type=="activity")wf = new Activityflow(this.container,this);
         else if(type=="program")wf = new Programflow(this.container,this);
         else wf = new Courseflow(this.container,this);
-        this.addButton(wf,this.layout);
+        wf.addButton(this.layout);
         this.workflows.push(wf);
         return wf;
     }
     
     addCompetency(){
         var tag = new Tag(this,null);
-        this.addButton(tag,this.compDiv);
+        tag.addButton(this.compDiv);
         this.competencies.push(tag);
         return tag;
     }
     
     addWorkflowFromXML(xml){
         var wf = this.addWorkflow(getXMLVal(xml,"wftype"));
-        wf.id=getXMLVal(xml,"wfid");
-        wf.setName(getXMLVal(xml,"wfname"));
-        wf.usedWF = getXMLVal(xml,"usedwfARRAY");
-        wf.xmlData=xml;
+        wf.fromXML(xml);
         return wf;
     }
     
@@ -356,35 +354,7 @@ class Project{
     }
     
     
-    addChild(wfp,wfc,recurse=true){
-        //If child is at the root level, remove its button
-        if(wfc.buttons!=null&&wfc.buttons.length>0&&wfc.buttons[0].parentElement.id=="layout"){
-            this.removeButton(wfc,wfc.buttons[0]);
-        }
-        //Add it to the parent at all locations in the tree
-        for(var i=0;i<wfp.buttons.length;i++){
-            this.addButton(wfc,wfp.buttons[i],recurse);
-        }
-    }
     
-    updateHiddenChildren(button){
-        console.log("Updating hidden children");
-        var wfp = button.wf;
-        var des={};
-        des = this.getNumberOfDescendants(wfp,des);
-        var text = "... ";
-        for (var propt in des){
-            var s = propt;
-            if(des[propt]!=1){
-                s=s.replace(/y$/,"ie");
-                s+="s";
-            }
-            text+=des[propt]+" ";
-            text+=s+", ";
-        }
-        text = text.replace(/, $/,"");
-        button.hiddenchildren.innerHTML = text;
-    }
     
     getNumberOfDescendants(wfp,des){
         var children = wfp.getChildren();
@@ -398,33 +368,19 @@ class Project{
         return des;
     }
     
-    removeChild(wfp,wfc){
-        //Remove the button from all instances of the parent, but only once (we might use the same activity twice in one course)
-        for(var i=0;i<wfp.buttons.length;i++){
-            for(var j=0;j<wfc.buttons.length;j++){
-                if(wfc.buttons[j].parentElement == wfp.buttons[i]){
-                    this.removeButton(wfc,wfc.buttons[j]);
-                    break;
-                }
-            }
-        }
-        //wfp.removeUsedWF(wfc.id);
-        //if no instances still exist, move it back into the root
-        if(wfc.buttons.length==0)this.addButton(wfc,this.layout);
-    }
     
     //Causes the workflow to delete itself and all its contents
     deleteWF(wf){
-        for(var i=wf.usedWF.length-1;i>=0;i--){
-            this.removeChild(wf,this.getWFByID(wf.usedWF[i]));
+        for(var i=wf.children.length-1;i>=0;i--){
+            wf.removeChild(wf.children[i]);
         }
-        //Seek out all wf that use this one, remove it from usedWF and from any nodes that use it
+        //Seek out all wf that use this one, remove it from children and from any nodes that use it
         for(i=0;i<this.workflows.length;i++){
             var wfp = this.workflows[i];
             wfp.purgeUsedWF(wf);
         }
         for(i=0;i<wf.buttons.length;i++){
-            this.removeButton(wf,wf.buttons[i]);
+            wf.removeButton(wf.buttons[i]);
         }
         if(this.activeWF!=null){
             if(wf.isActive){
@@ -439,13 +395,13 @@ class Project{
     
     //Causes the competency to delete itself and all its contents
     deleteComp(tag){
-        //Seek out all wf that use this one, remove it from usedWF and from any nodes that use it
+        //Seek out all wf that use this one, remove it from tags and from any nodes that use it
         for(var i=0;i<this.workflows.length;i++){
             var wf = this.workflows[i];
             wf.removeTagSet(tag);
         }
         for(i=0;i<tag.buttons.length;i++){
-            this.removeButton(tag,tag.buttons[i]);
+            tag.removeButton(tag.buttons[i]);
         }
         if(this.activeComp!=null){
             if(tag.isActive){
@@ -477,309 +433,51 @@ class Project{
         select.add(opt);
     }
     
-    //moves the button up or down. If it's at the root level, this entails switching the workflow ordering and then switching the order of the buttons. If it's NOT at the root level, we have to switch it in usedWF of the parent, then switch the order of the buttons.
-    moveButton(button,wf,up){
-        console.log("Moving button");
-        var parent = button.parentElement;
-        var wf2;
-        var myindex = Array.prototype.indexOf.call(parent.childNodes,button);
-        if(up&&myindex>0&&parent.childNodes[myindex-1].classList.contains("layoutdiv")){
-            //move it up
-            wf2 = parent.childNodes[myindex-1].wf;
-            parent.insertBefore(parent.childNodes[myindex],parent.childNodes[myindex-1]);
-
-        }else if(!up&&myindex<parent.childNodes.length-1&&parent.childNodes[myindex+1].classList.contains("layoutdiv")){
-            //move it down
-            wf2 = parent.childNodes[myindex+1].wf;
-            parent.insertBefore(parent.childNodes[myindex+1],parent.childNodes[myindex]);
-        }
-        if(wf2!=null){
-            if(parent.className!=button.className){
-                if(wf instanceof Workflow && wf2 instanceof Workflow){
-                    [this.workflows[this.workflows.indexOf(wf)],this.workflows[this.workflows.indexOf(wf2)]] = [this.workflows[this.workflows.indexOf(wf2)],this.workflows[this.workflows.indexOf(wf)]];
-                }else if(wf instanceof Tag && wf2 instanceof Tag){
-                    [this.competencies[this.competencies.indexOf(wf)],this.competencies[this.competencies.indexOf(wf2)]] = [this.competencies[this.competencies.indexOf(wf2)],this.competencies[this.competencies.indexOf(wf)]];
-                }
-            }else{
-                var wfp = parent.wf;
-                wfp.swapUsedIndices(wf.id,wf2.id);
-                
-            }
-        }
-    }
     
-    //Adds a button to a layout. This can actually be for either a workflow or a competency.
-    /*addButton(wf,container,recurse=true){
-        var isWF = true;
-        if(wf instanceof Tag)isWF=false;
-        if(isWF&&container.wf!=null)this.updateHiddenChildren(container.wf,container);
-        var bdiv = document.createElement('div');
-        var bwrap = document.createElement('div');
-        var b = document.createElement('button');
-        bdiv.className = "layoutdiv";
-        bwrap.className = "layoutbuttonwrap";
-        b.innerHTML=wf.name;
-        if(wf instanceof Programflow)b.className="layoutprogram";
-        else if(wf instanceof Courseflow)b.className="layoutcourse";
-        else b.className="layoutactivity";
-        var p = this;
-        b.onclick=function(){
-            if(isWF)p.changeActive(p.getWFIndex(wf),isWF);
-            else p.changeActive(p.getCompIndex(wf),isWF);
-        }
-        bwrap.appendChild(b);
-        var edit = document.createElement('div');
-        edit.className = "editlayoutdiv";
-        var up = document.createElement('a');
-        up.className="layoutchange";
-        up.innerHTML="&#708";
-        up.href="#";
-        up.onclick=function(){
-            p.moveButton(bdiv,wf,true);
-        }
-        edit.appendChild(up);
-        var down = document.createElement('a');
-        down.className="layoutchange";
-        down.innerHTML="&#709";
-        down.href="#";
-        down.onclick=function(){
-            p.moveButton(bdiv,wf,false);
-        }
-        edit.appendChild(down);
-        bwrap.appendChild(edit);
-        var del = document.createElement('div');
-        del.className="deletelayoutdiv";
-        var nameIcon = document.createElement('img');
-        nameIcon.src="resources/images/edit16.png";
-        nameIcon.style.width='16px';
-        nameIcon.onclick=function(){
-            var tempfunc = b.onclick;
-            //create an input, on enter or exit make that the new name
-            b.innerHTML="<input type='text' value = '"+wf.name+"'placeholder='<type a new name here>'></input>";
-            b.firstElementChild.focus();
-            b.firstElementChild.select();
-            b.onclick=null;
-            p.container.onclick=function(){
-                if(b.firstElementChild!=null)b.firstElementChild.blur();
-                p.container.onclick=null;
-            };
-            b.firstElementChild.addEventListener("focusout",function(){
-                b.onclick=tempfunc;
-                if(b.firstElementChild.value=="")b.innerHTML=wf.name;
-                else wf.setName(b.firstElementChild.value,true);
-            });
-        }
-        del.appendChild(nameIcon);
-        var delicon = document.createElement('img');
-        delicon.src="resources/images/delrect16.png";
-        delicon.style.width='16px';
-        delicon.onclick=function(){
-            if(mxUtils.confirm("Delete this "+(isWF ? "workflow":"competency")+"? Warning: this will delete all contents"+(isWF ? "(but not any workflows used by it)!":"")+".")){
-                if(isWF)p.deleteWF(wf);
-                else p.deleteComp(wf);
-            }
-        }
-        del.appendChild(delicon);
-        bwrap.appendChild(del);
-        bdiv.appendChild(bwrap);
-        var expandDiv = document.createElement('div');
-        expandDiv.className="expanddiv";
-        var expandIcon = document.createElement('img');
-        expandIcon.src="resources/images/plus16.png";
-        expandIcon.style.width='16px';
-        expandIcon.onclick=function(){
-            if(bdiv.classList.contains("expanded")){p.collapseButton(bdiv);}
-            else {p.expandButton(bdiv);}
-        }
-        expandDiv.appendChild(expandIcon);
-        bdiv.appendChild(expandDiv);
-        bdiv.expandIcon = expandIcon;
+    
+    makeResizable(div,direction){
         
-        var hiddenchildren = document.createElement('div');
-        hiddenchildren.className = "hiddenchildrendiv";
-        hiddenchildren.onclick = expandIcon.onclick;
-        bdiv.appendChild(hiddenchildren);
-        bdiv.hiddenchildren=hiddenchildren;
-        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
-        bdiv.wf=wf;
-        container.appendChild(bdiv);
-        wf.buttons.push(bdiv);
-        if(isWF&&recurse)for(var i=0;i<wf.usedWF.length;i++){
-            this.addButton(this.getWFByID(wf.usedWF[i]),bdiv);
-        }
-    }*/
-    addButton(wf,container,recurse=true){
-        if(container.wf!=null&&container.hiddenchildren!=null)this.updateHiddenChildren(container);
-        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
-        var bdiv = this.makeLayoutButtonDiv(wf,container);
-        var bwrap = this.makeLayoutButtonWrapper(wf,bdiv);
-        var b = this.makeLayoutButton(wf);
-        bwrap.appendChild(b);
-        bwrap.appendChild(this.makeLayoutButtonEdit(wf,b,true,true,false));
-        bwrap.appendChild(this.makeLayoutButtonMove(wf,bdiv));
-        bdiv.appendChild(bwrap);
-        this.makeLayoutButtonExpandable(bdiv);
+        var handle = document.createElement("div");
+        handle.className="panelresizehandle";
         
-        container.appendChild(bdiv);
-        wf.buttons.push(bdiv);
-        if(wf instanceof Workflow&&recurse)for(var i=0;i<wf.usedWF.length;i++){
-            this.addButton(this.getWFByID(wf.usedWF[i]),bdiv);
-        }
-        return bdiv;
-    }
-    
-    makeLayoutButtonDiv(wf,container,expandable=true){
-        var p = this;    
-        var bdiv = document.createElement('div');
-        bdiv.wf=wf;
-        return bdiv;
-        
-    }
-    
-    makeLayoutButtonWrapper(wf,bdiv){
-        var p = this;
-        var bwrap = document.createElement('div');
-        bdiv.className = "layoutdiv";
-        bwrap.className = "layoutbuttonwrap";        
-        return bwrap;
-    }
-    
-    makeLayoutButton(wf){
-        var b = document.createElement('button');
-        b.innerHTML=wf.name;
-        b.className=wf.getButtonClass();
-        b.onclick=function(){
-            wf.clickButton();
-        }
-        return b;
-    }
-    
-    makeLayoutButtonEdit(wf,b,renamable=true,deletable=true,unassignable=true,parent=null){
-        var p = this;
-        var edit = document.createElement('div');
-        edit.className="deletelayoutdiv";
-        if(renamable){
-            var nameIcon = document.createElement('img');
-            nameIcon.src="resources/images/edit16.png";
-            nameIcon.style.width='16px';
-            nameIcon.onclick=function(){
-                var tempfunc = b.onclick;
-                //create an input, on enter or exit make that the new name
-                b.innerHTML="<input type='text' value = '"+wf.name+"'placeholder='<type a new name here>'></input>";
-                b.firstElementChild.focus();
-                b.firstElementChild.select();
-                b.onclick=null;
-                p.container.onclick=function(){
-                    if(b.firstElementChild!=null)b.firstElementChild.blur();
-                    p.container.onclick=null;
-                };
-                b.firstElementChild.addEventListener("focusout",function(){
-                    b.onclick=tempfunc;
-                    if(b.firstElementChild.value=="")b.innerHTML=wf.name;
-                    else wf.setName(b.firstElementChild.value,true);
-                    console.log("Setting Name");
-                });
-            }
-            edit.appendChild(nameIcon);
-        }
-        if(deletable){
-            var delicon = document.createElement('img');
-            delicon.src="resources/images/delrect16.png";
-            delicon.style.width='16px';
-            delicon.onclick=function(){
-                if(mxUtils.confirm(wf.getDeleteText())){
-                    wf.deleteSelf();
-                }
-            }
-            edit.appendChild(delicon);
-        }
-        if(unassignable){
-            var unassignicon = document.createElement('img');
-            unassignicon.src="resources/images/unassign16.png";
-            unassignicon.style.width='16px';
-            unassignicon.onclick=function(){
-                if(mxUtils.confirm(wf.getUnassignText())){
-                    wf.unassignFrom(parent);
-                }
-            }
-            edit.appendChild(unassignicon);
-        }
-        return edit;
-    }
-    
-    makeLayoutButtonMove(wf,bdiv){
-        var p = this;
-        var move = document.createElement('div');
-        move.className = "editlayoutdiv";
-        var up = document.createElement('a');
-        up.className="layoutchange";
-        up.innerHTML="&#708";
-        up.href="#";
-        up.onclick=function(){
-            p.moveButton(bdiv,wf,true);
-        }
-        move.appendChild(up);
-        var down = document.createElement('a');
-        down.className="layoutchange";
-        down.innerHTML="&#709";
-        down.href="#";
-        down.onclick=function(){
-            p.moveButton(bdiv,wf,false);
-        }
-        move.appendChild(down);
-        return move;
-    }
-    
-    makeLayoutButtonExpandable(bdiv){
-        var p = this;
-        var expandDiv = document.createElement('div');
-        expandDiv.className="expanddiv";
-        var expandIcon = document.createElement('img');
-        expandIcon.src="resources/images/plus16.png";
-        expandIcon.style.width='16px';
-        expandIcon.onclick=function(){
-            if(bdiv.classList.contains("expanded")){p.collapseButton(bdiv);}
-            else {p.expandButton(bdiv);}
-        }
-        expandDiv.appendChild(expandIcon);
-        bdiv.appendChild(expandDiv);
-        bdiv.expandIcon = expandIcon;
-
-        var hiddenchildren = document.createElement('div');
-        hiddenchildren.className = "hiddenchildrendiv";
-        hiddenchildren.onclick = expandIcon.onclick;
-        bdiv.appendChild(hiddenchildren);
-        bdiv.hiddenchildren=hiddenchildren;
-    }
-    
-    collapseButton(button){
-        button.classList.remove("expanded");
-        button.expandIcon.src="resources/images/plus16.png";
-    }
-    expandButton(button){
-        button.classList.add("expanded");
-        button.expandIcon.src="resources/images/minus16.png";
-    }
-    
-    removeButton(wfp,button){
-        if(button.parentElement.wf!=null)this.updateHiddenChildren(button.parentElement.wf,button.parentElement);
-        if(wfp.usedWF!=null)for(var i=0;i<wfp.usedWF.length;i++){
-            var wfc = this.getWFByID(wfp.usedWF[i]);
-            for(var j=0;j<wfc.buttons.length;j++){
-                if(wfc.buttons[j].parentElement==button){
-                    this.removeButton(wfc,wfc.buttons[j]);
-                    
-                }
-            }
+        var getWidth = function(x,bound){return null;}
+        var padding = int(getComputedStyle(div)["padding-left"])+int(getComputedStyle(div)["padding-right"]);
+        switch(direction){
+                case 'left':
+                    handle.style.width="10px";
+                    handle.style.height="100%";
+                    handle.style.top="0px";
+                    handle.style.left="0px";
+                    getWidth = function(x,bound){return bound.right-x;} 
+                    break;
+                case 'right':
+                    handle.style.width="10px";
+                    handle.style.height="100%";
+                    handle.style.top="0px";
+                    handle.style.right="0px";
+                    getWidth = function(x,bound){return x-bound.left;} 
+                    break;
         }
         
-        if(button.parentElement.classList.contains("layoutdiv")&&button.parentElement.wf.usedWF.length==0){button.parentElement.classList.remove("haschildren");button.parentElement.classList.remove("expanded");}
-        wfp.buttons.splice(wfp.buttons.indexOf(button),1);
-        button.parentElement.removeChild(button);
+        function resize(evt){
+            var newWidth = getWidth(evt.clientX,div.getBoundingClientRect())-padding;
+            if(newWidth<100)newWidth=100;
+            if(newWidth>window.innerWidth-200)newWidth = window.innerWidth-200;
+            div.style.width = newWidth+"px";
+        }
+        function stopResize(evt){
+            window.removeEventListener("mousemove",resize);
+        }
         
+        
+        
+        handle.addEventListener("mousedown",function(e){
+            e.preventDefault();
+            window.addEventListener("mousemove",resize);
+            window.addEventListener("mouseup",stopResize,true);
+        });
+        div.appendChild(handle);
     }
-    
-    
     
     getWFIndex(wf){
         return this.workflows.indexOf(wf);
@@ -1096,7 +794,8 @@ class Project{
                                     graph.addCellOverlay(cell,cell.cellOverlays[i]);
                                 }
                                 //if it's a node with tags, also show those
-                                if(cell.isNode&&cell.node.tags.length>0)cell.node.toggleTags(true);
+                                var timeoutvar;
+                                if(cell.isNode&&cell.node.tags.length>0)timeoutvar = setTimeout(function(){cell.node.toggleTags(true);},100);
                                 //add the listener that will remove these once the mouse exits
                                 graph.addMouseListener({
                                     mouseDown: function(sender,me){},
@@ -1110,7 +809,7 @@ class Project{
                                                 return;
                                             }
                                             graph.removeCellOverlay(cell);
-                                            if(cell.isNode)cell.node.toggleTags(false);
+                                            if(cell.isNode){cell.node.toggleTags(false);clearTimeout(timeoutvar);}
                                             graph.removeMouseListener(this);
                                         }
                                     }
@@ -1259,7 +958,7 @@ class Project{
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
             while(xmlString.indexOf("<topnode>"+replaceId+"</topnode>")>=0){xmlString = xmlString.replace("<topnode>"+replaceId+"</topnode>","<topnode>temporaryID"+id+"</topnode>");}
             while(xmlString.indexOf("<bottomnode>"+replaceId+"</bottomnode>")>=0){xmlString = xmlString.replace("<bottomnode>"+replaceId+"</bottomnode>","<bottomnode>temporaryID"+id+"</bottomnode>");}
-            xmlString = this.assignNewIDsToXMLArrays(xmlString,"fixedLinkARRAY",replaceId,""+id);
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"fixedlinkARRAY",replaceId,""+id);
             id++;
         }
         //Weeks
@@ -1278,6 +977,7 @@ class Project{
             xmlString=xmlString.substring(0,startIndex)+"<wftempid>"+id+"</wftempid>"+xmlString.substring(endIndex+7);
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"usedwfARRAY",replaceId,""+id);
+            xmlString = this.assignNewIDsToXMLArrays(xmlString,"linkedwf",replaceId,""+id);
             id++;
         }
         if(doWorkflows)while(xmlString.indexOf("<tagid>")>=0){

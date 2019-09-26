@@ -134,15 +134,15 @@ class CFNode {
         var oldvalue = null;
         if(value!=this.linkedWF){
             if(this.linkedWF!=null){
-                oldvalue = this.wf.project.getWFByID(this.linkedWF).name;
-                this.wf.removeUsedWF(this.linkedWF);
-                this.wf.project.removeChild(this.wf,this.wf.project.getWFByID(this.linkedWF));
+                var oldwf = this.wf.project.getWFByID(this.linkedWF)
+                oldvalue = oldwf.name;
+                this.wf.removeChild(oldwf);
+                
             }
             this.linkedWF = value;
             if(value!=null){
-                this.wf.addUsedWF(value);
                 var wfc = this.wf.project.getWFByID(value);
-                this.wf.project.addChild(this.wf,wfc);
+                this.wf.addChild(wfc);
                 if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
             }
         }
@@ -260,6 +260,7 @@ class CFNode {
     insertBelow(){
         var node = this.wf.createNodeOfType(this.column);
         node.createVertex(this.vertex.x(),this.vertex.y());
+        this.wf.bringCommentsToFront();
         node.setColumn(this.column);
         node.setWeek(this.week);
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
@@ -420,6 +421,14 @@ class CFNode {
         this.graph.toggleCells(show,[this.tagBox]);
     }
     
+    highlight(on){
+        var g = this.graph.view.getState(this.vertex).shape.node;
+        if(g.firstChild!=null){
+            if(on)g.firstChild.classList.add("highlighted");
+            else g.firstChild.classList.remove("highlighted");
+        }
+    }
+    
 }
 
 class ACNode extends CFNode {
@@ -454,7 +463,7 @@ class ACNode extends CFNode {
     }
     
     styleForColumn(){
-        var colstyle='#46c443';
+        var colstyle=SALTISEGREEN;
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     
@@ -489,7 +498,7 @@ class CONode extends CFNode {
     }
     
     styleForColumn(){
-        var colstyle='#46c443';
+        var colstyle=SALTISEGREEN;
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     
@@ -510,9 +519,9 @@ class ASNode extends CFNode {
     
     styleForColumn(){
         var colstyle="#FFFFFF";
-        if(this.column=="FA")colstyle='#eba833';
-        else if(this.column=="SA")colstyle='#ed4528';
-        else if(this.column=="HW")colstyle='#54c0db';
+        if(this.column=="FA")colstyle=SALTISEORANGE;
+        else if(this.column=="SA")colstyle=SALTISERED;
+        else if(this.column=="HW")colstyle=SALTISELIGHTBLUE;
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
         this.graph.setCellStyles("strokeColor",colstyle,this.tagVertices.concat(this.tagPreviews));
     }
@@ -561,9 +570,9 @@ class WFNode extends CFNode {
     
     styleForColumn(){
         var colstyle="#FFFFFF";
-        if(this.column=="OOC")colstyle='#54c0db';
-        else if(this.column=="ICI")colstyle='#eba833';
-        else if(this.column=="ICS")colstyle='#46c443';
+        if(this.column=="OOC")colstyle=SALTISELIGHTBLUE;
+        else if(this.column=="ICI")colstyle=SALTISEORANGE;
+        else if(this.column=="ICS")colstyle=SALTISEGREEN;
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
     }
     

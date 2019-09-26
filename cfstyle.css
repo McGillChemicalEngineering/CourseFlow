@@ -51,12 +51,17 @@ button:hover{
     box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
 }
 
+.layoutdiv li:hover{
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
+}
+
 .layoutdiv{
     position:relative;
     padding-bottom: 2px;
     padding-top: 2px;
     width:100%;
 }
+
 
 .layoutactivity{
     color: black;
@@ -83,24 +88,27 @@ button:hover{
 
 .layoutdiv button{
     padding:4px;
-    min-height:40px
+    min-height:40px;
+    text-align:left;
 }
 
-.layoutdiv button input{
+.layoutdiv button input, .layoutdiv li input{
     width:100%;
     box-sizing:border-box;
 }
 
-.layoutdiv > .layoutdiv{
+.layoutdiv > div.layoutchilddiv{
+    position:relative;
     left: 10%;
     width: 90%;
     display:none;
 }
 
-.addsubtag{
+.layoutdiv > ol.layoutchilddiv{
     position:relative;
-    left:10%;
-    width:90%;
+    box-sizing:border-box;
+    width:100%;
+    display:none;
 }
 
 .expanddiv{
@@ -112,7 +120,7 @@ button:hover{
 
 
 /*to automatically show children of the active workflow, add .layoutdiv.active > .layoutdiv, to these options*/
-.layoutdiv.expanded > .layoutdiv,.layoutdiv.activechild > .layoutdiv{
+.layoutdiv.expanded > .layoutchilddiv,.layoutdiv.activechild > .layoutchilddiv{
     display:inline-block;
 }
 
@@ -179,9 +187,14 @@ button:hover{
     width : 200px;
     bottom : 0px;
     background : white;
-    transition: width 2s;
 
 }
+
+.panelresizehandle{
+    position:absolute;
+    cursor:ew-resize;
+}
+
 
 .nodebarh3{
     margin-bottom:0px;
@@ -212,18 +225,43 @@ button:hover{
     width: 100%;
     margin: 1px;
 }
-.nodebar button div{
+button div{
     display: inline-block;
     height: 100%;
     padding-left:4px;
     vertical-align:middle;
-    white-space:nowrap;
 }
-.nodebar button img{
+button img{
     display: inline-block;
     height: 100%;
     vertical-align:middle;
 }
+
+.layoutdiv li{
+    font-size: 16px;
+    width: 100%;
+    padding:4px;
+    
+}
+
+
+li div{
+    display: inline-block;
+    height: 100%;
+    padding-left:4px;
+    vertical-align:middle;
+}
+li img{
+    display: inline-block;
+    height: 100%;
+    vertical-align:middle;    
+}
+
+ol .expanddiv{
+    left:-40px;
+    top:8px;
+}
+
 .nodebar select{
     width: 100%;
     padding: 5px;
@@ -334,6 +372,7 @@ button:hover{
 
 /*Div that gets created next to a button in the layout on hover*/
 .editlayoutdiv{
+    top:0px;
     left:100%;
     width:auto;
     display:none;
@@ -347,6 +386,7 @@ button:hover{
 
 /*Div that gets created on top of the button in the layout on hover*/
 .deletelayoutdiv{
+    top:0px;
     right:0px;
     display:none;
     position:absolute;
@@ -356,7 +396,20 @@ button:hover{
     cursor: pointer;
 }
 
+/*Div that gets created below the layout div in cases where a child can be appended.*/
+.createlayoutdiv{
+    left:4px;
+    bottom:-24px;
+    padding:4px;
+    display:none;
+    position:absolute;
+    color: black;
+    cursor: pointer;
+    z-index:2;
+}
+
 .layoutbuttonwrap{
+    position:relative;
     
 }
 
@@ -365,6 +418,11 @@ button:hover{
 }
 
 .layoutbuttonwrap:hover > .deletelayoutdiv{
+    display:inline-block;
+}
+
+
+.layoutbuttonwrap:hover > .createlayoutdiv{
     display:inline-block;
 }
 
@@ -394,6 +452,14 @@ button:hover{
     border-right-width: 0px;
     z-index:2;
     position: absolute;
+}
+
+rect.highlighted{
+    outline:5px solid yellow;
+}
+
+div.highlighted{
+    box-shadow:0px 0px 0px 5px yellow;
 }
 
 </style>

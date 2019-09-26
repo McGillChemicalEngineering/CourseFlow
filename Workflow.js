@@ -22,7 +22,7 @@ class Workflow{
         this.columns=[];
         this.brackets=[];
         this.comments=[];
-        this.usedWF=[];
+        this.children=[];
         this.xmlData;
         this.project=project;
         this.graph;
@@ -42,45 +42,46 @@ class Workflow{
         xml+=makeXML(this.name,"wfname");
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
+        
+        var usedWF = [];
+        for(var i=0;i<this.children.length;i++)usedWF.push(this.children[i].id);
+        xml+=makeXML(usedWF.join(","),"usedwfARRAY");
+        
+        var tagSets = [];
+        for(i=0;i<this.tagSets.length;i++){tagSets.push(this.tagSets[i].id);}
+        xml+=makeXML(tagSets.join(","),"tagsetARRAY");
+        if(this.isActive)this.saveXMLData();
+        xml+=(new XMLSerializer()).serializeToString(this.xmlData);
+        var xmlData = makeXML(xml,"workflow");
+        return xmlData;
+    }
+    
+    saveXMLData(){
+        var xml="";
         for(var i=0;i<this.columns.length;i++){
             xml+=this.columns[i].toXML();
         }
         for(i=0;i<this.weeks.length;i++){
             xml+=this.weeks[i].toXML();
         }
-        xml+=makeXML(this.usedWF.join(","),"usedwfARRAY");
-        for(i=0;i<this.brackets.length;i++){
-            xml+=this.brackets[i].toXML();
-        }
-        var tagSets = [];
-        for(i=0;i<this.tagSets.length;i++){
-            tagSets.push(this.tagSets[i].id);
-        }
-        xml+=makeXML(tagSets.join(","),"tagsetARRAY");
         for(i=0;i<this.comments.length;i++){
             xml+=this.comments[i].toXML();
         }
-        var xmlData = makeXML(xml,"workflow");
-        var parser = new DOMParser();
-        this.xmlData = parser.parseFromString(xmlData,"text/xml");
-        return xmlData;
+        for(i=0;i<this.brackets.length;i++){
+            xml+=this.brackets[i].toXML();
+        }
+        xml=makeXML(xml,"wfdata");
+        this.xmlData = (new DOMParser).parseFromString(xml,"text/xml");
     }
     
-    fromXML(){
+    openXMLData(){
         var xmlData = this.xmlData;
-        this.setName(getXMLVal(xmlData,"wfname"));
-        this.id = getXMLVal(xmlData,"wfid");
-        var tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
-        if(tagsetArray!=null){
-            for(var i=0;i<tagsetArray.length;i++)this.addTagSet(this.project.getCompByID(tagsetArray[i]));
-        }
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(var i=0;i<xmlweeks.length;i++){
             if(i>0)this.weeks[i-1].insertBelow();
             this.weeks[i].fromXML(xmlweeks[i]);
         }
         this.updateWeekIndices();
-        this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
         this.makeConnectionsFromIds();
         var xmlbrackets = xmlData.getElementsByTagName("bracket");
         for(i=0;i<xmlbrackets.length;i++){
@@ -96,17 +97,106 @@ class Workflow{
         }
     }
     
+    fromXML(xmlData){
+        this.setName(getXMLVal(xmlData,"wfname"));
+        this.id = getXMLVal(xmlData,"wfid");
+        this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
+        this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
+        this.xmlData = xmlData.getElementsByTagName("wfdata")[0];
+        if(this.xmlData==null){
+            console.log("The savefile is an older version. Attempting to repair...");
+            //This is an old savefile, and doesn't have a wfdata tag.
+            this.xmlData = (new DOMParser()).parseFromString("<wfdata></wfdata>","text/xml");
+            var weeks = xmlData.getElementsByTagName("week");
+            var brackets = xmlData.getElementsByTagName("bracket");
+            var comments = xmlData.getElementsByTagName("comment");
+            for(var i=0;i<weeks.length;i++){this.xmlData.documentElement.appendChild(weeks[i].cloneNode(true));}
+            for(i=0;i<brackets.length;i++){this.xmlData.documentElement.appendChild(brackets[i].cloneNode(true));}
+            for(i=0;i<comments.length;i++){this.xmlData.documentElement.appendChild(comments[i].cloneNode(true));}
+        }
+        
+    }
+    
+    addButton(container,recurse=true){
+        var button = new Layoutbutton(this,container);
+        button.makeEditable(true,true,false);
+        button.makeMovable();
+        button.makeExpandable();
+        this.buttons.push(button);
+        if(recurse)for(var i=0;i<this.children.length;i++){
+            this.children[i].addButton(button.childdiv);
+        }
+    }
+    
+    removeButton(button){
+        if(this.children!=null)for(var i=0;i<this.children.length;i++){
+            var wfc = this.children[i];
+            for(var j=0;j<wfc.buttons.length;j++){
+                if(wfc.buttons[j].container==button.childdiv){
+                    wfc.removeButton(wfc.buttons[j]);
+                    
+                }
+            }
+        }
+        this.buttons.splice(this.buttons.indexOf(button),1);
+        button.removeSelf();
+    }
+    
     clickButton(){
         this.project.changeActive(this.project.getWFIndex(this),true);
     }
     
-    getType(){return "other"};
+    getType(){return "other";}
     getButtonClass(){return "layoutactivity";}
+    getIcon(){return "";}
+    
+    addChild(child,recurse=true){
+        this.children.push(child);
+        //If child is at the root level, remove its button
+        if(child.buttons!=null&&child.buttons.length>0&&child.buttons[0].container.id=="layout"){
+            child.removeButton(child.buttons[0]);
+        }
+        //Add it to the parent at all locations in the tree
+        for(var i=0;i<this.buttons.length;i++){
+            child.addButton(this.buttons[i].childdiv,recurse);
+        }
+    }
+    
+    removeChild(child){
+        console.log(child);
+        this.children.splice(this.children.indexOf(child),1);
+        //remove the button from all instances of the parent, but only once (we might use the same activity twice in one course, for example)
+        for(var i=0;i<this.buttons.length;i++){
+            for(var j=0;j<child.buttons.length;j++){
+                if(child.buttons[j].bdiv.parentElement == this.buttons[i].childdiv){
+                    child.removeButton(child.buttons[j]);
+                    break;
+                }
+            }
+        }
+        //if no instances still exist, move it back into the root
+        if(child.buttons.length==0){
+            child.addButton(this.project.layout);
+            this.project.workflows.splice(this.project.workflows.indexOf(child),1);
+            this.project.workflows.push(child);
+        }
+        
+    }
     
     getChildren(){
-        var children = [];
-        for(var i=0;i<this.usedWF.length;i++)children.push(this.project.getWFByID(this.usedWF[i]));
-        return children;
+        return this.children;
+    }
+    
+    getNumberOfDescendants(des){
+        var children = this.children;
+        for(var i=0;i<children.length;i++){
+            var wfc = children[i];
+            if(des[wfc.getType()]==null)des[wfc.getType()]=1;
+            else des[wfc.getType()]=des[wfc.getType()]+1;
+            des = wfc.getNumberOfDescendants(des);
+            
+        }
+        return des;
     }
     
     typeToXML(){return "";}
@@ -136,16 +226,16 @@ class Workflow{
         if(name!=null && name!=""){
             name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             if(this.isActive&&changeLabel){
-            this.graph.labelChanged(this.titleNode,name);
-            //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
-            return;
+                this.graph.labelChanged(this.titleNode,name);
+                //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
+                return;
             }
-            //otherwise, we have to dig into the xml
-            else if(this.xmlData!=null&&changeLabel)this.xmlData.getElementsByTagName("wfname")[0].childNodes[0].nodeValue=name;
-            this.name=name;
-            for(var i=0;i<this.buttons.length;i++){
-                this.buttons[i].firstElementChild.firstElementChild.innerHTML=this.name;
-            }
+            //otherwise, we just change the name
+            else 
+                this.name=name;
+                for(var i=0;i<this.buttons.length;i++){
+                    this.buttons[i].updateButton();
+                }
         }
     }
     
@@ -154,7 +244,7 @@ class Workflow{
         
         this.isActive=true;
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].classList.add("active");
+            this.buttons[i].makeActive();
             //uncommenting this line will allow all parents of the activated workflow to automatically expand
             //this.activateParents(this.buttons[i],true);
         }
@@ -184,7 +274,7 @@ class Workflow{
             for(i=0;i<columns.length;i++){columns[i].createHead(wfStartY);columns[i].updatePosition();}
             weekWidth=columns[columns.length-1].pos+defaultCellWidth/2+cellSpacing;
             this.createBaseWeek();
-            if(this.xmlData!=null)this.fromXML();
+            if(this.xmlData!=null)this.openXMLData();
             this.createSpanner();
         }
         finally
@@ -204,17 +294,19 @@ class Workflow{
         this.isActive=false;
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].classList.remove("active");
+            this.buttons[i].makeInactive();
             //uncommenting this will revert automatic expansion of parents when a workflow is activated
             //this.activateParents(this.buttons[i],false);
         }
+        for(i=0;i<this.tagSets.length;i++){
+            this.tagSets[i].clearData();
+        }
         nbContainer.style.display="none";
-        this.toXML();
+        this.saveXMLData();
         this.weeks=[];
         this.columns=[];
         this.comments=[];
         this.brackets=[];
-        this.tagSets=[];
         if(this.graph!=null)this.graph.destroy();
     }
     
@@ -317,13 +409,15 @@ class Workflow{
         }
     }
     
-    addUsedWF(value){
-        this.usedWF.push(value);
+    bringCommentsToFront(){
+        if(this.comments.length==0)return;
+        var com = [];
+        for(var i=0;i<this.comments.length;i++){
+            com.push(this.comments[i].vertex);
+        }
+        this.graph.orderCells(false,com);
     }
     
-    removeUsedWF(value){
-        this.usedWF.splice(this.usedWF.indexOf(value),1);
-    }
     
     createNodeOfType(column){
         var node;
@@ -373,6 +467,7 @@ class Workflow{
     
     //Executed when we generate all the toolbars
     generateToolbars(container){
+        this.project.makeResizable(container,"left");
         this.generateNodeBar(container);
         this.generateBracketBar(container);
         this.generateTagBar(container);
@@ -403,6 +498,8 @@ class Workflow{
                     node.setColumn(column);
                     node.setWeek(cell.week);
                     cell.week.addNode(node);
+                    console.log(wf);
+                    wf.bringCommentsToFront();
 
                 }
 
@@ -425,6 +522,7 @@ class Workflow{
         for(var i=0;i<this.tagSets.length;i++){
             var tagDiv = document.createElement('div');
             this.tagBarDiv.appendChild(tagDiv);
+            tagDiv.layout=this;
             this.populateTagDiv(tagDiv,this.tagSets[i]);
         }
         if(this.tagSets.length==0){
@@ -432,85 +530,10 @@ class Workflow{
             this.tagBarDiv.innerHTML="<b>No outcomes have been added yet! Use the buttons below to add one.</b>"
         }else this.tagBarDiv.classList.remove("emptytext");
     }
-    /*
-    populateTagDiv(container,tag){
-        var p = this.project;
-        var wf = this;
-        if(container.tag!=null)container.tag.updateHiddenChildren(container);
-        var tagDiv = document.createElement('div');
-        tagDiv.className="layoutdiv";
-        var bwrap = document.createElement('div');
-        bwrap.className = "layoutbuttonwrap";
-        //Creates the function that is called when you drop it on something
-        var makeDropFunction=function(addedtag,workflow){
-            var dropfunction = function(graph, evt, filler, x, y)
-            {
-                var wf = workflow;
-                var thistag =addedtag;
-                var cell = graph.getCellAt(x,y);
-                graph.stopEditing(false);
-                while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
-                if(cell!=null && cell.isNode){
-                    cell.node.addTag(thistag,cell);
-                }
-
-            }
-            return dropfunction;
-        }
-        
-        var b = this.addNodebarItem(bwrap,tag.name,'',makeDropFunction(tag,this));
-        tagDiv.appendChild(bwrap);
-        if(tag.depth==0){
-            var del = document.createElement('div');
-            del.className="deletelayoutdiv";
-            var delicon = document.createElement('img');
-            delicon.src="resources/images/delrect16.png";
-            delicon.style.width='16px';
-            delicon.onclick=function(){
-                if(mxUtils.confirm("Unassign this competency set from the workflow? Note: this will NOT delete the competency set, but WILL remove all references to it from the workflow.")){
-                    tagDiv.parentElement.removeChild(tagDiv);
-                    wf.removeTagSet(tag);
-                    wf.populateTagBar();
-                    wf.populateTagSelect(p.competencies);
-                }
-            }
-            del.appendChild(delicon);
-            bwrap.appendChild(del);
-        }
-        var expandDiv = document.createElement('div');
-        expandDiv.className="expanddiv";
-        var expandIcon = document.createElement('img');
-        expandIcon.src="resources/images/plus16.png";
-        expandIcon.style.width='16px';
-        expandIcon.onclick=function(){
-            if(tagDiv.classList.contains("expanded")){p.collapseButton(tagDiv);}
-            else {p.expandButton(tagDiv);}
-        }
-        expandDiv.appendChild(expandIcon);
-        tagDiv.appendChild(expandDiv);
-        tagDiv.expandIcon = expandIcon;
-        
-        var hiddenchildren = document.createElement('div');
-        hiddenchildren.className = "hiddenchildrendiv";
-        hiddenchildren.onclick = expandIcon.onclick;
-        tagDiv.appendChild(hiddenchildren);
-        tagDiv.hiddenchildren=hiddenchildren;
-        tagDiv.tag=tag;
-        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
-        
-        
-        for(var i=0;i<tag.subtags.length;i++){
-            this.populateTagDiv(tagDiv,tag.subtags[i]);
-        }
-        container.appendChild(tagDiv);
-    }*/
     
     populateTagDiv(container,tag){
-         var p = this.project;
-        if(container.wf!=null&&container.hiddenchildren!=null)p.updateHiddenChildren(container);
-        if(container.classList.contains("layoutdiv"))container.classList.add("haschildren");
-        var bdiv = p.makeLayoutButtonDiv(tag,container);
-        var bwrap = p.makeLayoutButtonWrapper(tag,bdiv);
+         var button = new Layoutbutton(tag,container);
+        button.b.onclick=null;
         
         //Creates the function that is called when you drop it on something
         var makeDropFunction=function(addedtag,workflow){
@@ -529,34 +552,41 @@ class Workflow{
             return dropfunction;
         }
         
-        var b = this.addNodebarItem(bwrap,tag.name,'',makeDropFunction(tag,this));
-        bwrap.appendChild(b);
-        if(tag.depth==0)bwrap.appendChild(p.makeLayoutButtonEdit(tag,b,false,false,true,this));
-        bdiv.appendChild(bwrap);
-        p.makeLayoutButtonExpandable(bdiv);
+        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this),button);
+        tag.addDrop(button);
+        if(tag.depth==0)button.makeEditable(false,false,true);
+        button.makeExpandable();
         
-        container.appendChild(bdiv);
-        for(var i=0;i<tag.subtags.length;i++){
-            this.populateTagDiv(bdiv,tag.subtags[i]);
+        for(var i=0;i<tag.children.length;i++){
+            this.populateTagDiv(button.childdiv,tag.children[i]);
         }
-        return bdiv;
+        return button;
     }
     
    
-    
-    addNodebarItem(container,name,image, dropfunction)
+    //Adds a drag and drop. If button is null, it creates one, if it is passed an existing button it simply makes it draggable.
+    addNodebarItem(container,name,image, dropfunction,button=null)
     {
        
         var graph = this.graph;
+        var line;
+        var img;
+        var namediv;
+        if(button==null){
+            line = document.createElement("button");
+            img = document.createElement("img");
+            namediv = document.createElement("div");
+            img.setAttribute('src',image);
+            namediv.innerText = name;
+            line.appendChild(img);
+            line.appendChild(namediv);
+            container.appendChild(line);
+        }else {
+            img=button.icon;
+            line=button.b;
+            namediv=button.namediv;
+        }
         // Creates the image which is used as the drag icon (preview)
-        var line = document.createElement("button");
-        var img = document.createElement("img");
-        var namediv = document.createElement("div");
-        img.setAttribute('src',image);
-        namediv.innerText = name;
-        line.appendChild(img);
-        line.appendChild(namediv);
-        container.appendChild(line);
         var dragimg = img.cloneNode(true);
         
 
@@ -584,14 +614,19 @@ class Workflow{
     }
     
     removeTagSet(tag){
+        if(this.tagSets.indexOf(tag)>=0){
+            this.tagSets.splice(this.tagSets.indexOf(tag),1); 
+            this.purgeTag(tag);
+        }
+            
+    }
+    
+    purgeTag(tag){
         
         var idSet = [];
         idSet = tag.getAllID(idSet);
         if(idSet.length==0)return;
-        //if this is the active workflow, this is super easy
         if(this.isActive){
-            if(this.tagSets.indexOf(tag)>=0){
-                this.tagSets.splice(this.tagSets.indexOf(tag),1);
                 for(var i=0;i<this.weeks.length;i++){
                     for(var j=0;j<this.weeks[i].nodes.length;j++){
                         var node = this.weeks[i].nodes[j];
@@ -599,31 +634,28 @@ class Workflow{
                             var id=idSet[k];
                             for(var l=0;l<node.tags.length;l++){
                                 if(node.tags[l].id==id){
-                                    node.tags.splice(l,1);
+                                    node.removeTag(node.tags[l]);
                                     l--;
                                 }
                             }
                         }
                     }
                 }
-            }
-        }else{
-            //otherwise not so much
-            if(this.xmlData==null)return;
-            for(var k =0;k<idSet.length;k++){
-                var id = idSet[k];
-                var xmlused = Array.prototype.slice.call(this.xmlData.getElementsByTagName("tagsetARRAY")).concat(Array.prototype.slice.call(this.xmlData.getElementsByTagName("tagARRAY")));
-                for(i=0;i<xmlused.length;i++){
-                    if(xmlused[i].childNodes.length==0)continue;
-                    var usedArray = xmlused[i].childNodes[0].nodeValue.split(',');
-                    while(usedArray.indexOf(id)>=0){
-                        usedArray.splice(usedArray.indexOf(id),1);
+            }else{
+                if(this.xmlData==null)return;
+                for(var k =0;k<idSet.length;k++){
+                    var id = idSet[k];
+                    var xmlused =this.xmlData.getElementsByTagName("tagARRAY");
+                    for(i=0;i<xmlused.length;i++){
+                        if(xmlused[i].childNodes.length==0)continue;
+                        var usedArray = xmlused[i].childNodes[0].nodeValue.split(',');
+                        while(usedArray.indexOf(id)>=0){
+                            usedArray.splice(usedArray.indexOf(id),1);
+                        }
+                        xmlused[i].childNodes[0].nodeValue = usedArray.join(',');
                     }
-                    xmlused[i].childNodes[0].nodeValue = usedArray.join(',');
                 }
             }
-        }
-        
     }
     
     populateTagSelect(list){
@@ -646,7 +678,7 @@ class Workflow{
     
     //Since the XML file may not originate from the program, there may be some overlap in the IDs. We therefore flip each ID to negative temporarily, assign everything, then use the IDs that were generated in the initial creation of the nodes.
     addNodesFromXML(week,startIndex,xml){
-        xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");;
+        xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");
         //Add everything
         var xmlnodes = xml.getElementsByTagName("node");
         var xmlbrackets = xml.getElementsByTagName("bracket");
@@ -663,6 +695,8 @@ class Workflow{
             br.fromXML(xmlbrackets[i]);
             this.brackets.push(br);
         }
+        
+        this.bringCommentsToFront();
     }
     
     expandAllNodes(expand=true){
@@ -676,41 +710,30 @@ class Workflow{
     
     //Purge the workflow from this one
     purgeUsedWF(wf){
-        //if it's active, easy
-        if(this.isActive){
-            var checknodes=false;
-            while(this.usedWF.indexOf(wf.id)>=0){
-                this.usedWF.splice(this.usedWF.indexOf(wf.id),1);
-                checknodes=true;
-            }
-            if(checknodes){
+        var checknodes=false;
+        while(this.children.indexOf(wf)>=0){
+            this.children.splice(this.children.indexOf(wf),1);
+            checknodes=true;
+        }
+        if(checknodes){
+        //if it's active, easy to remove from nodes
+            if(this.isActive){
                 for(var j=0;j<this.weeks.length;j++){
                     for(var k=0;k<this.weeks[j].nodes.length;k++){
                         var node = this.weeks[j].nodes[k];
                         if(node.linkedWF==wf.id)node.linkedWF=null;
                     }
                 }
-            }
-        }else{
-            //do it in the xmlvar 
-            if(this.xmlData==null)return;
-            var xmllinks = this.xmlData.getElementsByTagName("linkedwf");
-            for(var i=0;i<xmllinks.length;i++){
-                xmllinks[i].childNodes[0].nodeValue="";
-            }
-            var xmlused = this.xmlData.getElementsByTagName("usedwfARRAY");
-            for(i=0;i<xmlused.length;i++){
-                if(xmlused[i].childNodes.length==0)continue;
-                var usedArray = xmlused[i].childNodes[0].nodeValue.split(',');
-                while(usedArray.indexOf(wf.id)>=0){
-                    usedArray.splice(usedArray.indexOf(wf.id),1);
+            }else{
+                //do it in the xmlvar 
+                if(this.xmlData==null)return;
+                var xmllinks = this.xmlData.getElementsByTagName("linkedwf");
+                for(var i=0;i<xmllinks.length;i++){
+                    xmllinks[i].childNodes[0].nodeValue="";
                 }
-                xmlused[i].childNodes[0].nodeValue = usedArray.join(',');
             }
             
         }
-        
-        
     }
     
     
@@ -736,16 +759,12 @@ class Workflow{
     }
 
     
-    //swap the two indices of the used workflows (used to rearrange the layout); since this could be called while the workflow is inactive we need to dig into the xml
-    swapUsedIndices(id1,id2){
-        if(this.isActive){
-            [this.usedWF[this.usedWF.indexOf(id1)],this.usedWF[this.usedWF.indexOf(id2)]]=[this.usedWF[this.usedWF.indexOf(id2)],this.usedWF[this.usedWF.indexOf(id1)]];
-        }else{
-            var xmlused = this.xmlData.getElementsByTagName("usedwfARRAY");
-            var usedWFArray = xmlused[0].childNodes[0].nodeValue.split(',');
-            [usedWFArray[usedWFArray.indexOf(id1)],usedWFArray[usedWFArray.indexOf(id2)]]=[usedWFArray[usedWFArray.indexOf(id2)],usedWFArray[usedWFArray.indexOf(id1)]];
-            xmlused[0].childNodes[0].nodeValue = usedWFArray.join(',');
-        }
+    //swap the two used workflows (used to rearrange the layout)
+    swapChildren(c1,c2){
+        var i1 = this.children.indexOf(c1);
+        var i2 = this.children.indexOf(c2);
+        [this.children[i1],this.children[i2]]=[this.children[i2],this.children[i1]];
+        
     }
     
     
@@ -771,8 +790,8 @@ class Courseflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"HW","Homework","reading","Homework"));
-        columns.push(new Column(graph,this,"AC","Activities","instruct","Activity"));
+        columns.push(new Column(graph,this,"HW","Preparation","homework","Preparation"));
+        columns.push(new Column(graph,this,"AC","Activities","lesson","Activity"));
         columns.push(new Column(graph,this,"FA","Artifacts","artifact","Artifact"));
         columns.push(new Column(graph,this,"SA","Assessments","assessment","Assessment"));
     }
@@ -781,6 +800,7 @@ class Courseflow extends Workflow{
     
     getType(){return "course"};
     getButtonClass(){return "layoutcourse";}
+    getIcon(){return "course";}
     
     typeToXML(){return makeXML("course","wftype");}
     
@@ -841,6 +861,7 @@ class Activityflow extends Workflow{
     
     getType(){return "activity"};
     getButtonClass(){return "layoutactivity";}
+    getIcon(){return "activity";}
     
     typeToXML(){return makeXML("activity","wftype");}
     
@@ -904,8 +925,9 @@ class Programflow extends Workflow{
     
     updateWeekIndices(){};
     
-    getType(){return "program"};
+    getType(){return "program";}
     getButtonClass(){return "layoutprogram";}
+    getIcon(){return "program";}
     
     typeToXML(){return makeXML("program","wftype");}
     
