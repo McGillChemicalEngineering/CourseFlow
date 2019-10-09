@@ -63,7 +63,6 @@ class Workflow{
         var xml="";
         for(var i=0;i<this.columns.length;i++){
             xml+=this.columns[i].toXML();
-            console.log(this.columns.length);
         }
         for(i=0;i<this.weeks.length;i++){
             xml+=this.weeks[i].toXML();
@@ -80,14 +79,11 @@ class Workflow{
     
     openXMLData(){
         var xmlData = this.xmlData;
-        console.log(xmlData);
         var xmlcols = [];
         for(var i=0;i<xmlData.childNodes.length;i++){
-            console.log(xmlData.childNodes[i]);
             if(xmlData.childNodes[i].tagName=="column")xmlcols.push(xmlData.childNodes[i]);
         }
         for(var i=0;i<xmlcols.length;i++){
-            console.log(xmlcols.length);
             var col = new Column(this.graph,this);
             col.fromXML(xmlcols[i]);
             this.columns.push(col);
@@ -392,7 +388,7 @@ class Workflow{
             }
         }
         menu.addItem('Add Comment','resources/images/comment24.png',function(){
-            var com = new WFComment(graph,wf,evt.pageX-int(wf.project.container.style.left)-graph.view.getTranslate().x,evt.pageY-int(wf.project.container.style.top)-graph.view.getTranslate().y);
+            var com = new WFComment(graph,wf,evt.pageX-int(document.getElementById("graphWrapper").style.left)-graph.view.getTranslate().x,evt.pageY-int(document.getElementById("graphWrapper").style.top)-graph.view.getTranslate().y);
             com.createVertex();
             wf.addComment(com);
         });
@@ -445,6 +441,30 @@ class Workflow{
         }
     }
     
+    //A significantly faster version of this function, which first computes what must be moved, then moves it all at once in a single call to moveCells
+    pushWeeksFast(startIndex,dy=null){
+        var weeks = this.weeks;
+        //this should never start at 0, the top week should not be moved
+        if(startIndex==0) {weeks[0].makeFlushWithAbove(0);startIndex++}
+        if(startIndex>weeks.length-1)return;
+        if(dy==null)dy=weeks[startIndex-1].box.b()-weeks[startIndex].box.y();
+        var vertices=[];
+        var brackets=[];
+        for(var i=startIndex;i<weeks.length;i++){
+            vertices.push(weeks[i].box);
+            for(var j=0;j<weeks[i].nodes.length;j++){
+                vertices.push(weeks[i].nodes[j].vertex);
+                for(var k=0;k<weeks[i].nodes[j].brackets.length;k++){
+                    var bracket = weeks[i].nodes[j].brackets[k];
+                    if(brackets.indexOf(bracket)<0)brackets.push(bracket);
+                }
+            }
+        }
+        this.graph.moveCells(vertices,0,dy);
+        for(i=0;i<brackets.length;i++)brackets[i].updateVertical();
+        
+    }
+    
     addColumn(name){
         var col = new Column(this.graph,this,name);
         this.columns.push(col);
@@ -456,7 +476,6 @@ class Workflow{
     }
     
     removeColumn(column){
-        console.log(this.columns.indexOf(column));
         this.columns.splice(this.columns.indexOf(column),1);
         this.updateWeekWidths();
     }
@@ -576,11 +595,12 @@ class Workflow{
                 var cell = graph.getCellAt(x,y);
                 graph.stopEditing(false);
                 if(cell!=null && cell.isWeek){
+                    var startIndex = cell.week.getNextIndexFromPoint(y);
                     var node=wf.createNodeOfType(column);
                     node.createVertex(x,y);
                     node.setColumn(column);
                     node.setWeek(cell.week);
-                    cell.week.addNode(node);
+                    cell.week.addNode(node,0,startIndex);
                     wf.bringCommentsToFront();
                     wf.makeUndo("Add Node",node);
 
@@ -591,7 +611,7 @@ class Workflow{
         
         var allColumns = this.getPossibleColumns();
         for(var i=0;i<allColumns.length;i++){
-            this.addNodebarItem(container,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this));
+            this.addNodebarItem(container,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
         }
     }
     
@@ -636,10 +656,12 @@ class Workflow{
             return dropfunction;
         }
         
-        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this),button);
+        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this),button,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isNode);});
         tag.addDrop(button);
         if(tag.depth==0)button.makeEditable(false,false,true);
         button.makeExpandable();
+        button.makeNodeIndicators();
+        button.layout.updateDrops();
         
         for(var i=0;i<tag.children.length;i++){
             this.populateTagDiv(button.childdiv,tag.children[i]);
@@ -649,9 +671,9 @@ class Workflow{
     
    
     //Adds a drag and drop. If button is null, it creates one, if it is passed an existing button it simply makes it draggable.
-    addNodebarItem(container,name,image, dropfunction,button=null)
+    addNodebarItem(container,name,image, dropfunction,button=null,validtargetfunction=function(cellToValidate){return false;})
     {
-       
+        var wf = this;
         var graph = this.graph;
         var line;
         var img;
@@ -674,7 +696,27 @@ class Workflow{
         var dragimg = img.cloneNode(true);
         
 
-        mxUtils.makeDraggable(line, graph, dropfunction,dragimg);
+        var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
+        var defaultMouseMove = draggable.mouseMove;
+        draggable.mouseMove = function(evt){
+            var cell = this.getDropTarget(graph,evt.pageX-int(document.getElementById("graphWrapper").style.left)-graph.view.getTranslate().x,evt.pageY-int(document.getElementById("graphWrapper").style.top)-graph.view.getTranslate().y,evt);
+            while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
+            if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
+            if(validtargetfunction(cell)){
+                this.dragElement.style.outline="2px solid lightgreen";
+                var g = graph.view.getState(cell).shape.node;
+                if(g.firstChild!=null){
+                    g.firstChild.classList.add("validdrop");
+                    var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
+                    document.addEventListener("mouseup",hlRemove,true);
+                    draggable.lastCell = cell;
+                }
+            }else{
+                this.dragElement.style.outline="2px solid red";
+            }
+            return defaultMouseMove.apply(this,arguments);
+        }
+        
 
         return line;
     }
@@ -766,19 +808,23 @@ class Workflow{
         //Add everything
         var xmlnodes = xml.getElementsByTagName("node");
         var xmlbrackets = xml.getElementsByTagName("bracket");
+        var nodes = [];
         for(var i=0;i<xmlnodes.length;i++){
             var xmlnode = xmlnodes[i];
             var column = getXMLVal(xmlnode,"column");
             var node = this.createNodeOfType(column);
             node.week = week;
             node.fromXML(xmlnode);
-            week.addNode(node,0,startIndex+i);
+            week.addNodeSilent(node,0,startIndex+i);
+            nodes.push(node);
         }
         for(i=0;i<xmlbrackets.length;i++){
             var br = new Bracket(this.graph,this);
             br.fromXML(xmlbrackets[i]);
             this.brackets.push(br);
         }
+        for(i=0;i<nodes.length;i++)nodes[i].makeAutoLinks();
+        week.pushNodesFast(startIndex+xmlnodes.length);
         
         this.bringCommentsToFront();
     }
@@ -899,28 +945,34 @@ class Workflow{
     
     undo(){
         if(this.undoEnabled&&this.currentUndo>0){
-            this.undoEnabled=false;
-            this.graph.clearSelection();
-            var lastUndo = this.undoHistory[this.currentUndo-1];
-            this.xmlData = lastUndo.xml;
-            this.clearGraph();
-            this.openXMLData();
-            this.currentUndo--;
-            this.undoEnabled=true;
+            var wf = this;
+            wf.undoEnabled=false;
+            makeLoad(function(){
+                wf.graph.clearSelection();
+                var lastUndo = wf.undoHistory[wf.currentUndo-1];
+                wf.xmlData = lastUndo.xml;
+                wf.clearGraph();
+                wf.openXMLData();
+                wf.currentUndo--;
+                wf.undoEnabled=true;
+            });
             
         }
     }
     
     redo(){
         if(this.undoEnabled&&this.currentUndo<this.undoHistory.length-1){
-            this.undoEnabled==false;
-            this.graph.clearSelection();
-            var nextUndo = this.undoHistory[this.currentUndo+1];
-            this.xmlData = nextUndo.xml;
-            this.clearGraph();
-            this.openXMLData();
-            this.currentUndo++;
-            this.undoEnabled=true;
+            var wf = this;
+            wf.undoEnabled=false;
+           makeLoad(function(){
+                wf.graph.clearSelection();
+                var nextUndo = wf.undoHistory[wf.currentUndo+1];
+                wf.xmlData = nextUndo.xml;
+                wf.clearGraph();
+                wf.openXMLData();
+                wf.currentUndo++;
+                wf.undoEnabled=true;
+            });
         }
     }
     
@@ -1053,8 +1105,10 @@ class Activityflow extends Workflow{
                 if(cell!=null&&cell.isWeek){
                     var xml = findStrategyXML(strategy);
                     var startIndex = cell.week.getNextIndexFromPoint(y);
-                    wf.addNodesFromXML(cell.week,startIndex,xml);
-                    wf.makeUndo("Add Strategy",strategy);
+                    makeLoad(function(){
+                        wf.addNodesFromXML(cell.week,startIndex,xml);
+                        wf.makeUndo("Add Strategy",strategy);
+                    });
                 }
 
             }
@@ -1064,7 +1118,7 @@ class Activityflow extends Workflow{
         var stratlist = strategyIconsArray;
         
         for(var i=0;i<stratlist.length;i++){
-            this.addNodebarItem(container,stratlist[i][0],'resources/data/'+stratlist[i][1]+'24.png',makeDropFunction(stratlist[i][1],this));
+            this.addNodebarItem(container,stratlist[i][0],'resources/data/'+stratlist[i][1]+'24.png',makeDropFunction(stratlist[i][1],this),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
         }
     }
     

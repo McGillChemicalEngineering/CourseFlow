@@ -262,6 +262,14 @@ ol .expanddiv{
     top:8px;
 }
 
+.indicatordot{
+    height:5px;
+    width:5px;
+    margin:2px;
+    border-radius:50%;
+    display:block;
+}
+
 .nodebar select{
     width: 100%;
     padding: 5px;
@@ -299,6 +307,7 @@ ol .expanddiv{
     width:100%;
     box-sizing:border-box;
 }
+
 
 
 
@@ -396,6 +405,28 @@ ol .expanddiv{
     cursor:pointer;
 }
 
+/*Div that gets created next to a button in the layout showing which node types are used*/
+.nodeindicatordiv{
+    display:inline-block;
+    min-width:16px;
+    padding:0px;
+    margin:0px;
+    vertical-align: middle;
+}
+
+.nodeindicatorwrap{
+    display:inline-block;
+    position:absolute;
+    height:100%;
+}
+
+.nodeindicatorhelper{
+    display:inline-block;
+    vertical-align:middle;
+    height:100%;
+}
+
+
 /*Div that gets created on top of the button in the layout on hover*/
 .deletelayoutdiv{
     top:0px;
@@ -468,6 +499,11 @@ ol .expanddiv{
 
 rect.highlighted{
     outline:5px solid yellow;
+}
+
+
+rect.validdrop{
+    outline:5px solid lightgreen;
 }
 
 div.highlighted{

@@ -175,8 +175,8 @@ class Project{
         
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
-        expand.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes();}
-        collapse.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes(false);}
+        expand.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes();})};
+        collapse.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes(false);})};
         
         //Keyboard shortcuts
         document.addEventListener("keydown",function(evt){
@@ -202,7 +202,6 @@ class Project{
         });
         
         document.addEventListener("click",function(evt){
-            console.log(evt);
             if(p.activeWF!=null&&!p.container.contains(evt.target)&&!p.editbar.container.contains(evt.target))p.graph.clearSelection();
         })
         
@@ -547,19 +546,24 @@ class Project{
     }
     
     changeActive(index,isWF=true){
-        if(this.activeWF!=null)this.workflows[this.activeWF].makeInactive();
-        if(this.activeComp!=null)this.competencies[this.activeComp].makeInactive(this.container);
-        if(isWF){
-            this.activeComp = null;
-            this.activeWF=index;
-            this.initializeGraph(this.container);
-            this.workflows[this.activeWF].makeActive(this.graph);
-        }else{
-            this.activeWF = null;
-            this.activeComp=index;
-            this.competencies[this.activeComp].makeActive(this.container);
-        }
+        var p = this;
+        makeLoad(function(){
+            if(p.activeWF!=null)p.workflows[p.activeWF].makeInactive();
+            if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive(p.container);
+            if(isWF){
+                p.activeComp = null;
+                p.activeWF=index;
+                p.initializeGraph(p.container);
+                p.workflows[p.activeWF].makeActive(p.graph);
+            }else{
+                p.activeWF = null;
+                p.activeComp=index;
+                p.competencies[p.activeComp].makeActive(p.container);
+            }
+        });
     }
+    
+    
     
     initializeGraph(container){
         // Creates the graph inside the given container

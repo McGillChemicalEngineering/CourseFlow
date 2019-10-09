@@ -25,6 +25,24 @@ mxCell.prototype.b = function(){return this.y()+this.h();}
 mxCell.prototype.resize = function(graph,dx,dy){
     graph.resizeCells([this],[new mxRectangle(this.x(),this.y(),this.w()+dx,this.h()+dy)]);
 }
+//Makes a function activate the start load first, then run asynchronously. Useful for things that take a lot of time.
+function makeLoad(toLoad){
+    startLoad();
+    setTimeout(function(){toLoad();endLoad();},20);
+}
+function startLoad(){
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '* {cursor:wait !important;}';
+    style.id = "waitingStyle";
+    document.getElementsByTagName("head")[0].appendChild(style);
+
+}
+function endLoad(){
+    var style = document.getElementById("waitingStyle");
+    if(style!=null)style.parentElement.removeChild(style);
+}
+
 //A function to map the weeks' vertices into an array
 function mapWeekVertices(value,index,array){
     return value.vertex;

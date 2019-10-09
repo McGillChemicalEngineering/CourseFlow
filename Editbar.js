@@ -141,7 +141,7 @@ class EditBar{
         var tags = this.node.tags;
         if(tags.length>0){
             for(i=0;i<tags.length;i++){
-                tags[i].makeEditButton(this.tagButtonsDiv,this.node);
+                tags[i].makeEditButton(this.tagButtonsDiv,this.node,this);
             }
         }
         while(this.tagSelect.length>0){this.tagSelect.remove(0);}

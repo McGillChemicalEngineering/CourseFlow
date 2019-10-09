@@ -207,7 +207,7 @@ class CFNode {
         this.graph.moveCells([this.dropNode],0,dy);
         this.week.resizeWeek(dy,0);
         var thisIndex = this.week.nodes.indexOf(this);
-        if(thisIndex<this.week.nodes.length-1)this.week.pushNodes(thisIndex+1);
+        if(thisIndex<this.week.nodes.length-1)this.week.pushNodesFast(thisIndex+1,-1,dy);
         for(var i=0;i<this.brackets.length;i++){this.brackets[i].updateVertical();}
     }
     
@@ -238,6 +238,7 @@ class CFNode {
         this.vertex.cellOverlays=[];
         this.addPlusOverlay();
         this.addDelOverlay();
+        this.addCopyOverlay();
         this.vertex.setConnectable(true);
     }
     
@@ -267,6 +268,15 @@ class CFNode {
         this.wf.bringCommentsToFront();
         node.setColumn(this.column);
         node.setWeek(this.week);
+        this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
+        this.wf.makeUndo("Add Node",node);
+        return node;
+    }
+    
+    duplicateNode(){
+        var node = this.wf.createNodeOfType(this.column);
+        node.setWeek(this.week);
+        node.fromXML((new DOMParser).parseFromString(this.toXML(),"text/xml"));
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
         this.wf.makeUndo("Add Node",node);
     }
@@ -314,6 +324,26 @@ class CFNode {
         });
         this.vertex.cellOverlays.push(overlay);
         //n.graph.addCellOverlay(n.vertex, overlay);
+    }
+    
+    addCopyOverlay(){
+        var n = this;
+        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), 'Duplicate node');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.x = pt.x-bounds.width+n.vertex.w()/2;
+            bounds.y = pt.y-n.vertex.h()/2+24;
+            return bounds;
+        };
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            graph.clearSelection();
+            n.duplicateNode();
+        });
+        this.vertex.cellOverlays.push(overlay);
+        //this.graph.addCellOverlay(this.vertex, overlay);
     }
     
     
@@ -373,7 +403,7 @@ class CFNode {
     addTag(tag,show=true){
         var n = this;
         this.tags.push(tag);
-        tag.nodes.push(this);
+        tag.addNode(this);
         var tagLabel = this.graph.insertVertex(this.tagBox,null,tag.name,tagBoxPadding,tagBoxPadding,this.tagBox.w()-2*tagBoxPadding,tagHeight,defaultTagStyle);
         var colstyle = this.graph.getCellStyle(this.vertex)['fillColor'];
         this.graph.setCellStyles("strokeColor",colstyle,[tagLabel]);

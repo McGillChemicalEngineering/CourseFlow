@@ -30,7 +30,6 @@ class Column {
     }
     
     toXML(){
-        console.log("Sending to xml "+this.name);
         var xml = "";
         xml+=makeXML(this.name,"columnname");
         xml+=makeXML(this.image,"columnimage");

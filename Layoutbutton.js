@@ -189,6 +189,19 @@ class Layoutbutton {
         this.bwrap.appendChild(move);
     }
     
+    makeNodeIndicators(){
+        var indicatorSuper = document.createElement('div');
+        indicatorSuper.className="nodeindicatorwrap";
+        var indicatorHelper = document.createElement('div');
+        indicatorHelper.className="nodeindicatorhelper";
+        indicatorSuper.appendChild(indicatorHelper);
+        var indicatorWrap = document.createElement('div');
+        indicatorWrap.className = "nodeindicatordiv";
+        this.indicatorWrap = indicatorWrap;
+        indicatorSuper.appendChild(indicatorWrap);
+        this.bwrap.appendChild(indicatorSuper);
+    }
+    
     makeExpandable(){
         var bl = this;
         var expandDiv = document.createElement('div');
@@ -256,6 +269,22 @@ class Layoutbutton {
                 }
                 
             }
+        }
+    }
+    
+    updateNodeIndicators(colours,isComplete){
+        this.indicatorWrap.innerHTML="";
+        if(isComplete){
+            var check = document.createElement('img');
+            check.src = "resources/images/check16.png";
+            check.style.width='16px';
+            check.style.verticalAlign="middle";
+            this.indicatorWrap.appendChild(check);
+        } else for(var i=0;i<colours.length;i++){
+            var circle = document.createElement('div');
+            circle.className = "indicatordot";
+            circle.style.background = colours[i];
+            this.indicatorWrap.appendChild(circle);
         }
     }
 

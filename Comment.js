@@ -54,8 +54,8 @@ class WFComment{
         var com = this;
         var clickDiv = document.createElement('div');
         clickDiv.className = "commentDiv";
-        clickDiv.style.left=int(this.x)+int(this.wf.project.container.style.left)+"px";
-        clickDiv.style.top=int(this.y)+int(this.wf.project.container.style.top)+"px";
+        clickDiv.style.left=int(this.x)+int(document.getElementById("graphWrapper").style.left)+"px";
+        clickDiv.style.top=int(this.y)+int(document.getElementById("graphWrapper").style.top)+"px";
         var textDiv=document.createElement('div');
         textDiv.innerHTML=this.text;
         clickDiv.appendChild(textDiv);

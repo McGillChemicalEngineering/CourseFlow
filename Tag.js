@@ -30,6 +30,7 @@ class Tag {
         this.depth;
         this.wrapperDiv;
         this.isActive=false;
+        this.isComplete=false;
     }
     
     setName(name){
@@ -55,6 +56,7 @@ class Tag {
     clearData(){
         this.nodes=[];
         this.drops=[];
+        this.isComplete=false;
         for(var i=0;i<this.children.length;i++){
             this.children[i].clearData();
         }
@@ -279,6 +281,34 @@ class Tag {
         button.b.onclick=null;
         return button.childdiv;
     }
+    
+    addNode(node){
+        this.nodes.push(node);
+        this.updateDrops();
+    }
+    
+    updateDrops(){
+        var colours = [];
+        for(var i=0;i<this.nodes.length;i++){
+            var colour = this.nodes[i].graph.getCellStyle(this.nodes[i].vertex)["fillColor"];
+            if(colours.indexOf(colour)<0)colours.push(colour);
+        }
+        var colCount=99;
+        if(this.nodes[0]!=null)colCount=this.nodes[0].wf.columns.length;
+        this.isComplete=(this.children.length>0);
+        for(i=0;i<this.children.length;i++){
+            if(!this.children[i].isComplete)this.isComplete=false;
+        }
+        if(colCount<=colours.length)this.isComplete=true;
+        
+        for(i=0;i<this.drops.length;i++){
+            this.drops[i].updateNodeIndicators(colours,this.isComplete);
+        }
+        if(this.parentTag!=null)this.parentTag.updateDrops();
+        
+        
+    }
+    
     
 }
 
