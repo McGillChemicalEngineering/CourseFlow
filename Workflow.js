@@ -33,6 +33,9 @@ class Workflow{
         this.tagSelect;
         this.tagSets=[];
         this.isActive=false;
+        this.undoHistory=[];
+        this.currentUndo;
+        this.undoEnabled=false;
     }
     
     getDefaultName(){return "Untitled Workflow"};
@@ -60,6 +63,7 @@ class Workflow{
         var xml="";
         for(var i=0;i<this.columns.length;i++){
             xml+=this.columns[i].toXML();
+            console.log(this.columns.length);
         }
         for(i=0;i<this.weeks.length;i++){
             xml+=this.weeks[i].toXML();
@@ -71,14 +75,29 @@ class Workflow{
             xml+=this.brackets[i].toXML();
         }
         xml=makeXML(xml,"wfdata");
-        this.xmlData = (new DOMParser).parseFromString(xml,"text/xml");
+        this.xmlData = (new DOMParser).parseFromString(xml,"text/xml").childNodes[0];
     }
     
     openXMLData(){
         var xmlData = this.xmlData;
+        console.log(xmlData);
+        var xmlcols = [];
+        for(var i=0;i<xmlData.childNodes.length;i++){
+            console.log(xmlData.childNodes[i]);
+            if(xmlData.childNodes[i].tagName=="column")xmlcols.push(xmlData.childNodes[i]);
+        }
+        for(var i=0;i<xmlcols.length;i++){
+            console.log(xmlcols.length);
+            var col = new Column(this.graph,this);
+            col.fromXML(xmlcols[i]);
+            this.columns.push(col);
+        }
+        if(this.columns.length==0)this.createInitialColumns();
+        this.positionColumns();
         var xmlweeks = xmlData.getElementsByTagName("week");
-        for(var i=0;i<xmlweeks.length;i++){
+        for(i=0;i<xmlweeks.length;i++){
             if(i>0)this.weeks[i-1].insertBelow();
+            else if(this.weeks.length==0) this.createBaseWeek();
             this.weeks[i].fromXML(xmlweeks[i]);
         }
         this.updateWeekIndices();
@@ -95,6 +114,23 @@ class Workflow{
             com.fromXML(xmlcomments[i]);
             this.addComment(com);
         }
+    }
+    
+    clearGraph(){
+        while(this.brackets.length>0){
+            this.brackets[0].deleteSelf();
+        }
+        while(this.comments.length>0){
+            this.comments[0].deleteSelf();
+        }
+        while(this.weeks.length>1){
+            this.weeks[this.weeks.length-1].deleteSelf();
+        }
+        this.weeks[0].deleteSelf();
+        while(this.columns.length>0){
+            this.columns[this.columns.length-1].deleteSelf();
+        }
+        
     }
     
     fromXML(xmlData){
@@ -163,7 +199,6 @@ class Workflow{
     }
     
     removeChild(child){
-        console.log(child);
         this.children.splice(this.children.indexOf(child),1);
         //remove the button from all instances of the parent, but only once (we might use the same activity twice in one course, for example)
         for(var i=0;i<this.buttons.length;i++){
@@ -221,22 +256,30 @@ class Workflow{
         return null;
     }
     
-    setName(name,changeLabel=false){
-        //if active, we have to change the name tag label to this
+    //sets the name without changing the label
+    setNameSilent(name){
         if(name!=null && name!=""){
             name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
-            if(this.isActive&&changeLabel){
-                this.graph.labelChanged(this.titleNode,name);
-                //valueChanged has already been altered to call this function, so we return; the rest will be taken care of in the second pass
-                return;
+            this.name=name;
+            for(var i=0;i<this.buttons.length;i++){
+                this.buttons[i].updateButton();
             }
-            //otherwise, we just change the name
-            else 
-                this.name=name;
-                for(var i=0;i<this.buttons.length;i++){
-                    this.buttons[i].updateButton();
-                }
+            return name;
+        }else{
+            return this.name;
         }
+        
+    }
+    
+    setName(name){
+        if(name!=null && name!=""){
+            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //if active, we have to change the name tag label to this
+            if(this.isActive){
+                this.graph.getModel().setValue(this.titleNode,name);
+            }else name = this.setNameSilent(name);
+        }
+                
     }
     
     
@@ -268,14 +311,15 @@ class Workflow{
         {
             //Create the title boxes
             this.createTitleNode();
-            //Create all the columns
-            this.createInitialColumns();
-            for(i=0;i<columns.length;i++){columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);}
-            for(i=0;i<columns.length;i++){columns[i].createHead(wfStartY);columns[i].updatePosition();}
-            weekWidth=columns[columns.length-1].pos+defaultCellWidth/2+cellSpacing;
-            this.createBaseWeek();
-            if(this.xmlData!=null)this.openXMLData();
-            this.createSpanner();
+            if(this.xmlData!=null){
+                this.openXMLData();
+            }else{
+                //Create all the columns
+                this.createInitialColumns();
+                this.positionColumns();
+                this.createBaseWeek();
+            }
+            //this.createSpanner();
         }
         finally
         {
@@ -288,9 +332,15 @@ class Workflow{
         graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){return wf.createPopupMenu(menu, cell, evt);};
         
         this.generateToolbars(nbContainer);
+        if(this.undoHistory.length==0){
+            this.currentUndo=-1;
+            this.addUndo("Initial",this);
+        }
+        this.undoEnabled=true;
     }
     
     makeInactive(){
+        this.undoEnabled=false;
         this.isActive=false;
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
@@ -324,9 +374,9 @@ class Workflow{
         if(this.name!=null)title = this.name;
         this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,cellSpacing,300,50,defaultTitleStyle);
         this.titleNode.valueChanged = function(value){
-            //value = value.replace(/[^\w]/gi,'')
-            wf.setName(value);
-            mxCell.prototype.valueChanged.apply(this,arguments);
+            var value1 = wf.setNameSilent(value);
+            if(value1!=value)wf.graph.getModel().setValue(wf.titleNode,value1);
+            else mxCell.prototype.valueChanged.apply(this,arguments);
             
         }
     }
@@ -361,6 +411,13 @@ class Workflow{
         this.updateWeekIndices();
     }
     
+    positionColumns(){
+        var columns = this.columns;
+        for(var i=0;i<columns.length;i++){columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);}
+        for(i=0;i<columns.length;i++){columns[i].createHead();columns[i].updatePosition();}
+        this.updateWeekWidths();
+    }
+    
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
         this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX,0,this.weeks[0].box.w()+600,1,invisibleStyle);
@@ -374,7 +431,7 @@ class Workflow{
                 this.graph.setCellStyles("fillColor","#"+(0xf0f0f0+(i%2)*0x050505).toString(16)+";",[weeks[i].box]);
                 weeks[i].index=i;
             }
-            this.graph.labelChanged(weeks[i].box,'Week '+(i+1));
+            if(weeks[i].name==null&&weeks[i].name!="")weeks[i].setName(weeks[i].getDefaultName());
         }
     }
     pushWeeks(startIndex){
@@ -388,11 +445,37 @@ class Workflow{
         }
     }
     
+    addColumn(name){
+        var col = new Column(this.graph,this,name);
+        this.columns.push(col);
+        var i = this.columns.length-1;
+        this.columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);
+        this.columns[i].createHead();
+        this.columns[i].updatePosition();
+        this.updateWeekWidths();
+    }
+    
+    removeColumn(column){
+        console.log(this.columns.indexOf(column));
+        this.columns.splice(this.columns.indexOf(column),1);
+        this.updateWeekWidths();
+    }
+    
+    updateWeekWidths(){
+        var oldWidth= weekWidth;
+        if(this.columns.length==0)return;
+        weekWidth=this.columns[this.columns.length-1].pos+defaultCellWidth/2+cellSpacing;
+        for(var i = 0;i<this.weeks.length;i++){
+            this.weeks[i].box.resize(this.graph,weekWidth-oldWidth,0);
+        }
+    }
+    
     getColPos(name){
         for(var i=0;i<this.columns.length;i++){
             if(this.columns[i].name==name)return this.columns[i].pos;
         }
-        return this.columns[0].pos;
+        this.addColumn(name);
+        return this.columns[this.columns.length-1].pos;
     }
     getColIndex(name){
         for(var i=0;i<this.columns.length;i++){
@@ -498,17 +581,17 @@ class Workflow{
                     node.setColumn(column);
                     node.setWeek(cell.week);
                     cell.week.addNode(node);
-                    console.log(wf);
                     wf.bringCommentsToFront();
+                    wf.makeUndo("Add Node",node);
 
                 }
-
             }
             return dropfunction;
         }
         
-        for(var i=0;i<this.columns.length;i++){
-            this.addNodebarItem(container,this.columns[i].nodetext,'resources/data/'+this.columns[i].image+'24.png',makeDropFunction(this.columns[i].name,this));
+        var allColumns = this.getPossibleColumns();
+        for(var i=0;i<allColumns.length;i++){
+            this.addNodebarItem(container,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this));
         }
     }
     
@@ -546,6 +629,7 @@ class Workflow{
                 while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
                 if(cell!=null && cell.isNode){
                     cell.node.addTag(thistag,cell);
+                    wf.makeUndo("Add Tag",cell.node);
                 }
 
             }
@@ -676,7 +760,7 @@ class Workflow{
     }
     
     
-    //Since the XML file may not originate from the program, there may be some overlap in the IDs. We therefore flip each ID to negative temporarily, assign everything, then use the IDs that were generated in the initial creation of the nodes.
+  
     addNodesFromXML(week,startIndex,xml){
         xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");
         //Add everything
@@ -780,6 +864,65 @@ class Workflow{
         }
     }
     
+    //Call to create an undo event, which will debounce calls
+    makeUndo(type,source=null){
+        var debouncetime=500;
+        var prevUndoCall = this.lastUndoCall;
+        this.lastUndoCall=Date.now();
+       //Debounce
+        if(prevUndoCall&&this.lastUndoCall-prevUndoCall<=debouncetime){
+            clearTimeout(this.lastCallTimer);
+        }
+        var wf = this;
+        this.lastCallTimer = setTimeout(function(){wf.addUndo(type,source)},debouncetime);
+    }
+        
+    addUndo(type,source){
+        this.undoEnabled=false;
+        var undo = new Undo(this,type,source);
+        //If we have just done one or more undos, the index will be less than the max; we should destroy everything past the current index.
+        if(this.currentUndo<this.undoHistory.length-1){
+            this.undoHistory.splice(this.currentUndo+1,this.undoHistory.length-2-this.currentUndo)
+        }        
+        //If the most recent undo is of the same type and source, we probably only need to keep one.
+        if(this.undoHistory.length>1){
+            var lastUndo = this.undoHistory[this.undoHistory.length-1];
+            if((lastUndo.type==undo.type&&lastUndo.source==undo.source)||undo.xml==lastUndo.xml){
+                this.undoHistory.splice(this.undoHistory.length-1,1);
+                this.currentUndo--;
+            }
+        }
+        this.undoHistory.push(undo);
+        this.currentUndo++;
+        this.undoEnabled=true;
+    }
+    
+    undo(){
+        if(this.undoEnabled&&this.currentUndo>0){
+            this.undoEnabled=false;
+            this.graph.clearSelection();
+            var lastUndo = this.undoHistory[this.currentUndo-1];
+            this.xmlData = lastUndo.xml;
+            this.clearGraph();
+            this.openXMLData();
+            this.currentUndo--;
+            this.undoEnabled=true;
+            
+        }
+    }
+    
+    redo(){
+        if(this.undoEnabled&&this.currentUndo<this.undoHistory.length-1){
+            this.undoEnabled==false;
+            this.graph.clearSelection();
+            var nextUndo = this.undoHistory[this.currentUndo+1];
+            this.xmlData = nextUndo.xml;
+            this.clearGraph();
+            this.openXMLData();
+            this.currentUndo++;
+            this.undoEnabled=true;
+        }
+    }
     
 
     
@@ -790,10 +933,19 @@ class Courseflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"HW","Preparation","homework","Preparation"));
-        columns.push(new Column(graph,this,"AC","Activities","lesson","Activity"));
-        columns.push(new Column(graph,this,"FA","Artifacts","artifact","Artifact"));
-        columns.push(new Column(graph,this,"SA","Assessments","assessment","Assessment"));
+        columns.push(new Column(graph,this,"HW"));
+        columns.push(new Column(graph,this,"AC"));
+        columns.push(new Column(graph,this,"SA"));
+    }
+    
+    getPossibleColumns(){
+        var columns = [];
+        var graph = this.graph;
+        columns.push(new Column(graph,this,"HW"));
+        columns.push(new Column(graph,this,"AC"));
+        columns.push(new Column(graph,this,"FA"));
+        columns.push(new Column(graph,this,"SA"));
+        return columns;
     }
     
     getDefaultName(){return "New Course"};
@@ -845,9 +997,18 @@ class Activityflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"OOC","Out of Class","home","Home"));
-        columns.push(new Column(graph,this,"ICI","In Class (Instructor)","instruct","Instructor"));
-        columns.push(new Column(graph,this,"ICS","In Class (Students)","noinstructor","Students"));
+        columns.push(new Column(graph,this,"OOC"));
+        columns.push(new Column(graph,this,"ICI"));
+        columns.push(new Column(graph,this,"ICS"));
+    }
+    
+    getPossibleColumns(){
+        var columns = [];
+        var graph = this.graph;
+        columns.push(new Column(graph,this,"OOC"));
+        columns.push(new Column(graph,this,"ICI"));
+        columns.push(new Column(graph,this,"ICS"));
+        return columns;
     }
     
     createBaseWeek(){
@@ -887,11 +1048,13 @@ class Activityflow extends Workflow{
                 if(cell!=null&&graph.isPart(cell))cell=graph.getModel().getParent(cell);
                 if(cell!=null && cell.isNode){
                     wf.addBracket(strategy,cell);
+                    wf.makeUndo("Add Bracket",strategy);
                 }
                 if(cell!=null&&cell.isWeek){
                     var xml = findStrategyXML(strategy);
                     var startIndex = cell.week.getNextIndexFromPoint(y);
                     wf.addNodesFromXML(cell.week,startIndex,xml);
+                    wf.makeUndo("Add Strategy",strategy);
                 }
 
             }
@@ -912,8 +1075,16 @@ class Programflow extends Workflow{
     createInitialColumns(){
         var columns = this.columns;
         var graph = this.graph;
-        columns.push(new Column(graph,this,"CO","Course","instruct","Course"));
-        columns.push(new Column(graph,this,"SA","Assessments","assessment","Assessment"));
+        columns.push(new Column(graph,this,"CO"));
+        columns.push(new Column(graph,this,"SA"));
+    }
+    
+    getPossibleColumns(){
+        var columns = [];
+        var graph = this.graph;
+        columns.push(new Column(graph,this,"CO"));
+        columns.push(new Column(graph,this,"SA"));
+        return columns;
     }
     
     createBaseWeek(){

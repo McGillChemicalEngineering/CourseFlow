@@ -128,6 +128,7 @@ class Bracket {
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             n.deleteSelf();
+            n.wf.makeUndo("Delete Bracket",n);
         });
         this.label.cellOverlays.push(overlay);
         //n.graph.addCellOverlay(n.vertex, overlay);

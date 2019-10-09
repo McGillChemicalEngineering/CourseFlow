@@ -159,10 +159,55 @@ class Project{
             p.printActiveWF();
         }
         
+        var undoButton = document.getElementById("undo");
+        undoButton.onclick = function(){
+            if(p.activeWF!=null){
+                p.workflows[p.activeWF].undo();
+            }
+        }
+        
+        var redoButton = document.getElementById("redo");
+        redoButton.onclick = function(){
+            if(p.activeWF!=null){
+                p.workflows[p.activeWF].redo();
+            }
+        }
+        
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
         expand.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes();}
         collapse.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes(false);}
+        
+        //Keyboard shortcuts
+        document.addEventListener("keydown",function(evt){
+            if(!evt.ctrlKey)return;
+            switch(evt.key.toLowerCase()){
+                case "z":
+                    if(evt.shiftKey)redoButton.click();
+                    else undoButton.click();
+                    break;
+                case "s":
+                    evt.preventDefault();
+                    save.click();
+                    break;
+                case "o":
+                    open.click();
+                    break;
+                case "n":
+                    evt.preventDefault();
+                    newfile.click();
+                    break;
+            }
+            
+        });
+        
+        document.addEventListener("click",function(evt){
+            console.log(evt);
+            if(p.activeWF!=null&&!p.container.contains(evt.target)&&!p.editbar.container.contains(evt.target))p.graph.clearSelection();
+        })
+        
+        
+        
 		
     }
     
@@ -609,7 +654,10 @@ class Project{
                     //Start by checking whether we need to move in the x direction
                     var colIndex=wf.getColIndex(cell.node.column);
                     var newColName = wf.findNearestColumn(newx);
-                    if(newColName!=cell.node.column)cell.node.setColumn(newColName);
+                    if(newColName!=cell.node.column){
+                        cell.node.setColumn(newColName);
+                        cell.node.wf.makeUndo("Node Moved",cell.node);
+                    }
                     //Check the y
                     //First we check whether we are inside a new week; if we are then it hardly matters where we are relative to the nodes within the old week.
                     var node = cell.node;
@@ -618,9 +666,13 @@ class Project{
                     if(weekChange==0){//proceed to determine whether or not the node must move within the week
                         var index = node.week.nodes.indexOf(node);
                         var newIndex = week.getNearestNode(newy);
-                        if(index!=newIndex)week.shiftNode(index,newIndex,graph);
+                        if(index!=newIndex){
+                            week.shiftNode(index,newIndex,graph);
+                            node.wf.makeUndo("Node Moved",cell.node);
+                        }
                     }else{
                         cell.node.changeWeek(weekChange,graph);
+                        node.wf.makeUndo("Node Moved",cell.node);
                     }
                 }else if(cells.length==1 && cells[0].isHead){
                     //as above but with only the horizontal movement
@@ -638,6 +690,7 @@ class Project{
                     if(colIndex<columns.length-1 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex+1].pos-newx)){
                         //swap this column with that to the right
                         wf.swapColumns(colIndex,colIndex+1);
+                        wf.makeUndo("Column Moved");
                     }
                     
                 }

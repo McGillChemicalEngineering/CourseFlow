@@ -131,7 +131,6 @@ class Layoutbutton {
     
     renameClick(){
         
-        console.log(this);
         var p = this.layout.project;
         var layout = this.layout;
         var bl = this;
@@ -141,7 +140,6 @@ class Layoutbutton {
         bl.namediv.innerHTML="<input type='text' value = '"+layout.name+"'placeholder='<type a new name here>'></input>";
         bl.namediv.firstElementChild.focus();
         bl.namediv.firstElementChild.select();
-        console.log(bl.namediv.firstElementChild);
         b.onclick=null;
         p.container.addEventListener('click',function(){
             if(bl.namediv.firstElementChild!=null)bl.namediv.firstElementChild.blur();
@@ -202,7 +200,6 @@ class Layoutbutton {
             else {bl.expand();}
         }
         expandDiv.appendChild(this.expandIcon);
-        console.log(this.b);
         this.bdiv.appendChild(expandDiv);
         this.hiddenchildren.onclick = this.expandIcon.onclick;
     }

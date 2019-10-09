@@ -31,9 +31,13 @@ class EditBar{
         });
         quill1.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
-            if(eb.node!=null)eb.node.setName(quill1.getText().slice(0,-1));
+            if(eb.node!=null){
+                eb.node.setName(quill1.getText().slice(0,-1));
+                eb.node.wf.makeUndo("Name Change",eb.node);
+            }
           }
         });
+        quillDiv1.firstChild.onfocus = function(){quill1.setSelection(0,quill1.getLength());};
         this.nameField=quill1;
         this.leftIcon = document.getElementById('leftIconSelect');
         this.rightIcon = document.getElementById('rightIconSelect');
@@ -49,9 +53,13 @@ class EditBar{
         });
         quill2.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
-            if(eb.node!=null)eb.node.setText(quillDiv2.childNodes[0].innerHTML);
+            if(eb.node!=null){
+                eb.node.setText(quillDiv2.childNodes[0].innerHTML);
+                eb.node.wf.makeUndo("Text Change",eb.node);
+            }
           }
         });
+        quillDiv2.firstChild.onfocus = function(){quill2.setSelection(0,quill2.getLength());};
         //Making some changes to the way link creation works. By default if the user has nothing selected, the link button simply does nothing; this is undesirable behaviour.
         var toolbar = quill2.getModule('toolbar');
         toolbar.defaultLinkFunction=toolbar.handlers['link'];
@@ -64,7 +72,8 @@ class EditBar{
            
             this.defaultLinkFunction(value);
         });
-        this.textField=quillDiv2.childNodes[0];
+        //this.textField=quillDiv2.childNodes[0];
+        this.textField = quill2;
         this.linkedWF = document.getElementById('linkedWFSelect');
         this.tagButtonsDiv = document.getElementById('tagButtonsDiv');
         this.tagSelect=document.getElementById('tagSelect');
@@ -77,8 +86,10 @@ class EditBar{
         this.node=node;
         if(node.name!=null)this.nameField.setText(node.name);
         else this.nameField.setText("<Name>");
-        if(node.text!=null)this.textField.innerHTML=node.text;
-        else this.textField.innerHTML="Insert a description here.";
+        if(node.text!=null)this.textField.clipboard.dangerouslyPasteHTML(node.text,"silent");
+        else this.textField.clipboard.dangerouslyPasteHTML("Insert a description here.","silent");
+        //if(node.text!=null)this.textField.innerHTML=node.text;
+        //else this.textField.innerHTML="Insert a description here.";
         this.container.style.display="inline";
         this.container.style.width="400px";
         var iconList = node.getLeftIconList();
@@ -88,6 +99,7 @@ class EditBar{
             if(node.lefticon!=null)this.leftIcon.value=node.lefticon;
             this.leftIcon.onchange = function(){
                 node.setLeftIcon(this.value);
+                node.wf.makeUndo("Icon Change",node);
             }
         }else this.hideParent(this.leftIcon);
         iconList = node.getRightIconList();
@@ -97,6 +109,7 @@ class EditBar{
             if(node.righticon!=null)this.rightIcon.value=node.righticon;
             this.rightIcon.onchange = function(){
                 node.setRightIcon(this.value);
+                node.wf.makeUndo("Icon Change",node);
             }
         }else this.hideParent(this.rightIcon);
         var linkedWFList = node.getLinkedWFList();
@@ -106,6 +119,7 @@ class EditBar{
             if(node.linkedWF!=null)this.linkedWF.value = node.linkedWF;
             this.linkedWF.onchange = function(){
                 node.setLinkedWF(this.value);
+                node.wf.makeUndo("Linked Workflow Change",node);
             }
         }else this.hideParent(this.linkedWF);
         if(node.wf.tagSets.length>0){
@@ -114,8 +128,9 @@ class EditBar{
         }else this.hideParent(this.tagButtonsDiv);
         this.tagSelect.onchange = function(){
             if(this.value=="")return;
-            else node.addTag(node.wf.getTagByID(this.value));
+            node.addTag(node.wf.getTagByID(this.value));
             eb.populateTags();
+            node.wf.makeUndo("Add Tag",node);
         }
         
     }

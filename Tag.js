@@ -118,6 +118,7 @@ class Tag {
             
         }else if(parent instanceof CFNode){
             parent.removeTag(this);
+            parent.wf.makeUndo("Icon Change",node);
             var eb = this.project.editbar;
             if(eb.node==parent){
                 eb.populateTags();

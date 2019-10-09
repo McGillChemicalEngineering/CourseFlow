@@ -349,8 +349,20 @@ ol .expanddiv{
     padding-left:12px;
     padding-right:12px;
     text-align:left;
+    position:relative;
     cursor:pointer;
     white-space: nowrap;
+}
+
+.topdropdiv a div{
+    display:inline-block;
+}
+
+.shortcut{
+    color:gray;
+    text-align:right;
+    position:absolute;
+    right:12px;
 }
 
 .topdropwrapper:hover .topdropdiv{

@@ -20,14 +20,44 @@ class Week {
         this.graph=graph;
         this.nodes=[];
         this.box;
+        this.name;
         this.index;
         this.wf=wf;
         this.id = this.wf.project.genID();
     }
     
+    setNameSilent(name){
+        if(name!=null && name!=""){
+            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            this.name=name;
+            return name;
+        }else{
+            this.name=null;
+            return this.getDefaultName();
+        }
+    }
+    
+    setName(name){
+        if(name!=null && name!=""){
+            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            this.graph.getModel().setValue(this.box,name);
+        }else{
+            this.name = null;
+            this.graph.getModel().setValue(this.titleNode,this.getDefaultName());
+            
+        }
+        
+    }  
+    
+    getDefaultName(){
+        return "Week "+(this.wf.weeks.indexOf(this)+1);
+    }
+    
     toXML(){
         var xml = "";
         xml+=makeXML(this.id,"weekid");
+        console.log(this.name);
+        if(this.name!=null)xml+=makeXML(this.name,"weekname");
         for(var i=0;i<this.nodes.length;i++){
             xml+=this.nodes[i].toXML();
         }
@@ -38,6 +68,8 @@ class Week {
         var graph = this.graph;
         var wf = this.wf;
         this.id = getXMLVal(xmlData,"weekid");
+        var name = getXMLVal(xmlData,"weekname");
+        if(name!=null)this.setName(name);
         var xmlnodes = xmlData.getElementsByTagName("node");
         for(var i=0;i<xmlnodes.length;i++){
             var xmlnode = xmlnodes[i];
@@ -46,11 +78,21 @@ class Week {
             node.week = this;
             node.fromXML(xmlnode);
             this.addNode(node);
+            if(xmlnode.getElementsByTagName("isdropped").length>0)node.toggleDropDown();
         }
     }
     
     createBox(x,y,width){
         this.box = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,emptyWeekSize,this.getStyle());
+        var week = this;
+        this.box.valueChanged = function(value){
+            if(value==week.getDefaultName())return mxCell.prototype.valueChanged.apply(this,arguments);
+            console.log("valueChanged called");
+            var value1 = week.setNameSilent(value);
+            if(value1!=value)week.graph.getModel().setValue(week.box,value1);
+            else mxCell.prototype.valueChanged.apply(this,arguments);
+            
+        }
         this.box.isWeek=true;
         this.box.week=this;
         this.graph.orderCells(true,[this.box]);
@@ -187,6 +229,7 @@ class Week {
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
             w.insertBelow();
+            w.wf.makeUndo("Add Week",w);
         });
         this.box.cellOverlays.push(overlay);
         //this.graph.addCellOverlay(this.box, overlay);
@@ -209,6 +252,7 @@ class Week {
             if(mxUtils.confirm("Delete this week? Warning: this will delete any nodes still inside!")){
                 graph.clearSelection();
                 w.deleteSelf();
+                w.wf.makeUndo("Delete Week",w);
             }
         });
         this.box.cellOverlays.push(overlay);
@@ -217,8 +261,8 @@ class Week {
     
     //Causes the week to delete itself and all its contents
     deleteSelf(){
-        for(var i=0;i<this.nodes.length;i++){
-            this.nodes[i].deleteSelf();
+        while(this.nodes.length>0){
+            this.nodes[this.nodes.length-1].deleteSelf();
         }
         this.graph.removeCells([this.box]);
         this.wf.weeks.splice(this.index,1);

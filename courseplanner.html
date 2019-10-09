@@ -52,6 +52,7 @@
 		<script type="text/javascript" src="Tag.js"></script>
 		<script type="text/javascript" src="Comment.js"></script>
 		<script type="text/javascript" src="Layoutbutton.js"></script>
+		<script type="text/javascript" src="Undo.js"></script>
         <script type="text/javascript" src="TempXMLStorage.js"></script>
 <!--    	<script src="resources/pdftex.js"></script> -->
 <!--    	<script src="resources/promise/promise.js"></script> -->
@@ -72,8 +73,8 @@
                 <button class = "topdropbutton">File</button>
                 <div class="topdropdiv">
                     <a id="new">New Project</a>
-                    <a id="save">Save Project</a>
-                    <a id="open">Open Project</a>
+                    <a id="save"><div>Save Project</div><div class="shortcut">Ctrl+S</div></a>
+                    <a id="open"><div>Open Project</div><div class="shortcut">Ctrl+O</div></a>
                     <a id="export">Export Current Workflow</a>
                     <a id="import">Import a Workflow</a>
                 </div>
@@ -81,7 +82,9 @@
             <div class="topdropwrapper">
                 <button class="topdropbutton">Edit</button>
                 <div class="topdropdiv">
-                    <a id="duplicatewf">Duplicate Current Workflow</a>
+                    <a id="undo"><div>Undo </div><div class="shortcut">Ctrl+Z</div></a>
+                    <a id="redo"><div>Redo</div><div class="shortcut">Ctrl+Shift+Z</div></a>
+                    <a id="duplicatewf"><div>Duplicate Current Workflow</div></a>
                 </div>
             </div>
             <div class="topdropwrapper">
@@ -144,9 +147,12 @@
         </div>
     </div>
 	<!-- Creates a container for the graph-->
-	<div id="graphContainer"
-		style="position:absolute;left:202px; top:102px;overflow:hidden;cursor:default;bottom:0px;right:0px;">
-	</div>
+    <div style="position:absolute;left:202px; top:102px;display:inline-block;position:relative;white-space:nowrap;">
+        <div id="graphContainer"
+            style="display:inline-block;overflow:hidden;cursor:default;">
+        </div>
+        <div id = "spacerDiv" style="display:inline-block;width:400px;height:1px;"></div>
+    </div>
 	<!-- Creates a container for the outline -->
 		<div id="outlineContainer"
 			style="z-index:1;position:fixed;overflow:hidden;top:102px;right:222px;width:160px;height:120px;background:white;border-style:solid;border-color:lightgray;display:none;">

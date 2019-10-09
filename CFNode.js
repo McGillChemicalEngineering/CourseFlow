@@ -64,6 +64,7 @@ class CFNode {
         xml+=makeXML(this.text,"textHTML");
         xml+=makeXML(this.linkedWF,"linkedwf");
         xml+=makeXML(this.textHeight,"textheight");
+        if(this.isDropped)xml+=makeXML("true","isdropped");
         var linksOut =[];
         var linkOutPorts=[];
         for(var i=0;i<this.fixedLinksOut.length;i++){
@@ -105,6 +106,9 @@ class CFNode {
         if(tagArray!=null)for(i=0;i<tagArray.length;i++){
             this.addTag(this.wf.getTagByID(tagArray[i]),false);
         }
+        
+        
+        
     }
     
     setColumn(col){
@@ -264,13 +268,14 @@ class CFNode {
         node.setColumn(this.column);
         node.setWeek(this.week);
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
+        this.wf.makeUndo("Add Node",node);
     }
     
     getVertexStyle(){return '';}
     
     addPlusOverlay(){
         var n = this;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), 'Insert week below');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), 'Insert node below');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -304,6 +309,7 @@ class CFNode {
             if(mxUtils.confirm("Delete this node?")){
                 graph.clearSelection();
                 n.deleteSelf();
+                n.wf.makeUndo("Delete Node",n);
             }
         });
         this.vertex.cellOverlays.push(overlay);
@@ -384,6 +390,7 @@ class CFNode {
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
             n.removeTag(tag);
+            n.wf.makeUndo("Remove Tag",n);
         });
         tagLabel.cellOverlays = [overlay];
         var tagPreview = this.graph.insertVertex(this.vertex,null,'',tagBoxPadding+this.vertex.w(),tagHeight/2-2+(tagBoxPadding+tagHeight)*this.tagPreviews.length,4,4,defaultTagStyle);
@@ -458,8 +465,9 @@ class ACNode extends CFNode {
     }
     
     makeAutoLinks(){
-        this.autoLinkSameType();
-        return true;
+        //this.autoLinkSameType();
+        //return true;
+        return false;
     }
     
     styleForColumn(){
@@ -493,8 +501,9 @@ class CONode extends CFNode {
     }
     
     makeAutoLinks(){
-        this.autoLinkSameType();
-        return true;
+        //this.autoLinkSameType();
+        //return true;
+        return false;
     }
     
     styleForColumn(){
