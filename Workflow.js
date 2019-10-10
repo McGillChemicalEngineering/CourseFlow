@@ -388,7 +388,7 @@ class Workflow{
             }
         }
         menu.addItem('Add Comment','resources/images/comment24.png',function(){
-            var com = new WFComment(graph,wf,evt.pageX-int(document.getElementById("graphWrapper").style.left)-graph.view.getTranslate().x,evt.pageY-int(document.getElementById("graphWrapper").style.top)-graph.view.getTranslate().y);
+            var com = new WFComment(graph,wf,evt.pageX-int(document.getElementById("graphWrapper").style.left)-graph.view.getTranslate().x,evt.pageY-int(document.getElementById("graphWrapper").style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y);
             com.createVertex();
             wf.addComment(com);
         });
@@ -697,22 +697,28 @@ class Workflow{
         
 
         var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
+        draggable.leftPos = int(document.getElementById("graphWrapper").style.left);
+        draggable.topPos = int(document.getElementById("graphWrapper").style.top)
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
-            var cell = this.getDropTarget(graph,evt.pageX-int(document.getElementById("graphWrapper").style.left)-graph.view.getTranslate().x,evt.pageY-int(document.getElementById("graphWrapper").style.top)-graph.view.getTranslate().y,evt);
+            var cell = this.getDropTarget(graph,evt.pageX-this.leftPos-graph.view.getTranslate().x,evt.pageY-this.topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,evt);
             while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
-            if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
-            if(validtargetfunction(cell)){
-                this.dragElement.style.outline="2px solid lightgreen";
-                var g = graph.view.getState(cell).shape.node;
-                if(g.firstChild!=null){
-                    g.firstChild.classList.add("validdrop");
-                    var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
-                    document.addEventListener("mouseup",hlRemove,true);
-                    draggable.lastCell = cell;
+            if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;console.log("removing cell");}
+            
+            if(draggable.lastCell==null){
+                if(validtargetfunction(cell)){
+                    this.dragElement.style.outline="2px solid lightgreen";
+                    var g = graph.view.getState(cell).shape.node;
+                    if(g.firstChild!=null){
+                        g.firstChild.classList.add("validdrop");
+                        var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
+                        g.firstChild.addEventListener("mouseup",hlRemove,true);
+                        draggable.lastCell = cell;
+                        console.log("adding cell");
+                    }
+                }else{
+                    this.dragElement.style.outline="2px solid red";
                 }
-            }else{
-                this.dragElement.style.outline="2px solid red";
             }
             return defaultMouseMove.apply(this,arguments);
         }

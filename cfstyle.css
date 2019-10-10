@@ -284,6 +284,7 @@ ol .expanddiv{
     max-height: 400px;
     border: 2px solid black;
     overflow-y: scroll;
+    white-space: normal;
 }
 .commentDiv textarea{
     width : 97%;
@@ -502,7 +503,7 @@ rect.highlighted{
 }
 
 
-rect.validdrop{
+.validdrop{
     outline:5px solid lightgreen;
 }
 

@@ -287,6 +287,11 @@ class Tag {
         this.updateDrops();
     }
     
+    removeNode(node){
+        this.nodes.splice(this.nodes.indexOf(node),1);
+        this.updateDrops();
+    }
+    
     updateDrops(){
         var colours = [];
         for(var i=0;i<this.nodes.length;i++){

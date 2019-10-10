@@ -437,7 +437,7 @@ class CFNode {
         this.graph.removeCells([vertex,this.tagPreviews[this.tagPreviews.length-1]]);
         this.tags.splice(this.tags.indexOf(tag),1);
         this.tagPreviews.pop();
-        tag.nodes.splice(tag.nodes.indexOf(this),1);
+        tag.removeNode(this);
     }
     
     toggleTags(show){

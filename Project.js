@@ -203,7 +203,7 @@ class Project{
         
         document.addEventListener("click",function(evt){
             if(p.activeWF!=null&&!p.container.contains(evt.target)&&!p.editbar.container.contains(evt.target))p.graph.clearSelection();
-        })
+        });
         
         
         

@@ -52,10 +52,11 @@ class WFComment{
     
     show(){
         var com = this;
+        var graphWrapper = document.getElementById("graphWrapper");
         var clickDiv = document.createElement('div');
         clickDiv.className = "commentDiv";
-        clickDiv.style.left=int(this.x)+int(document.getElementById("graphWrapper").style.left)+"px";
-        clickDiv.style.top=int(this.y)+int(document.getElementById("graphWrapper").style.top)+"px";
+        clickDiv.style.left=int(this.x)+"px";
+        clickDiv.style.top=int(this.y)+"px";
         var textDiv=document.createElement('div');
         textDiv.innerHTML=this.text;
         clickDiv.appendChild(textDiv);
@@ -72,7 +73,7 @@ class WFComment{
         inputButton.addEventListener('click',appendComment);
         clickDiv.appendChild(inputField);
         clickDiv.appendChild(inputButton);
-        document.body.appendChild(clickDiv);
+        graphWrapper.appendChild(clickDiv);
         
         //removes the div when the user clicks outside the element. The first click bubbles up, and causes the state to change ONLY once it hits the top.
         var outsideClickListener = function(evt2){
@@ -83,7 +84,7 @@ class WFComment{
         };
 
         function removeDiv(){
-            document.body.removeChild(clickDiv);
+            clickDiv.parentElement.removeChild(clickDiv);
             document.removeEventListener('click',outsideClickListener);
         };
         document.addEventListener('click',outsideClickListener);
