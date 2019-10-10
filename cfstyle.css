@@ -90,6 +90,7 @@ button:hover{
     padding:4px;
     min-height:40px;
     text-align:left;
+    white-space:normal;
 }
 
 .layoutdiv button input, .layoutdiv li input{
@@ -454,6 +455,7 @@ ol .expanddiv{
 
 .layoutbuttonwrap{
     position:relative;
+    white-space:nowrap;
     
 }
 

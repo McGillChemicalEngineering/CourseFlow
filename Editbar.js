@@ -59,7 +59,7 @@ class EditBar{
             }
           }
         });
-        quillDiv2.firstChild.onfocus = function(){quill2.setSelection(0,quill2.getLength());};
+        //quillDiv2.firstChild.onfocus = function(){quill2.setSelection(0,quill2.getLength());};
         //Making some changes to the way link creation works. By default if the user has nothing selected, the link button simply does nothing; this is undesirable behaviour.
         var toolbar = quill2.getModule('toolbar');
         toolbar.defaultLinkFunction=toolbar.handlers['link'];

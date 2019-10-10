@@ -712,7 +712,7 @@ class Workflow{
                     if(g.firstChild!=null){
                         g.firstChild.classList.add("validdrop");
                         var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
-                        g.firstChild.addEventListener("mouseup",hlRemove,true);
+                        document.addEventListener("mouseup",hlRemove,true);
                         draggable.lastCell = cell;
                         console.log("adding cell");
                     }

@@ -251,7 +251,10 @@ class Tag {
     addDrop(button){
         var tag = this;
         button.b.addEventListener("mouseover",function(evt){tag.highlight(true)});
-        button.b.addEventListener("mouseleave",function(evt){tag.highlight(false)});
+        button.b.addEventListener("mouseleave",function(evt){if(!button.b.isToggled)tag.highlight(false)});
+        button.b.hasListener=true;
+        button.b.isToggled=false;
+        button.b.onclick= function(){button.b.isToggled=(!button.b.isToggled);};
         this.drops.push(button);
     }
     
