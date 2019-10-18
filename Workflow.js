@@ -636,6 +636,7 @@ class Workflow{
                     wf.makeUndo("Add Node",node);
 
                 }
+                this.lastCell=null;
             }
             return dropfunction;
         }
@@ -682,6 +683,7 @@ class Workflow{
                     cell.node.addTag(thistag,cell);
                     wf.makeUndo("Add Tag",cell.node);
                 }
+                this.lastCell=null;
 
             }
             return dropfunction;
@@ -1148,6 +1150,7 @@ class Activityflow extends Workflow{
                         wf.makeUndo("Add Strategy",strategy);
                     });
                 }
+                this.lastCell=null;
 
             }
             return dropfunction;
