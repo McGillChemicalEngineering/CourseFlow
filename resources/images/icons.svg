@@ -252,16 +252,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="1378.3449"
-     inkscape:cy="-564.97942"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="1107.5876"
+     inkscape:cy="-966.89887"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="72"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -1696,5 +1696,40 @@
        sodipodi:nodetypes="ccc"
        inkscape:export-xdpi="7.8708982"
        inkscape:export-ydpi="7.8708982" />
+    <rect
+       style="fill:#ffffff;stroke:#1976bc;stroke-width:12.50000191;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect990-3-1-0"
+       width="201.52547"
+       height="201.52547"
+       x="1271.0244"
+       y="1862.353"
+       inkscape:export-xdpi="20.184515"
+       inkscape:export-ydpi="20.184515" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#1976bc;stroke-width:12.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1306.7333,2022.5127 69.4452,-120.2825 65.1535,120.438"
+       id="path8286"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-xdpi="20.184515"
+       inkscape:export-ydpi="20.184515" />
+    <rect
+       style="fill:#ffffff;stroke:#1976bc;stroke-width:12.50000191;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect990-3-1-0-5"
+       width="201.52547"
+       height="201.52547"
+       x="1271.0244"
+       y="-2319.8511"
+       inkscape:export-xdpi="20.184509"
+       inkscape:export-ydpi="20.184509"
+       transform="scale(1,-1)" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#1976bc;stroke-width:12.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1306.7333,2159.6915 69.4452,120.2825 65.1535,-120.438"
+       id="path8286-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-xdpi="20.184509"
+       inkscape:export-ydpi="20.184509" />
   </g>
 </svg>

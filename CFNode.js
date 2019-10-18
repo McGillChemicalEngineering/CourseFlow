@@ -257,6 +257,9 @@ class CFNode {
     
     deleteSelf(){
         for(var i=0;i<this.brackets.length;i++)this.brackets[i].cellRemoved(this);
+        for(var i=0;i<this.tags.length;i++){
+            this.tags[i].removeNode(this);
+        }
         this.week.removeNode(this);
         if(this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
         this.graph.removeCells([this.vertex]);

@@ -170,18 +170,16 @@ class Layoutbutton {
         var button = this;
         var move = document.createElement('div');
         move.className = "editlayoutdiv";
-        var up = document.createElement('a');
+        var up = document.createElement('img');
         up.className="layoutchange";
-        up.innerHTML="&#708";
-        up.href="#";
+        up.src = "resources/images/moveup16.png";
         up.onclick=function(){
             button.moveButton(true);
         }
         move.appendChild(up);
-        var down = document.createElement('a');
+        var down = document.createElement('img');
         down.className="layoutchange";
-        down.innerHTML="&#709";
-        down.href="#";
+        down.src = "resources/images/movedown16.png";
         down.onclick=function(){
             button.moveButton(false);
         }

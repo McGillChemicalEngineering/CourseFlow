@@ -98,6 +98,7 @@ class Week {
         this.addPlusOverlay();
         this.addDelOverlay();
         this.addCopyOverlay();
+        this.addMoveOverlays();
     }
     
     getStyle(){
@@ -307,6 +308,41 @@ class Week {
         //this.graph.addCellOverlay(this.vertex, overlay);
     }
     
+    addMoveOverlays(){
+        var w = this;
+        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), 'Move week');
+        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), 'Move week');
+        overlayUp.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.x = pt.x-w.box.w()/2;
+            bounds.y = pt.y-w.box.h()/2;
+            return bounds;
+        };
+        overlayDown.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.x = pt.x-w.box.w()/2;
+            bounds.y = pt.y+w.box.h()/2-bounds.height;
+            return bounds;
+        };
+        var graph = this.graph;
+        overlayUp.cursor = 'pointer';
+        overlayDown.cursor = 'pointer';
+        overlayUp.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            graph.clearSelection();
+            w.wf.moveWeek(w,-1);
+        });
+        overlayDown.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            graph.clearSelection();
+            w.wf.moveWeek(w,+1);
+        });
+        this.box.cellOverlays.push(overlayUp);
+        this.box.cellOverlays.push(overlayDown);
+        //this.graph.addCellOverlay(this.vertex, overlay);
+        
+    }
+    
     //Causes the week to delete itself and all its contents
     deleteSelf(){
         while(this.nodes.length>0){
@@ -354,6 +390,8 @@ class WFArea extends Week{
     addPlusOverlay(){}
     
     addCopyOverlay(){}
+    
+    addMoveOverlays(){}
     
     getStyle(){
         return defaultWFAreaStyle;

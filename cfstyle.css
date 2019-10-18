@@ -17,6 +17,17 @@
 
 <style>
 
+
+
+h1{
+    text-align: center;
+    color: rgb(25,118,188);
+}
+h1{
+    text-align: center;
+    color: rgb(25,118,188);
+}
+
 h2{
     text-align: center;
     color: rgb(25,118,188);
@@ -45,6 +56,7 @@ button{
     font-size: 16px;
     width: 100%;
     cursor: pointer;
+    overflow:hidden;
 }
 
 button:hover{
@@ -90,7 +102,8 @@ button:hover{
     padding:4px;
     min-height:40px;
     text-align:left;
-    white-space:normal;
+    white-space:nowrap;
+    display:inline-block;
 }
 
 .layoutdiv button input, .layoutdiv li input{
@@ -143,18 +156,63 @@ button:hover{
 
 
 .topnav{
-    height:100px;
     width:100%;
     position: fixed;
-    z-index: 2;
+    z-index: 3;
     top: 0;
     left: 0;
-    color: white;
-    background: #1976bc;
-    border-width: 1px;
-    border-style: solid;
-    border-color:black;
+    color: #1976bc;
+    background: white;
 }
+
+
+.topnav::before{
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:2px;
+    background:linear-gradient(to left,#46c443 0,#1976bc 100%) left bottom #fff no-repeat;
+}
+
+
+.titlebar{
+    background:rgb(25,118,188);
+    display:block;
+    height:50px;
+    width:100%;
+    color:white;
+    position:relative;
+}
+
+.title{
+    padding-left:20px;
+    position:absolute;
+    bottom:5px;
+}
+
+.menubar{
+    display:block;
+    height:50px;
+    width:100%;
+    font-family:'Open Sans',sans-serif;
+}
+
+.topnavimage{
+    box-sizing: border-box;
+    display:inline-block;
+    padding:5px;
+    height:100%;
+    padding-left:20px;
+    padding-right:100px;
+}
+
+.topnavimage *{
+    display:block;
+    height:100%;
+}
+
 .sidenav{
     bottom:0px;
     width:160px;
@@ -183,7 +241,7 @@ button:hover{
     right : 20px;
     top : 102px;
     float:right;
-    z-index:3;
+    z-index:2;
     box-shadow: -1px 0px 3px -1px;
     width : 200px;
     bottom : 0px;
@@ -226,15 +284,18 @@ button:hover{
     width: 100%;
     margin: 1px;
 }
+
 button div{
     display: inline-block;
     height: 100%;
     padding-left:4px;
     vertical-align:middle;
+    white-space:normal;
+    width:calc(100% - 24px);
 }
 button img{
     display: inline-block;
-    height: 100%;
+    width:24px;
     vertical-align:middle;
 }
 
@@ -242,20 +303,27 @@ button img{
     font-size: 16px;
     width: 100%;
     padding:4px;
-    
+    vertical-align:middle;
+    min-height:28px;
 }
 
+.layoutdiv li~.editlayoutdiv{
+    position:absolute;
+    padding-left:8px;
+    top:0;
+}
 
 li div{
     display: inline-block;
-    height: 100%;
     padding-left:4px;
+    width:calc(100% - 24px);
     vertical-align:middle;
+    white-space:normal;
 }
 li img{
     display: inline-block;
-    height: 100%;
-    vertical-align:middle;    
+    vertical-align:middle;
+    height:100%;    
 }
 
 ol .expanddiv{
@@ -317,19 +385,23 @@ ol .expanddiv{
 .topdropwrapper{
     display:inline-block;
     padding:0px;
+    bottom:0px;
+    vertical-align:top;
 }
 
 /* A button at the top of the menu that will open the div below it */
 .topdropbutton{
     background:inherit;
-    color:white;
+    color: rgb(25,118,188);
     border:inherit;
     font:inherit;
     height:48px;
     left:0;
     bottom:0;
+    min-width:100px;
     padding-left:20px;
     padding-right:20px;
+    font-weight:600;
 }
 
 /* A tag at the top of the menu that does nothing*/
@@ -395,16 +467,25 @@ ol .expanddiv{
 
 /*Div that gets created next to a button in the layout on hover*/
 .editlayoutdiv{
-    top:0px;
     left:100%;
     width:auto;
     display:none;
-    position:absolute;
+    vertical-align:middle;
     min-width:12px;
-    padding:0px;
+    padding:2px;
     margin:0px;
     color: black;
     cursor:pointer;
+    height:32px;
+}
+
+.editlayoutdiv:hover{
+    display:inline-block;
+}
+
+.editlayoutdiv img{
+    margin-top:2px;
+    margin-bottom:2px;
 }
 
 /*Div that gets created next to a button in the layout showing which node types are used*/
@@ -473,14 +554,7 @@ ol .expanddiv{
 }
 
 .layoutchange{
-    text-decoration: none;
-    padding: 0px;
-    padding-left:4px;
-    padding-right:4px;
-    color:rgb(25,118,188);
-    font-size:16px;
-    display:table;
-    font-family:monospace;
+    display:block;
 }
 .layoutchange:not(first-child){
     margin-top:-1px;
@@ -512,5 +586,83 @@ rect.highlighted{
 div.highlighted{
     box-shadow:0px 0px 0px 5px yellow;
 }
+
+.containerwrapper{
+    left:202px;
+    top:102px;
+    display:inline-block;
+    position:relative;
+    white-space:nowrap;
+}
+
+.graphcontainer{
+    display:inline-block;
+    overflow:hidden;
+    cursor:default;
+}
+
+.spacerdiv{
+    display:inline-block;
+    width:400px;
+    height:1px;
+}
+
+.helpdiv{
+    position:fixed !important;
+    left:240px;
+    top:140px;
+    height:400px;
+    width:600px;
+    z-index:4;
+    display:none;
+    padding:10px;
+    cursor:move;
+}
+
+.helpframe{
+    width:100%;
+    height:100%;
+    resize:both;
+    background:white;
+    box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.3);
+}
+
+.helpdiv.active{
+    display:inline;
+}
+
+.helptextwrapper{
+    white-space:normal;
+    padding:20px;
+    position:relative;
+    left:202px;
+    top:102px;
+    width: calc(100% - 242px);
+}
+
+.helptextwrapper li{
+    font-weight:bold;
+}
+
+
+.sidenav a{
+    width:100%;
+    display:block;
+}
+
+.helptextwrapper h4::after{
+    content:":";
+}
+
+.helpdivhide{
+    top:10px;
+    right:10px;
+    position:absolute;
+    padding-top:4px;
+    padding-right:4px;
+    cursor: pointer;
+    
+}
+
 
 </style>

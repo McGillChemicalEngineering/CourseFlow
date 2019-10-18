@@ -103,7 +103,6 @@ class Project{
         editbar.disable();
         
         this.editbar=editbar;
-        
         var newfile = document.getElementById('new');
         newfile.onclick = function(){
             if(mxUtils.confirm("Are you sure you want to continue? You will lose any unsaved work.")){
@@ -173,10 +172,61 @@ class Project{
             }
         }
         
+        
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
         expand.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes();})};
         collapse.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes(false);})};
+        
+        var genHelp = document.getElementById("genhelp");
+        genHelp.onclick = function(){p.showHelp("help.html");}
+        var layoutHelp = document.getElementById("layouthelp");
+        layoutHelp.onclick = function(){p.showHelp("layouthelp.html");}
+        
+        
+        var helpDiv = document.getElementById("helpDiv");
+        
+        var dragHandle = document.createElement('div');
+        $("#helpDiv").draggable({
+            start: function(event, ui){
+                ui.helper.append($("<div/>", {
+                    id: "iframe-barrier",
+                    css: {
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        "z-index": 10
+                    }
+                }));
+            },stop: function(event, ui) {
+                $("#iframe-barrier", ui.helper).remove();
+            }
+        });
+        $("#helpDiv").resizable({
+            start: function(event, ui){
+                ui.element.append($("<div/>", {
+                    id: "iframe-barrier",
+                    css: {
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        "z-index": 10
+                    }
+                }));
+            },stop: function(event, ui) {
+                $("#iframe-barrier", ui.element).remove();
+            }
+        });
+        
+        var helpDivHide = document.getElementById("helpDivHide");
+        helpDivHide.onclick = function(){document.getElementById("helpFrame").parentElement.classList.remove("active");}
+        
+        
+        
         
         //Keyboard shortcuts
         document.addEventListener("keydown",function(evt){
@@ -488,19 +538,20 @@ class Project{
         var padding = int(getComputedStyle(div)["padding-left"])+int(getComputedStyle(div)["padding-right"]);
         switch(direction){
                 case 'left':
-                    handle.style.width="10px";
+                    handle.style.width="5px";
                     handle.style.height="100%";
                     handle.style.top="0px";
                     handle.style.left="0px";
                     getWidth = function(x,bound){return bound.right-x;} 
                     break;
                 case 'right':
-                    handle.style.width="10px";
+                    handle.style.width="5px";
                     handle.style.height="100%";
                     handle.style.top="0px";
                     handle.style.right="0px";
                     getWidth = function(x,bound){return x-bound.left;} 
                     break;
+                
         }
         
         function resize(evt){
@@ -561,6 +612,13 @@ class Project{
                 p.competencies[p.activeComp].makeActive(p.container);
             }
         });
+    }
+    
+    showHelp(url){
+        var helpFrame = document.getElementById("helpFrame");
+        helpFrame.src = "resources/helpdocs/"+url;
+        helpFrame.parentElement.classList.add("active");
+        
     }
     
     

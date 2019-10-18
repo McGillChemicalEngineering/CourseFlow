@@ -383,19 +383,38 @@ class Workflow{
         var model = graph.getModel();
         
         if (cell != null){
-            if (graph.isPart(cell)){
-                if(cell.getParent().isNode)cell.getParent().node.populateMenu(menu,cell);
-            }
+            while (graph.isPart(cell)){cell=cell.getParent();}
         }
         menu.addItem('Add Comment','resources/images/comment24.png',function(){
-            var com = new WFComment(graph,wf,evt.pageX-int(document.getElementById("graphWrapper").style.left)-graph.view.getTranslate().x,evt.pageY-int(document.getElementById("graphWrapper").style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y);
+            var style = getComputedStyle(document.getElementById("graphWrapper"));
+            var com = new WFComment(graph,wf,evt.pageX-int(style.left)-graph.view.getTranslate().x,evt.pageY-int(style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y);
             com.createVertex();
             wf.addComment(com);
         });
         menu.addSeparator();
 
         menu.addItem("What's this?",'resources/images/info24.png',function(){
-            
+            console.log(cell);
+            if(cell==null){
+                if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
+                else if (wf instanceof Courseflow)wf.project.showHelp("coursehelp.html");
+                else if (wf instanceof Programflow)wf.project.showHelp("programhelp.html");
+                else wf.project.showHelp("help.html");
+            }else if(cell.isNode){
+                wf.project.showHelp("nodehelp.html");
+            }else if(cell.isComment){
+                wf.project.showHelp("commenthelp.html");
+            }else if(cell.isBracket){
+                wf.project.showHelp("strategyhelp.html");
+            }else if(cell.isWeek){
+                if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
+                else if (wf instanceof Courseflow)wf.project.showHelp("weekhelp.html");
+                else if (wf instanceof Programflow)wf.project.showHelp("programhelp.html");
+            }else if(cell.isHead){
+                wf.project.showHelp("columnhelp.html");
+            }else{
+                wf.project.showHelp("help.html");
+            }
         });
     }
     
@@ -438,6 +457,18 @@ class Workflow{
         var dy=weeks[startIndex-1].box.b()-weeks[startIndex].box.y();
         for(var i=startIndex;i<weeks.length;i++){
             weeks[i].moveWeek(dy);
+        }
+    }
+    
+    moveWeek(week,direction){
+        var index = week.index;
+        if((direction>0&&index<this.weeks.length-1)||(direction<0&&index>0)){
+            var week2 = this.weeks[index+direction];
+            var dy = week2.box.y()-week.box.y();
+            week.moveWeek(dy);
+            week2.moveWeek(-dy);
+            [this.weeks[index],this.weeks[index+direction]]=[this.weeks[index+direction],this.weeks[index]]
+            this.updateWeekIndices();
         }
     }
     
@@ -697,8 +728,9 @@ class Workflow{
         
 
         var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
-        draggable.leftPos = int(document.getElementById("graphWrapper").style.left);
-        draggable.topPos = int(document.getElementById("graphWrapper").style.top)
+        var style = getComputedStyle(document.getElementById("graphWrapper"));
+        draggable.leftPos = int(style.left);
+        draggable.topPos = int(style.top)
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
             var cell = this.getDropTarget(graph,evt.pageX-this.leftPos-graph.view.getTranslate().x,evt.pageY-this.topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,evt);

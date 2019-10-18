@@ -182,9 +182,11 @@ class Tag {
             this.buttons[i].makeActive();
         }
         this.wrapperDiv = document.createElement('div');
-        this.wrapperDiv.innerHTML="<h3>Learning Outcomes (Under Development):</h3><p>This experimental feature is currently incomplete. Please use caution when making use of it: save often, and keep a backup of your file without the learning outcomes.</p>"
+        this.wrapperDiv.innerHTML="<h3>Learning Outcomes:</h3><p>This page allows you to create outcomes. For an explanation of the outcomes, click here: <img src='resources/images/info32.png' width=16px id='outcomeinfo'></p>";
+        var p = this.project;
         this.wrapperDiv.className = "competencywrapper";
         container.appendChild(this.wrapperDiv);
+        document.getElementById('outcomeinfo').onclick = function(){p.showHelp("outcomehelp.html");}
         
         this.makeInitialLine(this.wrapperDiv);
     }
