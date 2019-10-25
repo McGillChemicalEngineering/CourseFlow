@@ -67,7 +67,8 @@ class Layoutbutton {
             text = text.replace(/, $/,"");
             this.hiddenchildren.innerHTML = text;
         }else{
-            this.bdiv.classList.remove("haschildren");           
+            this.bdiv.classList.remove("haschildren");
+            if(this.bdiv.classList.contains("expanded"))this.collapse();
         }
     }
     
@@ -78,7 +79,7 @@ class Layoutbutton {
     
     removeSelf(){
         this.container.removeChild(this.bdiv);
-        if(this.container.button!=null){this.container.button.updateChildren();}
+        if(this.container.parentElement.button!=null){this.container.parentElement.button.updateChildren();}
     }
     
     

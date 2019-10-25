@@ -134,7 +134,12 @@ class CFNode {
     }
     
     setLinkedWF(value){
+        var autoswitch=false;
         if(value=="")value=null;
+        else if(value!=null&&value.substr(0,3)=="NEW"){
+            value = this.wf.project.addWorkflow(value.substr(value.indexOf("_")+1)).id;
+            autoswitch=true;
+        }
         var oldvalue = null;
         if(value!=this.linkedWF){
             if(this.linkedWF!=null){
@@ -148,6 +153,7 @@ class CFNode {
                 var wfc = this.wf.project.getWFByID(value);
                 this.wf.addChild(wfc);
                 if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
+                if(autoswitch)wfc.project.changeActive(wfc.project.workflows.indexOf(wfc));
             }
         }
         
@@ -256,6 +262,7 @@ class CFNode {
     addLeftIcon(){return null;}
     
     deleteSelf(){
+        this.setLinkedWF(null);
         for(var i=0;i<this.brackets.length;i++)this.brackets[i].cellRemoved(this);
         for(var i=0;i<this.tags.length;i++){
             this.tags[i].removeNode(this);
@@ -279,7 +286,8 @@ class CFNode {
     duplicateNode(){
         var node = this.wf.createNodeOfType(this.column);
         node.setWeek(this.week);
-        node.fromXML((new DOMParser).parseFromString(this.toXML(),"text/xml"));
+        node.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
+        if(node.linkedWF!=null)node.linkedWF=null;
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
         this.wf.makeUndo("Add Node",node);
     }
@@ -373,6 +381,8 @@ class CFNode {
     
     getLinkedWFList(){}
 
+    getAcceptedWorkflowType(){return "";}
+    
     redrawLinks(){
         this.autoLinkOut.redraw();
         //for(var i=0;i<this.fixedLinksOut.length;i++){this.fixedLinksOut[i].redraw();}
@@ -497,6 +507,8 @@ class ACNode extends CFNode {
         return list;
     }
     
+    getAcceptedWorkflowType(){return "activity";}
+    
     makeAutoLinks(){
         //this.autoLinkSameType();
         //return true;
@@ -532,6 +544,9 @@ class CONode extends CFNode {
         }
         return list;
     }
+    
+    
+    getAcceptedWorkflowType(){return "course";}
     
     makeAutoLinks(){
         //this.autoLinkSameType();

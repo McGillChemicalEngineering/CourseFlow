@@ -473,8 +473,8 @@ class Project{
             var wfp = this.workflows[i];
             wfp.purgeUsedWF(wf);
         }
-        for(i=0;i<wf.buttons.length;i++){
-            wf.removeButton(wf.buttons[i]);
+        while(wf.buttons.length>0){
+            wf.removeButton(wf.buttons[0]);
         }
         if(this.activeWF!=null){
             if(wf.isActive){

@@ -204,6 +204,10 @@ class EditBar{
             opt.value = list[i][1];
             this.linkedWF.add(opt);
         }
+        var optNEW = document.createElement('option');
+        optNEW.text = "Create new "+this.node.getAcceptedWorkflowType();
+        optNEW.value = "NEW_"+this.node.getAcceptedWorkflowType();
+        this.linkedWF.add(optNEW);
     }
     
     

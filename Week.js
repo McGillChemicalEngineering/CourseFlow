@@ -374,7 +374,11 @@ class Week {
         var newWeek = new Week(this.graph,this.wf);
         this.wf.weeks.splice(this.index+1,0,newWeek);
         newWeek.createBox(this.box.x(),this.box.b(),weekWidth);
-        newWeek.fromXML((new DOMParser).parseFromString(this.toXML(),"text/xml"));
+        newWeek.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
+        for(var i=0;i<newWeek.nodes.length;i++){
+            if(newWeek.nodes[i].linkedWF!=null)newWeek.nodes[i].linkedWF=null;
+            while(newWeek.nodes[i].fixedLinksOut.length>0)newWeek.nodes[i].fixedLinksOut[0].deleteSelf();
+        }
         this.wf.updateWeekIndices();
         //push everything downward
         if(this.index<this.wf.weeks.length-2)this.wf.pushWeeksFast(this.index+2);

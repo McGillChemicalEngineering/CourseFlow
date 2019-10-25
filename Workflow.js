@@ -80,6 +80,7 @@ class Workflow{
     openXMLData(){
         var xmlData = this.xmlData;
         var xmlcols = [];
+        console.log(xmlData);
         for(var i=0;i<xmlData.childNodes.length;i++){
             if(xmlData.childNodes[i].tagName=="column")xmlcols.push(xmlData.childNodes[i]);
         }
@@ -208,9 +209,14 @@ class Workflow{
         //if no instances still exist, move it back into the root
         if(child.buttons.length==0){
             child.addButton(this.project.layout);
+            var childIndex = this.project.workflows.indexOf(child);
+            var activeIndex = this.project.activeWF;
             this.project.workflows.splice(this.project.workflows.indexOf(child),1);
             this.project.workflows.push(child);
+            if (activeIndex!=null&&childIndex<activeIndex)this.project.activeWF-=1;
+            else if (activeIndex==childIndex)this.project.activeWF=this.project.workflows.length-1;
         }
+        
         
     }
     
@@ -394,7 +400,6 @@ class Workflow{
         menu.addSeparator();
 
         menu.addItem("What's this?",'resources/images/info24.png',function(){
-            console.log(cell);
             if(cell==null){
                 if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
                 else if (wf instanceof Courseflow)wf.project.showHelp("coursehelp.html");
@@ -643,7 +648,7 @@ class Workflow{
         
         var allColumns = this.getPossibleColumns();
         for(var i=0;i<allColumns.length;i++){
-            this.addNodebarItem(container,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
+            var button = this.addNodebarItem(container,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
         }
     }
     
@@ -737,7 +742,7 @@ class Workflow{
         draggable.mouseMove = function(evt){
             var cell = this.getDropTarget(graph,evt.pageX-this.leftPos-graph.view.getTranslate().x,evt.pageY-this.topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,evt);
             while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
-            if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;console.log("removing cell");}
+            if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
             
             if(draggable.lastCell==null){
                 if(validtargetfunction(cell)){
@@ -748,7 +753,6 @@ class Workflow{
                         var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
                         document.addEventListener("mouseup",hlRemove,true);
                         draggable.lastCell = cell;
-                        console.log("adding cell");
                     }
                 }else{
                     this.dragElement.style.outline="2px solid red";
@@ -952,6 +956,7 @@ class Workflow{
     
     //Call to create an undo event, which will debounce calls
     makeUndo(type,source=null){
+        
         var debouncetime=500;
         var prevUndoCall = this.lastUndoCall;
         this.lastUndoCall=Date.now();
@@ -960,10 +965,11 @@ class Workflow{
             clearTimeout(this.lastCallTimer);
         }
         var wf = this;
-        this.lastCallTimer = setTimeout(function(){wf.addUndo(type,source)},debouncetime);
+        this.lastCallTimer = setTimeout(function(){if(wf.isActive)wf.addUndo(type,source)},debouncetime);
     }
         
     addUndo(type,source){
+        
         this.undoEnabled=false;
         var undo = new Undo(this,type,source);
         //If we have just done one or more undos, the index will be less than the max; we should destroy everything past the current index.
@@ -993,6 +999,7 @@ class Workflow{
                 wf.xmlData = lastUndo.xml;
                 wf.clearGraph();
                 wf.openXMLData();
+                wf.updateChildrenFromNodes();
                 wf.currentUndo--;
                 wf.undoEnabled=true;
             });
@@ -1010,10 +1017,37 @@ class Workflow{
                 wf.xmlData = nextUndo.xml;
                 wf.clearGraph();
                 wf.openXMLData();
+                wf.updateChildrenFromNodes();
                 wf.currentUndo++;
                 wf.undoEnabled=true;
             });
         }
+    }
+    
+    updateChildrenFromNodes(){
+        var linkedWF=[];
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                var link = this.weeks[i].nodes[j].linkedWF;
+                var wfc = this.project.getWFByID(link);
+                if(wfc==null)this.weeks[i].nodes[j].linkedWF=null;
+                else linkedWF.push(link);
+            }
+        }
+        var childcopy = [...this.children];
+        console.log(this.children.length);
+        for(i=0;i<childcopy.length;i++){
+            for(j=0;j<linkedWF.length;j++){
+                console.log(childcopy);
+                console.log(linkedWF);
+                
+                if(childcopy[i].id==linkedWF[j]){childcopy.splice(i,1);linkedWF.splice(j,1);i--;j--;break;}
+            }
+        }
+        console.log(childcopy);
+        for(i=0;i<childcopy.length;i++)this.removeChild(childcopy[i]);
+        console.log(linkedWF);
+        for(i=0;i<linkedWF.length;i++)this.addChild(this.project.getWFByID(linkedWF[i]));
     }
     
 
@@ -1162,6 +1196,8 @@ class Activityflow extends Workflow{
             this.addNodebarItem(container,stratlist[i][0],'resources/data/'+stratlist[i][1]+'24.png',makeDropFunction(stratlist[i][1],this),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
         }
     }
+    
+    
     
 }
 
