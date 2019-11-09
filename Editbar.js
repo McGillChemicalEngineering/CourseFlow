@@ -128,7 +128,7 @@ class EditBar{
         }else this.hideParent(this.tagButtonsDiv);
         this.tagSelect.onchange = function(){
             if(this.value=="")return;
-            node.addTag(node.wf.getTagByID(this.value));
+            node.addTag(node.wf.getTagByID(this.value),true,true);
             eb.populateTags();
             node.wf.makeUndo("Add Tag",node);
         }
@@ -186,8 +186,8 @@ class EditBar{
         iconSelect.add(opt0);
         for(var i=0;i<list.length;i++){
             var opt = document.createElement('option');
-            opt.text = list[i][0];
-            opt.value = list[i][1];
+            opt.text = list[i].text;
+            opt.value = list[i].value;
             iconSelect.add(opt);
         }
     }

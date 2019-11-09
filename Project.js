@@ -178,6 +178,9 @@ class Project{
         expand.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes();})};
         collapse.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes(false);})};
         
+        var showLegend = document.getElementById("showlegend");
+        showLegend.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].showLegend();};
+        
         var genHelp = document.getElementById("genhelp");
         genHelp.onclick = function(){p.showHelp("help.html");}
         var layoutHelp = document.getElementById("layouthelp");
@@ -247,6 +250,9 @@ class Project{
                     evt.preventDefault();
                     newfile.click();
                     break;
+                case "l":
+                    evt.preventDefault();
+                    showLegend.click();
             }
             
         });
@@ -315,11 +321,19 @@ class Project{
             array = array.concat(this.getDependencies(wf.children[i]));
         }
         if(wf.tagSets.length>0){
-            for(i=0;i<wf.tagSets.length;i++)array.push(wf.tagSets[i]);
+            for(i=0;i<wf.tagSets.length;i++){
+                var tag = wf.tagSets[i];
+                while (tag.depth>0)tag=tag.parentTag;
+                array.push(tag);
+            }
         }else if(wf.xmlData!=null){
             if(getXMLVal(wf.xmlData,"tagsetARRAY")!=null){
                 var tagset = getXMLVal(wf.xmlData,"tagsetARRAY");
-                for(i=0;i<tagset;i++)array.push(this.getCompByID(tagset[i]));
+                for(i=0;i<tagset;i++){
+                    var tag = this.getTagByID(tagset[i]);
+                    while (tag.depth>0)tag=tag.parentTag;
+                    array.push(tag);
+                }
             }
         }
         return array;
@@ -342,8 +356,8 @@ class Project{
     
     printActiveWF(){
         if(this.graph==null)return;
-        var scale = mxUtils.getScaleForPageCount(1, this.graph);
-        var preview = new mxPrintPreview(this.graph, scale);
+        var scale = mxUtils.getScaleForPageCount(1, this.graph)*0.9;
+        var preview = new mxPrintPreview(this.graph, scale,mxConstants.PAGE_FORMAT_A4_PORTRAIT);
         preview.open();
     }
     
@@ -371,10 +385,11 @@ class Project{
     
     clearProject(){
         if(this.activeWF!=null){this.workflows[this.activeWF].makeInactive();this.activeWF=null;}
+        if(this.activeComp!=null){this.competencies[this.activeComp].makeInactive(this.container);this.activeComp=null;}
         while(this.layout.childElementCount>0)this.layout.removeChild(this.layout.firstElementChild);
         this.workflows=[];
-        this.competencies=[];
         while(this.compDiv.childElementCount>0)this.compDiv.removeChild(this.compDiv.firstElementChild);
+        this.competencies=[];
         this.name=null;
         this.idNum="0";
         
@@ -408,7 +423,7 @@ class Project{
                 wf.addChild(this.getWFByID(wf.usedWF[j]),false);
             }
             if(wf.tagsetArray!=null)for(j=0;j<wf.tagsetArray.length;j++){
-                wf.addTagSet(this.getCompByID(wf.tagsetArray[j]));
+                wf.addTagSet(this.getTagByID(wf.tagsetArray[j]));
             }
         }
         this.xmlData = xmlData;
@@ -596,6 +611,14 @@ class Project{
         return null;
     }
     
+    getTagByID(id){
+        for(var i=0;i<this.competencies.length;i++){
+            var tag = this.competencies[i].getTagByID(id);
+            if(tag!=null)return tag;
+        }
+        return null;
+    }
+    
     changeActive(index,isWF=true){
         var p = this;
         makeLoad(function(){
@@ -660,8 +683,9 @@ class Project{
         
         //Disable cell movement associated with user events
         graph.moveCells = function (cells, dx,dy,clone,target,evt,mapping){
-            if(cells.length==1&&cells[0].isComment){
+            if(cells.length==1&&(cells[0].isComment||cells[0].isLegend)){
                 var comment = cells[0].comment;
+                if(comment==null)comment=cells[0].legend;
                 var wf = comment.wf;
                 var x = comment.x+dx;
                 var y = comment.y+dy;
@@ -673,7 +697,7 @@ class Project{
                 comment.y+=dy;
                 return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
             }
-            if(evt!=null && (evt.type=='mouseup' || evt.type=='pointerup')){
+            if(evt!=null && (evt.type=='mouseup' || evt.type=='pointerup' || evt.type=='ontouchend')){
                 dx=0;dy=0;
             }
             return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
@@ -878,7 +902,7 @@ class Project{
                 mouseDown: function(sender,me){downx=me.graphX;downy=me.graphY;},
                 mouseUp: function(sender,me){
                     var cell = me.getCell();
-                    if(cell!=null){
+                    if(cell!=null&&me.evt.button==0){
                         //check if this was a click, rather than a drag
                         if(Math.sqrt(Math.pow(downx-me.graphX,2)+Math.pow(downy-me.graphY,2))<2){
                             if(cell.isDrop){

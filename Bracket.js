@@ -66,6 +66,7 @@ class Bracket {
     }
     
     setIcon(icon){
+        this.wf.legendUpdate('strategy',icon,this.icon,iconsList['strategy']);
         this.icon = icon;
         this.graph.setCellStyles("image",iconpath+icon+".png",[this.iconVertex]);
     }
@@ -135,6 +136,7 @@ class Bracket {
     }
     
     deleteSelf(){
+        this.wf.legendUpdate('strategy',null,this.icon);
         this.topNode.removeBracket(this);
         this.bottomNode.removeBracket(this);
         this.wf.brackets.splice(this.wf.brackets.indexOf(this),1);
@@ -151,6 +153,16 @@ class Bracket {
             var nextNode = this.wf.findNextNodeOfSameType(node,isTop-isBottom,false);
             this.changeNode(nextNode,isTop);
         }
+    }
+    
+    populateMenu(menu){
+        var graph = this.graph;
+        var bracket=this;
+        menu.addItem('Delete Bracket','resources/images/delrect24.png',function(){
+            graph.clearSelection();
+            bracket.deleteSelf();
+            bracket.wf.makeUndo("Delete Bracket",bracket);
+        });
     }
     
     

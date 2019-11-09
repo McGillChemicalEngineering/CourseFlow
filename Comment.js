@@ -109,6 +109,7 @@ class WFComment{
             if(mxUtils.confirm("Delete this comment?")){
                 graph.clearSelection();
                 n.deleteSelf();
+                n.wf.makeUndo("Delete Comment",n);
             }
         });
         this.vertex.cellOverlays.push(overlay);
@@ -118,6 +119,21 @@ class WFComment{
     deleteSelf(){
         this.wf.comments.splice(this.wf.comments.indexOf(this),1);
         this.graph.removeCells([this.vertex]);
+    }
+    
+    populateMenu(menu){
+        var graph = this.graph;
+        var comment=this;
+        menu.addItem('Show', 'resources/images/view24.png', function(){
+            comment.show();
+        });
+        menu.addItem('Delete Comment','resources/images/delrect24.png',function(){
+            if(mxUtils.confirm("Delete this comment?")){
+                graph.clearSelection();
+                comment.deleteSelf();
+                comment.wf.makeUndo("Delete Comment",comment);
+            }
+        });
     }
     
 }

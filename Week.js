@@ -385,6 +385,26 @@ class Week {
         
     }
     
+    populateMenu(menu){
+        var graph = this.graph;
+        var week=this;
+        if(!(week instanceof WFArea)){
+            menu.addItem('Edit label', 'resources/images/text24.png', function(){
+				graph.startEditingAtCell(week.box);
+            });
+            menu.addItem('Duplicate Week','resources/images/copy24.png',function(){
+                week.duplicateWeek(); 
+            });
+            menu.addItem('Delete Week','resources/images/delrect24.png',function(){
+                if(mxUtils.confirm("Delete this week?")){
+                    graph.clearSelection();
+                    week.deleteSelf();
+                    week.wf.makeUndo("Delete Week",week);
+                }
+            });
+        }
+    }
+    
     
 }
 

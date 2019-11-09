@@ -664,5 +664,9 @@ div.highlighted{
     
 }
 
+.ql-snow .ql-tooltip{
+    left:-20px !important;
+}
+
 
 </style>

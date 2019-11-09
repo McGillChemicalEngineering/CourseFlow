@@ -116,15 +116,16 @@ class Tag {
         if(parent instanceof Workflow){
             parent.removeTagSet(this);
             parent.populateTagBar();
-            parent.populateTagSelect(this.project.competencies);
+            parent.populateTagSelect(this.project.competencies,parent.getTagDepth());
             
         }else if(parent instanceof CFNode){
-            parent.removeTag(this);
-            parent.wf.makeUndo("Icon Change",node);
+            parent.removeTag(this,true);
+            parent.wf.makeUndo("Tag Removed",parent);
             var eb = this.project.editbar;
             if(eb.node==parent){
                 eb.populateTags();
             }
+            
         }else{
             console.log("I don't know what to do with this");
         }
@@ -210,18 +211,19 @@ class Tag {
         return null;
     }
     
-    getAllID(list){
+    getAllID(list,maxdepth=-1){
         list.push(this.id);
-        for(var i=0;i<this.children.length;i++){
-            list = this.children[i].getAllID(list);
+        if(this.depth!=maxdepth)for(var i=0;i<this.children.length;i++){
+            list = this.children[i].getAllID(list,maxdepth);
         }
         return list;
     }
     
-    getAllTags(list){
+    getAllTags(list,maxdepth=-1,ignorelist=null){
+        if(ignorelist!=null&&ignorelist.indexOf(this.id)>=0)return list;
         list.push(this);
-        for(var i=0;i<this.children.length;i++){
-            list = this.children[i].getAllTags(list);
+        if(this.depth!=maxdepth)for(var i=0;i<this.children.length;i++){
+            list = this.children[i].getAllTags(list,maxdepth,ignorelist);
         }
         return list;
     }

@@ -106,6 +106,8 @@ class CFNode {
         if(tagArray!=null)for(i=0;i<tagArray.length;i++){
             this.addTag(this.wf.getTagByID(tagArray[i]),false);
         }
+        console.log(this.linkedWF);
+        this.refreshLinkedTags();
         
         
         
@@ -121,10 +123,18 @@ class CFNode {
     
     setName(name){
         if(name!=null){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
-            this.name=name;
+            name = this.setNameSilent(name);
             this.graph.cellLabelChanged(this.namenode,name);
         }
+    }
+    
+    setNameSilent(name){
+        if(name!=null){
+            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            this.name=name;
+        }
+        return this.name;
+        
     }
     
     setText(text){
@@ -149,11 +159,23 @@ class CFNode {
                 
             }
             this.linkedWF = value;
+            
             if(value!=null){
                 var wfc = this.wf.project.getWFByID(value);
                 this.wf.addChild(wfc);
                 if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
+                var addTags=false;
+                if(this.tags.length>0&&oldvalue==null)addTags = mxUtils.confirm("This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?");
+                if(oldvalue==null&&this.getRightIconList()==null)this.setRightIcon("linked");
+                this.refreshLinkedTags(addTags);
+                
+                
                 if(autoswitch)wfc.project.changeActive(wfc.project.workflows.indexOf(wfc));
+            }else{
+                if(this.righticon=="linked")this.setRightIcon(null);
+                if(this.tags.length>0){
+                    if(mxUtils.confirm("You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the ndoe?"))while(this.tags.length>0)this.removeTag(this.tags[0],false);
+                }
             }
         }
         
@@ -165,11 +187,16 @@ class CFNode {
     }
     
     setLeftIcon(value){
+        if(value=="")value=null;
+        this.wf.legendUpdate(this.getIconCategory("left"),value,this.lefticon);
         this.lefticon=value;
+        console.log(this.lefticonnode);
         if(value!=null)this.graph.setCellStyles("image",iconpath+value+"48.png",[this.lefticonnode]);
         else this.graph.setCellStyles("image",null,[this.lefticonnode]);
     }
     setRightIcon(value){
+        if(value=="")value=null;
+        this.wf.legendUpdate(this.getIconCategory("right"),value,this.righticon);
         this.righticon=value;
         if(value!=null)this.graph.setCellStyles("image",iconpath+value+"48.png",[this.righticonnode]);
         else this.graph.setCellStyles("image",null,[this.righticonnode]);
@@ -187,8 +214,9 @@ class CFNode {
         
     }
     
-    getLeftIconList(){return null;}
-    getRightIconList(){return null;}
+    getLeftIconList(){return iconsList[this.getIconCategory('left')];}
+    getRightIconList(){return iconsList[this.getIconCategory('right')];}
+    getIconCategory(icon){return null;}
     
     makeFlushWithAbove(index){
         if(index==0) this.moveNode(0,this.week.box.y()+2*cellSpacing-this.vertex.y());
@@ -204,6 +232,7 @@ class CFNode {
     updateColumn(){
         this.graph.moveCells([this.vertex],this.wf.getColPos(this.column)-this.vertex.w()/2-this.vertex.x(),0);
         this.styleForColumn();
+        for(var i=0;i<this.tags.length;i++)this.tags[i].updateDrops();
     }
     
     resizeBy(dy){
@@ -235,6 +264,12 @@ class CFNode {
         if(this.righticonnode!=null){width-=this.righticonnode.w()+2*defaultIconPadding;}
         if(this.lefticonnode!=null){left+=this.lefticonnode.w()+2*defaultIconPadding;width-=this.lefticonnode.w()+2*defaultIconPadding;}
         this.namenode = this.graph.insertVertex(this.vertex,null,'Click to edit',left,0,width,minCellHeight,defaultNameStyle);
+        var node = this;
+        this.namenode.valueChanged = function(value){
+            var value1 = node.setNameSilent(value);
+            if(value1!=value)node.graph.getModel().setValue(node.namenode,value1);
+            else mxCell.prototype.valueChanged.apply(this,arguments);
+        }
         this.textnode = this.graph.insertVertex(this.vertex,null,'',defaultTextPadding,this.namenode.b(),this.vertex.w()-2*defaultTextPadding,1,defaultTextStyle);
         this.dropNode = this.graph.insertVertex(this.vertex,null,'',0,this.namenode.b()+cellDropdownPadding,defaultCellWidth,cellDropdownHeight,defaultDropDownStyle);
         this.dropNode.isDrop = true;
@@ -263,6 +298,8 @@ class CFNode {
     
     deleteSelf(){
         this.setLinkedWF(null);
+        this.setLeftIcon(null);
+        this.setRightIcon(null);
         for(var i=0;i<this.brackets.length;i++)this.brackets[i].cellRemoved(this);
         for(var i=0;i<this.tags.length;i++){
             this.tags[i].removeNode(this);
@@ -358,25 +395,63 @@ class CFNode {
     }
     
     
-    populateMenu(menu,cell){
+    populateMenu(menu){
         var graph = this.graph;
-        if(cell==this.lefticonnode)this.populateIconMenu(menu,this.getLeftIconList(),"left");
-        else if (cell==this.righticonnode)this.populateIconMenu(menu,this.getRightIconList(),"right");
-        /*else if (cell==this.namenode)menu.addItem('Edit label', 'resources/images/text24.png', function(){
-				graph.startEditingAtCell(cell);
-        });*/
+        var p = this.wf.project;
+        this.populateIconMenu(menu,this.getLeftIconList(),"Left");
+        this.populateIconMenu(menu,this.getRightIconList(),"Right");
+        var node=this;
+        menu.addItem('Edit label', 'resources/images/text24.png', function(){
+				graph.startEditingAtCell(node.namenode);
+        });
+        menu.addItem('Show/Hide Description','resources/images/view24.png',function(){node.toggleDropDown();});
+        if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow','resources/images/enterlinked24.png',function(){
+            var linkedWF = node.linkedWF;
+            if(linkedWF!=null)p.changeActive(p.workflows.indexOf(p.getWFByID(linkedWF)));
+        });
+        this.populateLinkedWFMenu(menu,this.getLinkedWFList());
+        menu.addItem('Duplicate Node','resources/images/copy24.png',function(){
+           node.duplicateNode(); 
+        });
+        menu.addItem('Delete Node','resources/images/delrect24.png',function(){
+            if(mxUtils.confirm("Delete this node?")){
+                graph.clearSelection();
+                node.deleteSelf();
+                node.wf.makeUndo("Delete Node",node);
+            }
+        });
     }
     
     populateIconMenu(menu,iconArray,icon){
         var node = this;
+        if(iconArray==null||iconArray.length==0)return;
+        var sub = menu.addItem(icon+" Icon",'resources/images/'+icon.toLowerCase()+'icon24.png');
         for(var i=0;i<iconArray.length;i++){
             var tempfunc = function(value){
-                menu.addItem(iconArray[i][0],iconpath+value+'24.png',function(){
-                    node.setIcon(value,icon);
-                });
+                menu.addItem(value.text,iconpath+value.value+'24.png',function(){
+                    node.setIcon(value.value,icon.toLowerCase());
+                },sub);
             }
-            tempfunc(iconArray[i][1]);
+            tempfunc(iconArray[i]);
         }
+    }
+    
+    populateLinkedWFMenu(menu,WFArray){
+        var node = this;
+        if(WFArray==null)return;
+        var sub = menu.addItem("Set Linked WF",'resources/images/plusblack24.png');
+        menu.addItem("None",'',function(){node.setLinkedWF("");},sub)
+        for(var i=0;i<WFArray.length;i++){
+            var tempfunc = function(value){
+                menu.addItem(value[0],'',function(){
+                    node.setLinkedWF(value[1]);
+                },sub);
+            }
+            tempfunc(WFArray[i]);
+        }
+        menu.addItem("Create new "+node.getAcceptedWorkflowType(),'',function(){
+            node.setLinkedWF("NEW_"+node.getAcceptedWorkflowType());
+        },sub);
     }
     
     getLinkedWFList(){}
@@ -413,8 +488,18 @@ class CFNode {
         this.brackets.splice(this.brackets.indexOf(br),1);
     }
     
-    addTag(tag,show=true){
+    addTag(tag,show=true,addToLinked=false){
+        if(this.tags.indexOf(tag)>=0)return;
         var n = this;
+        //Remove any children of the tag we are adding
+        var allTags = tag.getAllTags([]);
+        for(var i=0;i<this.tags.length;i++){
+            if(allTags.indexOf(this.tags[i])>=0){
+                this.removeTag(tag,false);
+                i--;
+            }
+        }
+        //Add the tag
         this.tags.push(tag);
         tag.addNode(this);
         var tagLabel = this.graph.insertVertex(this.tagBox,null,tag.name,tagBoxPadding,tagBoxPadding,this.tagBox.w()-2*tagBoxPadding,tagHeight,defaultTagStyle);
@@ -432,7 +517,7 @@ class CFNode {
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
-            n.removeTag(tag);
+            n.removeTag(tag,true);
             n.wf.makeUndo("Remove Tag",n);
         });
         tagLabel.cellOverlays = [overlay];
@@ -441,16 +526,37 @@ class CFNode {
         this.graph.setCellStyles("strokeColor",colstyle,[tagPreview]);
         this.tagVertices.push(tagLabel);
         this.tagPreviews.push(tagPreview);
-        this.toggleTags(show);
+        if(addToLinked&this.linkedWF!=null){
+            this.wf.project.getWFByID(this.linkedWF).addTagSet(tag,true);
+            //this.refreshLinkedTags();
+        }
+        //Check to see if we have all children of the parent, if the parent exists
+        var parentTag = tag.parentTag;
+        if(parentTag!=null){
+            var children = parentTag.getAllTags([],parentTag.depth+1);
+            children.splice(0,1);
+            var addParent=true;
+            for(i=0;i<children.length;i++){
+                if(this.tags.indexOf(children[i])<0){
+                    addParent=false;
+                    break;
+                }
+            }
+            if(addParent)this.addTag(parentTag);
+        }
+        if(show)this.toggleTags(show);
     }
     
-    removeTag(tag){
-        var vertex = this.tagVertices[this.tags.indexOf(tag)];
-        this.tagVertices.splice(this.tags.indexOf(tag),1);
+    removeTag(tag,removeFromLinked=false){
+        //var vertex = this.tagVertices[this.tags.indexOf(tag)];
+        var vertex = this.tagVertices.splice(this.tags.indexOf(tag),1)[0];
         this.graph.removeCells([vertex,this.tagPreviews[this.tagPreviews.length-1]]);
         this.tags.splice(this.tags.indexOf(tag),1);
         this.tagPreviews.pop();
         tag.removeNode(this);
+        if(this.linkedWF!=null&&removeFromLinked){
+             this.wf.project.getWFByID(this.linkedWF).removeTagSet(tag);
+        }
     }
     
     toggleTags(show){
@@ -479,6 +585,33 @@ class CFNode {
         }
     }
     
+    refreshLinkedTags(addToLinked=false){
+        console.log("refreshing linked tags");
+        if(this.linkedWF!=null){
+            var wf = this.wf.project.getWFByID(this.linkedWF);
+            console.log("removing tags that aren't assigned");
+            //Remove/add tags that aren't assigned to the linked workflow
+            for(var i=0;i<this.tags.length;i++){
+                if(wf.tagSets.indexOf(this.tags[i])<0){
+                    if(addToLinked){wf.addTagSet(this.tags[i]);}
+                    else{this.removeTag(this.tags[i],false);i--;}
+                }
+                
+            }
+            if(wf.tagSets.length==0)return;
+            var allID=[];
+            for(var i=0;i<this.wf.tagSets.length;i++){
+                allID=this.wf.tagSets[i].getAllID(allID);
+            }
+            console.log("adding tags that are present");
+            //Add tags that are present in the linked workflow but not in this one.
+            for(var i=0;i<wf.tagSets.length;i++){
+                if(allID.indexOf(wf.tagSets[i].id)>=0&&this.tags.indexOf(wf.tagSets[i])<0)this.addTag(wf.tagSets[i],false,false);
+            }
+            console.log("done refresh");
+        }
+    }
+    
 }
 
 class ACNode extends CFNode {
@@ -493,8 +626,14 @@ class ACNode extends CFNode {
         
     }
     
-    getLeftIconList(){
-        return strategyIconsArray;
+    addRightIcon(){
+        this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
+    
+    
+    getIconCategory(icon){
+        if(icon=="left")return "strategy";
     }
     
     
@@ -535,6 +674,15 @@ class CONode extends CFNode {
     }
     
     
+    addLeftIcon(){
+        this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
+    
+    addRightIcon(){
+        this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
     
     getLinkedWFList(){
         var wfs = this.wf.project.workflows;
@@ -544,6 +692,9 @@ class CONode extends CFNode {
         }
         return list;
     }
+    
+    
+    
     
     
     getAcceptedWorkflowType(){return "course";}
@@ -572,6 +723,20 @@ class ASNode extends CFNode {
             this.column=col;
             this.updateColumn();
         }
+    }
+    
+    addLeftIcon(){
+        this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
+    
+    addRightIcon(){
+        this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
+    
+    getIconCategory(icon){
+        if(icon=="left")return "assessment";
     }
     
     styleForColumn(){
@@ -612,17 +777,16 @@ class WFNode extends CFNode {
         
     }
     
-    getLeftIconList(){
-        return contextIconsArray;
-    }
     
     addRightIcon(){
         this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
         
     }
     
-    getRightIconList(){
-        return taskIconsArray;
+    
+    getIconCategory(icon){
+        if(icon=="left")return "context";
+        if(icon=="right")return "task";
     }
     
     styleForColumn(){
@@ -640,6 +804,39 @@ class WFNode extends CFNode {
     makeAutoLinks(){
         this.autoLinkSameType();
         return true;
+    }
+    
+}
+
+class CUSNode extends CFNode {
+    
+    setColumn(col){
+        if(col.substr(0,3)=='CUS')this.column=col;
+        this.updateColumn();
+    }
+    
+    addLeftIcon(){
+        this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
+    addRightIcon(){
+        this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,defaultIconStyle);
+        
+    }
+    
+    
+    getIconCategory(icon){
+        if(icon=="left")if(this.wf instanceof Activityflow) return "context"; else return "strategy";
+        if(icon=="right")if(this.wf instanceof Activityflow) return "task"; else return "assessment";
+    }
+    
+    styleForColumn(){
+        var colstyle="#a3b9df";
+        this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
+    }
+    
+    getVertexStyle(){
+        return defaultWFNodeStyle;
     }
     
 }

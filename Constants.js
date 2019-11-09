@@ -127,7 +127,9 @@ const SALTISELIGHTBLUE = '#1293b3';
 //Styles
 const defaultWeekStyle = 'fillColor=#e6e6e6;movable=0;resizable=0;strokeColor=none;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=13;fontStyle=1;fontColor=black;spacingLeft=20;';
 const defaultWFAreaStyle = 'editable=0;fillColor=#FFFFFF;movable=0;resizable=0;strokeColor=black;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=14;fontStyle=1;fontColor=black;';
-const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-40)+";imageHeight="+(colIconSize-40)+";fontSize=16;editable=0;fontStyle=5;fontColor=black;";
+const defaultLegendStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor='+SALTISEBLUE+';strokeWidth=4;verticalAlign=ALIGN_TOP;fontSize=14;fontStyle=1;fontColor='+SALTISEBLUE+';spacingTop=8';
+const defaultLegendLineStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor=none;fontSize=12;fontStyle=1;fontColor='+SALTISEBLUE+';constituent=1;imageAlign=left;imageWidth=24;imageHeight=24;';
+const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-40)+";imageHeight="+(colIconSize-40)+";fontSize=16;fontStyle=5;fontColor=black;";
 const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=14;fontColor=white;fillColor=none;overflow=hidden;editable=0;fontStyle=1;fontFamily=arial;";
 const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=black;strokeWidth=2;editable=0;fontColor=black;resizable=0;";
 const defaultIconStyle="shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=none;";
@@ -147,9 +149,17 @@ const defaultEdgeStyle = "editable=0;movable=0;resizable=0;bendable=0;edgeStyle=
 const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;resizable=0;whiteSpace=wrap;fillColor=#ffff88;strokeColor=black;image=resources/images/comment32.png;";
 
 //Icons
-const strategyIconsArray=[['Jigsaw','jigsaw'],['Peer Instruction','peer-instruction'],['Case Studies','case-studies'],['Gallery Walk','gallery-walk'],['Reflective Writing','reflective-writing'],['Two-Stage Exam','two-stage-exam'],['Toolkit','toolkit'],['One Minute Paper','one-minute-paper'],['Distributed Problem Solving','distributed-problem-solving'],['Peer Assessment','peer-assessment']];
-const taskIconsArray=[['Gather Information','research'],['Discuss','discuss'],['Solve','problem'],['Analyze','analyze'],['Assess/Review Peers','peerreview'],['Evaluate Peers','evaluate'],['Debate','debate'],['Game/Roleplay','play'],['Create/Design','create'],['Revise/Improve','practice'],['Read','reading'],['Write','write'],['Present','present'],['Experiment/Inquiry','experiment'],['Quiz/Test','quiz'],['Other','other']]
-const contextIconsArray=[['Individual Work','solo'],['Work in Groups','group'],['Whole Class','class']]
+const iconsList={
+    strategy:[{text:'Jigsaw',value:'jigsaw'},{text:'Peer Instruction',value:'peer-instruction'},{text:'Case Studies',value:'case-studies'},{text:'Gallery Walk',value:'gallery-walk'},{text:'Reflective Writing',value:'reflective-writing'},{text:'Two-Stage Exam',value:'two-stage-exam'},{text:'Toolkit',value:'toolkit'},{text:'One Minute Paper',value:'one-minute-paper'},{text:'Distributed Problem Solving',value:'distributed-problem-solving'},{text:'Peer Assessment',value:'peer-assessment'}],
+    context:[{text:'Individual Work',value:'solo'},{text:'Work in Groups',value:'group'},{text:'Whole Class',value:'class'}],
+    task:[{text:'Gather Information',value:'research'},{text:'Discuss',value:'discuss'},{text:'Solve',value:'problem'},{text:'Analyze',value:'analyze'},{text:'Assess/Review Peers',value:'peerreview'},{text:'Evaluate Peers',value:'evaluate'},{text:'Debate',value:'debate'},{text:'Game/Roleplay',value:'play'},{text:'Create/Design',value:'create'},{text:'Revise/Improve',value:'practice'},{text:'Read',value:'reading'},{text:'Write',value:'write'},{text:'Present',value:'present'},{text:'Experiment/Inquiry',value:'experiment'},{text:'Quiz/Test',value:'quiz'},{text:'Other',value:'other'}],
+    assessment:[{text:'Exercises/Quizzes', value:'exercise'},{text:'Tests/Projects',value:'test'},{text:'Exam/Comprehensive',value:'exam'}],
+    column:[{text:'Home',value:'home'},{text:'Instructor',value:'instructor'},{text:'Students',value:'noinstructor'},{text:'Activity',value:'lesson'},{text:'Assessment',value:'assessment'},{text:'Preparation',value:'homework'},{text:'Artifact',value:'artifact'},{text:'Individual',value:'solo'},{text:'Group',value:'group'},{text:'Class',value:'class'}]
+};
+
+
+      
+      
 const iconpath='resources/data/';
 
 

@@ -145,6 +145,12 @@ class Layoutbutton {
         p.container.addEventListener('click',function(){
             if(bl.namediv.firstElementChild!=null)bl.namediv.firstElementChild.blur();
         },true);
+        var enterfunc =function(evt){
+            if(evt.key!=null&&evt.key=="Enter"){
+                if(bl.namediv.firstElementChild!=null)bl.namediv.firstElementChild.blur();
+            }
+        }
+        document.addEventListener('keydown',enterfunc);
         bl.namediv.firstElementChild.addEventListener("focusout",function(){
             b.onclick=tempfunc;
             if(bl.namediv.firstElementChild.value=="")bl.namediv.innerHTML=layout.name;
@@ -152,6 +158,7 @@ class Layoutbutton {
                 layout.setName(bl.namediv.firstElementChild.value,true);
                 bl.namediv.innerHTML=layout.name;
             }
+            document.removeEventListener('keydown',enterfunc);
         },true);
     }
     

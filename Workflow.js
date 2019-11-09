@@ -30,12 +30,14 @@ class Workflow{
         this.name = this.getDefaultName();
         this.id = this.project.genID();
         this.tagBarDiv;
+        this.nodeBarDiv;
         this.tagSelect;
         this.tagSets=[];
         this.isActive=false;
         this.undoHistory=[];
         this.currentUndo;
         this.undoEnabled=false;
+        this.legend;
     }
     
     getDefaultName(){return "Untitled Workflow"};
@@ -80,7 +82,6 @@ class Workflow{
     openXMLData(){
         var xmlData = this.xmlData;
         var xmlcols = [];
-        console.log(xmlData);
         for(var i=0;i<xmlData.childNodes.length;i++){
             if(xmlData.childNodes[i].tagName=="column")xmlcols.push(xmlData.childNodes[i]);
         }
@@ -94,7 +95,10 @@ class Workflow{
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(i=0;i<xmlweeks.length;i++){
             if(i>0)this.weeks[i-1].insertBelow();
-            else if(this.weeks.length==0) this.createBaseWeek();
+            else if(this.weeks.length==0) {
+                this.createBaseWeek();
+                this.createLegend();
+            }
             this.weeks[i].fromXML(xmlweeks[i]);
         }
         this.updateWeekIndices();
@@ -127,6 +131,7 @@ class Workflow{
         while(this.columns.length>0){
             this.columns[this.columns.length-1].deleteSelf();
         }
+        this.legend.deleteSelf();
         
     }
     
@@ -320,6 +325,7 @@ class Workflow{
                 this.createInitialColumns();
                 this.positionColumns();
                 this.createBaseWeek();
+                this.createLegend();
             }
             //this.createSpanner();
         }
@@ -344,6 +350,7 @@ class Workflow{
     makeInactive(){
         this.undoEnabled=false;
         this.isActive=false;
+        this.graph.stopEditing(false);
         this.graph.clearSelection();
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].makeInactive();
@@ -375,6 +382,8 @@ class Workflow{
         var title = "[Insert Title Here]";
         if(this.name!=null)title = this.name;
         this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,cellSpacing,300,50,defaultTitleStyle);
+        this.titleNode.isTitle=true;
+        this.titleNode.wf=this;
         this.titleNode.valueChanged = function(value){
             var value1 = wf.setNameSilent(value);
             if(value1!=value)wf.graph.getModel().setValue(wf.titleNode,value1);
@@ -396,6 +405,14 @@ class Workflow{
             var com = new WFComment(graph,wf,evt.pageX-int(style.left)-graph.view.getTranslate().x,evt.pageY-int(style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y);
             com.createVertex();
             wf.addComment(com);
+        });
+        if(cell.isNode)cell.node.populateMenu(menu);
+        else if(cell.isWeek)cell.week.populateMenu(menu);
+        else if (cell.isHead)cell.column.populateMenu(menu);
+        else if (cell.isComment)cell.comment.populateMenu(menu);
+        else if (cell.isBracket)cell.bracket.populateMenu(menu);
+        else if (cell.isTitle)menu.addItem('Edit Title','resources/images/text24.png',function(){
+            graph.startEditingAtCell(wf.titleNode);
         });
         menu.addSeparator();
 
@@ -508,11 +525,25 @@ class Workflow{
         this.columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);
         this.columns[i].createHead();
         this.columns[i].updatePosition();
+        this.populateNodeBar();
         this.updateWeekWidths();
+        
     }
     
     removeColumn(column){
-        this.columns.splice(this.columns.indexOf(column),1);
+        var index = this.columns.indexOf(column);
+        for(var i=this.columns.length-1;i>index;i--){
+            this.columns[i].pos=this.columns[i-1].pos;
+            this.columns[i].updatePosition();
+        }
+        this.columns.splice(index,1);
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                var node = this.weeks[i].nodes[j];
+                if(node.column==column.name)node.column=this.columns[this.columns.length-1].name;
+                node.updateColumn();
+            }
+        }
         this.updateWeekWidths();
     }
     
@@ -566,6 +597,7 @@ class Workflow{
         else if(column=="SA"||column=="FA"||column=="HW") node = new ASNode(graph,wf);
         else if (column=="CO") node = new CONode(graph,wf);
         else if(column=="OOC"||column=="ICI"||column=="ICS")node = new WFNode(graph,wf);
+        else if(column.substr(0,3)=="CUS")node = new CUSNode(graph,wf);
         else node = new CFNode(graph,wf);
         return node;
         
@@ -617,7 +649,17 @@ class Workflow{
         header.innerHTML="Nodes:";
         container.appendChild(header);
         
-        var nodebar = new mxToolbar(container);
+        this.nodeBarDiv = document.createElement('div');
+        container.appendChild(this.nodeBarDiv);
+        
+        this.populateNodeBar();
+    }
+    
+    populateNodeBar(){
+        this.nodeBarDiv.innerHTML = "";
+        
+        
+        var nodebar = new mxToolbar(this.nodeBarDiv);
 		nodebar.enabled = false;
         
         // Function that is executed when the image is dropped on
@@ -648,7 +690,7 @@ class Workflow{
         
         var allColumns = this.getPossibleColumns();
         for(var i=0;i<allColumns.length;i++){
-            var button = this.addNodebarItem(container,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
+            var button = this.addNodebarItem(this.nodeBarDiv,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
         }
     }
     
@@ -685,7 +727,7 @@ class Workflow{
                 graph.stopEditing(false);
                 while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
                 if(cell!=null && cell.isNode){
-                    cell.node.addTag(thistag,cell);
+                    cell.node.addTag(thistag,cell,true,true);
                     wf.makeUndo("Add Tag",cell.node);
                 }
                 this.lastCell=null;
@@ -696,12 +738,12 @@ class Workflow{
         
         this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this),button,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isNode);});
         tag.addDrop(button);
-        if(tag.depth==0)button.makeEditable(false,false,true);
+        if(tag.depth<=this.getTagDepth())button.makeEditable(false,false,true,this);
         button.makeExpandable();
         button.makeNodeIndicators();
         button.layout.updateDrops();
         
-        for(var i=0;i<tag.children.length;i++){
+        if(tag.depth<=this.getTagDepth())for(var i=0;i<tag.children.length;i++){
             this.populateTagDiv(button.childdiv,tag.children[i]);
         }
         return button;
@@ -779,15 +821,64 @@ class Workflow{
         this.comments.push(com);
     }
     
-    addTagSet(tag){
+    addTagSet(tag,checkParent=true){
+        console.log("adding: ");
+        console.log(tag);
+        console.log("to "+this.name);
+        //Remove any children of the tag we are adding
+        var allTags = tag.getAllTags([]);
+        for(var i=0;i<this.tagSets.length;i++){
+            if(allTags.indexOf(this.tagSets[i])>=0){
+                this.tagSets.splice(i,1);
+                i--;
+            }
+        }
+        //Add the tag
         this.tagSets.push(tag);
+        
+        //Check to see if we have all children of the parent, if the parent exists
+        var parentTag = tag.parentTag;
+        if(parentTag!=null&&checkParent){
+            var children = parentTag.getAllTags([],parentTag.depth+1);
+            children.splice(0,1);
+            var addParent=true;
+            for(i=0;i<children.length;i++){
+                if(this.tagSets.indexOf(children[i])<0){
+                    addParent=false;
+                    break;
+                }
+            }
+            if(addParent){
+                this.addTagSet(parentTag);
+                if(this.isActive&&this.tagSelect!=null)for(i=0;i<this.tagSelect.options.length;i++){
+                    if(this.tagSelect.options[i].value==parentTag.id){
+                        this.tagSelect.remove(i);
+                        i--;
+                    }
+                }
+            }
+        }
+        //asynchronous debounced call to refresh the nodes
+        var wf = this;
+        var debouncetime=200;
+        var prevRefreshCall=this.lastRefreshCall;
+        this.lastRefreshCall = Date.now();
+        if(prevRefreshCall&&this.lastRefreshCall-prevRefreshCall<=debouncetime){
+            clearTimeout(this.lastRefreshTimer);
+        }
+        this.lastRefershTimer = setTimeout(function(){wf.refreshAllTags();},debouncetime);
     }
     
-    removeTagSet(tag){
+    removeTagSet(tag,purge=true){
         if(this.tagSets.indexOf(tag)>=0){
-            this.tagSets.splice(this.tagSets.indexOf(tag),1); 
-            this.purgeTag(tag);
-        }
+            this.tagSets.splice(this.tagSets.indexOf(tag),1);
+        }else if(tag.parentTag!=null){
+            this.removeTagSet(tag.parentTag,false);
+            for(var i=0;i<tag.parentTag.children.length;i++){
+                if(tag.parentTag.children[i]!=tag)this.addTagSet(tag.parentTag.children[i],false);
+            }
+        } 
+        if(purge)this.purgeTag(tag);
             
     }
     
@@ -828,23 +919,38 @@ class Workflow{
             }
     }
     
-    populateTagSelect(list){
+    populateTagSelect(list,depth=0){
         var compSelect=this.tagSelect;
         while(compSelect.length>0)compSelect.remove(0);
+        var currentIndices = [];
+        for(i=0;i<this.tagSets.length;i++){
+            currentIndices = this.tagSets[i].getAllID(currentIndices,depth);
+        }
+        var allTags=[];
+        for(i=0;i<list.length;i++){
+            allTags = list[i].getAllTags(allTags,depth,currentIndices);
+        }
         var opt = document.createElement('option');
         opt.text = "Select set to add";
         opt.value = "";
         compSelect.add(opt);
-        for(var i=0;i<list.length;i++){
-            if(this.tagSets.indexOf(list[i])<0){
-                opt = document.createElement('option');
-                opt.text = list[i].name;
-                opt.value = list[i].id;
-                compSelect.add(opt);
-            }
+        for(var i=0;i<allTags.length;i++){
+            opt = document.createElement('option');
+            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getType()[0]+" - "+allTags[i].name;
+            opt.value = allTags[i].id;
+            compSelect.add(opt);
         }
     }
     
+    getTagDepth(){return -1;}
+    
+    refreshAllTags(){
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                this.weeks[i].nodes[j].refreshLinkedTags();
+            }
+        }
+    }
     
   
     addNodesFromXML(week,startIndex,xml){
@@ -1035,19 +1141,32 @@ class Workflow{
             }
         }
         var childcopy = [...this.children];
-        console.log(this.children.length);
         for(i=0;i<childcopy.length;i++){
             for(j=0;j<linkedWF.length;j++){
-                console.log(childcopy);
-                console.log(linkedWF);
                 
                 if(childcopy[i].id==linkedWF[j]){childcopy.splice(i,1);linkedWF.splice(j,1);i--;j--;break;}
             }
         }
-        console.log(childcopy);
         for(i=0;i<childcopy.length;i++)this.removeChild(childcopy[i]);
-        console.log(linkedWF);
         for(i=0;i<linkedWF.length;i++)this.addChild(this.project.getWFByID(linkedWF[i]));
+    }
+    
+    
+    
+    createLegend(){
+        this.legend = new Legend(this,this.graph);
+        this.legend.createVertex();
+    }
+    
+    legendUpdate(category,newval,oldval){
+        if(this.legend!=null)this.legend.update(category,newval,oldval);
+    }
+    
+    showLegend(){
+        if(this.legend!=null&&this.legend.vertex!=null){
+            this.legend.createDisplay();
+            this.graph.cellsToggled([this.legend.vertex],!this.graph.isCellVisible(this.legend.vertex));
+        }
     }
     
 
@@ -1071,6 +1190,15 @@ class Courseflow extends Workflow{
         columns.push(new Column(graph,this,"AC"));
         columns.push(new Column(graph,this,"FA"));
         columns.push(new Column(graph,this,"SA"));
+        var highestCustom=0;
+        for(var i=0;i<this.columns.length;i++){
+            if(this.columns[i].name.substr(0,3)=="CUS"){
+                columns.push(this.columns[i]);
+                var num = int(this.columns[i].name.substr(3));
+                if(num>highestCustom)highestCustom=num;
+            }
+        }
+        columns.push(new Column(graph,this,"CUS"+(highestCustom+1)));
         return columns;
     }
     
@@ -1097,25 +1225,32 @@ class Courseflow extends Workflow{
         
         var compSelect = document.createElement('select');
         this.tagSelect=compSelect;
-        this.populateTagSelect(p.competencies);
+        this.populateTagSelect(p.competencies,this.getTagDepth());
         
         var addButton = document.createElement('button');
         addButton.innerHTML = "Assign Outcome";
         addButton.onclick=function(){
             var value = compSelect.value;
             if(value!=""){
-               var comp = p.getCompByID(value);
-               wf.addTagSet(comp);
-               wf.populateTagBar();
-                compSelect.remove(compSelect.selectedIndex);
+                var comp = p.getTagByID(value);
+                wf.addTagSet(comp);
+                wf.populateTagBar();
+                var removalIDs = comp.getAllID([]);
+                for(var i=0;i<compSelect.options.length;i++)if(removalIDs.indexOf(compSelect.options[i].value)>=0){
+                    compSelect.remove(i);
+                    i--;
+                }
             }
         }
+        
         
         container.appendChild(compSelect);
         container.appendChild(addButton);
         
         this.populateTagBar();
     }
+    
+    getTagDepth(){return 1;}
 }
 
 class Activityflow extends Workflow{
@@ -1168,7 +1303,7 @@ class Activityflow extends Workflow{
             var dropfunction = function(graph, evt, filler, x, y)
             {
                 var wf = workflow;
-                var strategy=strat;
+                var strategy=strat['value'];
                 var cell = graph.getCellAt(x,y);
                 graph.stopEditing(false);
                 if(cell!=null&&graph.isPart(cell))cell=graph.getModel().getParent(cell);
@@ -1190,10 +1325,10 @@ class Activityflow extends Workflow{
             return dropfunction;
         }
         
-        var stratlist = strategyIconsArray;
+        var stratlist = iconsList['strategy'];
         
         for(var i=0;i<stratlist.length;i++){
-            this.addNodebarItem(container,stratlist[i][0],'resources/data/'+stratlist[i][1]+'24.png',makeDropFunction(stratlist[i][1],this),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
+            this.addNodebarItem(container,stratlist[i]['text'],'resources/data/'+stratlist[i]['value']+'24.png',makeDropFunction(stratlist[i],this),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
         }
     }
     
@@ -1234,5 +1369,47 @@ class Programflow extends Workflow{
     typeToXML(){return makeXML("program","wftype");}
     
     getDefaultName(){return "New Program"};
+    
+    generateTagBar(container){
+        var p=this.project;
+        var wf = this;
+        var header = document.createElement('h3');
+        header.className="nodebarh3";
+        header.innerHTML="Outcomes:";
+        container.appendChild(header);
+        
+        this.tagBarDiv =  document.createElement('div');
+        
+        
+        container.appendChild(this.tagBarDiv);
+        
+        var compSelect = document.createElement('select');
+        this.tagSelect=compSelect;
+        this.populateTagSelect(p.competencies,this.getTagDepth());
+        
+        var addButton = document.createElement('button');
+        addButton.innerHTML = "Assign Outcome";
+        addButton.onclick=function(){
+            var value = compSelect.value;
+            if(value!=""){
+                var comp = p.getTagByID(value);
+                wf.addTagSet(comp);
+                wf.populateTagBar();
+                var removalIDs = comp.getAllID([]);
+                for(var i=0;i<compSelect.options.length;i++)if(removalIDs.indexOf(compSelect.options[i].value)>=0){
+                    compSelect.remove(i);
+                    i--;
+                }
+            }
+        }
+        
+        
+        container.appendChild(compSelect);
+        container.appendChild(addButton);
+        
+        this.populateTagBar();
+    }
+    
+    getTagDepth(){return 0;}
     
 }
