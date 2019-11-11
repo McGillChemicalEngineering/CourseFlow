@@ -51,7 +51,7 @@ class Column {
             var text = getXMLVal(xml,"columntext");
             var nodetext = getXMLVal(xml,"columnnodetext");
             if(this.text!=text)this.setText(text);
-            if(this.nodetext!=text)this.setNodeText("nodetext");
+            if(this.nodetext!=nodetext)this.setNodeText(getXMLVal(xml,"nodetext"));
         }
         
     }

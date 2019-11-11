@@ -310,6 +310,7 @@ class Workflow{
         nbContainer.style.display="inline";
         while(nbContainer.firstChild)nbContainer.removeChild(nbContainer.firstChild);
         //nbContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
+        this.generateToolbars(nbContainer);
         
         //Add the first cells
         // Adds cells to the model in a single step
@@ -320,6 +321,7 @@ class Workflow{
             this.createTitleNode();
             if(this.xmlData!=null){
                 this.openXMLData();
+                this.populateNodeBar();
             }else{
                 //Create all the columns
                 this.createInitialColumns();
@@ -339,7 +341,6 @@ class Workflow{
         // Installs a popupmenu handler.
         graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){return wf.createPopupMenu(menu, cell, evt);};
         
-        this.generateToolbars(nbContainer);
         if(this.undoHistory.length==0){
             this.currentUndo=-1;
             this.addUndo("Initial",this);
