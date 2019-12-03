@@ -16,12 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 class EditBar{
-    constructor(container){
+    constructor(container,wf){
+        this.wf = wf;
+        var readOnly = wf.project.readOnly;
         var eb = this;
         this.container=container;
+        container.innerHTML='<h3>Edit Node</h3>';
+        
+        //Title div
+        var nameDiv = document.createElement('div');
+        nameDiv.innerHTML = '<h4>Title:</h4>';
         var quillDiv1 = document.createElement('div');
         quillDiv1.style.height='40px';
-        document.getElementById("nameDiv").appendChild(quillDiv1);
+        nameDiv.appendChild(quillDiv1);
         var toolbarOptions = null;
         var quill1 = new Quill(quillDiv1,{
             theme: 'bubble',
@@ -39,11 +46,28 @@ class EditBar{
         });
         quillDiv1.firstChild.onfocus = function(){quill1.setSelection(0,quill1.getLength());};
         this.nameField=quill1;
-        this.leftIcon = document.getElementById('leftIconSelect');
-        this.rightIcon = document.getElementById('rightIconSelect');
+        container.appendChild(nameDiv);
+        
+        //Icons
+        var iconDiv = document.createElement('div');
+        var leftIconDiv = document.createElement('div');
+        leftIconDiv.innerHTML='<h4>Left Icon:</h4>';
+        this.leftIcon = document.createElement('select');
+        leftIconDiv.appendChild(this.leftIcon);
+        var rightIconDiv = document.createElement('div');
+        rightIconDiv.innerHTML='<h4>Right Icon:</h4>';
+        this.rightIcon = document.createElement('select');
+        rightIconDiv.appendChild(this.rightIcon);
+        iconDiv.appendChild(leftIconDiv);
+        iconDiv.appendChild(rightIconDiv);
+        container.appendChild(iconDiv);
+        
+        //description
+        var descriptionDiv = document.createElement('div');
+        descriptionDiv.innerHTML='<h4>Description:</h4>';
         var quillDiv2 = document.createElement('div');
         quillDiv2.style.height='200px';
-        document.getElementById("descriptionDiv").appendChild(quillDiv2);
+        descriptionDiv.appendChild(quillDiv2);
         toolbarOptions = [['bold','italic','underline'],[{'list':'bullet'},{'list':'ordered'}],['link']];
         var quill2 = new Quill(quillDiv2,{
             theme: 'snow',
@@ -65,20 +89,44 @@ class EditBar{
         toolbar.defaultLinkFunction=toolbar.handlers['link'];
         toolbar.addHandler("link",function customLinkFunction(value){
             var select = quill2.getSelection();
-            if(select['length']==0){
+            if(select['length']==0&&!readOnly){
                 quill2.insertText(select['index'],'link');
-                quill2.setSelection(select['index'],4)
+                quill2.setSelection(select['index'],4);
             }
            
             this.defaultLinkFunction(value);
         });
         //this.textField=quillDiv2.childNodes[0];
         this.textField = quill2;
-        this.linkedWF = document.getElementById('linkedWFSelect');
-        this.tagButtonsDiv = document.getElementById('tagButtonsDiv');
-        this.tagSelect=document.getElementById('tagSelect');
+        container.appendChild(descriptionDiv);
+        
+        //linked wf
+        var wfDiv = document.createElement('div');
+        wfDiv.innerHTML='<h4>Linked Workflow:</h4>';
+        this.linkedWF = document.createElement('select');
+        wfDiv.appendChild(this.linkedWF);
+        container.appendChild(wfDiv);
+        
+        //tags
+        var tagsDiv = document.createElement('div');
+        tagsDiv.innerHTML = '<h4>Tags:</h4>';
+        this.tagButtonsDiv = document.createElement('div');
+        this.tagSelect=document.createElement('select');
+        tagsDiv.appendChild(this.tagButtonsDiv);
+        tagsDiv.appendChild(this.tagSelect);
+        container.appendChild(tagsDiv);
+        
         this.node;
         
+        //disable everything if read-only
+        if(readOnly){
+            quill1.disable();
+            quill2.disable();
+            this.linkedWF.disabled=true;
+            this.tagSelect.disabled=true;
+            this.leftIcon.disabled=true;
+            this.rightIcon.disabled=true;
+        }
     }
     
     enable(node){
@@ -141,7 +189,7 @@ class EditBar{
         var tags = this.node.tags;
         if(tags.length>0){
             for(i=0;i<tags.length;i++){
-                tags[i].makeEditButton(this.tagButtonsDiv,this.node,this);
+                tags[i].view.makeEditButton(this.tagButtonsDiv,this.node,this);
             }
         }
         while(this.tagSelect.length>0){this.tagSelect.remove(0);}

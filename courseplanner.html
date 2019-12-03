@@ -48,17 +48,26 @@
 		<script type="text/javascript" src="Constants.js"></script>
 		<script type="text/javascript" src="Layout.js"></script>
 		<script type="text/javascript" src="Week.js"></script>
+		<script type="text/javascript" src="Weekview.js"></script>
 		<script type="text/javascript" src="Column.js"></script>
+		<script type="text/javascript" src="Columnview.js"></script>
 		<script type="text/javascript" src="CFNode.js"></script>
+		<script type="text/javascript" src="Nodeview.js"></script>
 		<script type="text/javascript" src="Editbar.js"></script>
 		<script type="text/javascript" src="Workflow.js"></script>
+		<script type="text/javascript" src="Workflowview.js"></script>
 		<script type="text/javascript" src="Project.js"></script>
 		<script type="text/javascript" src="Bracket.js"></script>
+		<script type="text/javascript" src="Bracketview.js"></script>
 		<script type="text/javascript" src="Tag.js"></script>
+		<script type="text/javascript" src="Tagview.js"></script>
+		<script type="text/javascript" src="Tagbuilder.js"></script>
 		<script type="text/javascript" src="Comment.js"></script>
+		<script type="text/javascript" src="Commentview.js"></script>
 		<script type="text/javascript" src="Layoutbutton.js"></script>
 		<script type="text/javascript" src="Undo.js"></script>
 		<script type="text/javascript" src="Legend.js"></script>
+		<script type="text/javascript" src="Outcomeview.js"></script>
         <script type="text/javascript" src="TempXMLStorage.js"></script>
 <!--    	<script src="resources/pdftex.js"></script> -->
 <!--    	<script src="resources/promise/promise.js"></script> -->
@@ -87,6 +96,7 @@
                     <a id="open"><div>Open Project</div><div class="shortcut">Ctrl+O</div></a>
                     <a id="export">Export Current Workflow</a>
                     <a id="import">Import a Workflow</a>
+                    <a id="savereadonly">Save Read Only</a>
                 </div>
             </div>
             <div class="topdropwrapper">
@@ -104,6 +114,7 @@
                     <a id="collapse">Collapse All Nodes</a>
                     <a id="print">Printer Friendly Version</a>
                     <a id="showlegend">Show/Hide Legend</a>
+                    <a id="outcomeview">Toggle Outcome View</a>
                 </div>
             </div>
             <div class="topdropwrapper">
@@ -116,6 +127,11 @@
         </div>
         
     </div>
+    <div class="nodebar" id="nbContainer">
+    </div>
+    <div class="nodebar" id="ebContainer"></div>
+    <div id="helpDiv" class = "helpdiv"><iframe id="helpFrame" class="helpframe"></iframe><div id="helpDivHide" class = "helpdivhide"><img src="resources/images/delrect24.png"></div></div>
+    
     <div class="sidenav" id="sidenav">
         <h3>Project:</h3>
         <div id=prnamewrapper>
@@ -132,36 +148,6 @@
         <div id="competencydiv"></div>
         <div id="newCompDiv"></div>
     </div>
-    <div class="nodebar" id="nbContainer">
-    </div>
-    <div class="nodebar" id="ebContainer">
-        <h3>Edit Node:</h3>
-        <div id="nameDiv">
-            <h4>Title:</h4>
-        </div>
-        <div style="display:inline-block;width:100%">
-            <div id="leftIconDiv" style="float:left;width:50%;">
-                <h4>Left Icon:</h4>
-                <select id="leftIconSelect"></select>
-            </div><div id="rightIconDiv" style="float:left;width:50%;">
-                <h4>Right Icon:</h4>
-                <select id="rightIconSelect"></select>
-            </div>
-        </div>
-        <div id="descriptionDiv">
-            <h4>Description:</h4>
-        </div>
-        <div id="linkedWFDiv">
-            <h4>Linked Workflow:</h4>
-            <select id="linkedWFSelect"></select>
-        </div>
-        <div id="tagsDiv">
-            <h4>Tags:</h4>
-            <div id = "tagButtonsDiv"></div>
-            <select id="tagSelect"></select>
-        </div>
-    </div>
-    <div id="helpDiv" class = "helpdiv"><iframe id="helpFrame" class="helpframe"></iframe><div id="helpDivHide" class = "helpdivhide"><img src="resources/images/delrect24.png"></div></div>
 	<!-- Creates a container for the graph-->
     <div id="graphWrapper" class="containerwrapper">
         <div id="graphContainer" class="graphcontainer"></div>

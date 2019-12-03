@@ -27,16 +27,19 @@ class Project{
         this.sidenav = document.getElementById("sidenav");
         this.layout = document.getElementById("layout");
         this.newWFDiv = document.getElementById("newWFDiv");
+        this.newWFButton;
         this.compDiv = document.getElementById("competencydiv");
         this.newCompDiv = document.getElementById("newCompDiv");
+        this.newCompButton;
         this.nameDiv = document.getElementById("prname");
         var p = this;
         this.idNum=0;
         this.loadAppend=false;
         this.name = "New Project";
+        this.readOnly=false;
         
         
-        this.makeResizable(this.sidenav,"right");
+        makeResizable(this.sidenav,"right");
         
         
         //Add the ability to edit the name of the project
@@ -45,6 +48,7 @@ class Project{
         nameIcon.style.width='16px';
         var nameDiv = this.nameDiv;
         nameDiv.parentElement.onclick=function(){
+            if(p.readOnly)return;
             var tempfunc = nameDiv.onclick;
             //create an input, on enter or exit make that the new name
             nameDiv.innerHTML="<input type='text' class = 'fixedwidthinput' value = '"+p.name+"'placeholder='<type a new name here>'></input>";
@@ -81,6 +85,7 @@ class Project{
             p.addWorkflow(type);
             p.changeActive(p.workflows.length-1)
         }
+        this.newWFButton = newWF;
         this.newWFDiv.appendChild(newWF);
         
         var newComp = document.createElement('button');
@@ -89,20 +94,11 @@ class Project{
             p.addCompetency();
             p.changeActive(p.competencies.length-1,false);
         }
+        this.newCompButton = newComp;
         this.newCompDiv.appendChild(newComp);
         
-        var minimap = document.getElementById('outlineContainer');
         
-        var ebContainer = document.getElementById('ebContainer');
-        this.makeResizable(ebContainer,"left");
-        //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
-        ebContainer.style.zIndex='3';
-        ebContainer.style.width = '0px';
         
-        var editbar = new EditBar(ebContainer);
-        editbar.disable();
-        
-        this.editbar=editbar;
         var newfile = document.getElementById('new');
         newfile.onclick = function(){
             if(mxUtils.confirm("Are you sure you want to continue? You will lose any unsaved work.")){
@@ -149,8 +145,14 @@ class Project{
         
         var importWF = document.getElementById('import');
         importWF.onclick = function(){
+            if(p.readOnly)return;
             p.loadAppend=true;
             p.fileLoader.click();
+        }
+        
+        var saveReadOnly = document.getElementById('savereadonly');
+        saveReadOnly.onclick = function(){
+            p.saveProject(true);
         }
         
         var printWF = document.getElementById("print");
@@ -160,14 +162,14 @@ class Project{
         
         var undoButton = document.getElementById("undo");
         undoButton.onclick = function(){
-            if(p.activeWF!=null){
+            if(p.activeWF!=null&&!p.readOnly){
                 p.workflows[p.activeWF].undo();
             }
         }
         
         var redoButton = document.getElementById("redo");
         redoButton.onclick = function(){
-            if(p.activeWF!=null){
+            if(p.activeWF!=null&&!p.readOnly){
                 p.workflows[p.activeWF].redo();
             }
         }
@@ -179,7 +181,22 @@ class Project{
         collapse.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes(false);})};
         
         var showLegend = document.getElementById("showlegend");
-        showLegend.onclick = function(){if(p.activeWF!=null)p.workflows[p.activeWF].showLegend();};
+        showLegend.onclick = function(){if(p.activeWF!=null&&p.workflows[p.activeWF].view)p.workflows[p.activeWF].view.showLegend();};
+        
+        var outcomeView = document.getElementById("outcomeview");
+        outcomeView.onclick = function(){
+            if(p.activeWF!=null){
+                var wf = p.workflows[p.activeWF];
+                if(wf.view instanceof Workflowview){
+                    wf.makeInactive();
+                    wf.makeActive(new Outcomeview(p.container,wf));
+                }else if(wf.view instanceof Outcomeview){
+                    wf.makeInactive();
+                    wf.makeActive(new Workflowview(p.container,wf));
+                }
+                
+            }
+        }
         
         var genHelp = document.getElementById("genhelp");
         genHelp.onclick = function(){p.showHelp("help.html");}
@@ -253,12 +270,21 @@ class Project{
                 case "l":
                     evt.preventDefault();
                     showLegend.click();
+                    break;
+                case "q":
+                    evt.preventDefault();
+                    outcomeView.click();
+                    break;
             }
             
         });
         
         document.addEventListener("click",function(evt){
-            if(p.activeWF!=null&&!p.container.contains(evt.target)&&!p.editbar.container.contains(evt.target))p.graph.clearSelection();
+            if(p.activeWF!=null&&!p.container.contains(evt.target)){
+                var wf = p.workflows[p.activeWF];
+                if(wf.view.graph==null)return;
+                if(!wf.view.editbar.container.contains(evt.target))wf.view.graph.clearSelection();
+            }
         });
         
         
@@ -266,9 +292,11 @@ class Project{
 		
     }
     
-    saveProject(){
-        this.toXML();
-        var filename = this.name+'.xml';
+    saveProject(readOnly=false){
+        this.toXML(readOnly);
+        var filename = this.name;
+        if(readOnly)filename+="_ReadOnly";
+        filename+='.xml';
         this.saveXML(this.xmlData,filename);
     }
     
@@ -339,6 +367,16 @@ class Project{
         return array;
     }
     
+    makeReadOnly(readOnly){
+        var p = this;
+        if(p.readOnly==readOnly)return;
+        p.readOnly=readOnly;
+        p.newWFButton.disabled=readOnly;
+        p.newCompButton.disabled=readOnly;
+        if(readOnly)document.body.classList.add("readonly");
+        else document.body.classList.remove("readonly");
+    }
+    
     duplicateActiveWF(){
         if(this.activeWF==null)return;
         var wf = this.workflows[this.activeWF];
@@ -369,11 +407,12 @@ class Project{
     
     
     
-    toXML(){
+    toXML(readOnly=false){
         var xml = "";
         var serializer = new XMLSerializer();
         xml+=makeXML(this.name,"prname");
         xml+=makeXML(this.idNum,"idnum");
+        if(readOnly)xml+=makeXML("true","readonly");
         for(var i=0;i<this.workflows.length;i++){
             xml+=this.workflows[i].toXML();
         }
@@ -404,6 +443,9 @@ class Project{
             this.clearProject();
             this.setName(getXMLVal(xmlDoc,"prname"));
             this.idNum = int(getXMLVal(xmlDoc,"idnum"));
+            var readOnly = getXMLVal(xmlDoc,"readonly");
+            if(readOnly)this.makeReadOnly(true);
+            else this.makeReadOnly(false);
         }
         var startWF = this.workflows.length;
         var xmltags = [];
@@ -542,53 +584,6 @@ class Project{
         select.add(opt);
     }
     
-    
-    
-    makeResizable(div,direction){
-        
-        var handle = document.createElement("div");
-        handle.className="panelresizehandle";
-        
-        var getWidth = function(x,bound){return null;}
-        var padding = int(getComputedStyle(div)["padding-left"])+int(getComputedStyle(div)["padding-right"]);
-        switch(direction){
-                case 'left':
-                    handle.style.width="5px";
-                    handle.style.height="100%";
-                    handle.style.top="0px";
-                    handle.style.left="0px";
-                    getWidth = function(x,bound){return bound.right-x;} 
-                    break;
-                case 'right':
-                    handle.style.width="5px";
-                    handle.style.height="100%";
-                    handle.style.top="0px";
-                    handle.style.right="0px";
-                    getWidth = function(x,bound){return x-bound.left;} 
-                    break;
-                
-        }
-        
-        function resize(evt){
-            var newWidth = getWidth(evt.clientX,div.getBoundingClientRect())-padding;
-            if(newWidth<100)newWidth=100;
-            if(newWidth>window.innerWidth-200)newWidth = window.innerWidth-200;
-            div.style.width = newWidth+"px";
-        }
-        function stopResize(evt){
-            window.removeEventListener("mousemove",resize);
-        }
-        
-        
-        
-        handle.addEventListener("mousedown",function(e){
-            e.preventDefault();
-            window.addEventListener("mousemove",resize);
-            window.addEventListener("mouseup",stopResize,true);
-        });
-        div.appendChild(handle);
-    }
-    
     getWFIndex(wf){
         return this.workflows.indexOf(wf);
     }
@@ -623,16 +618,15 @@ class Project{
         var p = this;
         makeLoad(function(){
             if(p.activeWF!=null)p.workflows[p.activeWF].makeInactive();
-            if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive(p.container);
+            if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive();
             if(isWF){
                 p.activeComp = null;
                 p.activeWF=index;
-                p.initializeGraph(p.container);
-                p.workflows[p.activeWF].makeActive(p.graph);
+                p.workflows[p.activeWF].makeActive(new Workflowview(p.container,p.workflows[p.activeWF]));
             }else{
                 p.activeWF = null;
                 p.activeComp=index;
-                p.competencies[p.activeComp].makeActive(p.container);
+                p.competencies[p.activeComp].makeActive(new Tagbuilder(p.container,p.competencies[p.activeComp]));
             }
         });
     }
@@ -646,444 +640,6 @@ class Project{
     
     
     
-    initializeGraph(container){
-        // Creates the graph inside the given container
-        var graph = new mxGraph(container);
-        var p = this;
-		//create minimap
-        var minimap = document.getElementById('outlineContainer');
-        var outln = new mxOutline(graph, minimap);
-        
-        
-        var editbar = this.editbar;
-        
-        //graph.panningHandler.useLeftButtonForPanning = true;
-        graph.setAllowDanglingEdges(false);
-        graph.connectionHandler.select = false;
-        //graph.view.setTranslate(20, 20);
-        graph.setHtmlLabels(true);
-        graph.foldingEnabled = false;
-        graph.setTooltips(true);
-        graph.setGridSize(10);
-        graph.setBorder(20);
-        graph.constrainChildren = false;
-        graph.extendParents = false;
-        graph.resizeContainer=true;
-        
-        
-        //mxConnectionHandler.prototype.connectImage = new mxImage('resources/images/add24.png', 16, 16);
-        
-        //display a popup menu when user right clicks on cell, but do not select the cell
-        graph.panningHandler.popupMenuHandler = false;
-        //expand menus on hover
-        graph.popupMenuHandler.autoExpand = true;
-        //disable regular popup
-        mxEvent.disableContextMenu(container);
-        
-        
-        //Disable cell movement associated with user events
-        graph.moveCells = function (cells, dx,dy,clone,target,evt,mapping){
-            if(cells.length==1&&(cells[0].isComment||cells[0].isLegend)){
-                var comment = cells[0].comment;
-                if(comment==null)comment=cells[0].legend;
-                var wf = comment.wf;
-                var x = comment.x+dx;
-                var y = comment.y+dy;
-                if(x<wfStartX)dx=wfStartX-comment.x;
-                if(y<wfStartY)dy=wfStartY-comment.y;
-                if(x>wf.weeks[wf.weeks.length-1].box.r()+200)dx=wf.weeks[wf.weeks.length-1].box.r()+200-comment.x;
-                if(y>wf.weeks[wf.weeks.length-1].box.b()+200)dy=wf.weeks[wf.weeks.length-1].box.b()+200-comment.y;
-                comment.x+=dx;
-                comment.y+=dy;
-                return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
-            }
-            if(evt!=null && (evt.type=='mouseup' || evt.type=='pointerup' || evt.type=='ontouchend')){
-                dx=0;dy=0;
-            }
-            return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
-        }
-        
-        //Flag for layout being changed, don't update while true
-        graph.ffL=false;
-        //This overwrites the preview functionality when moving nodes so that nodes are automatically
-        //snapped into place and moved while the preview is active.
-        graph.graphHandler.updatePreviewShape = function(){
-            if(this.shape!=null&&!graph.ffL){
-                graph.ffL=true;
-                //creates a new variable for the initial bounds,
-                //otherwise once the node moves the preview will be
-                //drawn relative to the NEW position but with the OLD
-                //displacement, leading to a huge offset.
-                if(this.shape.initboundx==null){this.shape.initboundx=this.pBounds.x;this.shape.offsetx=this.shape.initboundx-this.cells[0].getGeometry().x;}
-                if(this.shape.initboundy==null){this.shape.initboundy=this.pBounds.y;this.shape.offsety=this.shape.initboundy-this.cells[0].getGeometry().y;}
-                //redraw the bounds. This is the same as the original function we are overriding, however
-                //initboundx has taken the place of pBound.x
-                this.shape.bounds = new mxRectangle(Math.round(this.shape.initboundx + this.currentDx - this.graph.panDx),
-                        Math.round(this.shape.initboundy + this.currentDy - this.graph.panDy), this.pBounds.width, this.pBounds.height);
-                this.shape.redraw();
-                //Get the selected cells
-                var cells = this.cells;
-                var preview = this.shape.bounds.getPoint();
-                //Unfortunately, the preview uses the position relative to the current panned window, whereas everything else uses the real positions. So we figure out the offset between these
-                //at the start of the drag.
-                var newx = preview.x-this.shape.offsetx;
-                var newy = preview.y-this.shape.offsety;
-                //for single WFNodes, we will snap during the preview
-                if(cells.length==1 && cells[0].isNode) {
-                    var cell = cells[0];
-                    var wf = cell.node.wf;
-                    var columns=cell.node.wf.columns;
-                    var weeks = cell.node.wf.weeks;
-                    //It's more intuitive if we go from the center of the cells, especially since the column positions are measured relative to the center, so we do a quick redefinition of the position.
-                    newx=newx+cell.w()/2;
-                    newy=newy+cell.h()/2;
-                    //Start by checking whether we need to move in the x direction
-                    var colIndex=wf.getColIndex(cell.node.column);
-                    var newColName = wf.findNearestColumn(newx);
-                    if(newColName!=cell.node.column){
-                        cell.node.setColumn(newColName);
-                        cell.node.wf.makeUndo("Node Moved",cell.node);
-                    }
-                    //Check the y
-                    //First we check whether we are inside a new week; if we are then it hardly matters where we are relative to the nodes within the old week.
-                    var node = cell.node;
-                    var week = node.week;
-                    var weekChange=cell.node.week.relativePos(newy);
-                    if(weekChange==0){//proceed to determine whether or not the node must move within the week
-                        var index = node.week.nodes.indexOf(node);
-                        var newIndex = week.getNearestNode(newy);
-                        if(index!=newIndex){
-                            week.shiftNode(index,newIndex,graph);
-                            node.wf.makeUndo("Node Moved",cell.node);
-                        }
-                    }else{
-                        cell.node.changeWeek(weekChange,graph);
-                        node.wf.makeUndo("Node Moved",cell.node);
-                    }
-                }else if(cells.length==1 && cells[0].isHead){
-                    //as above but with only the horizontal movement
-                    var cell = cells[0];
-                    var wf = cell.column.wf;
-                    var columns=wf.columns;
-                    //start from center of this cell
-                    newx=newx+cell.w()/2;
-                    //column index
-                    var colIndex=wf.columns.indexOf(cell.column);
-                    if(colIndex>0 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex-1].pos-newx)){
-                        //swap this column with that to the left
-                        wf.swapColumns(colIndex,colIndex-1);
-                    }
-                    if(colIndex<columns.length-1 && Math.abs(columns[colIndex].pos-newx)>Math.abs(columns[colIndex+1].pos-newx)){
-                        //swap this column with that to the right
-                        wf.swapColumns(colIndex,colIndex+1);
-                        wf.makeUndo("Column Moved");
-                    }
-                    
-                }
-                graph.ffL=false;
-
-            }
-
-        }
-        
-        //Alters the way the drawPreview function is handled on resize, so that the brackets can snap as they are resized. Also disables horizontal resizing.
-        mxVertexHandler.prototype.drawPreview = function(){
-            var cell = this.state.cell;
-            if(this.selectionBorder.offsetx==null){this.selectionBorder.offsetx=this.bounds.x-cell.x();this.selectionBorder.offsety=this.bounds.y-cell.y();}
-            if(cell.isNode||cell.isBracket){
-                this.bounds.width = this.state.cell.w();
-                this.bounds.x = this.state.cell.x()+this.selectionBorder.offsetx;
-            }
-            if(this.state.cell!=null&&!graph.ffL){
-                if(cell.isBracket){
-                    graph.ffL=true;
-                    var br = cell.bracket;
-                    var wf = br.wf;
-                    var bounds = this.bounds;
-                    if(Math.abs(bounds.height-cell.h())>minCellHeight/2+cellSpacing){
-                        var dy = bounds.y-cell.y()-this.selectionBorder.offsety;
-                        var db = (bounds.height+bounds.y)-cell.b()-this.selectionBorder.offsety;
-                        var dh = bounds.height-cell.h();
-                        var isTop = (dy!=0);
-                        var next = wf.findNextNodeOfSameType(br.getNode(isTop),int((dy+db)/Math.abs(dy+db)));
-                        if(next!=null){
-                            if(Math.abs(dh)>cellSpacing+next.vertex.h()/2){
-                                var delta = (next.vertex.y()-cell.y())*(isTop) + (next.vertex.b()-cell.b())*(!isTop);
-                                br.changeNode(next,isTop);
-                                //Required because of the way in which mxvertex handler tracks rescales. I don't think this breaks anything else.
-                                this.startY = this.startY +delta;
-                            }
-                        }
-                        
-                    }
-                    graph.ffL=false;
-                }
-
-            }
-            drawPreviewPrototype.apply(this,arguments);
-        }
-        //disable cell resize for the bracket
-        var resizeCellPrototype = mxVertexHandler.prototype.resizeCell;
-        mxVertexHandler.prototype.resizeCell = function(cell,dx,dy,index,gridEnabled,constrained,recurse){
-            if(cell.isBracket)return;
-            else return resizeCellPrototype.apply(this,arguments);
-        }
-        
-        
-        
-        
-        
-        //Disable horizontal resize
-        graph.resizeCell = function (cell, bounds, recurse){
-            if(cell.isNode) {
-                if(bounds.height<minCellHeight)bounds.height=minCellHeight;
-                bounds.y=cell.y();
-                bounds.x=cell.x();
-                bounds.width=cell.w();
-                var dy = bounds.height - cell.h();
-                var returnval = mxGraph.prototype.resizeCell.apply(this,arguments);
-                cell.node.resizeBy(dy);
-                return returnval;
-            }
-            if(cell.isBracket){bounds.width=cell.w();bounds.x=cell.x();}
-            return mxGraph.prototype.resizeCell.apply(this,arguments);
-        }
-        
-        
-        //handle the changing of the toolbar upon selection
-        graph.selectCellForEvent = function(cell,evt){
-            if(cell.isWeek){graph.clearSelection();return;};
-            mxGraph.prototype.selectCellForEvent.apply(this,arguments);
-        }
-        graph.clearSelection = function(){
-            editbar.disable();
-            mxGraph.prototype.clearSelection.apply(this,arguments);
-        }
-        
-        //function that checks if it is a constituent
-        graph.isPart = function(cell){
-            var state = this.view.getState(cell);
-            var style = (state != null) ? state.style : this.getCellStyle(cell);
-            return style['constituent']=='1';
-        }
-        //Redirect clicks and drags to parent
-        var graphHandlerGetInitialCellForEvent = mxGraphHandler.prototype.getInitialCellForEvent;
-        mxGraphHandler.prototype.getInitialCellForEvent = function(me){
-            var cell = graphHandlerGetInitialCellForEvent.apply(this, arguments);
-            while (this.graph.isPart(cell)){
-                cell = this.graph.getModel().getParent(cell)
-            }
-            return cell;
-        };
-       
-        //Adds an event listener to handle the drop down collapse/expand of nodes
-        graph.addListener(mxEvent.CLICK,function(sender,evt){
-            container.focus();
-        });
-        
-        //Add an event listener to handle double clicks to nodes, which, if they have a linked wf, will change the active wf
-        graph.addListener(mxEvent.DOUBLE_CLICK,function(sender,evt){
-            var cell = evt.getProperty('cell');
-           if(cell!=null){
-               while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
-               if(cell.isNode){
-                   var node = cell.node;
-                   var linkedWF = node.linkedWF;
-                   if(linkedWF!=null)p.changeActive(p.workflows.indexOf(p.getWFByID(linkedWF)));
-               }
-           }
-        });
-        
-        //These will be used to distinguish between clicks and drags
-        var downx=0;
-        var downy=0;
-        graph.addMouseListener(
-            {
-                mouseDown: function(sender,me){downx=me.graphX;downy=me.graphY;},
-                mouseUp: function(sender,me){
-                    var cell = me.getCell();
-                    if(cell!=null&&me.evt.button==0){
-                        //check if this was a click, rather than a drag
-                        if(Math.sqrt(Math.pow(downx-me.graphX,2)+Math.pow(downy-me.graphY,2))<2){
-                            if(cell.isDrop){
-                                cell.node.toggleDropDown();
-                            }else if(cell.isComment){
-                                cell.comment.show();
-                            }else{
-                                while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
-                                //check if this was a click, rather than a drag
-                                if(cell.isNode){
-                                    editbar.enable(cell.node);
-                                }
-                            }
-                        }
-                    }
-                },
-                mouseMove: function(sender,me){
-                    var cell=me.getCell();
-                    if(cell==null)return;
-                    while (graph.isPart(cell)){if(cell.cellOverlays!=null)break;cell = graph.getModel().getParent(cell);}
-                    if(cell.cellOverlays!=null){
-                        if(graph.getCellOverlays(cell)==null){
-                            //check if you are in bounds, if so create overlays. Because of a weird offset between the graph view and the graph itself, we have to use the cell's view state instead of its own bounds
-                            var mouserect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
-                            if(mxUtils.intersects(mouserect,graph.view.getState(cell))){
-                                //Add the overlays
-                                for(var i=0;i<cell.cellOverlays.length;i++){
-                                    graph.addCellOverlay(cell,cell.cellOverlays[i]);
-                                }
-                                //if it's a node with tags, also show those
-                                var timeoutvar;
-                                if(cell.isNode&&cell.node.tags.length>0)timeoutvar = setTimeout(function(){cell.node.toggleTags(true);},100);
-                                //add the listener that will remove these once the mouse exits
-                                graph.addMouseListener({
-                                    mouseDown: function(sender,me){},
-                                    mouseUp: function(sender,me){},
-                                    mouseMove: function(sender,me){
-                                        if(graph.view.getState(cell)==null){graph.removeMouseListener(this);return;}
-                                        var exitrect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
-                                        if(!mxUtils.intersects(exitrect,graph.view.getState(cell))){
-                                            if(cell.isNode&&graph.view.getState(cell.node.tagBox)!=null&&mxUtils.intersects(exitrect,graph.view.getState(cell.node.tagBox))){
-                                                
-                                                return;
-                                            }
-                                            graph.removeCellOverlay(cell);
-                                            if(cell.isNode){cell.node.toggleTags(false);clearTimeout(timeoutvar);}
-                                            graph.removeMouseListener(this);
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        );
-        
-        //Change default graph behaviour to make vertices not connectable
-        graph.insertVertex = function(par,id,value,x,y,width,height,style,relative){
-            var vertex = mxGraph.prototype.insertVertex.apply(this,arguments);
-            vertex.setConnectable(false);
-            return vertex;            
-        }
-        //Setting up ports for the cell connections
-        graph.setConnectable(true);
-        // Replaces the port image
-			graph.setPortsEnabled(false);
-			mxConstraintHandler.prototype.pointImage = new mxImage('resources/images/port24.png', 10, 10);
-        var ports = new Array();
-        ports['OUTw'] = {x: 0, y: 0.6, perimeter: true, constraint: 'west'};
-        ports['OUTe'] = {x: 1, y: 0.6, perimeter: true, constraint: 'east'};
-        ports['OUTs'] = {x: 0.5, y: 1, perimeter: true, constraint: 'south'};
-        ports['HIDDENs'] = {x: 0.5, y: 1, perimeter: true, constraint: 'south'};
-        ports['INw'] = {x: 0, y: 0.4, perimeter: true, constraint: 'west'};
-        ports['INe'] = {x: 1, y: 0.4, perimeter: true, constraint: 'east'};
-        ports['INn'] = {x: 0.5, y: 0, perimeter: true, constraint: 'north'};
-        // Extends shapes classes to return their ports
-        mxShape.prototype.getPorts = function()
-        {
-            return ports;
-        };
-        
-        // Disables floating connections (only connections via ports allowed)
-        graph.connectionHandler.isConnectableCell = function(cell)
-        {
-           return false;
-        };
-        
-        
-        
-        mxEdgeHandler.prototype.isConnectableCell = function(cell)
-        {
-            return graph.connectionHandler.isConnectableCell(cell);
-        };
-        // Disables existing port functionality
-        graph.view.getTerminalPort = function(state, terminal, source)
-        {
-            return terminal;
-        };
-        
-        // Returns all possible ports for a given terminal
-        graph.getAllConnectionConstraints = function(terminal, source)
-        {
-            if (terminal != null && this.model.isVertex(terminal.cell))
-            {
-                if (terminal.shape != null)
-                {
-                    var ports = terminal.shape.getPorts();
-                    var cstrs = new Array();
-
-                    for (var id in ports)
-                    {
-                        if(id.indexOf("HIDDEN")>=0)continue;
-                        if((id.indexOf("IN")>=0&&source)||id.indexOf("OUT")>=0&&!source)continue;
-                        var port = ports[id];
-
-                        var cstr = new mxConnectionConstraint(new mxPoint(port.x, port.y), port.perimeter);
-                        cstr.id = id;
-                        cstrs.push(cstr);
-                    }
-
-                    return cstrs;
-                }
-            }
-
-            return null;
-        };
-
-        // Sets the port for the given connection
-        graph.setConnectionConstraint = function(edge, terminal, source, constraint)
-        {
-            if (constraint != null)
-            {
-                var key = (source) ? mxConstants.STYLE_SOURCE_PORT : mxConstants.STYLE_TARGET_PORT;
-                
-
-                if (constraint == null || constraint.id == null)
-                {
-                    this.setCellStyles(key, null, [edge]);
-                }
-                else if (constraint.id != null)
-                {
-                    this.setCellStyles(key, constraint.id, [edge]);
-                }
-            }
-        };
-
-        // Returns the port for the given connection
-        graph.getConnectionConstraint = function(edge, terminal, source)
-        {
-            var key = (source) ? mxConstants.STYLE_SOURCE_PORT : mxConstants.STYLE_TARGET_PORT;
-            var id = edge.style[key];
-            if (id != null)
-            {
-                var c =  new mxConnectionConstraint(null, null);
-                c.id = id;
-
-                return c;
-            }
-            
-            return null;
-        };
-
-        
-        initializeConnectionPointForGraph(graph);
-        
-        //make the non-default connections through our own functions, so that we can keep track of what is linked to what. The prototype is saved in mxConstants, so that we don't keep overwriting it.
-        mxConnectionHandler.prototype.insertEdge = function(parent,id,value,source,target,style){
-            var edge = insertEdgePrototype.apply(this,arguments);
-            if(source.isNode && target.isNode){
-                graph.setCellStyle(defaultEdgeStyle,[edge]);
-                source.node.addFixedLinkOut(target.node,edge);
-            }
-            return edge;
-        }
-        
-        
-        
-        this.graph = graph;
-        
-    }
     //Since this assigns a bunch of IDs without actually increasing idNum, it should only be called when an xml file is about to be imported into the project and IDs generated.
     assignNewIDsToXML(xml,doWorkflows=true){
         var xmlString = xml;//(new XMLSerializer()).serializeToString(xml);

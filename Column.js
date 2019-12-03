@@ -16,15 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 class Column {
-    constructor(graph,wf,name){
+    constructor(wf,name){
         this.name=name;
         this.text;
         this.nodetext;
         this.image;
-        this.head;
-        this.pos=0;
-        this.graph=graph;
         this.wf=wf;
+        this.view;
         if(name!=null)this.setDefaultValues(name);
         
     }
@@ -42,16 +40,12 @@ class Column {
         var name = getXMLVal(xml,"columnname");
         this.setName(name);
         if(name.substr(0,3)=="CUS"){
-            this.setImage(getXMLVal(xml,"columnimage"));
-            this.setText(getXMLVal(xml,"columntext"));
-            console.log(this.text);
-            this.setNodeText(getXMLVal(xml,"columnnodetext"));
+            this.image = getXMLVal(xml,"columnimage");
+            this.text = getXMLVal(xml,"columntext");
+            this.nodetext = getXMLVal(xml,"columnnodetext");
         }else {
             this.setDefaultValues(name);
-            var text = getXMLVal(xml,"columntext");
-            var nodetext = getXMLVal(xml,"columnnodetext");
-            if(this.text!=text)this.setText(text);
-            if(this.nodetext!=nodetext)this.setNodeText(getXMLVal(xml,"nodetext"));
+            this.text = getXMLVal(xml,"columntext");
         }
         
     }
@@ -110,20 +104,17 @@ class Column {
     
     setName(name){
         this.name=name;
-        
     }
     
     setImage(img){
         this.image = img;
-        this.graph.setCellStyles('image','resources/data/'+img+'.png',[this.head]);
-        this.wf.populateNodeBar();
+        if(this.view)this.view.imageUpdated();
     }
     
     setTextSilent(text){
         if(text!=null && text!=""){
             text = text.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.text=text;
-            console.log(this.name.substr(0,3));
             if(this.name.substr(0,3)=='CUS'){this.setNodeText(text);}
             return text;
         }else{
@@ -133,73 +124,21 @@ class Column {
     }
     
     setText(text){
-        console.log(text);
         text = this.setTextSilent(text);
-        if(this.head!=null)this.head.setValue(text);
+        if(this.view)this.view.textChanged();
     }
     
     setNodeText(nodetext){
         this.nodetext=nodetext;
-        this.wf.populateNodeBar();
+        if(this.view)this.view.nodeTextChanged();
     }
     
-    
-    createHead(){
-        this.head = this.graph.insertVertex(this.graph.getDefaultParent(), null,this.text,this.pos,3*cellSpacing, colIconSize, colIconSize,defaultHeadStyle+'image=resources/data/'+this.image+'.png;');
-        console.log(this.text);
-        this.head.isHead=true;
-        this.head.column=this;
-        var col = this;
-        this.head.valueChanged = function(value){
-            var value1 = col.setTextSilent(value);
-            if(value1!=value)col.graph.getModel().setValue(wf.titleNode,value1);
-            else mxCell.prototype.valueChanged.apply(this,arguments);
-            
-        }
-        if(this.name.substr(0,3)=='CUS'&&this.nodetext!=this.text)this.setNodeText(this.text);
-        
-    }
-    
-    
-    updatePosition(){
-        this.graph.moveCells([this.head],this.pos-this.head.w()/2-this.head.x());
-    }
     
     deleteSelf(){
         this.wf.removeColumn(this);
-        this.graph.removeCells([this.head]);
+        if(this.view)this.view.deleted();
     }
     
-    populateMenu(menu){
-        var graph = this.graph;
-        var col=this;
-        menu.addItem('Edit label', 'resources/images/text24.png', function(){
-				graph.startEditingAtCell(col.head);
-        });
-        if(this.name.substr(0,3)=='CUS')this.populateIconMenu(menu,iconsList['column']);
-        menu.addItem('Delete Column','resources/images/delrect24.png',function(){
-            if(col.wf.columns.length==1)alert("You can't delete the last column!");
-            else if(mxUtils.confirm("Delete this column?")){
-                graph.clearSelection();
-                col.deleteSelf();
-                col.wf.makeUndo("Delete Column",col);
-            }
-        });
-    }
-    
-    populateIconMenu(menu,iconArray){
-        var col = this;
-        if(iconArray==null||iconArray.length==0)return;
-        var sub = menu.addItem("Icon",'resources/images/lefticon24.png');
-        for(var i=0;i<iconArray.length;i++){
-            var tempfunc = function(value){
-                menu.addItem(value.text,iconpath+value.value+'24.png',function(){
-                    col.setImage(value.value);
-                },sub);
-            }
-            tempfunc(iconArray[i]);
-        }
-    }
     
 }
 

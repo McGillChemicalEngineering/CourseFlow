@@ -109,7 +109,6 @@ const defaultCommentSize=36;
 const exitPadding=cellSpacing;
 const tagBoxPadding = 5;
 const tagHeight = 20;
-var weekWidth;
 
 //Colours
 const SALTISEGREEN = '#369934';
@@ -128,15 +127,15 @@ const SALTISELIGHTBLUE = '#1293b3';
 const defaultWeekStyle = 'fillColor=#e6e6e6;movable=0;resizable=0;strokeColor=none;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=13;fontStyle=1;fontColor=black;spacingLeft=20;';
 const defaultWFAreaStyle = 'editable=0;fillColor=#FFFFFF;movable=0;resizable=0;strokeColor=black;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=14;fontStyle=1;fontColor=black;';
 const defaultLegendStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor='+SALTISEBLUE+';strokeWidth=4;verticalAlign=ALIGN_TOP;fontSize=14;fontStyle=1;fontColor='+SALTISEBLUE+';spacingTop=8';
-const defaultLegendLineStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor=none;fontSize=12;fontStyle=1;fontColor='+SALTISEBLUE+';constituent=1;imageAlign=left;imageWidth=24;imageHeight=24;';
+const defaultLegendLineStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor=none;fontSize=12;fontStyle=1;fontColor='+SALTISEBLUE+';constituent=1;imageAlign=left;imageWidth=24;imageHeight=24;overflow=hidden;';
 const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-40)+";imageHeight="+(colIconSize-40)+";fontSize=16;fontStyle=5;fontColor=black;";
 const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=14;fontColor=white;fillColor=none;overflow=hidden;editable=0;fontStyle=1;fontFamily=arial;";
 const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=black;strokeWidth=2;editable=0;fontColor=black;resizable=0;";
 const defaultIconStyle="shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=none;";
 const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
-const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;";
+const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;align=left;";
 const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;align=left;verticalAlign=top;";
-const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
+const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
 const defaultDropDownStyle="constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=#FFFFFF;shape=label;image=resources/images/droptriangle.png;imageWidth=12;imageHeight=4;imageAlign=center;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
@@ -152,7 +151,7 @@ const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;
 const iconsList={
     strategy:[{text:'Jigsaw',value:'jigsaw'},{text:'Peer Instruction',value:'peer-instruction'},{text:'Case Studies',value:'case-studies'},{text:'Gallery Walk',value:'gallery-walk'},{text:'Reflective Writing',value:'reflective-writing'},{text:'Two-Stage Exam',value:'two-stage-exam'},{text:'Toolkit',value:'toolkit'},{text:'One Minute Paper',value:'one-minute-paper'},{text:'Distributed Problem Solving',value:'distributed-problem-solving'},{text:'Peer Assessment',value:'peer-assessment'}],
     context:[{text:'Individual Work',value:'solo'},{text:'Work in Groups',value:'group'},{text:'Whole Class',value:'class'}],
-    task:[{text:'Gather Information',value:'research'},{text:'Discuss',value:'discuss'},{text:'Solve',value:'problem'},{text:'Analyze',value:'analyze'},{text:'Assess/Review Peers',value:'peerreview'},{text:'Evaluate Peers',value:'evaluate'},{text:'Debate',value:'debate'},{text:'Game/Roleplay',value:'play'},{text:'Create/Design',value:'create'},{text:'Revise/Improve',value:'practice'},{text:'Read',value:'reading'},{text:'Write',value:'write'},{text:'Present',value:'present'},{text:'Experiment/Inquiry',value:'experiment'},{text:'Quiz/Test',value:'quiz'},{text:'Other',value:'other'}],
+    task:[{text:'Gather Information',value:'research'},{text:'Discuss',value:'discuss'},{text:'Problem Solve',value:'problem'},{text:'Analyze',value:'analyze'},{text:'Assess/Review Peers',value:'peerreview'},{text:'Evaluate Peers',value:'evaluate'},{text:'Debate',value:'debate'},{text:'Game/Roleplay',value:'play'},{text:'Create/Design',value:'create'},{text:'Revise/Improve',value:'practice'},{text:'Read',value:'reading'},{text:'Write',value:'write'},{text:'Present',value:'present'},{text:'Experiment/Inquiry',value:'experiment'},{text:'Quiz/Test',value:'quiz'},{text:'Other',value:'other'}],
     assessment:[{text:'Exercises/Quizzes', value:'exercise'},{text:'Tests/Projects',value:'test'},{text:'Exam/Comprehensive',value:'exam'}],
     column:[{text:'Home',value:'home'},{text:'Instructor',value:'instructor'},{text:'Students',value:'noinstructor'},{text:'Activity',value:'lesson'},{text:'Assessment',value:'assessment'},{text:'Preparation',value:'homework'},{text:'Artifact',value:'artifact'},{text:'Individual',value:'solo'},{text:'Group',value:'group'},{text:'Class',value:'class'}]
 };
@@ -201,3 +200,50 @@ Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
 // These should be defined only once, otherwise they end up iterating through themselves multiple times.
 var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;
 var drawPreviewPrototype = mxVertexHandler.prototype.drawPreview;
+
+
+//Make a div resizable either to the left or right
+function makeResizable(div,direction){
+        
+    var handle = document.createElement("div");
+    handle.className="panelresizehandle";
+
+    var getWidth = function(x,bound){return null;}
+    var padding = int(getComputedStyle(div)["padding-left"])+int(getComputedStyle(div)["padding-right"]);
+    switch(direction){
+            case 'left':
+                handle.style.width="5px";
+                handle.style.height="100%";
+                handle.style.top="0px";
+                handle.style.left="0px";
+                getWidth = function(x,bound){return bound.right-x;} 
+                break;
+            case 'right':
+                handle.style.width="5px";
+                handle.style.height="100%";
+                handle.style.top="0px";
+                handle.style.right="0px";
+                getWidth = function(x,bound){return x-bound.left;} 
+                break;
+
+    }
+
+    function resize(evt){
+        var newWidth = getWidth(evt.clientX,div.getBoundingClientRect())-padding;
+        if(newWidth<100)newWidth=100;
+        if(newWidth>window.innerWidth-200)newWidth = window.innerWidth-200;
+        div.style.width = newWidth+"px";
+    }
+    function stopResize(evt){
+        window.removeEventListener("mousemove",resize);
+    }
+
+
+
+    handle.addEventListener("mousedown",function(e){
+        e.preventDefault();
+        window.addEventListener("mousemove",resize);
+        window.addEventListener("mouseup",stopResize,true);
+    });
+    div.appendChild(handle);
+}

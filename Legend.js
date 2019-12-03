@@ -20,13 +20,15 @@ class Legend{
     constructor(wf,graph){
         this.wf = wf;
         this.graph=graph;
-        this.x = wf.weeks[0].box.r()+cellSpacing+100;
-        this.y = wf.weeks[0].box.y()+cellSpacing;
         this.icons={};
         this.vertices=[];
+        this.x;
+        this.y;
     }
     
     createVertex(){
+        this.x = this.wf.weeks[0].view.vertex.r()+cellSpacing+100;
+        this.y = this.wf.weeks[0].view.vertex.y()+cellSpacing;
        var vertex =  this.graph.insertVertex(this.graph.getDefaultParent(),null,"Legend",this.x,this.y,200,44,defaultLegendStyle);
         vertex.isLegend=true;
         vertex.legend=this;

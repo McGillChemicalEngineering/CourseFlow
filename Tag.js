@@ -23,14 +23,11 @@ class Tag {
         this.project = project;
         this.id = project.genID();
         this.children=[];
-        this.nodes=[];
-        this.drops=[];
         this.buttons=[];
         this.parentTag=parentTag;
         this.depth;
-        this.wrapperDiv;
         this.isActive=false;
-        this.isComplete=false;
+        this.view;
     }
     
     setName(name){
@@ -38,9 +35,27 @@ class Tag {
             name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.name=name;
             for(var i=0;i<this.buttons.length;i++){
-                this.buttons[i].namediv.innerHTML=this.name;
+                this.buttons[i].updateButton();
             }
+            if(this.view)this.view.nameUpdated();
         }
+    }
+
+    makeActive(view){
+        this.isActive=true;
+        this.view = view;
+        for(var i=0;i<this.buttons.length;i++){
+            this.buttons[i].makeActive();
+        }
+        this.view.makeActive();
+    }
+    
+    makeInactive(){
+        for(var i=0;i<this.buttons.length;i++){
+            this.buttons[i].makeInactive();
+        } 
+        this.view.makeInactive();
+        this.view = null;
     }
     
     removeChild(child){
@@ -52,16 +67,7 @@ class Tag {
     getDefaultName(){
         return "New "+this.getType();
     }
-    
-    clearData(){
-        this.nodes=[];
-        this.drops=[];
-        this.isComplete=false;
-        for(var i=0;i<this.children.length;i++){
-            this.children[i].clearData();
-        }
-    }
-    
+        
     addButton(container,recurse=true){
         var button = new Layoutbutton(this,container);
         button.makeEditable(true,true,false);
@@ -115,17 +121,16 @@ class Tag {
     unassignFrom(parent){
         if(parent instanceof Workflow){
             parent.removeTagSet(this);
-            parent.populateTagBar();
-            parent.populateTagSelect(this.project.competencies,parent.getTagDepth());
             
         }else if(parent instanceof CFNode){
             parent.removeTag(this,true);
             parent.wf.makeUndo("Tag Removed",parent);
-            var eb = this.project.editbar;
-            if(eb.node==parent){
-                eb.populateTags();
+            if(parent.wf.view){
+                var eb = parent.wf.view.editbar;
+                if(eb.node==parent){
+                    eb.populateTags();
+                }
             }
-            
         }else{
             console.log("I don't know what to do with this");
         }
@@ -175,31 +180,7 @@ class Tag {
         }
     }
     
-    makeActive(container){
-        container.style.height="initial";
-        container.style.overflow="initial";
-        this.isActive=true;
-        for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].makeActive();
-        }
-        this.wrapperDiv = document.createElement('div');
-        this.wrapperDiv.innerHTML="<h3>Learning Outcomes:</h3><p>This page allows you to create outcomes. For an explanation of the outcomes, click here: <img src='resources/images/info32.png' width=16px id='outcomeinfo'></p>";
-        var p = this.project;
-        this.wrapperDiv.className = "competencywrapper";
-        container.appendChild(this.wrapperDiv);
-        document.getElementById('outcomeinfo').onclick = function(){p.showHelp("outcomehelp.html");}
-        
-        this.makeInitialLine(this.wrapperDiv);
-    }
     
-    makeInactive(container){
-        this.isActive=false;
-        for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].makeInactive();
-        } 
-        container.removeChild(this.wrapperDiv);
-        this.wrapperDiv = null;
-    }
     
     getTagByID(id){
         if(this.id==id)return this;
@@ -228,39 +209,8 @@ class Tag {
         return list;
     }
     
-    makeInitialLine(container){
-        var button = this.makeButton(container);
-        for(var i=0;i<this.children.length;i++){
-            this.children[i].makeInitialLine(button);
-        }
-    }
     
-    makeButton(container){
-        var tag = this;
-        var button = new CompetencyEditButton(this,container);
-        button.makeEditable(true,this.depth>0,false);
-        button.makeMovable();
-        button.makeExpandable();
-        button.b.onclick=function(){button.renameClick();}
-        var createchildfunction = function(){
-            var newtag = new Tag(tag.project,tag);
-            tag.children.push(newtag);
-            newtag.makeInitialLine(button.childdiv);
-            button.expand();
-        }
-        if(this.depth<2)button.makeCreateChild(createchildfunction);
-        return button.childdiv;
-    }
     
-    addDrop(button){
-        var tag = this;
-        button.b.addEventListener("mouseover",function(evt){tag.highlight(true)});
-        button.b.addEventListener("mouseleave",function(evt){if(!button.b.isToggled)tag.highlight(false)});
-        button.b.hasListener=true;
-        button.b.isToggled=false;
-        button.b.onclick= function(){button.b.isToggled=(!button.b.isToggled);};
-        this.drops.push(button);
-    }
     
     
     //swap the two usedsubtags (used to rearrange the layout)
@@ -271,55 +221,8 @@ class Tag {
         
     }
     
-    highlight(on){
-        for(var i=0;i<this.nodes.length;i++){
-            this.nodes[i].highlight(on);
-        }
-        for(i=0;i<this.drops.length;i++){
-            if(on&&this.nodes.length>0)this.drops[i].bwrap.classList.add("highlighted");
-            else this.drops[i].bwrap.classList.remove("highlighted");
-        }
-    }
     
-    makeEditButton(container,node,editbar){
-        var tag = this;
-        var button = new EditBarTagButton(this,container);
-        button.makeEditable(false,false,true,node);
-        button.b.onclick=null;
-        return button.childdiv;
-    }
     
-    addNode(node){
-        this.nodes.push(node);
-        this.updateDrops();
-    }
-    
-    removeNode(node){
-        this.nodes.splice(this.nodes.indexOf(node),1);
-        this.updateDrops();
-    }
-    
-    updateDrops(){
-        var colours = [];
-        for(var i=0;i<this.nodes.length;i++){
-            var colour = this.nodes[i].graph.getCellStyle(this.nodes[i].vertex)["fillColor"];
-            if(colours.indexOf(colour)<0)colours.push(colour);
-        }
-        var colCount=99;
-        if(this.nodes[0]!=null)colCount=this.nodes[0].wf.columns.length;
-        this.isComplete=(this.children.length>0);
-        for(i=0;i<this.children.length;i++){
-            if(!this.children[i].isComplete)this.isComplete=false;
-        }
-        if(colCount<=colours.length)this.isComplete=true;
-        
-        for(i=0;i<this.drops.length;i++){
-            this.drops[i].updateNodeIndicators(colours,this.isComplete);
-        }
-        if(this.parentTag!=null)this.parentTag.updateDrops();
-        
-        
-    }
     
     
 }

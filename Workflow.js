@@ -25,22 +25,19 @@ class Workflow{
         this.children=[];
         this.xmlData;
         this.project=project;
-        this.graph;
         this.buttons=[];
         this.name = this.getDefaultName();
         this.id = this.project.genID();
-        this.tagBarDiv;
-        this.nodeBarDiv;
-        this.tagSelect;
         this.tagSets=[];
         this.isActive=false;
         this.undoHistory=[];
         this.currentUndo;
         this.undoEnabled=false;
-        this.legend;
+        this.view;
     }
     
     getDefaultName(){return "Untitled Workflow"};
+    getBracketList(){return null;}
     
     toXML(){
         var xml = "";
@@ -86,54 +83,38 @@ class Workflow{
             if(xmlData.childNodes[i].tagName=="column")xmlcols.push(xmlData.childNodes[i]);
         }
         for(var i=0;i<xmlcols.length;i++){
-            var col = new Column(this.graph,this);
+            var col = new Column(this);
             col.fromXML(xmlcols[i]);
             this.columns.push(col);
         }
         if(this.columns.length==0)this.createInitialColumns();
-        this.positionColumns();
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(i=0;i<xmlweeks.length;i++){
-            if(i>0)this.weeks[i-1].insertBelow();
-            else if(this.weeks.length==0) {
-                this.createBaseWeek();
-                this.createLegend();
-            }
-            this.weeks[i].fromXML(xmlweeks[i]);
+            var week = this.createWeek();
+            week.fromXML(xmlweeks[i]);
+            this.weeks.push(week);
         }
-        this.updateWeekIndices();
-        this.makeConnectionsFromIds();
         var xmlbrackets = xmlData.getElementsByTagName("bracket");
         for(i=0;i<xmlbrackets.length;i++){
-            var br = new Bracket(this.graph,this);
+            var br = new Bracket(this);
             br.fromXML(xmlbrackets[i]);
             this.brackets.push(br);
         }
         var xmlcomments = xmlData.getElementsByTagName("comment");
         for(var i=0;i<xmlcomments.length;i++){
-            var com = new WFComment(this.graph,this,0,0);
+            var com = new WFComment(this,0,0);
             com.fromXML(xmlcomments[i]);
             this.addComment(com);
         }
-    }
-    
-    clearGraph(){
-        while(this.brackets.length>0){
-            this.brackets[0].deleteSelf();
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                this.weeks[i].nodes[j].makeAutoLinks();
+            }
         }
-        while(this.comments.length>0){
-            this.comments[0].deleteSelf();
-        }
-        while(this.weeks.length>1){
-            this.weeks[this.weeks.length-1].deleteSelf();
-        }
-        this.weeks[0].deleteSelf();
-        while(this.columns.length>0){
-            this.columns[this.columns.length-1].deleteSelf();
-        }
-        this.legend.deleteSelf();
         
     }
+    
+    
     
     fromXML(xmlData){
         this.setName(getXMLVal(xmlData,"wfname"));
@@ -243,16 +224,7 @@ class Workflow{
     
     typeToXML(){return "";}
     
-    makeConnectionsFromIds(){
-        for(var i=0;i<this.weeks.length;i++){
-            for(var j=0;j<this.weeks[i].nodes.length;j++){
-                for(var k=0;k<this.weeks[i].nodes[j].fixedLinksOut.length;k++){
-                    this.weeks[i].nodes[j].fixedLinksOut[k].redraw();
-                    this.weeks[i].nodes[j].fixedLinksOut[k].addDelOverlay();
-                }
-            }
-        }
-    }
+    
     
     findNodeById(id){
         for(var i=0;i<this.weeks.length;i++){
@@ -279,19 +251,13 @@ class Workflow{
     }
     
     setName(name){
-        if(name!=null && name!=""){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
-            //if active, we have to change the name tag label to this
-            if(this.isActive){
-                this.graph.getModel().setValue(this.titleNode,name);
-            }else name = this.setNameSilent(name);
-        }
+        name = this.setNameSilent(name);
+        //if active, we have to change the name tag label to this
+        if(this.view)this.view.nameUpdated();
                 
     }
     
-    
-    makeActive(graph){
-        
+    makeActive(view){
         this.isActive=true;
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].makeActive();
@@ -299,47 +265,14 @@ class Workflow{
             //this.activateParents(this.buttons[i],true);
         }
         
-        
-        this.graph=graph;
-        var parent = graph.getDefaultParent();
-        var columns = this.columns;
-        var weeks = this.weeks;
-        var minimap = document.getElementById('outlineContainer');
-        
-        var nbContainer = document.getElementById('nbContainer');
-        nbContainer.style.display="inline";
-        while(nbContainer.firstChild)nbContainer.removeChild(nbContainer.firstChild);
-        //nbContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
-        this.generateToolbars(nbContainer);
-        
-        //Add the first cells
-        // Adds cells to the model in a single step
-        graph.getModel().beginUpdate();
-        try
-        {
-            //Create the title boxes
-            this.createTitleNode();
-            if(this.xmlData!=null){
-                this.openXMLData();
-                this.populateNodeBar();
-            }else{
-                //Create all the columns
-                this.createInitialColumns();
-                this.positionColumns();
-                this.createBaseWeek();
-                this.createLegend();
-            }
-            //this.createSpanner();
+        if(this.xmlData!=null){
+            this.openXMLData();
+        }else{
+            this.createInitialColumns();
+            this.createBaseWeek();
         }
-        finally
-        {
-            // Updates the display
-            graph.getModel().endUpdate();
-        }
-        
-        var wf = this;
-        // Installs a popupmenu handler.
-        graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){return wf.createPopupMenu(menu, cell, evt);};
+        this.view=view;
+        if(this.view)this.view.makeActive();
         
         if(this.undoHistory.length==0){
             this.currentUndo=-1;
@@ -348,26 +281,31 @@ class Workflow{
         this.undoEnabled=true;
     }
     
+    
+    
     makeInactive(){
         this.undoEnabled=false;
         this.isActive=false;
-        this.graph.stopEditing(false);
-        this.graph.clearSelection();
+        if(this.view)this.view.makeInactive();
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].makeInactive();
             //uncommenting this will revert automatic expansion of parents when a workflow is activated
             //this.activateParents(this.buttons[i],false);
         }
-        for(i=0;i<this.tagSets.length;i++){
-            this.tagSets[i].clearData();
-        }
-        nbContainer.style.display="none";
         this.saveXMLData();
         this.weeks=[];
         this.columns=[];
         this.comments=[];
         this.brackets=[];
-        if(this.graph!=null)this.graph.destroy();
+        this.view=null;
+    }
+    
+    clearAll(){
+        if(this.view)this.view.makeInactive();
+        this.weeks=[];
+        this.columns=[];
+        this.comments=[];
+        this.brackets=[];
     }
     
     activateParents(b,add){
@@ -378,198 +316,78 @@ class Workflow{
         }
     }
     
-    createTitleNode(){
-        var wf = this;
-        var title = "[Insert Title Here]";
-        if(this.name!=null)title = this.name;
-        this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,cellSpacing,300,50,defaultTitleStyle);
-        this.titleNode.isTitle=true;
-        this.titleNode.wf=this;
-        this.titleNode.valueChanged = function(value){
-            var value1 = wf.setNameSilent(value);
-            if(value1!=value)wf.graph.getModel().setValue(wf.titleNode,value1);
-            else mxCell.prototype.valueChanged.apply(this,arguments);
-            
-        }
-    }
-    
-    createPopupMenu(menu,cell,evt){
-        var graph = this.graph;
-        var wf = this;
-        var model = graph.getModel();
-        
-        if (cell != null){
-            while (graph.isPart(cell)){cell=cell.getParent();}
-        }
-        menu.addItem('Add Comment','resources/images/comment24.png',function(){
-            var style = getComputedStyle(document.getElementById("graphWrapper"));
-            var com = new WFComment(graph,wf,evt.pageX-int(style.left)-graph.view.getTranslate().x,evt.pageY-int(style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y);
-            com.createVertex();
-            wf.addComment(com);
-        });
-        if(cell.isNode)cell.node.populateMenu(menu);
-        else if(cell.isWeek)cell.week.populateMenu(menu);
-        else if (cell.isHead)cell.column.populateMenu(menu);
-        else if (cell.isComment)cell.comment.populateMenu(menu);
-        else if (cell.isBracket)cell.bracket.populateMenu(menu);
-        else if (cell.isTitle)menu.addItem('Edit Title','resources/images/text24.png',function(){
-            graph.startEditingAtCell(wf.titleNode);
-        });
-        menu.addSeparator();
-
-        menu.addItem("What's this?",'resources/images/info24.png',function(){
-            if(cell==null){
-                if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
-                else if (wf instanceof Courseflow)wf.project.showHelp("coursehelp.html");
-                else if (wf instanceof Programflow)wf.project.showHelp("programhelp.html");
-                else wf.project.showHelp("help.html");
-            }else if(cell.isNode){
-                wf.project.showHelp("nodehelp.html");
-            }else if(cell.isComment){
-                wf.project.showHelp("commenthelp.html");
-            }else if(cell.isBracket){
-                wf.project.showHelp("strategyhelp.html");
-            }else if(cell.isWeek){
-                if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
-                else if (wf instanceof Courseflow)wf.project.showHelp("weekhelp.html");
-                else if (wf instanceof Programflow)wf.project.showHelp("programhelp.html");
-            }else if(cell.isHead){
-                wf.project.showHelp("columnhelp.html");
-            }else{
-                wf.project.showHelp("help.html");
-            }
-        });
-    }
-    
-    
-    createBaseWeek(){
-        var baseWeek = new Week(this.graph,this);
-        this.weeks.push(baseWeek);
-        baseWeek.createBox(cellSpacing,this.columns[0].head.b()+cellSpacing,weekWidth);
-        this.updateWeekIndices();
-    }
-    
-    positionColumns(){
-        var columns = this.columns;
-        for(var i=0;i<columns.length;i++){columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);}
-        for(i=0;i<columns.length;i++){columns[i].createHead();columns[i].updatePosition();}
-        this.updateWeekWidths();
-    }
-    
-    //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
-    createSpanner(){
-        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX,0,this.weeks[0].box.w()+600,1,invisibleStyle);
-        
-    }
-    
-    updateWeekIndices(){
-        var weeks = this.weeks;
-        for(var i=0;i<weeks.length;i++){
-            if(weeks[i].index!=i){
-                this.graph.setCellStyles("fillColor","#"+(0xf0f0f0+(i%2)*0x050505).toString(16)+";",[weeks[i].box]);
-                weeks[i].index=i;
-            }
-            if(weeks[i].name==null&&weeks[i].name!="")weeks[i].setName(weeks[i].getDefaultName());
-        }
-    }
-    pushWeeks(startIndex){
-        var weeks = this.weeks;
-        //this should never start at 0, the top week should not be moved
-        if(startIndex==0) {weeks[0].makeFlushWithAbove(0);startIndex++}
-        if(startIndex>weeks.length-1)return;
-        var dy=weeks[startIndex-1].box.b()-weeks[startIndex].box.y();
-        for(var i=startIndex;i<weeks.length;i++){
-            weeks[i].moveWeek(dy);
-        }
-    }
-    
-    moveWeek(week,direction){
-        var index = week.index;
-        if((direction>0&&index<this.weeks.length-1)||(direction<0&&index>0)){
-            var week2 = this.weeks[index+direction];
-            var dy = week2.box.y()-week.box.y();
-            week.moveWeek(dy);
-            week2.moveWeek(-dy);
-            [this.weeks[index],this.weeks[index+direction]]=[this.weeks[index+direction],this.weeks[index]]
-            this.updateWeekIndices();
-        }
-    }
-    
-    //A significantly faster version of this function, which first computes what must be moved, then moves it all at once in a single call to moveCells
-    pushWeeksFast(startIndex,dy=null){
-        var weeks = this.weeks;
-        //this should never start at 0, the top week should not be moved
-        if(startIndex==0) {weeks[0].makeFlushWithAbove(0);startIndex++}
-        if(startIndex>weeks.length-1)return;
-        if(dy==null)dy=weeks[startIndex-1].box.b()-weeks[startIndex].box.y();
-        var vertices=[];
-        var brackets=[];
-        for(var i=startIndex;i<weeks.length;i++){
-            vertices.push(weeks[i].box);
-            for(var j=0;j<weeks[i].nodes.length;j++){
-                vertices.push(weeks[i].nodes[j].vertex);
-                for(var k=0;k<weeks[i].nodes[j].brackets.length;k++){
-                    var bracket = weeks[i].nodes[j].brackets[k];
-                    if(brackets.indexOf(bracket)<0)brackets.push(bracket);
-                }
-            }
-        }
-        this.graph.moveCells(vertices,0,dy);
-        for(i=0;i<brackets.length;i++)brackets[i].updateVertical();
-        
-    }
-    
     addColumn(name){
-        var col = new Column(this.graph,this,name);
+        var col = new Column(this,name);
         this.columns.push(col);
-        var i = this.columns.length-1;
-        this.columns[i].pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);
-        this.columns[i].createHead();
-        this.columns[i].updatePosition();
-        this.populateNodeBar();
-        this.updateWeekWidths();
+        if(this.view)this.view.columnAdded(col);
         
     }
     
     removeColumn(column){
         var index = this.columns.indexOf(column);
-        for(var i=this.columns.length-1;i>index;i--){
-            this.columns[i].pos=this.columns[i-1].pos;
-            this.columns[i].updatePosition();
-        }
+        if(this.view)this.view.columnRemoved(column);
         this.columns.splice(index,1);
         for(var i=0;i<this.weeks.length;i++){
             for(var j=0;j<this.weeks[i].nodes.length;j++){
                 var node = this.weeks[i].nodes[j];
                 if(node.column==column.name)node.column=this.columns[this.columns.length-1].name;
-                node.updateColumn();
+                if(node.view)node.view.columnUpdated();
             }
         }
-        this.updateWeekWidths();
     }
     
-    updateWeekWidths(){
-        var oldWidth= weekWidth;
-        if(this.columns.length==0)return;
-        weekWidth=this.columns[this.columns.length-1].pos+defaultCellWidth/2+cellSpacing;
-        for(var i = 0;i<this.weeks.length;i++){
-            this.weeks[i].box.resize(this.graph,weekWidth-oldWidth,0);
-        }
-    }
-    
-    getColPos(name){
-        for(var i=0;i<this.columns.length;i++){
-            if(this.columns[i].name==name)return this.columns[i].pos;
-        }
-        this.addColumn(name);
-        return this.columns[this.columns.length-1].pos;
-    }
     getColIndex(name){
         for(var i=0;i<this.columns.length;i++){
             if(this.columns[i].name==name)return i;
         }
         return 0;
     }
+    
+    ensureColumn(name){
+        for(var i=0;i<this.columns.length;i++){
+            if(this.columns[i].name==name)return i;
+        }
+        this.addColumn(name);
+        return this.columns.length-1;
+    }
+    
+    
+    createBaseWeek(){
+        var baseWeek = new Week(this);
+        this.weeks.push(baseWeek);
+        if(this.view)this.view.weekAdded(baseWeek);
+        this.updateWeekIndices();
+    }
+    
+    createWeek(){
+        var week = new Week(this);
+        return week;
+    }
+    
+    updateWeekIndices(){
+        var weeks = this.weeks;
+        for(var i=0;i<weeks.length;i++){
+            if(weeks[i].index!=i){
+                weeks[i].index=i;
+                if(this.view)this.view.weekIndexUpdated(weeks[i]);
+            }
+            if(weeks[i].name==null&&weeks[i].name!="")weeks[i].setName(null);
+        }
+    }
+    
+    
+    moveWeek(week,direction){
+        var index = week.index;
+        if((direction>0&&index<this.weeks.length-1)||(direction<0&&index>0)){
+            var week2 = this.weeks[index+direction];
+            //This doesn't take into account the heights of the weeks!
+            if(this.view)this.view.weeksSwapped(week,week2,direction);
+            [this.weeks[index],this.weeks[index+direction]]=[this.weeks[index+direction],this.weeks[index]]
+            this.updateWeekIndices();
+        }
+    }
+    
+    
     
     getTagByID(id){
         var tag;
@@ -579,44 +397,18 @@ class Workflow{
         }
     }
     
-    bringCommentsToFront(){
-        if(this.comments.length==0)return;
-        var com = [];
-        for(var i=0;i<this.comments.length;i++){
-            com.push(this.comments[i].vertex);
-        }
-        this.graph.orderCells(false,com);
-    }
-    
-    
     createNodeOfType(column){
         var node;
-        var graph = this.graph;
         var wf = this;
-        if(column=="LO") node = new LONode(graph,wf);
-        else if(column=="AC") node = new ACNode(graph,wf);
-        else if(column=="SA"||column=="FA"||column=="HW") node = new ASNode(graph,wf);
-        else if (column=="CO") node = new CONode(graph,wf);
-        else if(column=="OOC"||column=="ICI"||column=="ICS")node = new WFNode(graph,wf);
-        else if(column.substr(0,3)=="CUS")node = new CUSNode(graph,wf);
-        else node = new CFNode(graph,wf);
+        if(column=="LO") node = new LONode(wf);
+        else if(column=="AC") node = new ACNode(wf);
+        else if(column=="SA"||column=="FA"||column=="HW") node = new ASNode(wf);
+        else if (column=="CO") node = new CONode(wf);
+        else if(column=="OOC"||column=="ICI"||column=="ICS")node = new WFNode(wf);
+        else if(column.substr(0,3)=="CUS")node = new CUSNode(wf);
+        else node = new CFNode(wf);
         return node;
         
-    }
-    
-    findNearestColumn(x){
-        var dist = 99999;
-        var tdist = 0;
-        var name = null;
-        for(var i=0;i<this.columns.length;i++){
-            tdist = Math.abs(this.columns[i].pos-x);
-            if(tdist<dist){
-                dist=tdist;
-                name = this.columns[i].name;
-            }
-        }
-        if(name!=null)return name;
-        else return this.columns[0].name;
     }
     
     findNextNodeOfSameType(node,direction,sameType=true){
@@ -636,196 +428,23 @@ class Workflow{
         return null;
     }
     
-    //Executed when we generate all the toolbars
-    generateToolbars(container){
-        this.project.makeResizable(container,"left");
-        this.generateNodeBar(container);
-        this.generateBracketBar(container);
-        this.generateTagBar(container);
-    }
-    
-    generateNodeBar(container){ 
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML="Nodes:";
-        container.appendChild(header);
-        
-        this.nodeBarDiv = document.createElement('div');
-        container.appendChild(this.nodeBarDiv);
-        
-        this.populateNodeBar();
-    }
-    
-    populateNodeBar(){
-        this.nodeBarDiv.innerHTML = "";
-        
-        
-        var nodebar = new mxToolbar(this.nodeBarDiv);
-		nodebar.enabled = false;
-        
-        // Function that is executed when the image is dropped on
-        // the graph. The cell argument points to the cell under
-        // the mousepointer if there is one.
-        var makeDropFunction=function(col,workflow){
-            var dropfunction = function(graph, evt, filler, x, y)
-            {
-                var wf = workflow;
-                var column=col;
-                var cell = graph.getCellAt(x,y);
-                graph.stopEditing(false);
-                if(cell!=null && cell.isWeek){
-                    var startIndex = cell.week.getNextIndexFromPoint(y);
-                    var node=wf.createNodeOfType(column);
-                    node.createVertex(x,y);
-                    node.setColumn(column);
-                    node.setWeek(cell.week);
-                    cell.week.addNode(node,0,startIndex);
-                    wf.bringCommentsToFront();
-                    wf.makeUndo("Add Node",node);
-
-                }
-                this.lastCell=null;
-            }
-            return dropfunction;
-        }
-        
-        var allColumns = this.getPossibleColumns();
-        for(var i=0;i<allColumns.length;i++){
-            var button = this.addNodebarItem(this.nodeBarDiv,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
-        }
-    }
     
     
-    
-    generateBracketBar(){}
-    generateTagBar(){}
-    
-    populateTagBar(){
-        this.tagBarDiv.innerHTML="";
-        for(var i=0;i<this.tagSets.length;i++){
-            var tagDiv = document.createElement('div');
-            this.tagBarDiv.appendChild(tagDiv);
-            tagDiv.layout=this;
-            this.populateTagDiv(tagDiv,this.tagSets[i]);
-        }
-        if(this.tagSets.length==0){
-            this.tagBarDiv.classList.add("emptytext");
-            this.tagBarDiv.innerHTML="<b>No outcomes have been added yet! Use the buttons below to add one.</b>"
-        }else this.tagBarDiv.classList.remove("emptytext");
-    }
-    
-    populateTagDiv(container,tag){
-         var button = new Layoutbutton(tag,container);
-        button.b.onclick=null;
-        
-        //Creates the function that is called when you drop it on something
-        var makeDropFunction=function(addedtag,workflow){
-            var dropfunction = function(graph, evt, filler, x, y)
-            {
-                var wf = workflow;
-                var thistag =addedtag;
-                var cell = graph.getCellAt(x,y);
-                graph.stopEditing(false);
-                while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
-                if(cell!=null && cell.isNode){
-                    cell.node.addTag(thistag,cell,true,true);
-                    wf.makeUndo("Add Tag",cell.node);
-                }
-                this.lastCell=null;
-
-            }
-            return dropfunction;
-        }
-        
-        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this),button,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isNode);});
-        tag.addDrop(button);
-        if(tag.depth<=this.getTagDepth())button.makeEditable(false,false,true,this);
-        button.makeExpandable();
-        button.makeNodeIndicators();
-        button.layout.updateDrops();
-        
-        if(tag.depth<=this.getTagDepth())for(var i=0;i<tag.children.length;i++){
-            this.populateTagDiv(button.childdiv,tag.children[i]);
-        }
-        return button;
-    }
-    
-   
-    //Adds a drag and drop. If button is null, it creates one, if it is passed an existing button it simply makes it draggable.
-    addNodebarItem(container,name,image, dropfunction,button=null,validtargetfunction=function(cellToValidate){return false;})
-    {
-        var wf = this;
-        var graph = this.graph;
-        var line;
-        var img;
-        var namediv;
-        if(button==null){
-            line = document.createElement("button");
-            img = document.createElement("img");
-            namediv = document.createElement("div");
-            img.setAttribute('src',image);
-            namediv.innerText = name;
-            line.appendChild(img);
-            line.appendChild(namediv);
-            container.appendChild(line);
-        }else {
-            img=button.icon;
-            line=button.b;
-            namediv=button.namediv;
-        }
-        // Creates the image which is used as the drag icon (preview)
-        var dragimg = img.cloneNode(true);
-        
-
-        var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
-        var style = getComputedStyle(document.getElementById("graphWrapper"));
-        draggable.leftPos = int(style.left);
-        draggable.topPos = int(style.top)
-        var defaultMouseMove = draggable.mouseMove;
-        draggable.mouseMove = function(evt){
-            var cell = this.getDropTarget(graph,evt.pageX-this.leftPos-graph.view.getTranslate().x,evt.pageY-this.topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,evt);
-            while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
-            if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
-            
-            if(draggable.lastCell==null){
-                if(validtargetfunction(cell)){
-                    this.dragElement.style.outline="2px solid lightgreen";
-                    var g = graph.view.getState(cell).shape.node;
-                    if(g.firstChild!=null){
-                        g.firstChild.classList.add("validdrop");
-                        var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
-                        document.addEventListener("mouseup",hlRemove,true);
-                        draggable.lastCell = cell;
-                    }
-                }else{
-                    this.dragElement.style.outline="2px solid red";
-                }
-            }
-            return defaultMouseMove.apply(this,arguments);
-        }
-        
-
-        return line;
-    }
-    
-    addBracket(icon,cell){
-        var bracket = new Bracket(this.graph,this);
-        bracket.createVertex();
-        bracket.changeNode(cell.node,true);
-        bracket.changeNode(cell.node,false);
+    addBracket(icon,node){
+        var bracket = new Bracket(this);
+        bracket.changeNode(node,true);
+        bracket.changeNode(node,false);
         bracket.setIcon(icon);
-        bracket.updateHorizontal();
         this.brackets.push(bracket);
+        if(this.view)this.view.bracketAdded(bracket);
     }
+    
     
     addComment(com){
         this.comments.push(com);
     }
     
     addTagSet(tag,checkParent=true){
-        console.log("adding: ");
-        console.log(tag);
-        console.log("to "+this.name);
         //Remove any children of the tag we are adding
         var allTags = tag.getAllTags([]);
         for(var i=0;i<this.tagSets.length;i++){
@@ -836,6 +455,7 @@ class Workflow{
         }
         //Add the tag
         this.tagSets.push(tag);
+        if(this.view)this.view.tagSetAdded(tag);
         
         //Check to see if we have all children of the parent, if the parent exists
         var parentTag = tag.parentTag;
@@ -859,8 +479,9 @@ class Workflow{
                 }
             }
         }
-        //asynchronous debounced call to refresh the nodes
         var wf = this;
+        if(wf.view)wf.view.populateTagBar();
+        //asynchronous debounced call to refresh the nodes
         var debouncetime=200;
         var prevRefreshCall=this.lastRefreshCall;
         this.lastRefreshCall = Date.now();
@@ -880,6 +501,7 @@ class Workflow{
             }
         } 
         if(purge)this.purgeTag(tag);
+        if(this.view)this.view.tagSetRemoved(tag);
             
     }
     
@@ -920,29 +542,6 @@ class Workflow{
             }
     }
     
-    populateTagSelect(list,depth=0){
-        var compSelect=this.tagSelect;
-        while(compSelect.length>0)compSelect.remove(0);
-        var currentIndices = [];
-        for(i=0;i<this.tagSets.length;i++){
-            currentIndices = this.tagSets[i].getAllID(currentIndices,depth);
-        }
-        var allTags=[];
-        for(i=0;i<list.length;i++){
-            allTags = list[i].getAllTags(allTags,depth,currentIndices);
-        }
-        var opt = document.createElement('option');
-        opt.text = "Select set to add";
-        opt.value = "";
-        compSelect.add(opt);
-        for(var i=0;i<allTags.length;i++){
-            opt = document.createElement('option');
-            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getType()[0]+" - "+allTags[i].name;
-            opt.value = allTags[i].id;
-            compSelect.add(opt);
-        }
-    }
-    
     getTagDepth(){return -1;}
     
     refreshAllTags(){
@@ -951,33 +550,6 @@ class Workflow{
                 this.weeks[i].nodes[j].refreshLinkedTags();
             }
         }
-    }
-    
-  
-    addNodesFromXML(week,startIndex,xml){
-        xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");
-        //Add everything
-        var xmlnodes = xml.getElementsByTagName("node");
-        var xmlbrackets = xml.getElementsByTagName("bracket");
-        var nodes = [];
-        for(var i=0;i<xmlnodes.length;i++){
-            var xmlnode = xmlnodes[i];
-            var column = getXMLVal(xmlnode,"column");
-            var node = this.createNodeOfType(column);
-            node.week = week;
-            node.fromXML(xmlnode);
-            week.addNodeSilent(node,0,startIndex+i);
-            nodes.push(node);
-        }
-        for(i=0;i<xmlbrackets.length;i++){
-            var br = new Bracket(this.graph,this);
-            br.fromXML(xmlbrackets[i]);
-            this.brackets.push(br);
-        }
-        for(i=0;i<nodes.length;i++)nodes[i].makeAutoLinks();
-        week.pushNodesFast(startIndex+xmlnodes.length);
-        
-        this.bringCommentsToFront();
     }
     
     expandAllNodes(expand=true){
@@ -1050,15 +622,35 @@ class Workflow{
     
     
     swapColumns(in1,in2){
-        [this.columns[in1].pos,this.columns[in2].pos]=[this.columns[in2].pos,this.columns[in1].pos];
         [this.columns[in1],this.columns[in2]]=[this.columns[in2],this.columns[in1]];
-        this.columns[in1].updatePosition();
-        this.columns[in2].updatePosition();
-        for(var i=0;i<this.weeks.length;i++){
-            for(var j=0;j<this.weeks[i].nodes.length;j++){
-                this.weeks[i].nodes[j].updateColumn();
-            }
+        if(this.view)this.view.columnsSwitched(in1,in2);
+    }
+    
+    addNodesFromXML(week,startIndex,xml){
+        xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");
+        //Add everything
+        var xmlnodes = xml.getElementsByTagName("node");
+        var xmlbrackets = xml.getElementsByTagName("bracket");
+        var nodes = [];
+        for(var i=0;i<xmlnodes.length;i++){
+            var xmlnode = xmlnodes[i];
+            var column = getXMLVal(xmlnode,"column");
+            var node = this.createNodeOfType(column);
+            node.week = week;
+            node.fromXML(xmlnode);
+            if(this.view)this.view.nodeAddedFromXML(node);
+            week.addNodeSilent(node,0,startIndex+i);
+            nodes.push(node);
         }
+        for(i=0;i<xmlbrackets.length;i++){
+            var br = new Bracket(this);
+            br.fromXML(xmlbrackets[i]);
+            if(this.view)this.view.bracketAddedFromXML(br);
+            this.brackets.push(br);
+        }
+        for(i=0;i<nodes.length;i++)nodes[i].makeAutoLinks();
+        if(this.view)this.view.finishedAddingNodesFromXML(week,startIndex+xmlnodes.length);
+        
     }
     
     //Call to create an undo event, which will debounce calls
@@ -1101,12 +693,13 @@ class Workflow{
             var wf = this;
             wf.undoEnabled=false;
             makeLoad(function(){
-                wf.graph.clearSelection();
+                wf.view.graph.clearSelection();
                 var lastUndo = wf.undoHistory[wf.currentUndo-1];
                 wf.xmlData = lastUndo.xml;
-                wf.clearGraph();
+                wf.clearAll();
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
+                wf.view.makeActive();
                 wf.currentUndo--;
                 wf.undoEnabled=true;
             });
@@ -1119,12 +712,13 @@ class Workflow{
             var wf = this;
             wf.undoEnabled=false;
            makeLoad(function(){
-                wf.graph.clearSelection();
+                wf.view.graph.clearSelection();
                 var nextUndo = wf.undoHistory[wf.currentUndo+1];
                 wf.xmlData = nextUndo.xml;
-                wf.clearGraph();
+                wf.clearAll();
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
+                wf.view.makeActive();
                 wf.currentUndo++;
                 wf.undoEnabled=true;
             });
@@ -1154,23 +748,8 @@ class Workflow{
     
     
     
-    createLegend(){
-        this.legend = new Legend(this,this.graph);
-        this.legend.createVertex();
-    }
     
-    legendUpdate(category,newval,oldval){
-        if(this.legend!=null)this.legend.update(category,newval,oldval);
-    }
     
-    showLegend(){
-        if(this.legend!=null&&this.legend.vertex!=null){
-            this.legend.createDisplay();
-            this.graph.cellsToggled([this.legend.vertex],!this.graph.isCellVisible(this.legend.vertex));
-        }
-    }
-    
-
     
 }
 
@@ -1178,19 +757,17 @@ class Courseflow extends Workflow{
     
     createInitialColumns(){
         var columns = this.columns;
-        var graph = this.graph;
-        columns.push(new Column(graph,this,"HW"));
-        columns.push(new Column(graph,this,"AC"));
-        columns.push(new Column(graph,this,"SA"));
+        columns.push(new Column(this,"HW"));
+        columns.push(new Column(this,"AC"));
+        columns.push(new Column(this,"SA"));
     }
     
     getPossibleColumns(){
         var columns = [];
-        var graph = this.graph;
-        columns.push(new Column(graph,this,"HW"));
-        columns.push(new Column(graph,this,"AC"));
-        columns.push(new Column(graph,this,"FA"));
-        columns.push(new Column(graph,this,"SA"));
+        columns.push(new Column(this,"HW"));
+        columns.push(new Column(this,"AC"));
+        columns.push(new Column(this,"FA"));
+        columns.push(new Column(this,"SA"));
         var highestCustom=0;
         for(var i=0;i<this.columns.length;i++){
             if(this.columns[i].name.substr(0,3)=="CUS"){
@@ -1199,7 +776,7 @@ class Courseflow extends Workflow{
                 if(num>highestCustom)highestCustom=num;
             }
         }
-        columns.push(new Column(graph,this,"CUS"+(highestCustom+1)));
+        columns.push(new Column(this,"CUS"+(highestCustom+1)));
         return columns;
     }
     
@@ -1211,46 +788,6 @@ class Courseflow extends Workflow{
     
     typeToXML(){return makeXML("course","wftype");}
     
-    generateTagBar(container){
-        var p=this.project;
-        var wf = this;
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML="Outcomes:";
-        container.appendChild(header);
-        
-        this.tagBarDiv =  document.createElement('div');
-        
-        
-        container.appendChild(this.tagBarDiv);
-        
-        var compSelect = document.createElement('select');
-        this.tagSelect=compSelect;
-        this.populateTagSelect(p.competencies,this.getTagDepth());
-        
-        var addButton = document.createElement('button');
-        addButton.innerHTML = "Assign Outcome";
-        addButton.onclick=function(){
-            var value = compSelect.value;
-            if(value!=""){
-                var comp = p.getTagByID(value);
-                wf.addTagSet(comp);
-                wf.populateTagBar();
-                var removalIDs = comp.getAllID([]);
-                for(var i=0;i<compSelect.options.length;i++)if(removalIDs.indexOf(compSelect.options[i].value)>=0){
-                    compSelect.remove(i);
-                    i--;
-                }
-            }
-        }
-        
-        
-        container.appendChild(compSelect);
-        container.appendChild(addButton);
-        
-        this.populateTagBar();
-    }
-    
     getTagDepth(){return 1;}
 }
 
@@ -1258,26 +795,38 @@ class Activityflow extends Workflow{
     
     createInitialColumns(){
         var columns = this.columns;
-        var graph = this.graph;
-        columns.push(new Column(graph,this,"OOC"));
-        columns.push(new Column(graph,this,"ICI"));
-        columns.push(new Column(graph,this,"ICS"));
+        columns.push(new Column(this,"OOC"));
+        columns.push(new Column(this,"ICI"));
+        columns.push(new Column(this,"ICS"));
     }
     
     getPossibleColumns(){
         var columns = [];
-        var graph = this.graph;
-        columns.push(new Column(graph,this,"OOC"));
-        columns.push(new Column(graph,this,"ICI"));
-        columns.push(new Column(graph,this,"ICS"));
+        columns.push(new Column(this,"OOC"));
+        columns.push(new Column(this,"ICI"));
+        columns.push(new Column(this,"ICS"));
+        var highestCustom=0;
+        for(var i=0;i<this.columns.length;i++){
+            if(this.columns[i].name.substr(0,3)=="CUS"){
+                columns.push(this.columns[i]);
+                var num = int(this.columns[i].name.substr(3));
+                if(num>highestCustom)highestCustom=num;
+            }
+        }
+        columns.push(new Column(this,"CUS"+(highestCustom+1)));
         return columns;
     }
     
     createBaseWeek(){
-        var baseWeek = new WFArea(this.graph,this);
+        var baseWeek = new WFArea(this);
         baseWeek.index=0;
         this.weeks.push(baseWeek);
-        baseWeek.createBox(cellSpacing,this.columns[0].head.b()+cellSpacing,weekWidth);
+        if(this.view)this.view.weekAdded(baseWeek);
+    }
+    
+    createWeek(){
+        var week = new WFArea(this);
+        return week;
     }
     
     updateWeekIndices(){};
@@ -1285,53 +834,12 @@ class Activityflow extends Workflow{
     getType(){return "activity"};
     getButtonClass(){return "layoutactivity";}
     getIcon(){return "activity";}
+    getBracketList(){return iconsList['strategy'];}
     
     typeToXML(){return makeXML("activity","wftype");}
     
     getDefaultName(){return "New Activity"};
     
-    generateBracketBar(container){ 
-        
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML="Strategies:";
-        container.appendChild(header);
-        
-        var bracketbar = new mxToolbar(container);
-		bracketbar.enabled = false;
-        
-        var makeDropFunction=function(strat,workflow){
-            var dropfunction = function(graph, evt, filler, x, y)
-            {
-                var wf = workflow;
-                var strategy=strat['value'];
-                var cell = graph.getCellAt(x,y);
-                graph.stopEditing(false);
-                if(cell!=null&&graph.isPart(cell))cell=graph.getModel().getParent(cell);
-                if(cell!=null && cell.isNode){
-                    wf.addBracket(strategy,cell);
-                    wf.makeUndo("Add Bracket",strategy);
-                }
-                if(cell!=null&&cell.isWeek){
-                    var xml = findStrategyXML(strategy);
-                    var startIndex = cell.week.getNextIndexFromPoint(y);
-                    makeLoad(function(){
-                        wf.addNodesFromXML(cell.week,startIndex,xml);
-                        wf.makeUndo("Add Strategy",strategy);
-                    });
-                }
-                this.lastCell=null;
-
-            }
-            return dropfunction;
-        }
-        
-        var stratlist = iconsList['strategy'];
-        
-        for(var i=0;i<stratlist.length;i++){
-            this.addNodebarItem(container,stratlist[i]['text'],'resources/data/'+stratlist[i]['value']+'24.png',makeDropFunction(stratlist[i],this),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
-        }
-    }
     
     
     
@@ -1341,76 +849,51 @@ class Programflow extends Workflow{
     
     createInitialColumns(){
         var columns = this.columns;
-        var graph = this.graph;
-        columns.push(new Column(graph,this,"CO"));
-        columns.push(new Column(graph,this,"SA"));
+        columns.push(new Column(this,"CO"));
+        columns.push(new Column(this,"SA"));
     }
     
     getPossibleColumns(){
         var columns = [];
-        var graph = this.graph;
-        columns.push(new Column(graph,this,"CO"));
-        columns.push(new Column(graph,this,"SA"));
+        columns.push(new Column(this,"CO"));
+        columns.push(new Column(this,"SA"));
+        var highestCustom=0;
+        for(var i=0;i<this.columns.length;i++){
+            if(this.columns[i].name.substr(0,3)=="CUS"){
+                columns.push(this.columns[i]);
+                var num = int(this.columns[i].name.substr(3));
+                if(num>highestCustom)highestCustom=num;
+            }
+        }
+        columns.push(new Column(this,"CUS"+(highestCustom+1)));
         return columns;
     }
     
-    createBaseWeek(){
-        var baseWeek = new WFArea(this.graph,this);
-        baseWeek.index=0;
-        this.weeks.push(baseWeek);
-        baseWeek.createBox(cellSpacing,this.columns[0].head.b()+cellSpacing,weekWidth);
+    createWeek(){
+        return new Term(this);
     }
     
-    updateWeekIndices(){};
+    
+    
+    createBaseWeek(){
+        var baseWeek = new Term(this);
+        this.weeks.push(baseWeek);
+        if(this.view)this.view.weekAdded(baseWeek);
+        this.updateWeekIndices();
+    }
+    
+    //updateWeekIndices(){};
     
     getType(){return "program";}
     getButtonClass(){return "layoutprogram";}
     getIcon(){return "program";}
+    getTagDepth(){return 0;}
     
     typeToXML(){return makeXML("program","wftype");}
     
     getDefaultName(){return "New Program"};
     
-    generateTagBar(container){
-        var p=this.project;
-        var wf = this;
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML="Outcomes:";
-        container.appendChild(header);
-        
-        this.tagBarDiv =  document.createElement('div');
-        
-        
-        container.appendChild(this.tagBarDiv);
-        
-        var compSelect = document.createElement('select');
-        this.tagSelect=compSelect;
-        this.populateTagSelect(p.competencies,this.getTagDepth());
-        
-        var addButton = document.createElement('button');
-        addButton.innerHTML = "Assign Outcome";
-        addButton.onclick=function(){
-            var value = compSelect.value;
-            if(value!=""){
-                var comp = p.getTagByID(value);
-                wf.addTagSet(comp);
-                wf.populateTagBar();
-                var removalIDs = comp.getAllID([]);
-                for(var i=0;i<compSelect.options.length;i++)if(removalIDs.indexOf(compSelect.options[i].value)>=0){
-                    compSelect.remove(i);
-                    i--;
-                }
-            }
-        }
-        
-        
-        container.appendChild(compSelect);
-        container.appendChild(addButton);
-        
-        this.populateTagBar();
-    }
     
-    getTagDepth(){return 0;}
+    
     
 }

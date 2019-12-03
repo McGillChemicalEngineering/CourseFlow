@@ -16,14 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 class Week {
-    constructor(graph,wf){
-        this.graph=graph;
+    constructor(wf){
         this.nodes=[];
-        this.box;
         this.name;
         this.index;
         this.wf=wf;
         this.id = this.wf.project.genID();
+        this.view;
     }
     
     setNameSilent(name){
@@ -39,13 +38,11 @@ class Week {
     
     setName(name){
         if(name!=null && name!=""){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
-            this.graph.getModel().setValue(this.box,name);
+            this.setNameSilent(name);
         }else{
             this.name = null;
-            this.graph.getModel().setValue(this.titleNode,this.getDefaultName());
-            
         }
+        if(this.view)this.view.nameUpdated();
         
     }  
     
@@ -77,269 +74,53 @@ class Week {
             node.week = this;
             node.fromXML(xmlnode);
             this.addNode(node);
-            if(xmlnode.getElementsByTagName("isdropped").length>0)node.toggleDropDown();
         }
     }
     
-    createBox(x,y,width){
-        this.box = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,emptyWeekSize,this.getStyle());
-        var week = this;
-        this.box.valueChanged = function(value){
-            if(value==week.getDefaultName())return mxCell.prototype.valueChanged.apply(this,arguments);
-            var value1 = week.setNameSilent(value);
-            if(value1!=value)week.graph.getModel().setValue(week.box,value1);
-            else mxCell.prototype.valueChanged.apply(this,arguments);
-            
-        }
-        this.box.isWeek=true;
-        this.box.week=this;
-        this.graph.orderCells(true,[this.box]);
-        this.box.cellOverlays=[];
-        this.addPlusOverlay();
-        this.addDelOverlay();
-        this.addCopyOverlay();
-        this.addMoveOverlays();
-    }
     
-    getStyle(){
-        return defaultWeekStyle;
-    }
     
     //Adds a node. If we are just switching the node, we don't need to push weeks.
     addNode(node,origin=0,index=-1){
-        this.resizeWeek(node.vertex.h()+cellSpacing,origin);
         if(index<0||origin<0||index>this.nodes.length-1){this.nodes.push(node);}
         else if(origin > 0) {this.nodes.splice(0,0,node);}
         else this.nodes.splice(index,0,node);
         index=this.nodes.indexOf(node);
-        node.makeFlushWithAbove(index,this);
-        if(index<this.nodes.length-1)this.pushNodesFast(index+1);
+        if(this.view)this.view.nodeAdded(node,origin,index);
         node.makeAutoLinks();
     }
     
     //Adds a node without pushing anything
     addNodeSilent(node,origin=0,index=-1){
-        this.resizeWeek(node.vertex.h()+cellSpacing,origin);
         if(index<0||origin<0||index>this.nodes.length-1){this.nodes.push(node);}
         else if(origin > 0) {this.nodes.splice(0,0,node);}
         else this.nodes.splice(index,0,node);
         index=this.nodes.indexOf(node);
-        node.makeFlushWithAbove(index,this);
+        if(this.view)this.view.nodeAddedSilently(node,origin,index);
     }
     
     //Removes a node. If we are just switching the node, we don't need to push weeks.
     removeNode(node,origin=0){
         var index=this.nodes.indexOf(node);
         this.nodes.splice(index,1);
-        this.resizeWeek(-1*node.vertex.h()-cellSpacing,origin);
-        if(index<this.nodes.length)this.pushNodesFast(index);
+        if(this.view)this.view.nodeRemoved(node,origin,index);
     }
     
-    pushNodes(startIndex,endIndex=-1){
-        if(startIndex==0) {this.nodes[0].makeFlushWithAbove(0);startIndex++;}
-        if(startIndex>this.nodes.length-1)return;
-        var dy = this.nodes[startIndex-1].vertex.b()+cellSpacing-this.nodes[startIndex].vertex.y();
-        for(var i=startIndex;i<this.nodes.length;i++){
-            this.nodes[i].moveNode(0,dy);
-            if(i==endIndex)break;
-        }
+    
+    getIndexOf(node){
+        return this.nodes.indexOf(node);
     }
     
-    //A significantly faster version of this function, which first computes what must be moved, then moves it all at once in a single call to moveCells
-    pushNodesFast(startIndex,endIndex=-1,dy=null){
-        if(startIndex==0) {this.nodes[0].makeFlushWithAbove(0);startIndex++;}
-        if(startIndex>this.nodes.length-1)return;
-        if(dy==null)dy = this.nodes[startIndex-1].vertex.b()+cellSpacing-this.nodes[startIndex].vertex.y();
-        var vertices=[];
-        var brackets=[];
-        for(var i=startIndex;i<this.nodes.length;i++){
-            vertices.push(this.nodes[i].vertex);
-            for(var j=0;j<this.nodes[i].brackets.length;j++){
-                var bracket = this.nodes[i].brackets[j];
-                if(brackets.indexOf(bracket)<0)brackets.push(bracket);
-            }
-            if(i==endIndex)break;
-        }
-        this.graph.moveCells(vertices,0,dy);
-        for(i=0;i<brackets.length;i++)brackets[i].updateVertical();
-    }
     
-    getNearestNode(y){
-        for(var i=0;i<this.nodes.length;i++){
-            var vertex = this.nodes[i].vertex;
-            //find first node AFTER the point
-            if(vertex.y()+vertex.h()/2>y){
-                if(i==0)return 0; //we are above the first node
-                var pvertex = this.nodes[i-1].vertex;
-                if(vertex.y()+vertex.h()/2-y<y-pvertex.y()-pvertex.h()/2)return i;
-                return i-1;
-            }
-        }
-        return this.nodes.length-1; //we are past the last node
-    }
-    
-    getNextIndexFromPoint(y){
-        for(var i=0;i<this.nodes.length;i++){
-            var vertex = this.nodes[i].vertex;
-            if(vertex.y()>y)return i;
-        }
-        return this.nodes.length+1;
-    }
     
     shiftNode(initIndex,finalIndex){
         if(initIndex==finalIndex)return;
         var prevNode = this.wf.findNextNodeOfSameType(this.nodes[initIndex],-1)
         this.nodes.splice(finalIndex,0,this.nodes.splice(initIndex,1)[0]);
-        var min = Math.min(initIndex,finalIndex);
-        var max = Math.max(initIndex,finalIndex)
-        this.nodes[finalIndex].makeFlushWithAbove(finalIndex);
-        if(initIndex<finalIndex)this.pushNodesFast(min,max);
-        else this.pushNodesFast(min+1,max);
+        if(this.view)this.view.nodeShifted(initIndex,finalIndex);
         //Make the autolinks if needed
         if(this.nodes[finalIndex].makeAutoLinks()){
             if(prevNode!=null)prevNode.makeAutoLinks();
         }
-        
-    }
-    
-    //Lays out all the cells within the week. This should only be used for loading files, due to how slow it is.
-    doLayout(){
-        var y=this.box.y();
-        for(i=0;i<this.nodes.length;i++){
-            var cell = this.nodes[i].vertex;
-            y+=cellSpacing;
-            this.graph.moveCells([cell],0,y-cell.y());
-            y+=cell.h();
-        }
-        if(y+cellSpacing>this.box.b()){
-            this.resizeWeek(y+cellSpacing-this.box.h());
-        }
-    }
-    
-    makeFlushWithAbove(index){
-        if(index==0) this.moveWeek(this.wf.columns[0].head.b()+cellSpacing-this.box.y());
-        else this.moveWeek(this.wf.weeks[this.index-1].box.b()-this.box.y());
-    }
-    
-    moveWeek(dy){
-        this.graph.moveCells([this.box],0,dy);
-        this.graph.moveCells(this.nodes.map(mapWeekVertices),0,dy);
-    }
-    
-    resizeWeek(dy,origin){
-        var rect;
-        if(dy*origin>0) rect = new mxRectangle(this.box.x(),this.box.y()-dy,this.box.w(),this.box.h()+dy);
-        else rect = new mxRectangle(this.box.x(),this.box.y(),this.box.w(),this.box.h()+dy);
-        this.graph.resizeCells([this.box],[rect]);
-        if(origin==0 && this.index<this.wf.weeks.length-1){this.wf.pushWeeksFast(this.index+1,dy);}
-        return;
-        
-    }
-    
-    //Determines whether the position of the point in a week below (1), above (-1), or in (0) the week.
-    relativePos(y){
-        if(y>this.box.b() && this.index<this.wf.weeks.length-1)return 1;
-        if(y<this.box.y() && this.index>0)return -1;
-        return 0;
-    }
-    
-    //Add the overlay to create new weeks
-    addPlusOverlay(){
-        var w = this;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), 'Insert week below');
-        overlay.getBounds = function(state){ //overrides default bounds
-            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.x = pt.x - bounds.width / 2;
-            return bounds;
-        };
-        var graph = this.graph;
-        overlay.cursor = 'pointer';
-        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            graph.clearSelection();
-            w.insertBelow();
-            w.wf.makeUndo("Add Week",w);
-        });
-        this.box.cellOverlays.push(overlay);
-        //this.graph.addCellOverlay(this.box, overlay);
-    }
-    
-    //Add the overlay to delete the week
-    addDelOverlay(){
-        var w = this;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this week');
-        overlay.getBounds = function(state){ //overrides default bounds
-            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.y = pt.y-w.box.h()/2;
-            bounds.x = pt.x-bounds.width+w.box.w()/2;
-            return bounds;
-        }
-        var graph = this.graph;
-        overlay.cursor = 'pointer';
-        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            if(mxUtils.confirm("Delete this week? Warning: this will delete any nodes still inside!")){
-                graph.clearSelection();
-                w.deleteSelf();
-                w.wf.makeUndo("Delete Week",w);
-            }
-        });
-        this.box.cellOverlays.push(overlay);
-        //this.graph.addCellOverlay(this.box, overlay);
-    }
-    
-    addCopyOverlay(){
-        var w = this;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), 'Duplicate week');
-        overlay.getBounds = function(state){ //overrides default bounds
-            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.x = pt.x-bounds.width+w.box.w()/2;
-            bounds.y = pt.y-w.box.h()/2+24;
-            return bounds;
-        };
-        var graph = this.graph;
-        overlay.cursor = 'pointer';
-        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            graph.clearSelection();
-            w.duplicateWeek();
-        });
-        this.box.cellOverlays.push(overlay);
-        //this.graph.addCellOverlay(this.vertex, overlay);
-    }
-    
-    addMoveOverlays(){
-        var w = this;
-        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), 'Move week');
-        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), 'Move week');
-        overlayUp.getBounds = function(state){ //overrides default bounds
-            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.x = pt.x-w.box.w()/2;
-            bounds.y = pt.y-w.box.h()/2;
-            return bounds;
-        };
-        overlayDown.getBounds = function(state){ //overrides default bounds
-            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.x = pt.x-w.box.w()/2;
-            bounds.y = pt.y+w.box.h()/2-bounds.height;
-            return bounds;
-        };
-        var graph = this.graph;
-        overlayUp.cursor = 'pointer';
-        overlayDown.cursor = 'pointer';
-        overlayUp.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            graph.clearSelection();
-            w.wf.moveWeek(w,-1);
-        });
-        overlayDown.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            graph.clearSelection();
-            w.wf.moveWeek(w,+1);
-        });
-        this.box.cellOverlays.push(overlayUp);
-        this.box.cellOverlays.push(overlayDown);
-        //this.graph.addCellOverlay(this.vertex, overlay);
         
     }
     
@@ -348,78 +129,167 @@ class Week {
         while(this.nodes.length>0){
             this.nodes[this.nodes.length-1].deleteSelf();
         }
-        this.graph.removeCells([this.box]);
         this.wf.weeks.splice(this.index,1);
         this.wf.updateWeekIndices();
-        //pull everything upward
-        if(this.index<this.wf.weeks.length)this.wf.pushWeeksFast(this.index);
-        //if we deleted all the weeks, better make a fresh one!
-        if(this.wf.weeks.length==0)this.wf.createBaseWeek(this.graph);
+        if(this.view)this.view.deleted();
     }
     
     //Insert a new week below
     insertBelow(){
-        var newWeek = new Week(this.graph,this.wf);
-        newWeek.createBox(this.box.x(),this.box.b(),weekWidth);
+        var newWeek = new this.constructor(this.wf);
         this.wf.weeks.splice(this.index+1,0,newWeek);
+        if(this.view){
+            newWeek.view = new this.view.constructor(this.view.graph,newWeek);
+            newWeek.view.insertedBelow(this);
+        }
         this.wf.updateWeekIndices();
-        //push everything downward
-        if(this.index<this.wf.weeks.length-2)this.wf.pushWeeksFast(this.index+2);
         
     }
     
     
     //Duplicate the week and insert the copy below
     duplicateWeek(){
-        var newWeek = new Week(this.graph,this.wf);
+        var newWeek = new Week(this.wf);
         this.wf.weeks.splice(this.index+1,0,newWeek);
-        newWeek.createBox(this.box.x(),this.box.b(),weekWidth);
         newWeek.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
         for(var i=0;i<newWeek.nodes.length;i++){
             if(newWeek.nodes[i].linkedWF!=null)newWeek.nodes[i].linkedWF=null;
             while(newWeek.nodes[i].fixedLinksOut.length>0)newWeek.nodes[i].fixedLinksOut[0].deleteSelf();
         }
+        if(this.view){
+            newWeek.view = new this.view.constructor(this.view.graph,newWeek);
+            newWeek.view.insertedBelow(this);
+        }
         this.wf.updateWeekIndices();
-        //push everything downward
-        if(this.index<this.wf.weeks.length-2)this.wf.pushWeeksFast(this.index+2);
-        
+        if(this.view)newWeek.view.fillNodes();
     }
     
-    populateMenu(menu){
-        var graph = this.graph;
-        var week=this;
-        if(!(week instanceof WFArea)){
-            menu.addItem('Edit label', 'resources/images/text24.png', function(){
-				graph.startEditingAtCell(week.box);
-            });
-            menu.addItem('Duplicate Week','resources/images/copy24.png',function(){
-                week.duplicateWeek(); 
-            });
-            menu.addItem('Delete Week','resources/images/delrect24.png',function(){
-                if(mxUtils.confirm("Delete this week?")){
-                    graph.clearSelection();
-                    week.deleteSelf();
-                    week.wf.makeUndo("Delete Week",week);
-                }
-            });
-        }
-    }
+    
+    columnUpdated(){return null;}
     
     
 }
 
 class WFArea extends Week{
-    addDelOverlay(){}
+    getDefaultName(){
+        return null;
+    }
+}
+
+
+
+class Term extends Week{
     
-    addPlusOverlay(){}
-    
-    addCopyOverlay(){}
-    
-    addMoveOverlays(){}
-    
-    getStyle(){
-        return defaultWFAreaStyle;
+    constructor (wf){
+        super(wf);
+        this.nodesByColumn={};
     }
     
+    getDefaultName(){
+        return "Term "+(this.wf.weeks.indexOf(this)+1);
+    }
+    
+    //Adds a node. If we are just switching the node, we don't need to push weeks.
+    addNode(node,origin=0,index=-1){
+        var col = node.column;
+        if(this.nodesByColumn[col]==null)this.nodesByColumn[col]=[];
+        
+        if(index<0||origin<0||index>this.nodesByColumn[col].length-1){this.nodesByColumn[col].push(node);}
+        else if(origin>0){this.nodesByColumn[col].splice(0,0,node);}
+        else this.nodesByColumn[col].splice(index,0,node);
+        
+        this.nodes.push(node);
+        if(this.view)this.view.nodeAdded(node,origin,index);
+        node.makeAutoLinks();
+    }
+    
+    
+    
+    //Adds a node without pushing anything
+    addNodeSilently(node,origin=0,index=-1){
+        var col = node.column;
+        if(this.nodesByColumn[col]==null)this.nodesByColumn[col]=[];
+        
+        if(index<0||origin<0||index>this.nodesByColumn[col].length-1){this.nodesByColumn[col].push(node);}
+        else if(origin>0){this.nodesByColumn[col].splice(0,0,node);}
+        else this.nodesByColumn[col].splice(index,0,node);
+        
+        this.nodes.push(node);
+        if(this.view)this.view.nodeAddedSilently(node,origin,index);
+        node.makeAutoLinks();
+    }
+    
+    
+    //Removes a node. If we are just switching the node, we don't need to push weeks.
+    removeNode(node,origin=0){
+        var index=this.nodes.indexOf(node);
+        this.nodes.splice(index,1);
+        index=this.nodesByColumn[node.column].indexOf(node);
+        this.nodesByColumn[node.column].splice(index,1);
+        
+        if(this.view)this.view.nodeRemoved(node,origin,index);
+        
+       
+        
+    }
+    
+    
+    
+    
+    getIndexOf(node){
+        return this.nodesByColumn[node.column].indexOf(node);
+    }
+    
+    
+    
+    //The autolinking in this is likely broken, but it shouldn't matter because we won't be autolinking in terms. If need be it can be fixed by writing a new findNextNodeOfSameType() function for programflow, or by causing the original function to act differently based on whether or not the weeks are instances of term.
+    shiftNode(initIndex,finalIndex,column){
+        if(this.nodesByColumn[column]==null)this.nodesByColumn[column]=[];
+        var nodes = this.nodesByColumn[column];
+        if(initIndex==finalIndex)return;
+        //var prevNode = this.wf.findNextNodeOfSameType(nodes[initIndex],-1);
+        nodes.splice(finalIndex,0,nodes.splice(initIndex,1)[0]);
+        if(this.view)this.view.nodeShifted(initIndex,finalIndex,column);
+        //Make the autolinks if needed
+        /*if(this.nodes[finalIndex].makeAutoLinks()){
+            if(prevNode!=null)prevNode.makeAutoLinks();
+        }*/
+        
+    }
+    
+    
+    /*moveWeek(dy){
+        var cells=[this.view.vertex];
+        for(var prop in this.nodesByColumn){
+            var nodes = this.nodesByColumn[prop];
+            for(var i=0;i<nodes.length;i++){
+                cells.push(nodes[i].view.vertex);
+            }
+        }
+        this.graph.moveCells(cells,0,dy);
+    }*/
+    
+    //the node's column has been changed. We need to move it from one column to another. A simple way to do so is just to remove it from its previous column and add it to the next.
+    columnUpdated(node,prevcol){
+        var index = this.nodesByColumn[prevcol].indexOf(node);
+        var col = node.column;
+        node.column=prevcol;
+        this.removeNode(node);
+        node.column= col;
+        this.addNode(node,0,index);
+    }
+    
+    toXML(){
+        var xml = "";
+        xml+=makeXML(this.id,"weekid");
+        if(this.name!=null)xml+=makeXML(this.name,"weekname");
+        for(var prop in this.nodesByColumn){
+            var nodes = this.nodesByColumn[prop];
+            for(var i=0;i<nodes.length;i++){
+                xml+=nodes[i].toXML();
+            }
+        }
+        return makeXML(xml,"week");
+    }
     
 }

@@ -668,5 +668,156 @@ div.highlighted{
     left:-20px !important;
 }
 
+.outcometable{
+    border-spacing:0px;
+    margin-top:160px;
+    margin-left:20px;
+}
+
+.outcometable td+td{
+    text-align:center;
+    padding-left:4px;
+    padding-right:4px;
+}
+
+.outcometable th .rotatedheader{
+    transform-origin:top right;
+    transform:rotate(60deg);
+    border-top:3px solid black;
+    width:160px;
+    height:42px;
+    right:0px;
+    padding-right:20px;
+    position:absolute;
+    white-space:normal;
+    box-sizing:border-box;
+    overflow-y:hidden;
+    vertical-align:middle;
+}
+
+.outcometable th:not(.emptycell):not(.totalcell) .rotatedheader{
+    border-top:1px solid black;
+}
+
+.outcometable th.totalcell{
+    font-size:18px;
+}
+
+.outcometable td, .outcometable .nodetitle{
+    font-size: 16px;
+    min-height:28px;
+}
+
+.outcometable td+td{
+    border-right:3px solid black;
+}
+
+.outcometable td+td:not(.emptycell):not(.totalcell){
+    border-right:1px solid black;
+}
+
+
+.outcometable td{
+    width: 40px;
+    vertical-align:middle;
+    
+}
+
+.outcometable tr td:first-child{
+    position:relative;
+}
+
+.outcometable th.nodetitle{
+    position:relative;
+    height:160px;
+}
+
+.outcometable th{
+    padding:0px;
+    position:relative;
+}
+
+.outcometable .categoryhead{
+    text-align:center;
+    width:100px;
+    white-space:normal;
+}
+
+.outcometable .emptycell{
+    width:60px;
+}
+
+.outcometable td{
+    padding:8px;
+}
+
+.outcometable .headertextwrap{
+    width:40px;
+    right:0px;
+    overflow:visible;
+    position:absolute;
+    bottom:0px;
+}
+
+.outcometable .hidden{
+    visibility:collapse;
+}
+
+.outcometable th .expanddiv{
+    left:0px;
+    top:-16px;
+}
+
+.outcometable tbody tr:not(.haschildren) .expanddiv{
+    display:none;
+}
+
+.outcometable col.hidden div{
+    display:none;
+}
+
+.outcometable th:not(.haschildren) .expanddiv{
+    display:none;
+}
+
+.outcometable tr.depth0 td:first-child{
+    font-size:20px;
+    font-weight:600;
+}
+
+.outcometable tr.depth1 td:first-child{
+    border-left:20px solid white;
+    font-size:18px;
+    font-weight:400;
+}
+
+.outcometable tr.depth2 td:first-child{
+    border-left:40px solid white;
+}
+
+
+.outcometable tbody tr:nth-child(2n+2){
+    background-color:lightgray;
+}
+
+.outcometable tbody tr:hover{
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
+}
+
+.readonly .editlayoutdiv,.readonly .createlayoutdiv,.readonly .deletelayoutdiv{
+    display:none !important;
+}
+
+.readonly .layoutdiv li{
+    pointer-events:none;
+}
+
+
+*:disabled {
+    color:gray;
+}
+
+
+
 
 </style>

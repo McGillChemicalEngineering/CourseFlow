@@ -155,8 +155,7 @@ class Layoutbutton {
             b.onclick=tempfunc;
             if(bl.namediv.firstElementChild.value=="")bl.namediv.innerHTML=layout.name;
             else {
-                layout.setName(bl.namediv.firstElementChild.value,true);
-                bl.namediv.innerHTML=layout.name;
+                layout.setName(bl.namediv.firstElementChild.value);
             }
             document.removeEventListener('keydown',enterfunc);
         },true);
