@@ -50,6 +50,8 @@ class Project{
         nameDiv.parentElement.onclick=function(){
             if(p.readOnly)return;
             var tempfunc = nameDiv.onclick;
+            var name=p.name;
+            if(name==null)name="";
             //create an input, on enter or exit make that the new name
             nameDiv.innerHTML="<input type='text' class = 'fixedwidthinput' value = '"+p.name+"'placeholder='<type a new name here>'></input>";
             nameDiv.firstElementChild.focus();
@@ -282,7 +284,7 @@ class Project{
         document.addEventListener("click",function(evt){
             if(p.activeWF!=null&&!p.container.contains(evt.target)){
                 var wf = p.workflows[p.activeWF];
-                if(wf.view.graph==null)return;
+                if(wf.view==null||wf.view.graph==null)return;
                 if(!wf.view.editbar.container.contains(evt.target))wf.view.graph.clearSelection();
             }
         });
@@ -383,7 +385,7 @@ class Project{
         var xml = (new DOMParser()).parseFromString(this.assignNewIDsToXML(this.workflows[this.activeWF].toXML(),false),"text/xml");
         var wfcopy = this.addWorkflowFromXML(xml);
         wfcopy.setName(wf.name+" (Copy)");
-        wfcopy.id = this.genID;
+        wfcopy.id = this.genID();
         wfcopy.children = wf.children;
         wfcopy.tagSets = wf.tagSets;
         for(var i=0;i<wfcopy.children.length;i++){
@@ -429,7 +431,8 @@ class Project{
         this.workflows=[];
         while(this.compDiv.childElementCount>0)this.compDiv.removeChild(this.compDiv.firstElementChild);
         this.competencies=[];
-        this.name=null;
+        this.name="New Project";
+        this.nameDiv.innerHTML = this.name;
         this.idNum="0";
         
     }
@@ -472,7 +475,8 @@ class Project{
     }
     
     genID(){
-        this.idNum+=1;
+        this.idNum=""+(int(this.idNum)+1);
+        console.log(this.idNum);
         return ""+this.idNum;
     }
     
@@ -643,7 +647,7 @@ class Project{
     //Since this assigns a bunch of IDs without actually increasing idNum, it should only be called when an xml file is about to be imported into the project and IDs generated.
     assignNewIDsToXML(xml,doWorkflows=true){
         var xmlString = xml;//(new XMLSerializer()).serializeToString(xml);
-        var id = this.idNum+1;
+        var id = int(this.idNum)+1;
         //Nodes
         while(xmlString.indexOf("<id>")>=0){
             var startIndex=xmlString.indexOf("<id>");

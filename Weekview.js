@@ -40,7 +40,7 @@ class Weekview{
         this.vertex.valueChanged = function(value){
             if(value==week.getDefaultName())return mxCell.prototype.valueChanged.apply(this,arguments);
             var value1 = week.setNameSilent(value);
-            if(value1!=value)week.graph.getModel().setValue(week.box,value1);
+            if(value1!=value)week.view.graph.getModel().setValue(week.view.vertex,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
             
         }
@@ -482,7 +482,6 @@ class Termview extends Weekview{
                 var y;
                 if(i==0)y=week.view.vertex.y()+2*cellSpacing;
                 else y=nodes[i-1].view.vertex.b()+cellSpacing;
-                console.log(node.isDropped);
                 node.view.createVertex(0,y);
                 node.view.fillTags();
                 node.view.columnUpdated();

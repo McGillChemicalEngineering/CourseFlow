@@ -25,7 +25,7 @@ class Nodeview{
         this.textnode;
         this.dropNode;
         this.graph=graph;
-        this.node.autoLinkOut.view = new WFLinkview(graph,this.node.autoLinkOut);
+        if(this.node.autoLinkOut)this.node.autoLinkOut.view = new WFAutolinkview(graph,this.node.autoLinkOut);
         this.tagPreviews=[];
         this.tagVertices=[];
         
@@ -49,7 +49,7 @@ class Nodeview{
         var node = this.node;
         this.namenode.valueChanged = function(value){
             var value1 = node.setNameSilent(value);
-            if(value1!=value)node.graph.getModel().setValue(node.namenode,value1);
+            if(value1!=value)node.view.graph.getModel().setValue(node.view.namenode,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
         }
         var text = '';
@@ -295,6 +295,7 @@ class Nodeview{
 
             this.graph.resizeCells([this.tagBox],bounds);
             this.graph.orderCells(false,[this.vertex]);
+            this.node.wf.view.bringCommentsToFront();
         }else{
             for(var i=0;i<this.tagVertices.length;i++){
                 this.graph.removeCellOverlays(this.tagVertices[i]);
@@ -376,6 +377,9 @@ class Nodeview{
         link.view = new WFLinkview(this.graph,link);
         link.view.vertex=edge;
         if(edge==null)link.redraw();
+        else{
+            link.view.addValuesToVertex();
+        }
         link.view.addDelOverlay();
     }
     
@@ -405,11 +409,51 @@ class WFLinkview{
         }
     }
     
+    populateMenu(menu){
+        var graph = this.graph;
+        var p = this.link.node.wf.project;
+        var link=this.link;
+        menu.addItem('Edit label', 'resources/images/text24.png', function(){
+				graph.startEditingAtCell(link.view.vertex);
+        });
+        menu.addItem('Toggle Dashed','resources/images/dashed24.png',function(){
+            if(link.style!="dashed")link.changeStyle("dashed"); 
+            else(link.changeStyle(null));
+        });
+        menu.addItem('Delete Link','resources/images/delrect24.png',function(){
+            if(mxUtils.confirm("Delete this link?")){
+                graph.clearSelection();
+                link.deleteSelf();
+                link.node.wf.makeUndo("Delete Link",link);
+            }
+        });
+    }
+    
+    addValuesToVertex(){
+        var link = this.link;
+        this.vertex.isLink = true;
+        this.vertex.link = link;
+        
+        this.vertex.valueChanged = function(value){
+            var value1 = link.setTextSilent(value);
+            if(value1!=value)link.view.graph.getModel().setValue(link.view.vertex,value1);
+            else mxCell.prototype.valueChanged.apply(this,arguments);
+        }
+    }
     
     redraw(){
+        var link = this.link;
         if(this.vertex!=null){this.graph.removeCells([this.vertex]);}
-        if(this.link.id==null)return;
-        this.vertex = this.graph.insertEdge(this.graph.getDefaultParent(),null,'',this.link.node.view.vertex,this.link.targetNode.view.vertex,defaultEdgeStyle+this.link.getPortStyle());
+        if(link.id==null)return;
+        var style = defaultEdgeStyle;
+        switch(link.style){
+            case "dashed":
+                style+="dashed=1;";
+                break;
+        }
+        style += link.getPortStyle();
+        this.vertex = this.graph.insertEdge(this.graph.getDefaultParent(),null,link.text,link.node.view.vertex,link.targetNode.view.vertex,style);
+        this.addValuesToVertex();
     }
     
     //Add the overlay to delete the node
@@ -427,7 +471,9 @@ class WFLinkview{
         var graph = this.graph;
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            graph.clearSelection();
             n.deleteSelf();
+            n.node.wf.makeUndo("Delete Link",n);
         });
         this.vertex.cellOverlays.push(overlay);
         //n.graph.addCellOverlay(n.vertex, overlay);
@@ -439,4 +485,44 @@ class WFLinkview{
     
     
     
+}
+
+class WFAutolinkview extends WFLinkview{
+    populateMenu(menu){
+        var graph = this.graph;
+        var p = this.link.node.wf.project;
+        var link=this.link;
+        menu.addItem('Delete Link','resources/images/delrect24.png',function(){
+            if(mxUtils.confirm("This is the automatically generated link for this node. If deleted, this will prevent the node from automatically linking to that below it. Do you want to proceed?")){
+                graph.clearSelection();
+                link.deleteSelf();
+                link.node.wf.makeUndo("Delete Link",link);
+            }
+        });
+    }
+    
+    //Add the overlay to delete the node
+    addDelOverlay(){
+        if(this.vertex.cellOverlays==null)this.vertex.cellOverlays=[];
+        var n = this.link;
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.y = pt.y-bounds.height/2;
+            bounds.x = pt.x-bounds.width/2;
+            return bounds;
+        }
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            if(mxUtils.confirm("This is the automatically generated link for this node. If deleted, this will prevent the node from automatically linking to that below it. Do you want to proceed?")){
+                graph.clearSelection();
+                n.deleteSelf();
+                n.node.wf.makeUndo("Delete Link",n);
+            }
+        });
+        this.vertex.cellOverlays.push(overlay);
+        //n.graph.addCellOverlay(n.vertex, overlay);
+    }
 }

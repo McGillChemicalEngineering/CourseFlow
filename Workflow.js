@@ -27,6 +27,7 @@ class Workflow{
         this.project=project;
         this.buttons=[];
         this.name = this.getDefaultName();
+        this.author;
         this.id = this.project.genID();
         this.tagSets=[];
         this.isActive=false;
@@ -42,6 +43,7 @@ class Workflow{
     toXML(){
         var xml = "";
         xml+=makeXML(this.name,"wfname");
+        xml+=makeXML(this.author,"wfauthor");
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
         
@@ -118,6 +120,7 @@ class Workflow{
     
     fromXML(xmlData){
         this.setName(getXMLVal(xmlData,"wfname"));
+        this.setAuthor(getXMLVal(xmlData,"wfauthor"));
         this.id = getXMLVal(xmlData,"wfid");
         this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
@@ -235,6 +238,14 @@ class Workflow{
         return null;
     }
     
+    
+    setName(name){
+        name = this.setNameSilent(name);
+        //if active, we have to change the name tag label to this
+        if(this.view)this.view.nameUpdated();
+                
+    }
+    
     //sets the name without changing the label
     setNameSilent(name){
         if(name!=null && name!=""){
@@ -250,11 +261,23 @@ class Workflow{
         
     }
     
-    setName(name){
-        name = this.setNameSilent(name);
+    setAuthor(name){
+        name = this.setAuthorSilent(name);
         //if active, we have to change the name tag label to this
-        if(this.view)this.view.nameUpdated();
+        if(this.view)this.view.authorUpdated();
                 
+    }
+    
+    //sets the name without changing the label
+    setAuthorSilent(name){
+        if(name!=null && name!=""){
+            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            this.author=name;
+            return name;
+        }else{
+            return this.author;
+        }
+        
     }
     
     makeActive(view){
@@ -367,10 +390,8 @@ class Workflow{
     updateWeekIndices(){
         var weeks = this.weeks;
         for(var i=0;i<weeks.length;i++){
-            if(weeks[i].index!=i){
-                weeks[i].index=i;
-                if(this.view)this.view.weekIndexUpdated(weeks[i]);
-            }
+            weeks[i].index=i;
+            if(this.view)this.view.weekIndexUpdated(weeks[i]);
             if(weeks[i].name==null&&weeks[i].name!="")weeks[i].setName(null);
         }
     }
@@ -491,24 +512,26 @@ class Workflow{
         this.lastRefershTimer = setTimeout(function(){wf.refreshAllTags();},debouncetime);
     }
     
-    removeTagSet(tag,purge=true){
+    removeTagSet(tag,purge=true,purgechildren=true){
         if(this.tagSets.indexOf(tag)>=0){
             this.tagSets.splice(this.tagSets.indexOf(tag),1);
         }else if(tag.parentTag!=null){
-            this.removeTagSet(tag.parentTag,false);
+            tag.parentTag.view = null;
+            this.removeTagSet(tag.parentTag,true,false);
             for(var i=0;i<tag.parentTag.children.length;i++){
                 if(tag.parentTag.children[i]!=tag)this.addTagSet(tag.parentTag.children[i],false);
             }
         } 
-        if(purge)this.purgeTag(tag);
+        if(purge)this.purgeTag(tag,purgechildren);
         if(this.view)this.view.tagSetRemoved(tag);
             
     }
     
-    purgeTag(tag){
+    purgeTag(tag,purgechildren){
         
         var idSet = [];
-        idSet = tag.getAllID(idSet);
+        if(purgechildren)idSet = tag.getAllID(idSet);
+        else idSet = [tag.id];
         if(idSet.length==0)return;
         if(this.isActive){
                 for(var i=0;i<this.weeks.length;i++){
@@ -693,13 +716,13 @@ class Workflow{
             var wf = this;
             wf.undoEnabled=false;
             makeLoad(function(){
-                wf.view.graph.clearSelection();
+                if(wf.view&&wf.view.graph)wf.view.graph.clearSelection();
                 var lastUndo = wf.undoHistory[wf.currentUndo-1];
                 wf.xmlData = lastUndo.xml;
                 wf.clearAll();
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
-                wf.view.makeActive();
+                if(wf.view)wf.view.makeActive();
                 wf.currentUndo--;
                 wf.undoEnabled=true;
             });
@@ -712,7 +735,7 @@ class Workflow{
             var wf = this;
             wf.undoEnabled=false;
            makeLoad(function(){
-                wf.view.graph.clearSelection();
+                if(wf.view&&wf.view.graph)wf.view.graph.clearSelection();
                 var nextUndo = wf.undoHistory[wf.currentUndo+1];
                 wf.xmlData = nextUndo.xml;
                 wf.clearAll();

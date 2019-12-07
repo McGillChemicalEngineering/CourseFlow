@@ -28,6 +28,7 @@ class Workflowview{
         this.legend;
         this.editbar;
         this.titleNode;
+        this.authorNode;
         this.weekWidth;
     }
     
@@ -35,12 +36,15 @@ class Workflowview{
         this.graph.getModel().setValue(this.titleNode,this.wf.name);
     }
     
+    authorUpdated(){
+        this.graph.getModel().setValue(this.authorNode,this.wf.author);
+    }
     
     makeConnectionsFromIds(){
         for(var i=0;i<this.wf.weeks.length;i++){
             for(var j=0;j<this.wf.weeks[i].nodes.length;j++){
                 var node = this.wf.weeks[i].nodes[j];
-                node.autoLinkOut.redraw();
+                if(node.autoLinkOut)node.autoLinkOut.redraw();
                 for(var k=0;k<this.wf.weeks[i].nodes[j].fixedLinksOut.length;k++){
                     var link = this.wf.weeks[i].nodes[j].fixedLinksOut[k];
                     node.view.fixedLinkAdded(link,null);
@@ -72,6 +76,7 @@ class Workflowview{
             this.createTitleNode();
             this.createLegend();
             this.drawGraph();
+            this.createAuthorNode();
             this.createLegendVertex();
             //this.createSpanner();
         }
@@ -125,6 +130,7 @@ class Workflowview{
             comments[i].view = new Commentview(this.graph,comments[i]);
             comments[i].view.createVertex();
         }
+        this.bringCommentsToFront();
         
         this.makeConnectionsFromIds();
         
@@ -145,13 +151,29 @@ class Workflowview{
     createTitleNode(){
         var wf = this.wf;
         var title = "[Insert Title Here]";
-        if(wf.name!=null&&wf.name)title = wf.name;
-        this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,cellSpacing,300,50,defaultTitleStyle);
+        if(wf.name&&wf.name!=wf.getDefaultName())title = wf.name;
+        this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,wfStartY,300,50,defaultTitleStyle);
         this.titleNode.isTitle=true;
         this.titleNode.wf=wf;
         this.titleNode.valueChanged = function(value){
             var value1 = wf.setNameSilent(value);
             if(value1!=value)wf.view.graph.getModel().setValue(wf.view.titleNode,value1);
+            else mxCell.prototype.valueChanged.apply(this,arguments);
+            
+        }
+    }
+    
+    
+    createAuthorNode(){
+        var wf = this.wf;
+        var title = "[Insert Author Here]";
+        if(wf.author)title = wf.author;
+        this.authorNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,cellSpacing+this.weekWidth-300,wfStartY+cellSpacing,300,50,defaultTitleStyle+"align=right;fontSize=16;");
+        this.authorNode.isTitle=true;
+        this.authorNode.wf=wf;
+        this.authorNode.valueChanged = function(value){
+            var value1 = wf.setAuthorSilent(value);
+            if(value1!=value)wf.view.graph.getModel().setValue(wf.view.authorNode,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
             
         }
@@ -172,7 +194,7 @@ class Workflowview{
     
     finishedAddingNodesFromXML(week,endIndex){
         week.view.pushNodesFast(endIndex);
-        if(this.view)this.bringCommentsToFront();
+        this.bringCommentsToFront();
     }
     
     positionColumns(){
@@ -256,10 +278,12 @@ class Workflowview{
         for(var i = 0;i<weeks.length;i++){
             if(weeks[i].view)weeks[i].view.vertex.resize(this.graph,this.weekWidth-oldWidth,0);
         }
+        if(weeks[0].view)this.graph.moveCells([this.authorNode],weeks[0].view.vertex.r()-this.authorNode.r());
     }
     
     weekIndexUpdated(week){
-        this.graph.setCellStyles("fillColor","#"+(0xf0f0f0+(week.index%2)*0x050505).toString(16)+";",[week.view.vertex]);
+        console.log(week.index);
+        this.graph.setCellStyles("fillColor","#"+(0xe5e5e5+(week.index%2)*0x090909).toString(16)+";",[week.view.vertex]);
     }
     
     weeksSwapped(week,week2,direction){
@@ -304,7 +328,7 @@ class Workflowview{
         if(this.wf.comments.length==0)return;
         var com = [];
         for(var i=0;i<this.wf.comments.length;i++){
-            com.push(this.comments[i].view.vertex);
+            com.push(this.wf.comments[i].view.vertex);
         }
         this.graph.orderCells(false,com);
     }
@@ -512,8 +536,16 @@ class Workflowview{
     }
     
     tagSetRemoved(tag){
+        this.removeAllHighlights(tag);
         this.populateTagBar();
         this.populateTagSelect(this.wf.project.competencies,this.wf.getTagDepth());
+    }
+    
+    removeAllHighlights(tag){
+        tag.view.highlight(false);
+        for(var i=0;i<tag.children.length;i++){
+            this.removeAllHighlights(tag.children[i]);
+        }
     }
     
     populateTagBar(){
@@ -680,8 +712,9 @@ class Workflowview{
             else if (cell.isHead)cell.column.view.populateMenu(menu);
             else if (cell.isComment)cell.comment.view.populateMenu(menu);
             else if (cell.isBracket)cell.bracket.view.populateMenu(menu);
+            else if (cell.isLink)cell.link.view.populateMenu(menu);
             else if (cell.isTitle)menu.addItem('Edit Title','resources/images/text24.png',function(){
-                graph.startEditingAtCell(wf.view.titleNode);
+                graph.startEditingAtCell(cell);
             });
         }
         menu.addSeparator();
@@ -734,6 +767,7 @@ class Workflowview{
         // Creates the mxgraph instance inside the given container
         var graph = new mxGraph(container);
         var p = this.wf.project;
+        var wfv = this;
 		//create minimap
         var minimap = document.getElementById('outlineContainer');
         var outln = new mxOutline(graph, minimap);
@@ -1034,7 +1068,7 @@ class Workflowview{
                                 }
                                 //if it's a node with tags, also show those
                                 var timeoutvar;
-                                if(cell.isNode&&cell.node.tags.length>0)timeoutvar = setTimeout(function(){cell.node.view.toggleTags(true);},100);
+                                if(cell.isNode&&cell.node.tags.length>0)timeoutvar = setTimeout(function(){if(cell.node.wf.view==wfv)cell.node.view.toggleTags(true);},100);
                                 //add the listener that will remove these once the mouse exits
                                 graph.addMouseListener({
                                     mouseDown: function(sender,me){},

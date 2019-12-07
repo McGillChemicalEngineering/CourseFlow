@@ -28,7 +28,7 @@ class CFNode {
         this.wf=wf;
         this.linkedWF;
         this.id = this.wf.project.genID();
-        this.autoLinkOut = new WFLink(this);
+        this.autoLinkOut = new WFAutolink(this);
         this.autoLinkOut.portStyle="sourcePort=HIDDENs;targetPort=INn;";
         this.fixedLinksOut=[];
         this.brackets=[];
@@ -56,7 +56,13 @@ class CFNode {
         xml+=makeXML(this.linkedWF,"linkedwf");
         xml+=makeXML(this.textHeight,"textheight");
         if(this.isDropped)xml+=makeXML("true","isdropped");
-        var linksOut =[];
+        if(this.autoLinkOut==null){xml+=makeXML("true","noautolink");}
+        for(var i=0;i<this.fixedLinksOut.length;i++){
+            if(this.fixedLinksOut[i].id!=null){
+                xml+=this.fixedLinksOut[i].toXML();
+            }
+        }
+        /*var linksOut =[];
         var linkOutPorts=[];
         for(var i=0;i<this.fixedLinksOut.length;i++){
             if(this.fixedLinksOut[i].id!=null){
@@ -65,7 +71,7 @@ class CFNode {
             }
         }
         xml+=makeXML(linksOut,"fixedlinkARRAY");
-        xml+=makeXML(linkOutPorts,"linkportARRAY");
+        xml+=makeXML(linkOutPorts,"linkportARRAY");*/
         var tagArray=[];
         for(i=0;i<this.tags.length;i++){
             tagArray.push(this.tags[i].id);
@@ -86,12 +92,25 @@ class CFNode {
         if(textHeight!=null)this.textHeight=int(textHeight);
         var isDropped = getXMLVal(xml,"isdropped");
         if(isDropped)this.isDropped=true;
+        var noAutoLink = getXMLVal(xml,"noautolink");
+        if(noAutoLink){this.autoLinkOut=null;}
+        //Old linking style (deprecated)
         var linksOut = getXMLVal(xml,"fixedlinkARRAY");
         var linkOutPorts = getXMLVal(xml,"linkportARRAY");
-        for(var i=0;i<linksOut.length;i++){
+        if(linksOut){
+            console.log("Savefile has older node linking style, attempting to recover...");
+            for(var i=0;i<linksOut.length;i++){
+                var link = new WFLink(this);
+                link.id=linksOut[i];
+                if(linkOutPorts[i]!=null)link.portStyle=linkOutPorts[i];
+                this.fixedLinksOut.push(link);
+            }
+        }
+        //New linking style
+        var xmlLinks = xml.getElementsByTagName("link");
+        for(var i=0;i<xmlLinks.length;i++){
             var link = new WFLink(this);
-            link.id=linksOut[i];
-            if(linkOutPorts[i]!=null)link.portStyle=linkOutPorts[i];
+            link.fromXML(xmlLinks[i]);
             this.fixedLinksOut.push(link);
         }
         var tagArray = getXMLVal(xml,"tagARRAY");
@@ -227,7 +246,7 @@ class CFNode {
         this.setRightIcon(null);
         for(var i=0;i<this.brackets.length;i++)this.brackets[i].cellRemoved(this);
         for(var i=0;i<this.tags.length;i++){
-            this.tags[i].removeNode(this);
+            this.removeTag(this.tags[i]);
         }
         this.week.removeNode(this);
         if(this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
@@ -271,7 +290,7 @@ class CFNode {
     getAcceptedWorkflowType(){return "";}
     
     autoLinkNodes(n1,n2){
-        if(n1==null)return;
+        if(n1==null||n1.autoLinkOut==null)return;
         if(n2==null)n1.autoLinkOut.setTarget(null);
         else if(n1.autoLinkOut.id!=n2.id){
             n1.autoLinkOut.setTarget(n2);
@@ -336,11 +355,18 @@ class CFNode {
     }
     
     removeTag(tag,removeFromLinked=false){
-        if(this.view)this.view.tagRemoved(tag);
-        this.tags.splice(this.tags.indexOf(tag),1);
+        if(this.tags.indexOf(tag)>=0){
+            this.tags.splice(this.tags.indexOf(tag),1);
+        }else if(tag.parentTag!=null){
+            this.removeTag(tag.parentTag,false);
+            for(var i=0;i<tag.parentTag.children.length;i++){
+                if(tag.parentTag.children[i]!=tag)this.addTag(tag.parentTag.children[i],false);
+            }
+        }
         if(this.linkedWF!=null&&removeFromLinked){
              this.wf.project.getWFByID(this.linkedWF).removeTagSet(tag);
         }
+        if(this.view)this.view.tagRemoved(tag);
     }
     
     
@@ -573,6 +599,42 @@ class WFLink{
         this.id;
         this.portStyle=null;
         this.targetNode;
+        this.text;
+        this.style;
+        this.view;
+    }
+    
+    toXML(){
+        var xml = "";
+        xml+=makeXML(this.id,"targetid");
+        xml+=makeXML(this.getPortStyle(),"portstyle");
+        console.log(this.portStyle);
+        console.log(this.text);
+        if(this.text)xml+=makeXML(this.text,"linktext");
+        if(this.style)xml+=makeXML(this.style,"linkstyle");
+        return makeXML(xml,"link");
+    }
+    
+    fromXML(xml){
+        var targetid = getXMLVal(xml,"targetid");
+        var portStyle = getXMLVal(xml,"portstyle");
+        console.log(portStyle);
+        var text = getXMLVal(xml,"linktext");
+        var style = getXMLVal(xml,"linkstyle");
+        this.id = targetid;
+        this.targetNode = null;
+        if(text)this.text = text;
+        if(portStyle)this.portStyle=portStyle;
+        if(style)this.style=style;
+    }
+    
+    setTextSilent(value){
+        if(value!=null){
+            value = value.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            this.text=value;
+        }
+        return this.text;
+        
     }
     
     setTarget(node){
@@ -582,7 +644,11 @@ class WFLink{
     }
     
     getPortStyle(){
+        console.log("trying to get port style");
+        if(this.view==null)console.log("But the view is null");
+        if(this.portStyle==null)console.log("But the port style is null");
         if(this.portStyle==null&&this.view)this.portStyle = this.view.getPortStyle();
+        console.log(this.portStyle);
         if(this.portStyle!=null)return this.portStyle;
         return "";
     }
@@ -596,6 +662,11 @@ class WFLink{
         if(this.view)this.view.redraw();
     }
     
+    changeStyle(style){
+        this.style=style;
+        if(this.view)this.view.redraw();
+    }
+    
     
     
     
@@ -605,4 +676,11 @@ class WFLink{
     }
     
     
+}
+
+class WFAutolink extends WFLink{
+    deleteSelf(){
+        if(this.view)this.view.deleted();
+        this.node.autoLinkOut = null;
+    }
 }
