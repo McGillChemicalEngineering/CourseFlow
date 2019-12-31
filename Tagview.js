@@ -25,6 +25,7 @@ class Tagview{
         this.tag=tag;
         this.isComplete=false;
         this.wf = wf;
+        this.highlighted=false;
         this.createViews();
     }
     
@@ -90,14 +91,27 @@ class Tagview{
         this.drops.push(button);
     }
     
-    highlight(on){
+    updateNodeHighlight(on){
+        if(on)this.highlighted=true;
+        else{
+            this.highlighted=false;
+            for(var i=0;i<this.tag.children.length;i++){
+                if(this.tag.children[i].view.highlighted){this.highlighted=true;break;}
+            }
+        }
+        on = this.highlighted;
         for(var i=0;i<this.nodes.length;i++){
             this.nodes[i].view.highlight(on);
         }
-        for(i=0;i<this.drops.length;i++){
-            if(on&&this.nodes.length>0)this.drops[i].bwrap.classList.add("highlighted");
+        if(this.tag.parentTag)this.tag.parentTag.view.updateNodeHighlight(on);
+    }
+    
+    highlight(on){
+        for(var i=0;i<this.drops.length;i++){
+            if(on)this.drops[i].bwrap.classList.add("highlighted");
             else this.drops[i].bwrap.classList.remove("highlighted");
         }
+        this.updateNodeHighlight(on);
     }
     
     
@@ -114,6 +128,8 @@ class Tagview{
     addNode(node){
         this.nodes.push(node);
         this.updateDrops();
+        this.updateDescendantDrops();
+        this.updateAncestorDrops();
         return this.addVertex(node);
         
     }
@@ -124,27 +140,67 @@ class Tagview{
         this.vertices.splice(index,1);
         this.tagPreviews.splice(index,1);
         this.updateDrops();
+        this.updateDescendantDrops();
+        this.updateAncestorDrops();
     }
     
+    updateDescendantDrops(){
+        for(var i=0;i<this.tag.children.length;i++){
+            var tag = this.tag.children[i];
+            tag.view.updateDrops();
+            tag.view.updateDescendantDrops();
+        }
+    }
+    
+    updateAncestorDrops(){
+        if(this.tag.parentTag){
+            this.tag.parentTag.view.updateDrops();
+            this.tag.parentTag.view.updateAncestorDrops();
+        }
+    }
+    
+    validateSelf(col){
+        var completeness = this.validateParents(this.tag,col);
+        if(completeness == 0)completeness = this.validateTag(this.tag,col);
+        if(completeness > 0.990)return true;
+        else return false;
+    }
+    
+    validateTag(tag,col){
+        var nodes = tag.view.nodes;
+        for(var i=0;i<nodes.length;i++){
+            if(nodes[i].column==col)return 1.0;
+        }
+        var completeness = 0.0;
+        for(var i=0;i<tag.children.length;i++){
+            completeness+=this.validateTag(tag.children[i],col)/tag.children.length;
+        }
+        return completeness;
+    }
+    
+    validateParents(tag,col){
+        if(tag.parentTag){
+            var tv = tag.parentTag.view;
+            for(var i=0;i<tv.nodes.length;i++){
+                if(tv.nodes[i].column==col)return 1.0;
+            }
+            return this.validateParents(tag.parentTag,col);
+        }
+        return 0.0;
+    }
     
     updateDrops(){
         var colours = [];
-        for(var i=0;i<this.nodes.length;i++){
-            var colour = this.nodes[i].view.graph.getCellStyle(this.nodes[i].view.vertex)["fillColor"];
-            if(colours.indexOf(colour)<0)colours.push(colour);
+        var allColours=[];
+        for(var i=0;i<this.wf.columns.length;i++){
+            if(allColours.indexOf(this.wf.columns[i].colour)<0)allColours.push(this.wf.columns[i].colour);
+            if(colours.indexOf(this.wf.columns[i].colour<0)&&this.validateSelf(this.wf.columns[i].name))colours.push(this.wf.columns[i].colour);
         }
-        var colCount=99;
-        if(this.nodes[0]!=null)colCount=this.nodes[0].wf.columns.length;
-        this.isComplete=(this.tag.children.length>0);
-        for(i=0;i<this.tag.children.length;i++){
-            if(!this.tag.children[i].view.isComplete)this.isComplete=false;
-        }
-        if(colCount<=colours.length)this.isComplete=true;
+        this.isComplete=(colours.length>=allColours.length);
         
         for(i=0;i<this.drops.length;i++){
             this.drops[i].updateNodeIndicators(colours,this.isComplete);
         }
-        if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateDrops();
         
         
     }

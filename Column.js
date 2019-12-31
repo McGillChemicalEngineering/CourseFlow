@@ -21,6 +21,7 @@ class Column {
         this.text;
         this.nodetext;
         this.image;
+        this.colour;
         this.wf=wf;
         this.view;
         if(name!=null)this.setDefaultValues(name);
@@ -56,46 +57,55 @@ class Column {
                 this.image = "homework";
                 this.text = "Preparation";
                 this.nodetext = "Preparation";
+                this.colour = SALTISELIGHTBLUE;
                 break;
             case "AC":
                 this.image = "lesson";
                 this.text = "Activities";
                 this.nodetext = "Activity";
+                this.colour = SALTISEGREEN;
                 break;
             case "SA":
                 this.image = "assessment";
                 this.text = "Assessments";
                 this.nodetext = "Assessment";
+                this.colour = SALTISERED;
                 break;
             case "FA":
                 this.image = "artifact";
                 this.text = "Artifacts";
                 this.nodetext = "Artifact";
+                this.colour = SALTISEORANGE;
                 break;
             case "OOC":
                 this.image = "home";
                 this.text = "Out of Class";
                 this.nodetext = "Home";
+                this.colour = SALTISELIGHTBLUE;
                 break;
             case "ICI":
                 this.image = "instruct";
                 this.text = "In Class (Instructor)";
                 this.nodetext = "Instructor";
+                this.colour = SALTISEORANGE;
                 break;
             case "ICS":
                 this.image = "noinstructor";
                 this.text = "In Class (Students)";
                 this.nodetext = "Students";
+                this.colour = SALTISEGREEN;
                 break;
             case "CO":
                 this.image = "instruct";
                 this.text = "Course";
                 this.nodetext = "Course";
+                this.colour = SALTISEGREEN;
                 break;
             default:
                 if(name.substr(0,3)=='CUS'){
                     this.image = "other";
                     this.text = "Custom Column "+name.substr(3);
+                    this.colour = "#a3b9df";
                     this.nodetext = "New Custom";
                 }
         }

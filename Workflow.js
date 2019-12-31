@@ -720,6 +720,8 @@ class Workflow{
                 var lastUndo = wf.undoHistory[wf.currentUndo-1];
                 wf.xmlData = lastUndo.xml;
                 wf.clearAll();
+                wf.tagSets = [];
+                for(var i=0;i<lastUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getCompByID(lastUndo.tagSets[i]));
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
                 if(wf.view)wf.view.makeActive();
@@ -739,6 +741,8 @@ class Workflow{
                 var nextUndo = wf.undoHistory[wf.currentUndo+1];
                 wf.xmlData = nextUndo.xml;
                 wf.clearAll();
+                for(var i=0;i<nextUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getCompByID(nextUndo.tagSets[i]));
+                wf.tagSets = nextUndo.tagSets;
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
                 wf.view.makeActive();

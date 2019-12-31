@@ -476,7 +476,6 @@ class Project{
     
     genID(){
         this.idNum=""+(int(this.idNum)+1);
-        console.log(this.idNum);
         return ""+this.idNum;
     }
     

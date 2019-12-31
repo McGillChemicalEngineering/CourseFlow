@@ -37,7 +37,9 @@ class Nodeview{
         if(this.node.wf.weeks[0] instanceof Term)width=200;
         var h = minCellHeight+cellDropdownHeight+cellDropdownPadding;
         if(this.node.isDropped)h+=this.node.textHeight;
-        this.vertex=this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,h,this.node.getVertexStyle());
+        var vertexStyle = this.node.getVertexStyle();
+        if(this.node.isDropped)vertexStyle = vertexStyle.replace("resizable=0","resizable=1");
+        this.vertex=this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,h,vertexStyle);
         this.vertex.isNode=true;
         this.vertex.node=this.node;
         var left = 0;
@@ -57,7 +59,10 @@ class Nodeview{
         h=1;
         if(this.node.isDropped)h+=this.node.textHeight;
         this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b(),this.vertex.w()-2*defaultTextPadding,h,defaultTextStyle);
-        this.dropNode = this.graph.insertVertex(this.vertex,null,'',0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,defaultDropDownStyle);
+        var dropDownStyle = defaultDropDownStyle;
+        if(this.node.isDropped)dropDownStyle+="image=resources/images/droptriangleup.png;";
+        else dropDownStyle+="image=resources/images/droptriangle.png;";
+        this.dropNode = this.graph.insertVertex(this.vertex,null,'',0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
         this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
@@ -269,10 +274,9 @@ class Nodeview{
     }
     
     tagRemoved(tag){
-        tag.view.removeNode(this.node);
         var index = this.node.tags.indexOf(tag); 
         this.graph.removeCells([this.tagVertices.splice(index,1)[0],this.tagPreviews.splice(index,1)[0]]);
-        if(tag.view)tag.view.removeNode(this);
+        if(tag.view)tag.view.removeNode(this.node);
         
         for(var i=0;i<this.tagVertices.length;i++){
             this.graph.moveCells([this.tagVertices[i]],0,(tagHeight+tagBoxPadding)*i-this.tagVertices[i].y());

@@ -121,6 +121,7 @@ class Tag {
     unassignFrom(parent){
         if(parent instanceof Workflow){
             parent.removeTagSet(this);
+            parent.makeUndo("Tagset Removed",parent);
             
         }else if(parent instanceof CFNode){
             parent.removeTag(this,true);

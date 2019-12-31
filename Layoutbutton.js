@@ -268,7 +268,7 @@ class Layoutbutton {
                     else if (button2.layout.isActive)p.activeComp = p.competencies.indexOf(button2.layout);
                 }
             }else{
-                var buttonp = parent.button;
+                var buttonp = parent.parentElement.button;
                 if(buttonp!=null&&buttonp.layout!=null){
                     buttonp.layout.swapChildren(this.layout,button2.layout);
                 }

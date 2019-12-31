@@ -608,8 +608,6 @@ class WFLink{
         var xml = "";
         xml+=makeXML(this.id,"targetid");
         xml+=makeXML(this.getPortStyle(),"portstyle");
-        console.log(this.portStyle);
-        console.log(this.text);
         if(this.text)xml+=makeXML(this.text,"linktext");
         if(this.style)xml+=makeXML(this.style,"linkstyle");
         return makeXML(xml,"link");
@@ -618,7 +616,6 @@ class WFLink{
     fromXML(xml){
         var targetid = getXMLVal(xml,"targetid");
         var portStyle = getXMLVal(xml,"portstyle");
-        console.log(portStyle);
         var text = getXMLVal(xml,"linktext");
         var style = getXMLVal(xml,"linkstyle");
         this.id = targetid;
@@ -644,11 +641,7 @@ class WFLink{
     }
     
     getPortStyle(){
-        console.log("trying to get port style");
-        if(this.view==null)console.log("But the view is null");
-        if(this.portStyle==null)console.log("But the port style is null");
         if(this.portStyle==null&&this.view)this.portStyle = this.view.getPortStyle();
-        console.log(this.portStyle);
         if(this.portStyle!=null)return this.portStyle;
         return "";
     }

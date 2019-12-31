@@ -282,7 +282,6 @@ class Workflowview{
     }
     
     weekIndexUpdated(week){
-        console.log(week.index);
         this.graph.setCellStyles("fillColor","#"+(0xe5e5e5+(week.index%2)*0x090909).toString(16)+";",[week.view.vertex]);
     }
     

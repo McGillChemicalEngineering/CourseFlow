@@ -23,6 +23,10 @@ class Undo{
         this.source = source;
         wf.saveXMLData();
         this.xml = wf.xmlData;
+        this.tagSets = [];
+        for(var i=0;i<wf.tagSets.length;i++)this.tagSets.push(wf.tagSets[i].id);
+        this.usedWF = [];
+        for(var i=0;i<wf.children.length;i++)this.usedWF.push(wf.children[i].id);
         
     }
     

@@ -208,8 +208,6 @@ class Outcomeview{
             var cv = this.categoryViews[i];
             if(cv.value==node.lefticon||(cv.value=="none"&&node.lefticon==null)){
                 index+=cv.nodeViews.length-2;
-                cv.tablehead.setAttribute("colspan",int(cv.tablehead.getAttribute("colspan"))+1);
-                cv.tablehead.classList.add("haschildren");
                 var lastnv = cv.nodeViews[cv.nodeViews.length-1];
                 lastnv.nodes.push(node);
                 this.grandTotal.nodes.push(node);
@@ -218,6 +216,7 @@ class Outcomeview{
                 nv.createVertex(lastnv.vertex.parentElement,lastnv.vertex);
                 nv.createTableHead(lastnv.tablehead.parentElement,lastnv.tablehead);
                 cv.nodeViews.splice(cv.nodeViews.length-1,0,nv);
+                cv.nodeAdded(node);
                 for(var j=0;j<this.tableCells.length;j++){
                     var newCell = new OutcomeTableCell(this.tagViews[j].tag,nv);
                     newCell.createVertex(this.tagViews[j].vertex,this.tableCells[j][index].vertex);
@@ -228,10 +227,10 @@ class Outcomeview{
                 index+=cv.nodeViews.length;
             }
         }
+        this.updateTable();
     }
     
     populateTagBar(){
-        console.log("populating tag bar");
         this.makeInactive();
         this.makeActive();
     }
@@ -389,6 +388,16 @@ class OutcomeCategoryview{
         
     }
     
+    nodeAdded(node){
+        this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))+1);
+        this.tablehead.classList.add("haschildren");
+    }
+    
+    nodeRemoved(node){
+        this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))-1);
+        if(this.nodeViews.length<=2)this.tablehead.classList.remove("haschildren");
+    }
+    
     expand(){
         this.tablehead.classList.add("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
@@ -538,7 +547,7 @@ class OutcomeNodeview{
                 totalview.nodes.splice(totalview.nodes.indexOf(node),1);
                 index+=cv.nodeViews.indexOf(this);
                 cv.nodeViews.splice(cv.nodeViews.indexOf(this),1);
-                cv.tablehead.setAttribute("colspan",int(cv.tablehead.getAttribute("colspan"))-1);
+                cv.nodeRemoved(node);
                 this.tablehead.parentElement.removeChild(this.tablehead);
                 this.vertex.parentElement.removeChild(this.vertex);
                 grandTotal.nodes.splice(grandTotal.nodes.indexOf(node),1);
@@ -552,6 +561,7 @@ class OutcomeNodeview{
                 index+=cv.nodeViews.length;
             }
         }
+        node.wf.view.updateTable();
         
     }
     
@@ -706,7 +716,10 @@ class OutcomeTableCell{
     }
     
     validateSelf(){
-        if(this.nodeview.nodes.length==0)return;
+        if(this.nodeview.nodes.length==0){
+            if(this.validationImg)this.validationImg.src="";
+            return;
+        }
         var completeness = this.validateParents(this.tag);
         if(completeness==0)completeness=this.validateTag(this.tag);
         if(completeness==1){

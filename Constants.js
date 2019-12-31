@@ -136,7 +136,7 @@ const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=bl
 const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;align=left;";
 const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;align=left;verticalAlign=top;";
 const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
-const defaultDropDownStyle="constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=#FFFFFF;shape=label;image=resources/images/droptriangle.png;imageWidth=12;imageHeight=4;imageAlign=center;";
+const defaultDropDownStyle="constituent=1;resizable=0;editable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
 const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=1;"
