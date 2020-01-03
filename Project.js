@@ -113,8 +113,8 @@ class Project{
         var save = document.getElementById('save');
         save.onclick = function(){
             try{
-                gaEvent('Save/Open','Save',p.name,p.workflows.length+p.comepetencies.length);
                 p.saveProject();
+                gaEvent('Save/Open','Save',p.name,p.workflows.length+p.competencies.length);
             }catch(err){
                 alert("Oops! The file could not be saved.");
                 gaError("Save",err);
@@ -134,7 +134,7 @@ class Project{
                 var readData = evt.target.result;
                 try{
                     p.fromXML(readData,p.loadAppend);
-                    gaEvent('Save/Open','Open',p.name,p.workflows.length+p.comepetencies.length);
+                    gaEvent('Save/Open','Open',p.name,p.workflows.length+p.competencies.length);
                 }catch(err){
                     alert("Oops! The file could not be opened.");
                     gaError("Open",err);
@@ -155,7 +155,7 @@ class Project{
         
         var exportWF = document.getElementById('export');
         exportWF.onclick = function(){
-            gaEvent('Save/Open','Export',p.name,p.workflows.length+p.comepetencies.length);
+            gaEvent('Save/Open','Export',p.name,p.workflows.length+p.competencies.length);
             p.exportCurrent();
         }
         
@@ -164,19 +164,19 @@ class Project{
             if(p.readOnly)return;
             p.loadAppend=true;
             p.fileLoader.click();
-            gaEvent('Save/Open','Import',p.name,p.workflows.length+p.comepetencies.length);
+            gaEvent('Save/Open','Import',p.name,p.workflows.length+p.competencies.length);
         }
         
         var saveReadOnly = document.getElementById('savereadonly');
         saveReadOnly.onclick = function(){
-            gaEvent('Save/Open','Save Read Only',p.name,p.workflows.length+p.comepetencies.length);
+            gaEvent('Save/Open','Save Read Only',p.name,p.workflows.length+p.competencies.length);
             p.saveProject(true);
         }
         
         var printWF = document.getElementById("print");
         printWF.onclick = function(){
             p.printActiveWF();
-            gaEvent('Save/Open','Print',p.name,p.workflows.length+p.comepetencies.length);
+            gaEvent('Save/Open','Print',p.name,p.workflows.length+p.competencies.length);
         }
         
         var undoButton = document.getElementById("undo");
@@ -666,7 +666,7 @@ class Project{
     }
     
     showHelp(url){
-        gaEvent('View','Help',url,this.workflows.length+this.comepetencies.length);
+        gaEvent('View','Help',url,this.workflows.length+this.competencies.length);
         var helpFrame = document.getElementById("helpFrame");
         helpFrame.src = "resources/helpdocs/"+url;
         helpFrame.parentElement.classList.add("active");
