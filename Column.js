@@ -32,8 +32,8 @@ class Column {
         var xml = "";
         xml+=makeXML(this.name,"columnname");
         xml+=makeXML(this.image,"columnimage");
-        xml+=makeXML(this.text,"columntext");
-        xml+=makeXML(this.nodetext,"columnnodetext");
+        xml+=makeXML(this.text,"columntext",true);
+        xml+=makeXML(this.nodetext,"columnnodetext",true);
         return makeXML(xml,"column");
     }
     
@@ -42,11 +42,13 @@ class Column {
         this.setName(name);
         if(name.substr(0,3)=="CUS"){
             this.image = getXMLVal(xml,"columnimage");
-            this.text = getXMLVal(xml,"columntext");
-            this.nodetext = getXMLVal(xml,"columnnodetext");
+            this.text = getXMLVal(xml,"columntext",true);
+            this.nodetext = getXMLVal(xml,"columnnodetext",true);
+            if(this.wf instanceof Programflow)this.colour = SALTISEGREEN;
+            else this.colour = "#a3b9df";
         }else {
             this.setDefaultValues(name);
-            this.text = getXMLVal(xml,"columntext");
+            this.text = getXMLVal(xml,"columntext",true);
         }
         
     }
@@ -103,10 +105,17 @@ class Column {
                 break;
             default:
                 if(name.substr(0,3)=='CUS'){
-                    this.image = "other";
-                    this.text = "Custom Column "+name.substr(3);
-                    this.colour = "#a3b9df";
-                    this.nodetext = "New Custom";
+                    if(this.wf instanceof Programflow){
+                        this.text = "Course Category "+name.substr(3);
+                        this.colour=SALTISEGREEN;
+                        this.nodetext = "New Category";
+                        this.image="instruct";
+                    }else{
+                        this.text = "Custom Column "+name.substr(3);
+                        this.colour = "#a3b9df";
+                        this.nodetext = "New Custom"; 
+                        this.image = "other";
+                    }
                 }
         }
         
@@ -123,7 +132,7 @@ class Column {
     
     setTextSilent(text){
         if(text!=null && text!=""){
-            text = text.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //text = text.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.text=text;
             if(this.name.substr(0,3)=='CUS'){this.setNodeText(text);}
             return text;

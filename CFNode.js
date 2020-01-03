@@ -47,12 +47,12 @@ class CFNode {
     
     toXML(){
         var xml = "";
-        xml+=makeXML(this.name,"name");
+        xml+=makeXML(this.name,"name",true);
         xml+=makeXML(this.id,"id");
         xml+=makeXML(this.lefticon,"lefticon");
         xml+=makeXML(this.righticon,"righticon");
         xml+=makeXML(this.column,"column");
-        xml+=makeXML(this.text,"textHTML");
+        xml+=makeXML(this.text,"textHTML",true);
         xml+=makeXML(this.linkedWF,"linkedwf");
         xml+=makeXML(this.textHeight,"textheight");
         if(this.isDropped)xml+=makeXML("true","isdropped");
@@ -81,10 +81,10 @@ class CFNode {
     }
     
     fromXML(xml){
-        this.setName(getXMLVal(xml,"name"));
+        this.setName(getXMLVal(xml,"name",true));
         this.id = getXMLVal(xml,"id");
         this.setColumn(getXMLVal(xml,"column"));
-        this.setText(getXMLVal(xml,"textHTML"));
+        this.setText(getXMLVal(xml,"textHTML",true));
         this.setLeftIcon(getXMLVal(xml,"lefticon"));
         this.setRightIcon(getXMLVal(xml,"righticon"));
         this.linkedWF = getXMLVal(xml,"linkedwf");
@@ -141,7 +141,7 @@ class CFNode {
     
     setNameSilent(name){
         if(name!=null){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.name=name;
         }
         return this.name;
@@ -430,8 +430,7 @@ class ACNode extends CFNode {
     }
     
     getColumnStyle(){
-        var colstyle=SALTISEGREEN;
-        return colstyle;
+        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
     }
     
     getVertexStyle(){
@@ -472,8 +471,7 @@ class CONode extends CFNode {
     }
     
     getColumnStyle(){
-        var colstyle=SALTISEGREEN;
-        return colstyle;
+        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
     }
     
     getVertexStyle(){
@@ -510,11 +508,7 @@ class ASNode extends CFNode {
     }
     
     getColumnStyle(){
-        var colstyle="#FFFFFF";
-        if(this.column=="FA")colstyle=SALTISEORANGE;
-        else if(this.column=="SA")colstyle=SALTISERED;
-        else if(this.column=="HW")colstyle=SALTISELIGHTBLUE;
-        return colstyle;
+        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
     }
     
     getVertexStyle(){
@@ -531,8 +525,7 @@ class LONode extends CFNode {
     }
     
     getColumnStyle(){
-        var colstyle="#FFFFFF";
-        return colstyle;
+        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
     }
     
     getVertexStyle(){
@@ -549,11 +542,7 @@ class WFNode extends CFNode {
     }
     
     getColumnStyle(){
-        var colstyle="#FFFFFF";
-        if(this.column=="OOC")colstyle=SALTISELIGHTBLUE;
-        else if(this.column=="ICI")colstyle=SALTISEORANGE;
-        else if(this.column=="ICS")colstyle=SALTISEGREEN;
-        return colstyle;
+        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
     }
     
     getVertexStyle(){
@@ -575,16 +564,45 @@ class CUSNode extends CFNode {
         if(this.view)this.view.columnUpdated();
     }
     
+    getLinkedWFList(){
+        if(this.wf instanceof Activityflow)return null;
+        var wfs = this.wf.project.workflows;
+        var list=[];
+        if(this.wf instanceof Courseflow){
+            for(var i=0;i<wfs.length;i++){
+                if( wfs[i] instanceof Activityflow)list.push([wfs[i].name,wfs[i].id]);
+            }
+            return list;
+        }
+        if(this.wf instanceof Programflow){
+            for(var i=0;i<wfs.length;i++){
+                if( wfs[i] instanceof Courseflow)list.push([wfs[i].name,wfs[i].id]);
+            }
+            return list;
+        }
+    }
     
+    
+    getAcceptedWorkflowType(){
+        if(this.wf instanceof Courseflow)return "activity";
+        if(this.wf instanceof Programflow)return "course";
+    }
     
     getIconCategory(icon){
-        if(icon=="left")if(this.wf instanceof Activityflow) return "context"; else return "strategy";
-        if(icon=="right")if(this.wf instanceof Activityflow) return "task"; else return "assessment";
+        if(icon=="left"){
+            if(this.wf instanceof Activityflow) return "context";
+            else if(this.wf instanceof Programflow) return null;
+            else return "strategy";
+        }
+        if(icon=="right"){
+            if(this.wf instanceof Activityflow) return "task";
+            else if(this.wf instanceof Programflow) return null;
+            else return "assessment";
+        }
     }
     
     getColumnStyle(){
-        var colstyle="#a3b9df";
-        return colstyle;
+        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
     }
     
     getVertexStyle(){
@@ -608,7 +626,7 @@ class WFLink{
         var xml = "";
         xml+=makeXML(this.id,"targetid");
         xml+=makeXML(this.getPortStyle(),"portstyle");
-        if(this.text)xml+=makeXML(this.text,"linktext");
+        if(this.text)xml+=makeXML(this.text,"linktext",true);
         if(this.style)xml+=makeXML(this.style,"linkstyle");
         return makeXML(xml,"link");
     }
@@ -616,7 +634,7 @@ class WFLink{
     fromXML(xml){
         var targetid = getXMLVal(xml,"targetid");
         var portStyle = getXMLVal(xml,"portstyle");
-        var text = getXMLVal(xml,"linktext");
+        var text = getXMLVal(xml,"linktext",true);
         var style = getXMLVal(xml,"linkstyle");
         this.id = targetid;
         this.targetNode = null;
@@ -627,7 +645,7 @@ class WFLink{
     
     setTextSilent(value){
         if(value!=null){
-            value = value.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //value = value.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.text=value;
         }
         return this.text;

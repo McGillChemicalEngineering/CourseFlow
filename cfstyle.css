@@ -234,19 +234,28 @@ button:hover{
 
 .nodebar{
     position : fixed;
-    overflow-x : hidden;
-    overflow-y : auto;
+    overflow : hidden;
     display : none;
-    padding : 20px;
     right : 20px;
     top : 102px;
     float:right;
     z-index:2;
     box-shadow: -1px 0px 3px -1px;
-    width : 200px;
+    width : 240px;
     bottom : 0px;
     background : white;
 
+}
+
+.nodebarwrapper{
+    display:inline;
+    overflow-x : hidden;
+    overflow-y : auto;
+    display : inline-block;
+    padding : 20px;
+    box-sizing:border-box;
+    width:100%;
+    height:100%;
 }
 
 .panelresizehandle{
@@ -835,7 +844,10 @@ div.highlighted{
 .outcometable th .createlayoutdiv{
     left:-16px;
     padding:0px;
-    top: 20px;
+    top: 16px;
+    padding-top:4px;
+    text-align: left;
+    width:100px;
     
 }
 

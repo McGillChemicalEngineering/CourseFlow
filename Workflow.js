@@ -35,6 +35,7 @@ class Workflow{
         this.currentUndo;
         this.undoEnabled=false;
         this.view;
+        this.legendCoords;
     }
     
     getDefaultName(){return "Untitled Workflow"};
@@ -42,8 +43,8 @@ class Workflow{
     
     toXML(){
         var xml = "";
-        xml+=makeXML(this.name,"wfname");
-        xml+=makeXML(this.author,"wfauthor");
+        xml+=makeXML(this.name,"wfname",true);
+        xml+=makeXML(this.author,"wfauthor",true);
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
         
@@ -62,6 +63,9 @@ class Workflow{
     
     saveXMLData(){
         var xml="";
+        if(this.view&&this.view.legend){
+            this.legendCoords={x:this.view.legend.x,y:this.view.legend.y};
+        }
         for(var i=0;i<this.columns.length;i++){
             xml+=this.columns[i].toXML();
         }
@@ -74,6 +78,7 @@ class Workflow{
         for(i=0;i<this.brackets.length;i++){
             xml+=this.brackets[i].toXML();
         }
+        if(this.legendCoords){xml+=makeXML(this.legendCoords.x,'wflegendx');xml+=makeXML(this.legendCoords.y,'wflegendy');}
         xml=makeXML(xml,"wfdata");
         this.xmlData = (new DOMParser).parseFromString(xml,"text/xml").childNodes[0];
     }
@@ -113,14 +118,18 @@ class Workflow{
                 this.weeks[i].nodes[j].makeAutoLinks();
             }
         }
+        var legendx = int(getXMLVal(xmlData,'wflegendx'));
+        var legendy = int(getXMLVal(xmlData,'wflegendy'));
+        if(legendx&&legendy)this.legendCoords ={x:legendx,y:legendy};
+        console.log(this.legendCoords);
         
     }
     
     
     
     fromXML(xmlData){
-        this.setName(getXMLVal(xmlData,"wfname"));
-        this.setAuthor(getXMLVal(xmlData,"wfauthor"));
+        this.setName(getXMLVal(xmlData,"wfname",true));
+        this.setAuthor(getXMLVal(xmlData,"wfauthor",true));
         this.id = getXMLVal(xmlData,"wfid");
         this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
@@ -249,7 +258,7 @@ class Workflow{
     //sets the name without changing the label
     setNameSilent(name){
         if(name!=null && name!=""){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.name=name;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].updateButton();
@@ -271,7 +280,7 @@ class Workflow{
     //sets the name without changing the label
     setAuthorSilent(name){
         if(name!=null && name!=""){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.author=name;
             return name;
         }else{
@@ -876,14 +885,13 @@ class Programflow extends Workflow{
     
     createInitialColumns(){
         var columns = this.columns;
-        columns.push(new Column(this,"CO"));
-        columns.push(new Column(this,"SA"));
+        columns.push(new Column(this,"CUS1"));
+        columns.push(new Column(this,"CUS2"));
+        columns.push(new Column(this,"CUS3"));
     }
     
     getPossibleColumns(){
         var columns = [];
-        columns.push(new Column(this,"CO"));
-        columns.push(new Column(this,"SA"));
         var highestCustom=0;
         for(var i=0;i<this.columns.length;i++){
             if(this.columns[i].name.substr(0,3)=="CUS"){

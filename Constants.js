@@ -49,15 +49,16 @@ function mapWeekVertices(value,index,array){
 }
 //casts to int, using a default base 10
 int = function(x){return parseInt(x,10);}
+
 //creates an xml line for the given name and value
-makeXML = function(value,name){
+makeXML = function(value,name,isHTML=false){
     if(value==null)value="undefined"
-    if(name.indexOf("HTML")>=0)value = cleanHTML(value);
+    if(isHTML||name.indexOf("HTML")>=0)value = cleanHTML(value);
     return "<"+name+">"+value+"</"+name+">\n";
 }
-getXMLVal = function(xml,name){
+getXMLVal = function(xml,name,isHTML=false){
     var isARRAY = (name.indexOf("ARRAY")>=0);
-    var isHTML = (name.indexOf("HTML")>=0);
+    if(!isHTML)isHTML = (name.indexOf("HTML")>=0);
     var tags = xml.getElementsByTagName(name)[0];
     if(tags==null)return null;
     if(tags.childNodes.length==0)if(isARRAY)return [];else return null;
@@ -150,7 +151,7 @@ const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;
 //Icons
 const iconsList={
     strategy:[{text:'Jigsaw',value:'jigsaw'},{text:'Peer Instruction',value:'peer-instruction'},{text:'Case Studies',value:'case-studies'},{text:'Gallery Walk',value:'gallery-walk'},{text:'Reflective Writing',value:'reflective-writing'},{text:'Two-Stage Exam',value:'two-stage-exam'},{text:'Toolkit',value:'toolkit'},{text:'One Minute Paper',value:'one-minute-paper'},{text:'Distributed Problem Solving',value:'distributed-problem-solving'},{text:'Peer Assessment',value:'peer-assessment'}],
-    context:[{text:'Individual Work',value:'solo'},{text:'Work in Groups',value:'group'},{text:'Whole Class',value:'class'}],
+    context:[{text:'Individual Work',value:'solo'},{text:'Work in Groups',value:'group'},{text:'Whole Class',value:'class'},{text:'Orchestration',value:'orchestration'},{text:'Decision',value:'decision'},{text:'Resource Curation/Preparation',value:'curation'}],
     task:[{text:'Gather Information',value:'research'},{text:'Discuss',value:'discuss'},{text:'Problem Solve',value:'problem'},{text:'Analyze',value:'analyze'},{text:'Assess/Review Peers',value:'peerreview'},{text:'Evaluate Peers',value:'evaluate'},{text:'Debate',value:'debate'},{text:'Game/Roleplay',value:'play'},{text:'Create/Design',value:'create'},{text:'Revise/Improve',value:'practice'},{text:'Read',value:'reading'},{text:'Write',value:'write'},{text:'Present',value:'present'},{text:'Experiment/Inquiry',value:'experiment'},{text:'Quiz/Test',value:'quiz'},{text:'Other',value:'other'}],
     assessment:[{text:'Exercises/Quizzes', value:'exercise'},{text:'Tests/Projects',value:'test'},{text:'Exam/Comprehensive',value:'exam'}],
     column:[{text:'Home',value:'home'},{text:'Instructor',value:'instructor'},{text:'Students',value:'noinstructor'},{text:'Activity',value:'lesson'},{text:'Assessment',value:'assessment'},{text:'Preparation',value:'homework'},{text:'Artifact',value:'artifact'},{text:'Individual',value:'solo'},{text:'Group',value:'group'},{text:'Class',value:'class'}]

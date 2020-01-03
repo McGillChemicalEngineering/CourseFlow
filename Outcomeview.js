@@ -33,7 +33,7 @@ class Outcomeview{
     makeActive(){
         this.container.style.width="";
         this.container.style.height="";
-        this.toolbarDiv = document.getElementById('nbContainer');
+        this.toolbarDiv = document.getElementById('nbWrapper');
         
         this.table = document.createElement('table');
         this.table.classList.add("outcometable");
@@ -168,7 +168,7 @@ class Outcomeview{
     }
             
     createTagViews(){
-        this.tagViews = [];
+        this.tagViews = [new OutcomeTagview(null,this.wf)];
         var allTags = [];
         for(var i=0;i<this.wf.tagSets.length;i++){
             this.wf.tagSets[i].getAllTags(allTags);
@@ -180,7 +180,7 @@ class Outcomeview{
     }
     
     isValidNode(node){
-        return(node.column=="SA");
+        return (node.column=="SA");
     }
     
     getNodeCategories(){
@@ -203,10 +203,11 @@ class Outcomeview{
     
     nodeAdded(node){
         if(!this.isValidNode(node))return;
+        console.log(node);
         var index = 1;
         for(var i=0;i<this.categoryViews.length;i++){
             var cv = this.categoryViews[i];
-            if(cv.value==node.lefticon||(cv.value=="none"&&node.lefticon==null)){
+            if(cv.value==this.getCategoryFromNode(node)||(cv.value=="none"&&this.getCategoryFromNode(node)==null)){
                 index+=cv.nodeViews.length-2;
                 var lastnv = cv.nodeViews[cv.nodeViews.length-1];
                 lastnv.nodes.push(node);
@@ -230,6 +231,10 @@ class Outcomeview{
         this.updateTable();
     }
     
+    getCategoryFromNode(node){
+        return node.lefticon;
+    }
+    
     populateTagBar(){
         this.makeInactive();
         this.makeActive();
@@ -246,9 +251,9 @@ class Outcomeview{
 
     generateToolbars(){
         var container = this.toolbarDiv;
-        container.style.display="inline";
+        container.parentElement.style.display="inline";
         while(container.firstChild)container.removeChild(container.firstChild);
-        makeResizable(container,"left");
+        makeResizable(container.parentElement,"left");
         this.generateTagBar(container);
         
     }
@@ -588,9 +593,9 @@ class OutcomeTagview{
         var tv = this;
         var vertex = document.createElement('tr');
         this.vertex=vertex;
-        if(this.tag.children.length>0)vertex.classList.add("haschildren");
+        if(this.tag&&this.tag.children.length>0)vertex.classList.add("haschildren");
         vertex.classList.add("expanded");
-        vertex.classList.add("depth"+this.tag.depth);
+        if(this.tag)vertex.classList.add("depth"+this.tag.depth);
         parent.appendChild(vertex);
         this.nameCell = document.createElement('td');
         this.updateName()
@@ -606,7 +611,7 @@ class OutcomeTagview{
         }
         expandDiv.appendChild(this.expandIcon);
         this.nameCell.appendChild(expandDiv);
-        if(tv.tag.depth<=wf.getTagDepth()){
+        if(tv.tag&&tv.tag.depth<=wf.getTagDepth()){
             var editdiv = document.createElement('div');
             editdiv.className = "deletelayoutdiv";
             var unassignicon = document.createElement('img');
@@ -660,8 +665,10 @@ class OutcomeTagview{
     
     updateName(){
         var name="";
-        if(this.tag.parentTag)name+=(int(this.tag.parentTag.children.indexOf(this.tag))+1)+".  ";
-        name += this.tag.name;
+        if(this.tag){
+            if(this.tag.parentTag)name+=(int(this.tag.parentTag.children.indexOf(this.tag))+1)+".  ";
+            name += this.tag.name;
+        }
         this.nameCell.innerHTML=name;
     }
     
@@ -716,7 +723,7 @@ class OutcomeTableCell{
     }
     
     validateSelf(){
-        if(this.nodeview.nodes.length==0){
+        if(this.nodeview.nodes.length==0||this.tag==null){
             if(this.validationImg)this.validationImg.src="";
             return;
         }
@@ -754,4 +761,70 @@ class OutcomeTableCell{
         return completeness;
     }
     
+}
+
+class ProgramOutcomeview extends Outcomeview{
+    
+    getNodeCategories(){
+        var list = [];
+        for(var i=0;i<this.wf.weeks.length;i++){
+            var name = this.wf.weeks[i].name;
+            if(!name)name=this.wf.weeks[i].getDefaultName();
+            list.push({text:name,value:i});
+        }
+        return list;
+    }
+    
+    createCategoryViews(){
+        var nodeCategories = this.getNodeCategories();
+        this.categoryViews = [];
+        for(var i=0;i<nodeCategories.length;i++){
+            var cgv = new ProgramOutcomeCategoryview(nodeCategories[i],this.wf);
+            this.categoryViews.push(cgv);
+        }
+    }
+    
+    isValidNode(node){
+        return true;
+    }
+    
+    getCategoryFromNode(node){
+        return node.wf.weeks.indexOf(node.week);
+    }
+    
+    
+    getCategoryForNode(node){
+        var category = node.wf.weeks.indexOf(node.week);
+        if(category==null)category="none";
+        for(var i=0;i<this.categoryViews.length;i++){
+            if(this.categoryViews[i].value==category)return this.categoryViews[i];
+        }
+        if(category=="none"){
+            this.categoryViews.push(new OutcomeCategoryview({text:"Uncategorized",value:"none"},this.wf));
+            return this.categoryViews[this.categoryViews.length-1];
+        }
+        return null;
+    }
+    
+    
+}
+
+class ProgramOutcomeCategoryview extends OutcomeCategoryview{
+    
+    
+    addNode(){
+        var wf = this.wf;
+        var week;
+        console.log(this.value);
+        if(this.value!=null) week = wf.weeks[this.value];
+        console.log(week);
+        if(week){
+            var node = new CUSNode(wf);
+            node.setColumn(wf.columns[0].name);
+            node.week=week;
+            week.addNode(node);
+            if(wf.view)wf.view.nodeAdded(node);
+        }
+        
+    }
 }

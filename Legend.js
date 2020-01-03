@@ -27,8 +27,14 @@ class Legend{
     }
     
     createVertex(){
-        this.x = this.wf.weeks[0].view.vertex.r()+cellSpacing+100;
-        this.y = this.wf.weeks[0].view.vertex.y()+cellSpacing;
+        if(this.wf.legendCoords){
+            console.log(this.wf.legendCoords);
+            this.x = this.wf.legendCoords.x;
+            this.y = this.wf.legendCoords.y;
+        }else{
+            this.x = this.wf.weeks[0].view.vertex.r()+cellSpacing+100;
+            this.y = this.wf.weeks[0].view.vertex.y()+cellSpacing;
+        }
        var vertex =  this.graph.insertVertex(this.graph.getDefaultParent(),null,"Legend",this.x,this.y,200,44,defaultLegendStyle);
         vertex.isLegend=true;
         vertex.legend=this;

@@ -30,6 +30,7 @@ class Weekview{
         }else{
             this.graph.getModel().setValue(this.vertex,this.week.getDefaultName());
         }
+        this.week.wf.view.populateWeekBar();
     }
     
     createVertex(x,y,width){
@@ -42,6 +43,7 @@ class Weekview{
             var value1 = week.setNameSilent(value);
             if(value1!=value)week.view.graph.getModel().setValue(week.view.vertex,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
+            week.wf.view.populateWeekBar();
             
         }
         this.vertex.isWeek=true;
@@ -270,6 +272,7 @@ class Weekview{
         if(this.week.index<this.week.wf.weeks.length)this.week.wf.view.pushWeeksFast(this.week.index);
         //if we deleted all the weeks, better make a fresh one!
         if(this.week.wf.weeks.length==0)this.week.wf.createBaseWeek(this.graph);
+        this.week.wf.view.populateWeekBar();
     }
     
     insertedBelow(week){

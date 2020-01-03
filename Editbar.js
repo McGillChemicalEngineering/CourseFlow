@@ -68,7 +68,7 @@ class EditBar{
         var quillDiv2 = document.createElement('div');
         quillDiv2.style.height='200px';
         descriptionDiv.appendChild(quillDiv2);
-        toolbarOptions = [['bold','italic','underline'],[{'list':'bullet'},{'list':'ordered'}],['link']];
+        toolbarOptions = [['bold','italic','underline'],[{'script':'sub'},{'script':'super'}],[{'list':'bullet'},{'list':'ordered'}],['link'],['formula']];
         var quill2 = new Quill(quillDiv2,{
             theme: 'snow',
             modules: {
@@ -138,8 +138,7 @@ class EditBar{
         else this.textField.clipboard.dangerouslyPasteHTML("Insert a description here.","silent");
         //if(node.text!=null)this.textField.innerHTML=node.text;
         //else this.textField.innerHTML="Insert a description here.";
-        this.container.style.display="inline";
-        this.container.style.width="400px";
+        this.container.parentElement.style.display="inline";
         var iconList = node.getLeftIconList();
         if(iconList!=null){
             this.showParent(this.leftIcon);
@@ -222,8 +221,7 @@ class EditBar{
     
     disable(){
         this.node=null;
-        this.container.style.display="none";
-        this.container.style.width="0px";
+        this.container.parentElement.style.display="none";
     }
     
     fillIconSelect(iconSelect,list){

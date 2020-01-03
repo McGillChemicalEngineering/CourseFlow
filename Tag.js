@@ -32,7 +32,7 @@ class Tag {
     
     setName(name){
         if(name!=null && name!=""){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.name=name;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].updateButton();
@@ -161,7 +161,7 @@ class Tag {
     
     toXML(){
         var xml = "";
-        xml+=makeXML(this.name,"tagname");
+        xml+=makeXML(this.name,"tagname",true);
         xml+=makeXML(this.id,"tagid");
         for(var i=0;i<this.children.length;i++){
             xml+=this.children[i].toXML();
@@ -170,7 +170,7 @@ class Tag {
     }
     
     fromXML(xml){
-        this.setName(getXMLVal(xml,"tagname"));
+        this.setName(getXMLVal(xml,"tagname",true));
         this.id=getXMLVal(xml,"tagid");
         for(var i = 0;i<xml.childNodes.length;i++){
             if(xml.childNodes[i].nodeName=="tag"){

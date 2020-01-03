@@ -191,7 +191,10 @@ class Project{
                 var wf = p.workflows[p.activeWF];
                 if(wf.view instanceof Workflowview){
                     wf.makeInactive();
-                    wf.makeActive(new Outcomeview(p.container,wf));
+                    var view;
+                    if(wf instanceof Programflow)view = new ProgramOutcomeview(p.container,wf);
+                    else view = new Outcomeview(p.container,wf);
+                    wf.makeActive(view);
                 }else if(wf.view instanceof Outcomeview){
                     wf.makeInactive();
                     wf.makeActive(new Workflowview(p.container,wf));
@@ -285,7 +288,7 @@ class Project{
             if(p.activeWF!=null&&!p.container.contains(evt.target)){
                 var wf = p.workflows[p.activeWF];
                 if(wf.view==null||wf.view.graph==null)return;
-                if(!wf.view.editbar.container.contains(evt.target))wf.view.graph.clearSelection();
+                if(!wf.view.editbar.container.parentElement.contains(evt.target))wf.view.graph.clearSelection();
             }
         });
         

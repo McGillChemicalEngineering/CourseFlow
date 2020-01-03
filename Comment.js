@@ -16,12 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 class WFComment{
-    constructor(wf,x,y){
+    constructor(wf,x,y,parent=null){
         this.wf=wf;
         this.text="";
         this.x=x;
         this.y=y;
+        if(parent&&parent.view){
+            this.x=this.x-parent.view.vertex.x();
+            this.y=this.y-parent.view.vertex.y();
+        }
         this.view;
+        this.parent=parent;
     }
     
     toXML(){
@@ -29,6 +34,10 @@ class WFComment{
         xml+=makeXML(this.text,"textHTML");
         xml+=makeXML(this.x,"x");
         xml+=makeXML(this.y,"y");
+        if(this.parent){
+            if(this.parent.id)xml+=makeXML(this.parent.id,"commentparent");
+            else if(this.parent instanceof Column)xml+=makeXML(this.parent.name,"commentparent");
+        }
         return makeXML(xml,"comment");
     }
     
@@ -37,6 +46,23 @@ class WFComment{
         this.y=int(getXMLVal(xml,"y"));
         var text = getXMLVal(xml,"textHTML");
         if(text!=null)this.text=text;
+        var parent = getXMLVal(xml,"commentparent");
+        if(parent){
+            if(int(parent)==int(parent))this.setParentByID(parent);
+            else this.setColumnParent(parent);
+        }
+    }
+    
+    setParentByID(parentID){
+        this.parent = this.wf.findNodeById(parentID);
+        if(!this.parent){
+            for(var i=0;i<this.wf.weeks.length;i++)if(this.wf.weeks[i].id==parentID){this.parent=this.wf.weeks[i];return;}
+            for(var i=0;i<this.wf.brackets.length;i++)if(this.wf.brackets[i].id==parentID){this.parent=this.wf.brackets[i];return;}
+        }
+    }
+    
+    setColumnParent(parent){
+        this.parent=this.wf.columns[this.wf.getColIndex(parent)];
     }
     
     

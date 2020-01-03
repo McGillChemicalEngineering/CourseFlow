@@ -24,7 +24,10 @@ class Commentview{
     }
     
     createVertex(){
-        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',this.comment.x,this.comment.y,defaultCommentSize,defaultCommentSize,defaultCommentStyle);
+        var parent;
+        if(this.comment.parent)parent = this.comment.parent.view.vertex;
+        else parent = this.graph.getDefaultParent();
+        this.vertex = this.graph.insertVertex(parent,null,'',this.comment.x,this.comment.y,defaultCommentSize,defaultCommentSize,defaultCommentStyle);
         this.vertex.isComment=true;
         this.vertex.comment=this.comment;
         this.vertex.cellOverlays=[];
@@ -36,8 +39,11 @@ class Commentview{
         var graphWrapper = document.getElementById("graphWrapper");
         var clickDiv = document.createElement('div');
         clickDiv.className = "commentDiv";
-        clickDiv.style.left=int(com.x)+"px";
-        clickDiv.style.top=int(com.y)+"px";
+        var parentOffsetx = 0;
+        var parentOffsety = 0;
+        if(com.parent){parentOffsetx = com.parent.view.vertex.x();parentOffsety = com.parent.view.vertex.y();}
+        clickDiv.style.left=int(com.x)+parentOffsetx+"px";
+        clickDiv.style.top=int(com.y)+parentOffsety+"px";
         var textDiv=document.createElement('div');
         textDiv.innerHTML=com.text;
         clickDiv.appendChild(textDiv);

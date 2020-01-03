@@ -27,7 +27,7 @@ class Week {
     
     setNameSilent(name){
         if(name!=null && name!=""){
-            name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
             this.name=name;
             return name;
         }else{
@@ -53,7 +53,7 @@ class Week {
     toXML(){
         var xml = "";
         xml+=makeXML(this.id,"weekid");
-        if(this.name!=null)xml+=makeXML(this.name,"weekname");
+        if(this.name!=null)xml+=makeXML(this.name,"weekname",true);
         for(var i=0;i<this.nodes.length;i++){
             xml+=this.nodes[i].toXML();
         }
@@ -64,7 +64,7 @@ class Week {
         var graph = this.graph;
         var wf = this.wf;
         this.id = getXMLVal(xmlData,"weekid");
-        var name = getXMLVal(xmlData,"weekname");
+        var name = getXMLVal(xmlData,"weekname",true);
         if(name!=null)this.setName(name);
         var xmlnodes = xmlData.getElementsByTagName("node");
         for(var i=0;i<xmlnodes.length;i++){

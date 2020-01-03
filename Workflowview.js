@@ -23,6 +23,7 @@ class Workflowview{
         this.graph;
         this.tagBarDiv;
         this.nodeBarDiv;
+        this.weekSelect;
         this.bracketBarDiv;
         this.tagSelect;
         this.legend;
@@ -60,7 +61,7 @@ class Workflowview{
         var parent = graph.getDefaultParent();
         var minimap = document.getElementById('outlineContainer');
         
-        this.toolbarDiv = document.getElementById('nbContainer');
+        this.toolbarDiv = document.getElementById('nbWrapper');
         
         //create views for the tags
         for(var i=0;i<this.wf.tagSets.length;i++){
@@ -138,7 +139,7 @@ class Workflowview{
     
     makeInactive(){
         while(this.toolbarDiv.firstChild)this.toolbarDiv.removeChild(this.toolbarDiv.firstChild);
-        this.toolbarDiv.style.display="none";
+        this.toolbarDiv.parentElement.style.display="none";
         this.graph.stopEditing(false);
         this.graph.clearSelection();
         for(var i=0;i<this.wf.tagSets.length;i++){
@@ -257,6 +258,7 @@ class Workflowview{
         else week.view = new Weekview(this.graph,week);
         week.view.createVertex(cellSpacing,0,this.weekWidth);
         week.view.makeFlushWithAbove(this.wf.weeks.indexOf(week));
+        this.populateWeekBar();
     }
     
     pushWeeks(startIndex){
@@ -288,6 +290,7 @@ class Workflowview{
     weeksSwapped(week,week2,direction){
         week.view.moveWeek(week2.view.vertex.h()*direction);
         week2.view.moveWeek(-week.view.vertex.h()*direction);
+        this.populateWeekBar();
     }
     
     //A significantly faster version of this function, which first computes what must be moved, then moves it all at once in a single call to moveCells
@@ -368,15 +371,27 @@ class Workflowview{
         if(this.legend!=null)this.legend.update(category,newval,oldval);
     }
     
+    scrollToWeek(week){
+        if(week.view&&week.view.vertex)this.scrollToVertex(week.view.vertex);
+    }
+    
+    scrollToVertex(vertex){
+        var newy = vertex.y();
+        console.log(this.container);
+        console.log(newy);
+        document.getElementsByTagName("BODY")[0].scrollTo(0,newy);
+    }
+    
     
     //Executed when we generate all the toolbars
     generateToolbars(){
         var container = this.toolbarDiv;
-        if(this.wf.project.readOnly)container.style.display="none";
-        else container.style.display="inline";
+        if(this.wf.project.readOnly)container.parentElement.style.display="none";
+        else container.parentElement.style.display="inline";
         while(container.firstChild)container.removeChild(container.firstChild);
-        makeResizable(container,"left");
+        makeResizable(container.parentElement,"left");
         this.generateNodeBar(container);
+        if(this.wf instanceof Courseflow || this.wf instanceof Programflow)this.generateWeekBar(container);
         this.generateBracketBar(container);
         this.generateTagBar(container);
     }
@@ -392,6 +407,27 @@ class Workflowview{
         this.toolbarDiv.appendChild(this.nodeBarDiv);
         
         this.populateNodeBar();
+    }
+    
+    generateWeekBar(){
+        var header = document.createElement('h3');
+        //header.className="nodebarh3";
+        header.style.after="";
+        header.innerHTML="Jump To:";
+        this.toolbarDiv.appendChild(header);
+        this.weekSelect = document.createElement('select');
+        this.toolbarDiv.appendChild(this.weekSelect);
+        var wfv = this;
+        var weekSelect = this.weekSelect;
+        this.weekSelect.onchange = function(){
+            if(weekSelect.value!=""){
+                var index = int(weekSelect.value);
+                if(wfv.wf.weeks.length>index)wfv.scrollToWeek(wfv.wf.weeks[index]);
+                weekSelect.selectedIndex=0;
+            }
+        }
+        this.populateWeekBar();
+        
     }
     
     
@@ -488,6 +524,25 @@ class Workflowview{
         var allColumns = this.wf.getPossibleColumns();
         for(var i=0;i<allColumns.length;i++){
             var button = this.addNodebarItem(this.nodeBarDiv,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this.wf),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
+            button.style.borderColor=allColumns[i].colour;
+            button.style.borderWidth='3px';
+        }
+    }
+    
+    populateWeekBar(){
+        if(this.weekSelect==null)return;
+        while(this.weekSelect.length>0)this.weekSelect.remove(0);
+        var opt = document.createElement('option');
+        opt.text="Jump to...";
+        opt.value="";
+        this.weekSelect.appendChild(opt);
+        for(var i=0;i<this.wf.weeks.length;i++){
+            var week = this.wf.weeks[i];
+            var opt = document.createElement('option');
+            if(week.name)opt.text=week.name;
+            else opt.text=week.getDefaultName();
+            opt.value=i;
+            this.weekSelect.appendChild(opt);
         }
     }
     
@@ -699,8 +754,13 @@ class Workflowview{
             while (graph.isPart(cell)){cell=cell.getParent();}
         }
         menu.addItem('Add Comment','resources/images/comment24.png',function(){
+            var comparent =null;
+            if(cell)if(cell.isNode)comparent=cell.node;
+            else if(cell.isBracket)comparent=cell.bracket;
+            else if(cell.isHead)comparent=cell.column;
+            else if(cell.isWeek)comparent=cell.week;
             var style = getComputedStyle(document.getElementById("graphWrapper"));
-            var com = new WFComment(wf,evt.pageX-int(style.left)-graph.view.getTranslate().x,evt.pageY-int(style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y);
+            var com = new WFComment(wf,evt.pageX-int(style.left)-graph.view.getTranslate().x,evt.pageY-int(style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y,comparent);
             com.view = new Commentview(graph,com);
             com.view.createVertex();
             wf.addComment(com);
@@ -771,11 +831,11 @@ class Workflowview{
         var minimap = document.getElementById('outlineContainer');
         var outln = new mxOutline(graph, minimap);
         
-        var ebContainer = document.getElementById('ebContainer');
-        makeResizable(ebContainer,"left");
+        var ebContainer = document.getElementById('ebWrapper');
+        makeResizable(ebContainer.parentElement,"left");
         //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
-        ebContainer.style.zIndex='3';
-        ebContainer.style.width = '0px';
+        ebContainer.parentElement.style.zIndex='3';
+        ebContainer.parentElement.style.width = '400px';
         
         var editbar = new EditBar(ebContainer,this.wf);
         editbar.disable();
@@ -825,7 +885,9 @@ class Workflowview{
                 if(y>wf.weeks[wf.weeks.length-1].view.vertex.b()+200)dy=wf.weeks[wf.weeks.length-1].view.vertex.b()+200-comment.y;
                 comment.x+=dx;
                 comment.y+=dy;
-                return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,target,evt,mapping]);
+                console.log(cells[0].parent);
+                var parent = cells[0].parent;
+                return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,parent,evt,mapping]);
             }
             if(evt!=null && (evt.type=='mouseup' || evt.type=='pointerup' || evt.type=='ontouchend')){
                 dx=0;dy=0;
