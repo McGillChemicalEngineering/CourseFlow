@@ -42,12 +42,17 @@ class Tag {
     }
 
     makeActive(view){
-        this.isActive=true;
-        this.view = view;
-        for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].makeActive();
+        try{
+            this.isActive=true;
+            this.view = view;
+            for(var i=0;i<this.buttons.length;i++){
+                this.buttons[i].makeActive();
+            }
+            this.view.makeActive();
+        }catch(err){
+            alert("Oops! The outcome could not be opened.");
+            gaError("Outcome",err);
         }
-        this.view.makeActive();
     }
     
     makeInactive(){

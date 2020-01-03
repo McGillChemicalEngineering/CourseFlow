@@ -248,3 +248,28 @@ function makeResizable(div,direction){
     });
     div.appendChild(handle);
 }
+
+
+/*Send an event to Google Analytics.
+Categories: 
+    Save/Open
+    Workflow
+    Outcome
+    Node
+    Bracket
+    Column
+    Week
+    Comment
+    Outcome
+    View
+*/
+function gaEvent(category,action,label,value){
+    ga('send','event',category,action,label,value);
+}
+
+function gaError(source,err){
+    var errormessage = err.name+": "+err.message;
+    if(err.fileName)errormessage+=" file "+err.fileName;
+    if(err.lineNumber)errormessage+=" line "+err.lineNumber;
+    ga('send','event','Error',source,errormessage);
+}

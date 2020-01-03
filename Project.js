@@ -85,6 +85,7 @@ class Project{
         newWF.onclick= function(){
             var type = newWFSelect.value;
             p.addWorkflow(type);
+            gaEvent('Workflow','Add',type,p.workflows.length);
             p.changeActive(p.workflows.length-1)
         }
         this.newWFButton = newWF;
@@ -94,6 +95,7 @@ class Project{
         newComp.innerHTML="Create New";
         newComp.onclick = function(){
             p.addCompetency();
+            gaEvent('Outcome','Add','',p.competencies.length);
             p.changeActive(p.competencies.length-1,false);
         }
         this.newCompButton = newComp;
@@ -110,7 +112,13 @@ class Project{
         
         var save = document.getElementById('save');
         save.onclick = function(){
-            p.saveProject();
+            try{
+                gaEvent('Save/Open','Save',p.name,p.workflows.length+p.comepetencies.length);
+                p.saveProject();
+            }catch(err){
+                alert("Oops! The file could not be saved.");
+                gaError("Save",err);
+            }
         }
         
         var duplicateWF = document.getElementById('duplicatewf');
@@ -124,8 +132,13 @@ class Project{
             reader.readAsText(p.fileLoader.files[0]);
             reader.onload = function(evt){
                 var readData = evt.target.result;
-                p.fromXML(readData,p.loadAppend);
-
+                try{
+                    p.fromXML(readData,p.loadAppend);
+                    gaEvent('Save/Open','Open',p.name,p.workflows.length+p.comepetencies.length);
+                }catch(err){
+                    alert("Oops! The file could not be opened.");
+                    gaError("Open",err);
+                }
             }
         }
         
@@ -142,6 +155,7 @@ class Project{
         
         var exportWF = document.getElementById('export');
         exportWF.onclick = function(){
+            gaEvent('Save/Open','Export',p.name,p.workflows.length+p.comepetencies.length);
             p.exportCurrent();
         }
         
@@ -150,29 +164,42 @@ class Project{
             if(p.readOnly)return;
             p.loadAppend=true;
             p.fileLoader.click();
+            gaEvent('Save/Open','Import',p.name,p.workflows.length+p.comepetencies.length);
         }
         
         var saveReadOnly = document.getElementById('savereadonly');
         saveReadOnly.onclick = function(){
+            gaEvent('Save/Open','Save Read Only',p.name,p.workflows.length+p.comepetencies.length);
             p.saveProject(true);
         }
         
         var printWF = document.getElementById("print");
         printWF.onclick = function(){
             p.printActiveWF();
+            gaEvent('Save/Open','Print',p.name,p.workflows.length+p.comepetencies.length);
         }
         
         var undoButton = document.getElementById("undo");
         undoButton.onclick = function(){
             if(p.activeWF!=null&&!p.readOnly){
-                p.workflows[p.activeWF].undo();
+                try{
+                    p.workflows[p.activeWF].undo();
+                }catch(err){
+                    alert("Oops! Something went wrong with the undo function.");
+                    gaError('Undo',err);
+                }
             }
         }
         
         var redoButton = document.getElementById("redo");
         redoButton.onclick = function(){
             if(p.activeWF!=null&&!p.readOnly){
-                p.workflows[p.activeWF].redo();
+                try{
+                    p.workflows[p.activeWF].redo();
+                }catch(err){
+                    alert("Oops! Something went wrong with the redo function.");
+                    gaError('Undo',err);
+                }
             }
         }
         
@@ -189,6 +216,7 @@ class Project{
         outcomeView.onclick = function(){
             if(p.activeWF!=null){
                 var wf = p.workflows[p.activeWF];
+                gaEvent('View','Outcomes Toggled',wf.getType(),wf.tagSets.length);
                 if(wf.view instanceof Workflowview){
                     wf.makeInactive();
                     var view;
@@ -638,6 +666,7 @@ class Project{
     }
     
     showHelp(url){
+        gaEvent('View','Help',url,this.workflows.length+this.comepetencies.length);
         var helpFrame = document.getElementById("helpFrame");
         helpFrame.src = "resources/helpdocs/"+url;
         helpFrame.parentElement.classList.add("active");

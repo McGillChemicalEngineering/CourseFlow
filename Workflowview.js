@@ -562,10 +562,12 @@ class Workflowview{
                 graph.stopEditing(false);
                 if(cell!=null&&graph.isPart(cell))cell=graph.getModel().getParent(cell);
                 if(cell!=null && cell.isNode){
+                    gaEvent('Bracket','Add to Node',wf.name,wf.brackets.length);
                     wf.addBracket(strategy,cell.node);
                     wf.makeUndo("Add Bracket",strategy);
                 }
                 if(cell!=null&&cell.isWeek){
+                    gaEvent('Bracket','Add to Week',wf.name,wf.brackets.length);
                     var xml = findStrategyXML(strategy);
                     var startIndex = cell.week.view.getNextIndexFromPoint(y);
                     makeLoad(function(){

@@ -290,27 +290,32 @@ class Workflow{
     }
     
     makeActive(view){
-        this.isActive=true;
-        for(var i=0;i<this.buttons.length;i++){
-            this.buttons[i].makeActive();
-            //uncommenting this line will allow all parents of the activated workflow to automatically expand
-            //this.activateParents(this.buttons[i],true);
+        try{
+            this.isActive=true;
+            for(var i=0;i<this.buttons.length;i++){
+                this.buttons[i].makeActive();
+                //uncommenting this line will allow all parents of the activated workflow to automatically expand
+                //this.activateParents(this.buttons[i],true);
+            }
+
+            if(this.xmlData!=null){
+                this.openXMLData();
+            }else{
+                this.createInitialColumns();
+                this.createBaseWeek();
+            }
+            this.view=view;
+            if(this.view)this.view.makeActive();
+
+            if(this.undoHistory.length==0){
+                this.currentUndo=-1;
+                this.addUndo("Initial",this);
+            }
+            this.undoEnabled=true;
+        }catch(err){
+            alert("Oops! The workflow could not be opened.");
+            gaError("Workflow",err);
         }
-        
-        if(this.xmlData!=null){
-            this.openXMLData();
-        }else{
-            this.createInitialColumns();
-            this.createBaseWeek();
-        }
-        this.view=view;
-        if(this.view)this.view.makeActive();
-        
-        if(this.undoHistory.length==0){
-            this.currentUndo=-1;
-            this.addUndo("Initial",this);
-        }
-        this.undoEnabled=true;
     }
     
     

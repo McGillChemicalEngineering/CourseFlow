@@ -34,6 +34,7 @@ class Outcomeview{
         this.container.style.width="";
         this.container.style.height="";
         this.toolbarDiv = document.getElementById('nbWrapper');
+        this.toolbarDiv.parentElement.style.display="inline-block";
         
         this.table = document.createElement('table');
         this.table.classList.add("outcometable");
@@ -47,6 +48,7 @@ class Outcomeview{
     }
     
     makeInactive(){
+        this.toolbarDiv.parentElement.style.display="none";
         for(var i=0;i<this.wf.tagSets.length;i++){
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
         }
