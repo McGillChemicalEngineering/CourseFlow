@@ -599,9 +599,11 @@ class OutcomeTagview{
         vertex.classList.add("expanded");
         if(this.tag)vertex.classList.add("depth"+this.tag.depth);
         parent.appendChild(vertex);
-        this.nameCell = document.createElement('td');
+        this.nameCell = document.createElement('div');
+        var cell = document.createElement('td');
+        cell.appendChild(this.nameCell);
         this.updateName()
-        vertex.appendChild(this.nameCell);
+        vertex.appendChild(cell);
         
         var expandDiv = document.createElement('div');
         expandDiv.className="expanddiv";
@@ -612,7 +614,7 @@ class OutcomeTagview{
             else {tv.expand();}
         }
         expandDiv.appendChild(this.expandIcon);
-        this.nameCell.appendChild(expandDiv);
+        cell.appendChild(expandDiv);
         if(tv.tag&&tv.tag.depth<=wf.getTagDepth()){
             var editdiv = document.createElement('div');
             editdiv.className = "deletelayoutdiv";
@@ -625,7 +627,7 @@ class OutcomeTagview{
                 }
             }
             editdiv.appendChild(unassignicon);
-            this.nameCell.appendChild(editdiv);
+            cell.appendChild(editdiv);
         }
     }
     
@@ -703,7 +705,7 @@ class OutcomeTableCell{
             var checkbox = document.createElement('input');
             checkbox.type="checkbox";
             checkbox.checked=false;
-            if(this.nodeview.isTotal){checkbox.disabled=true;checkbox.classList.add("hidden");}
+            if(this.nodeview.isTotal||!this.tag){checkbox.disabled=true;checkbox.classList.add("hidden");}
             checkbox.classList.add("outcomecheckbox");
             this.vertex.appendChild(checkbox);
             this.checkbox = checkbox;
