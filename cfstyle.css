@@ -608,6 +608,7 @@ div.highlighted{
     display:inline-block;
     overflow:hidden;
     cursor:default;
+    margin-right:400px;
 }
 
 .spacerdiv{
@@ -700,7 +701,7 @@ div.highlighted{
     position:absolute;
     white-space:normal;
     box-sizing:border-box;
-    overflow-y:hidden;
+    overflow:hidden;
     vertical-align:middle;
 }
 
@@ -728,6 +729,7 @@ div.highlighted{
 
 .outcometable td{
     width: 40px;
+    min-width:40px;
     vertical-align:middle;
     padding:8px;
     
@@ -759,6 +761,7 @@ div.highlighted{
 
 .outcometable .emptycell{
     width:60px;
+    min-width:60px;
 }
 
 .outcometable .headertextwrap{
@@ -792,18 +795,19 @@ div.highlighted{
 }
 
 .outcometable tr.depth0 td:first-child{
-    font-size:20px;
-    font-weight:600;
+    font-size:18px;
+    font-weight:500;
 }
 
 .outcometable tr.depth1 td:first-child{
     border-left:20px solid white;
-    font-size:18px;
+    font-size:16px;
     font-weight:400;
 }
 
 .outcometable tr.depth2 td:first-child{
     border-left:40px solid white;
+    font-size:14px;
 }
 
 
