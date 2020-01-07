@@ -264,12 +264,12 @@ Categories:
     View
 */
 function gaEvent(category,action,label,value){
-    ga('send','event',category,action,label,value);
+    gtag('event',action,{'event_category':category,'event_label':label/*,'event_value':value*/});
 }
 
 function gaError(source,err){
     var errormessage = err.name+": "+err.message;
     if(err.fileName)errormessage+=" file "+err.fileName;
     if(err.lineNumber)errormessage+=" line "+err.lineNumber;
-    ga('send','event','Error',source,errormessage);
+    gtag('event',source,{'event_category':'Error','event_label':errormessage});
 }
