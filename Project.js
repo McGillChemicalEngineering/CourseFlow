@@ -44,6 +44,8 @@ class Project{
         $("#savereadonly").removeClass("disabled");
         $("#genhelp").removeClass("disabled");
         $("#layouthelp").removeClass("disabled");
+        $("#terminology").removeClass("disabled");
+        $("#terminologycegep").removeClass("disabled");
         
         makeResizable(this.sidenav,"right");
         
@@ -828,6 +830,13 @@ class Project{
         if(this.activeWF!=null&&this.workflows[this.activeWF].view){
             var wf = this.workflows[this.activeWF];
             wf.view.populateTagSelect(this.competencies,wf.getTagDepth());
+        }
+        if(term=="standard"){
+            $("#terminologycegep").removeClass("disabled");
+            $("#terminologystandard").addClass("disabled");
+        }else if(term=="cegep"){
+            $("#terminologycegep").addClass("disabled");
+            $("#terminologystandard").removeClass("disabled");
         }
     }
 }
