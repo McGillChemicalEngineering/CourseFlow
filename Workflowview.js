@@ -94,6 +94,12 @@ class Workflowview{
         // Installs a popupmenu handler.
         if(!this.wf.project.readOnly)graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){return wfview.createPopupMenu(menu, cell, evt);};
         
+        $("#expand").removeClass("disabled");
+        $("#collapse").removeClass("disabled");
+        $("#print").removeClass("disabled");
+        $("#showlegend").removeClass("disabled");
+        
+        
     }
     
     drawGraph(){
@@ -147,6 +153,12 @@ class Workflowview{
         }
         this.nodeBarDiv.style.display="none";
         if(this.graph!=null)this.graph.destroy();
+        
+        
+        $("#expand").addClass("disabled");
+        $("#collapse").addClass("disabled");
+        $("#print").addClass("disabled");
+        $("#showlegend").addClass("disabled");
     }
     
     createTitleNode(){
@@ -276,7 +288,7 @@ class Workflowview{
         var oldWidth= this.weekWidth;
         var weeks = this.wf.weeks;
         if(this.wf.columns.length==0)return;
-        this.weekWidth=this.wf.columns[this.wf.columns.length-1].view.pos+defaultCellWidth/2+cellSpacing;
+        this.weekWidth=this.wf.columns[this.wf.columns.length-1].view.pos+defaultCellWidth/2+cellSpacing-wfStartX;
         for(var i = 0;i<weeks.length;i++){
             if(weeks[i].view)weeks[i].view.vertex.resize(this.graph,this.weekWidth-oldWidth,0);
         }
@@ -284,7 +296,14 @@ class Workflowview{
     }
     
     weekIndexUpdated(week){
-        this.graph.setCellStyles("fillColor","#"+(0xe5e5e5+(week.index%2)*0x090909).toString(16)+";",[week.view.vertex]);
+        if(week.collapsed){
+            this.graph.setCellStyles("fontColor","#777777;",[week.view.vertex]);
+            this.graph.setCellStyles("fillColor","#bbbbbb;",[week.view.vertex]);
+        }
+        else{
+            this.graph.setCellStyles("fillColor","#"+(0xe5e5e5+(week.index%2)*0x090909).toString(16)+";",[week.view.vertex]);
+            this.graph.setCellStyles("fontColor","#000000;",[week.view.vertex]);
+        }
     }
     
     weeksSwapped(week,week2,direction){
@@ -804,6 +823,18 @@ class Workflowview{
         });
     }
     
+    expandAllNodes(expand=true){
+        var wf = this.wf;
+        for(var i=0;i<wf.weeks.length;i++){
+            var week=wf.weeks[i];
+            if(expand&&week.collapsed==expand)week.toggleCollapse();
+            for(var j=0;j<week.nodes.length;j++){
+                var node = week.nodes[j];
+                if(node.isDropped!=expand)node.toggleDropDown();
+            }
+        }
+    }
+    
     
     clearGraph(){
         while(this.wf.brackets.length>0){
@@ -864,6 +895,7 @@ class Workflowview{
         graph.constrainChildren = false;
         graph.extendParents = false;
         graph.resizeContainer=true;
+        mxConstants.HANDLE_FILLCOLOR="#DDDDFF";
         
         //display a popup menu when user right clicks on cell, but do not select the cell
         graph.panningHandler.popupMenuHandler = false;
@@ -1280,6 +1312,15 @@ class Workflowview{
         
         this.graph = graph;
         
+    }
+    
+    
+    print(){
+        var graph = this.graph;
+        if(graph==null)return;
+        var scale = mxUtils.getScaleForPageCount(1, graph)*0.9;
+        var preview = new mxPrintPreview(graph, scale,mxConstants.PAGE_FORMAT_A4_PORTRAIT);
+        preview.open();
     }
     
     

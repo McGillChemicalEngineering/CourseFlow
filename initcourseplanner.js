@@ -27,23 +27,32 @@ function main(container)
     }
     else
     {
-        
         window.onbeforeunload = function() {
           return "Are you sure you want to navigate away?";
         }
-        var project = new Project(container);
-        
-        
+        makeSplashpage(container);
     }
-        
-        
-
-
 } //End of main
 
+function makeSplashpage(container){
+    var splashpage = document.getElementById('splashpage');
+    splashpage.style.display="inline";
+    splashpage.firstElementChild.style.top='calc(50% - 160px)';
+    var newfile = document.getElementById('splashnewfile');
+    var openfile = document.getElementById('splashopenfile');
+    newfile.onclick = function(){
+        var project = new Project(container);
+        project.requestName("New Project");
+        setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
+    }
+    openfile.onclick = function(){
+        var project = new Project(container);
+        document.getElementById('open').click();
+    }
+    $('#new')[0].onclick = function(){newfile.click();}
+    $('#open')[0].onclick = function(){openfile.click();}
 
-
-
+}
 
 
 

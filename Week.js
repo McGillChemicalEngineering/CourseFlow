@@ -23,6 +23,7 @@ class Week {
         this.wf=wf;
         this.id = this.wf.project.genID();
         this.view;
+        this.collapsed=false;
     }
     
     setNameSilent(name){
@@ -54,6 +55,7 @@ class Week {
         var xml = "";
         xml+=makeXML(this.id,"weekid");
         if(this.name!=null)xml+=makeXML(this.name,"weekname",true);
+        if(this.collapsed)xml+=makeXML("true","weekcollapsed")
         for(var i=0;i<this.nodes.length;i++){
             xml+=this.nodes[i].toXML();
         }
@@ -66,6 +68,8 @@ class Week {
         this.id = getXMLVal(xmlData,"weekid");
         var name = getXMLVal(xmlData,"weekname",true);
         if(name!=null)this.setName(name);
+        var collapsed = getXMLVal(xmlData,"weekcollapsed");
+        if(collapsed)this.collapsed=collapsed;
         var xmlnodes = xmlData.getElementsByTagName("node");
         for(var i=0;i<xmlnodes.length;i++){
             var xmlnode = xmlnodes[i];
@@ -73,7 +77,7 @@ class Week {
             var node = wf.createNodeOfType(column);
             node.week = this;
             node.fromXML(xmlnode);
-            this.addNode(node);
+            this.addNodeSilent(node);
         }
     }
     
@@ -81,6 +85,8 @@ class Week {
     
     //Adds a node. If we are just switching the node, we don't need to push weeks.
     addNode(node,origin=0,index=-1){
+        console.log("NODE ADDED");
+        if(this.collapsed)this.toggleCollapse();
         if(index<0||origin<0||index>this.nodes.length-1){this.nodes.push(node);}
         else if(origin > 0) {this.nodes.splice(0,0,node);}
         else this.nodes.splice(index,0,node);
@@ -100,6 +106,7 @@ class Week {
     
     //Removes a node. If we are just switching the node, we don't need to push weeks.
     removeNode(node,origin=0){
+        if(this.collapsed)this.toggleCollapse();
         var index=this.nodes.indexOf(node);
         this.nodes.splice(index,1);
         if(this.view)this.view.nodeRemoved(node,origin,index);
@@ -167,6 +174,13 @@ class Week {
     
     columnUpdated(){return null;}
     
+    toggleCollapse(){
+        if(this.view)this.view.collapseToggled();
+        this.collapsed=(!this.collapsed);
+        if(this.view)this.wf.view.weekIndexUpdated(this);
+        this.wf.addUndo("Week Collapsed",this);
+    }
+    
     
 }
 
@@ -191,6 +205,7 @@ class Term extends Week{
     
     //Adds a node. If we are just switching the node, we don't need to push weeks.
     addNode(node,origin=0,index=-1){
+        if(this.collapsed)this.toggleCollapse();
         var col = node.column;
         if(this.nodesByColumn[col]==null)this.nodesByColumn[col]=[];
         
@@ -206,7 +221,7 @@ class Term extends Week{
     
     
     //Adds a node without pushing anything
-    addNodeSilently(node,origin=0,index=-1){
+    addNodeSilent(node,origin=0,index=-1){
         var col = node.column;
         if(this.nodesByColumn[col]==null)this.nodesByColumn[col]=[];
         
@@ -222,6 +237,7 @@ class Term extends Week{
     
     //Removes a node. If we are just switching the node, we don't need to push weeks.
     removeNode(node,origin=0){
+        if(this.collapsed)this.toggleCollapse();
         var index=this.nodes.indexOf(node);
         this.nodes.splice(index,1);
         index=this.nodesByColumn[node.column].indexOf(node);
@@ -283,6 +299,7 @@ class Term extends Week{
         var xml = "";
         xml+=makeXML(this.id,"weekid");
         if(this.name!=null)xml+=makeXML(this.name,"weekname");
+        if(this.collapsed)xml+=makeXML("true","weekcollapsed")
         for(var prop in this.nodesByColumn){
             var nodes = this.nodesByColumn[prop];
             for(var i=0;i<nodes.length;i++){

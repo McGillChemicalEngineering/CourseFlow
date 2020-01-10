@@ -111,40 +111,63 @@
                 <button class = "topdropbutton">File</button>
                 <div class="topdropdiv">
                     <a id="new">New Project</a>
-                    <a id="save"><div>Save Project</div><div class="shortcut">Ctrl+S</div></a>
+                    <a id="save" class="disabled"><div>Save Project</div><div class="shortcut">Ctrl+S</div></a>
                     <a id="open"><div>Open Project</div><div class="shortcut">Ctrl+O</div></a>
-                    <a id="export">Export Current Workflow</a>
-                    <a id="import">Import a Workflow</a>
-                    <a id="savereadonly">Save Read Only</a>
+                    <a id="export" class="disabled">Export Current Workflow</a>
+                    <a id="import" class="disabled">Import a Workflow</a>
+                    <a id="savereadonly" class="disabled">Save Read Only</a>
                 </div>
             </div>
             <div class="topdropwrapper">
                 <button class="topdropbutton">Edit</button>
                 <div class="topdropdiv">
-                    <a id="undo"><div>Undo </div><div class="shortcut">Ctrl+Z</div></a>
-                    <a id="redo"><div>Redo</div><div class="shortcut">Ctrl+Shift+Z</div></a>
-                    <a id="duplicatewf"><div>Duplicate Current Workflow</div></a>
+                    <a id="undo" class="disabled"><div>Undo </div><div class="shortcut">Ctrl+Z</div></a>
+                    <a id="redo" class="disabled"><div>Redo</div><div class="shortcut">Ctrl+Shift+Z</div></a>
+                    <a id="duplicatewf" class="disabled"><div>Duplicate Current Workflow</div></a>
                 </div>
             </div>
             <div class="topdropwrapper">
                 <button class="topdropbutton">View</button>
                 <div class="topdropdiv">
-                    <a id="expand">Expand All Nodes</a>
-                    <a id="collapse">Collapse All Nodes</a>
-                    <a id="print">Printer Friendly Version</a>
-                    <a id="showlegend">Show/Hide Legend</a>
-                    <a id="outcomeview">Toggle Outcome View</a>
+                    <a id="expand" class="disabled">Expand All</a>
+                    <a id="collapse" class="disabled">Collapse All</a>
+                    <a id="print" class="disabled">Printer Friendly Version</a>
+                    <a id="showlegend" class="disabled">Show/Hide Legend</a>
+                    <a id="outcomeview" class="disabled">Toggle Outcome View</a>
+                    <hr>
+                    <a id="terminology" class = "topdroptitle">Terminology:</a>
+                    <a id="terminologystandard" class = "topdropindent">Standard</a>
+                    <a id="terminologycegep" class = "topdropindent">CEGEP</a>
                 </div>
             </div>
             <div class="topdropwrapper">
                 <button class="topdropbutton">Help</button>
                 <div class="topdropdiv">
-                    <a id="genhelp">General Help</a>
-                    <a id="layouthelp">About the Layout</a>
+                    <a id="genhelp" class="disabled">General Help</a>
+                    <a id="layouthelp" class="disabled">About the Layout</a>
                 </div>
             </div>
         </div>
         
+    </div>
+    <div class="splashpage" id="splashpage">
+        <div class='splashwrapper'>
+            <button class='splashimgwrapper'>
+                <img src='resources/images/new_basic.svg' id='splashnewfile'>
+                <div>New Project</div>
+            </button><button class='splashimgwrapper' id='splashopenfile'>
+                <img src='resources/images/open_basic.svg'>
+                <div>Open Project</div>
+            </button>
+        </div>
+    </div>
+    <div class="splashpage renamepage" id="renamebarrier">
+        <div class='splashwrapper'>
+            <h2>New Project</h2>
+            <h3>Enter a name for your project:</h3>
+            <input type="text" class = fixedwidthinput id="renameproject">
+            <div><button class = "renamebutton" id="acceptrename">Ok</button><button class = "renamebutton" id="cancelrename">Cancel</button></div>
+        </div>
     </div>
     <div class="nodebar" id="nbContainer"><div class="nodebarwrapper" id="nbWrapper"></div>
     </div>

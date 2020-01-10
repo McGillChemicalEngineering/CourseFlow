@@ -249,6 +249,32 @@ function makeResizable(div,direction){
     div.appendChild(handle);
 }
 
+function makeInlineCopy(el){
+    var newel = document.createElement(el.tagName);
+    copyComputedStyle(el,newel);
+    for(var i=0;i<el.childNodes.length;i++){
+        //newel.appendChild(makeInlineCopy(el.childNodes[i]));
+    }
+    
+    return newel;
+}
+
+function copyComputedStyle(from,to){
+    console.log(from);
+    console.log(from.nodeType);
+    if(from.nodeType==Node.TEXT_NODE){to.innerHTML=from.innerHTML;return;}
+    var computed_style_object = window.getComputedStyle(from);
+    if(!computed_style_object) return null;
+    
+    for(property in computed_style_object)
+    {
+        console.log(property);
+        console.log(computed_style_object[property]);
+        //applying the style property to the target element
+        to.style[property] = computed_style_object[property];
+    }   
+};
+
 
 /*Send an event to Google Analytics.
 Categories: 

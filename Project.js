@@ -23,6 +23,7 @@ class Project{
         this.graph;
         this.activeWF;
         this.activeComp;
+        this.terminologySet = "standard";
         this.container=container;
         this.sidenav = document.getElementById("sidenav");
         this.layout = document.getElementById("layout");
@@ -38,6 +39,11 @@ class Project{
         this.name = "New Project";
         this.readOnly=false;
         
+        $("#save").removeClass("disabled");
+        $("#import").removeClass("disabled");
+        $("#savereadonly").removeClass("disabled");
+        $("#genhelp").removeClass("disabled");
+        $("#layouthelp").removeClass("disabled");
         
         makeResizable(this.sidenav,"right");
         
@@ -49,7 +55,8 @@ class Project{
         var nameDiv = this.nameDiv;
         nameDiv.parentElement.onclick=function(){
             if(p.readOnly)return;
-            var tempfunc = nameDiv.onclick;
+            else p.requestName("Rename Project");
+            /*var tempfunc = nameDiv.onclick;
             var name=p.name;
             if(name==null)name="";
             //create an input, on enter or exit make that the new name
@@ -65,7 +72,7 @@ class Project{
                 nameDiv.onclick=tempfunc;
                 if(nameDiv.firstElementChild.value=="")nameDiv.innerHTML=p.name;
                 else p.setName(nameDiv.firstElementChild.value);
-            });
+            });*/
         }
         var editNameDiv = document.createElement('div');
         editNameDiv.className="deletelayoutdiv";
@@ -107,6 +114,7 @@ class Project{
         newfile.onclick = function(){
             if(mxUtils.confirm("Are you sure you want to continue? You will lose any unsaved work.")){
                 p.clearProject();
+                p.requestName("New Project");
             }
         }
         
@@ -135,6 +143,18 @@ class Project{
                 try{
                     p.fromXML(readData,p.loadAppend);
                     gaEvent('Save/Open','Open',p.name,p.workflows.length+p.competencies.length);
+                    var splash = document.getElementById("splashpage");
+                    var renamebarrier = document.getElementById("renamebarrier");
+                    if(splash.style.display!="none"){
+                        splash.style.opacity=0;
+                        splash.firstElementChild.style.top="-100%";
+                        setTimeout(function(){splash.style.display="none";},500)
+                    }
+                    if(renamebarrier.style.display!="none"){
+                        renamebarrier.style.opacity=0;
+                        renamebarrier.firstElementChild.style.top="-100%";
+                        setTimeout(function(){renamebarrier.style.display="none";},500)
+                    }
                 }catch(err){
                     alert("Oops! The file could not be opened.");
                     gaError("Open",err);
@@ -175,7 +195,7 @@ class Project{
         
         var printWF = document.getElementById("print");
         printWF.onclick = function(){
-            p.printActiveWF();
+            p.printActive();
             gaEvent('Save/Open','Print',p.name,p.workflows.length+p.competencies.length);
         }
         
@@ -206,8 +226,14 @@ class Project{
         
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
-        expand.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes();})};
-        collapse.onclick = function(){if(p.activeWF!=null)makeLoad(function(){p.workflows[p.activeWF].expandAllNodes(false);})};
+        expand.onclick = function(){makeLoad(function(){
+            if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes();
+            else if(p.activeComp!=null)p.competencies[p.activeComp].expandAllNodes();
+        })};
+        collapse.onclick = function(){makeLoad(function(){
+            if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes(false);
+            else if(p.activeComp!=null)p.competencies[p.activeComp].expandAllNodes(false);
+        })};
         
         var showLegend = document.getElementById("showlegend");
         showLegend.onclick = function(){if(p.activeWF!=null&&p.workflows[p.activeWF].view)p.workflows[p.activeWF].view.showLegend();};
@@ -230,6 +256,11 @@ class Project{
                 
             }
         }
+        
+        var terminologyStandard = document.getElementById("terminologystandard");
+        var terminologyCegep = document.getElementById("terminologycegep");
+        terminologyStandard.onclick=function(){p.setTerminology("standard");}
+        terminologyCegep.onclick=function(){p.setTerminology("cegep");}
         
         var genHelp = document.getElementById("genhelp");
         genHelp.onclick = function(){p.showHelp("help.html");}
@@ -364,6 +395,7 @@ class Project{
         var xml = "";
         xml+=makeXML(wf.name,"prname");
         xml+=makeXML(this.idNum,"idnum");
+        xml+=makeXML(this.terminologySet,"terminologyset");
         xml+=wf.toXML();
         for(var i=0;i<children.length;i++){
             if(exported.indexOf(children[i])>=0)continue;
@@ -425,11 +457,12 @@ class Project{
         
     }
     
-    printActiveWF(){
-        if(this.graph==null)return;
-        var scale = mxUtils.getScaleForPageCount(1, this.graph)*0.9;
-        var preview = new mxPrintPreview(this.graph, scale,mxConstants.PAGE_FORMAT_A4_PORTRAIT);
-        preview.open();
+    printActive(){
+        console.log(this.activeWF);
+        if(this.activeWF!=null)this.workflows[this.activeWF].requestPrint();
+        else if(this.activeComp!=null)this.competencies[this.activeComp].requestPrint();
+        
+        
     }
     
     setName(name){
@@ -445,6 +478,7 @@ class Project{
         var serializer = new XMLSerializer();
         xml+=makeXML(this.name,"prname");
         xml+=makeXML(this.idNum,"idnum");
+        xml+=makeXML(this.terminologySet,"terminologyset");
         if(readOnly)xml+=makeXML("true","readonly");
         for(var i=0;i<this.workflows.length;i++){
             xml+=this.workflows[i].toXML();
@@ -463,6 +497,7 @@ class Project{
         while(this.compDiv.childElementCount>0)this.compDiv.removeChild(this.compDiv.firstElementChild);
         this.competencies=[];
         this.name="New Project";
+        this.terminologySet= "standard";
         this.nameDiv.innerHTML = this.name;
         this.idNum="0";
         
@@ -477,6 +512,8 @@ class Project{
             this.clearProject();
             this.setName(getXMLVal(xmlDoc,"prname"));
             this.idNum = int(getXMLVal(xmlDoc,"idnum"));
+            var terminology = getXMLVal(xmlDoc,"terminologyset");
+            if(terminology)this.setTerminology(terminology);
             var readOnly = getXMLVal(xmlDoc,"readonly");
             if(readOnly)this.makeReadOnly(true);
             else this.makeReadOnly(false);
@@ -741,5 +778,56 @@ class Project{
             currentIndex=endIndex;
         }
         return xmlString;
+    }
+    
+    requestName(text){
+        var p = this;
+        var renamebarrier = document.getElementById("renamebarrier");
+        var renameproject = document.getElementById("renameproject");
+        renamebarrier.firstElementChild.firstElementChild.innerHTML=text;
+        renameproject.value=p.name;
+        renamebarrier.style.display="inline";
+        renameproject.focus();
+        renamebarrier.style.opacity=1;
+        renamebarrier.firstElementChild.style.top='calc(50% - 160px)';
+        
+        
+        var rename = function(evt,cancel=false){
+            if(evt==null||(evt.key&&evt.key.toLowerCase()=='enter')){
+                if(renameproject.value!=""&&!cancel)p.setName(renameproject.value);
+                document.removeEventListener("keydown",rename);
+                renamebarrier.firstElementChild.style.top='-100%';
+                renamebarrier.style.opacity=0;
+                $("#splashpage").css('opacity',0);
+                $("#splashpage").first().css('top',"-100%");
+                setTimeout(function(){renamebarrier.style.display="none";$("#splashpage").css('display',"none")},200);
+                
+                
+            }
+        }
+        
+        document.addEventListener("keydown",rename);
+        
+        document.getElementById("acceptrename").onclick = function(){
+            rename();
+        }
+        document.getElementById("cancelrename").onclick = function(){
+            rename(null,true);
+        }
+        
+    }
+    
+    setTerminology(term){
+        if(term!=this.terminologySet){
+            var oldterm = this.terminologySet;
+            this.terminologySet = term;
+            for(var i=0;i<this.competencies.length;i++){
+                this.competencies[i].terminologyUpdated(oldterm);
+            }
+        }
+        if(this.activeWF!=null&&this.workflows[this.activeWF].view){
+            var wf = this.workflows[this.activeWF];
+            wf.view.populateTagSelect(this.competencies,wf.getTagDepth());
+        }
     }
 }

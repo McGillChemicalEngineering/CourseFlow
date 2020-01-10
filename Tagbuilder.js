@@ -29,18 +29,28 @@ class Tagbuilder{
         container.style.height="initial";
         container.style.overflow="initial";
         this.wrapperDiv = document.createElement('div');
-        this.wrapperDiv.innerHTML="<h3>Learning Outcomes:</h3><p>This page allows you to create outcomes. For an explanation of the outcomes, click here: <img src='resources/images/info32.png' width=16px id='outcomeinfo'></p>";
+        this.wrapperDiv.innerHTML="<h3 class='hideforprint'>Learning Outcomes:</h3><p class='hideforprint'>This page allows you to create outcomes. For an explanation of the outcomes, click here: <img src='resources/images/info32.png' width=16px id='outcomeinfo'></p>";
         var p = this.tag.project;
         this.wrapperDiv.className = "competencywrapper";
         container.appendChild(this.wrapperDiv);
         document.getElementById('outcomeinfo').onclick = function(){p.showHelp("outcomehelp.html");}
         
         this.makeInitialLine(this.wrapperDiv);
+        
+        
+        $("#print").removeClass("disabled");
+        $("#expand").removeClass("disabled");
+        $("#collapse").removeClass("disabled");
     }
     
     makeInactive(){
         this.clearViews();
         this.container.removeChild(this.wrapperDiv);
+        
+        
+        $("#print").addClass("disabled");
+        $("#expand").addClass("disabled");
+        $("#collapse").addClass("disabled");
     }
     
     nameUpdated(){
@@ -83,6 +93,30 @@ class Tagbuilder{
         return button.childdiv;
     }
     
+    print(){
+        var div = this.container.parentElement;
+        var newwindow = window.open('','_blank');
+        
+        newwindow.document.write('<!doctype html><html><head><title>' + document.title  + '</title>');
+        newwindow.document.write('<link rel="stylesheet" href="cfstyle.css" type="text/css" />');
+        newwindow.document.write('</head><body class="printpreview">');
+        newwindow.document.write('<h1>' + this.tag.name  + '</h1>');
+        newwindow.document.write(div.innerHTML);
+        newwindow.document.write('</body></html>');
+        //newwindow.print();
+        //newwindow.close();
+    }
+    
+    expandAllNodes(expand=true){
+        if(expand)this.button.expand();
+        else this.button.collapse();
+        for(var i=0;i<this.tag.children.length;i++)if(this.tag.children[i].view)this.tag.children[i].view.expandAllNodes(expand);
+    }
+    
+    terminologyUpdated(){
+        this.button.updateButton();
+        this.button.updateChildren();
+    }
     
     
 }

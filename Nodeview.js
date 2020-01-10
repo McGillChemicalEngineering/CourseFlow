@@ -162,9 +162,7 @@ class Nodeview{
     vertexResized(dy){
         this.resizeChild(this.textnode,dy);
         this.graph.moveCells([this.dropNode],0,dy);
-        this.node.week.view.resizeWeek(dy,0);
-        var thisIndex = this.node.week.nodes.indexOf(this.node);
-        if(thisIndex<this.node.week.nodes.length-1)this.node.week.view.pushNodesFast(thisIndex+1,-1,dy);
+        this.node.week.view.nodeResized(this.node,dy);
         for(var i=0;i<this.node.brackets.length;i++){this.node.brackets[i].view.updateVertical();}
         
     }

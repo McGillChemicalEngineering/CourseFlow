@@ -45,6 +45,11 @@ class Outcomeview{
         
         this.drawGraph();
         
+        
+        $("#print").removeClass("disabled");
+        $("#expand").removeClass("disabled");
+        $("#collapse").removeClass("disabled");
+        
     }
     
     makeInactive(){
@@ -56,6 +61,11 @@ class Outcomeview{
         this.tagViews=[];
         this.categoryViews=[];
         this.container.innerHTML="";
+        
+        
+        $("#print").addClass("disabled");
+        $("#expand").addClass("disabled");
+        $("#collapse").addClass("disabled");
     }
     
     
@@ -321,6 +331,28 @@ class Outcomeview{
         }
     }
     
+    expandAllNodes(expand=true){
+        for(var i=0;i<this.categoryViews.length;i++){
+            if(expand)this.categoryViews[i].expand();
+            else this.categoryViews[i].collapse();
+        }
+        for(var i=0;i<this.tagViews.length;i++){
+            if(expand)this.tagViews[i].expand();
+            else this.tagViews[i].collapse();
+        }
+    }
+    
+    print(){
+        var div = this.container.parentElement;
+        var newwindow = window.open('','_blank');
+        
+        newwindow.document.write('<!doctype html><html><head><title>' + document.title  + '</title>');
+        newwindow.document.write('<link rel="stylesheet" href="cfstyle.css" type="text/css" />');
+        newwindow.document.write('</head><body class="printpreview">');
+        newwindow.document.write('<h1>' + this.wf.name  + '</h1>');
+        newwindow.document.write(div.innerHTML);
+        newwindow.document.write('</body></html>');
+    }
     
 }
 
@@ -632,6 +664,7 @@ class OutcomeTagview{
     }
     
     expand(){
+        if(this.tag==null)return;
         this.vertex.classList.add("expanded");
         this.showTag();
         this.expandIcon.src="resources/images/minus16.png";
@@ -660,6 +693,7 @@ class OutcomeTagview{
     }
     
     collapse(){
+        if(this.tag==null)return;
         this.vertex.classList.remove("expanded");
         for(var i=0;i<this.tag.children.length;i++){
             if(this.tag.children[i].view)this.tag.children[i].view.hideTag();
@@ -682,6 +716,10 @@ class OutcomeTagview{
             if(this.tag.children[i].view)this.tag.children[i].view.clearViews();
         }
         this.tag.view = null;
+    }
+    
+    terminologyUpdated(){
+        
     }
 }
 

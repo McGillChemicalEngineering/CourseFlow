@@ -22,6 +22,7 @@ class Weekview{
         this.vertex;
         this.week = week;
         this.graph = graph;
+        this.minimizeOverlay;
     }
 
     nameUpdated(){
@@ -36,7 +37,10 @@ class Weekview{
     createVertex(x,y,width){
         var name = '';
         if(this.week.name!=null)name = this.week.name;
-        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(),null,name,x,y,width,emptyWeekSize,this.getStyle());
+        var height = emptyWeekSize;
+        if(this.week.collapsed)height=48;
+        console.log(this.week.collapsed);
+        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(),null,name,x,y,width,height,this.getStyle());
         var week = this.week;
         this.vertex.valueChanged = function(value){
             if(value==week.getDefaultName())return mxCell.prototype.valueChanged.apply(this,arguments);
@@ -54,6 +58,7 @@ class Weekview{
         this.addDelOverlay();
         this.addCopyOverlay();
         this.addMoveOverlays();
+        this.addMinimizeOverlay(this.week.collapsed);
     }
     
     nodeAdded(node,origin,index){
@@ -70,6 +75,13 @@ class Weekview{
     nodeRemoved(node,origin,index){
         this.resizeWeek(-1*node.view.vertex.h()-cellSpacing,origin);
         if(index<this.week.nodes.length)this.pushNodesFast(index);
+    }
+    
+    nodeResized(node,dy){
+        if(!this.week.collapsed)this.resizeWeek(dy,0);
+        var index = this.week.nodes.indexOf(node);
+        if(index<this.week.nodes.length-1)this.pushNodesFast(index+1,-1,dy);
+        
     }
     
     /*pushNodes(startIndex,endIndex=-1){
@@ -266,6 +278,58 @@ class Weekview{
         
     }
     
+    //Add the overlay to collapse the week
+    addMinimizeOverlay(collapsed=false){
+        console.log("adding overlay");
+        var w = this.week;
+        var imgsrc = 'resources/images/minus24.png';
+        if(collapsed)imgsrc = 'resources/images/plus24.png';
+        var overlay = new mxCellOverlay(new mxImage(imgsrc, 24, 24), 'Collapse week');
+        overlay.getBounds = function(state){ //overrides default bounds
+            var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
+            bounds.y = pt.y-w.view.vertex.h()/2;
+            bounds.x = pt.x-2*bounds.width+w.view.vertex.w()/2;
+            return bounds;
+        }
+        var graph = this.graph;
+        overlay.cursor = 'pointer';
+        overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
+            w.toggleCollapse();
+        });
+        this.vertex.cellOverlays.push(overlay);
+        this.minimizeOverlay = overlay;
+        //this.graph.addCellOverlay(this.vertex, overlay);
+    }
+    
+    
+    collapseToggled(){
+        if(this.minimizeOverlay){
+            var overlaysActive = (this.graph.getCellOverlays(this.vertex)&&this.graph.getCellOverlays(this.vertex).indexOf(this.minimizeOverlay)>=0)
+            if(overlaysActive)this.graph.removeCellOverlay(this.vertex,this.minimizeOverlay);
+            this.vertex.cellOverlays.splice(this.vertex.cellOverlays.indexOf(this.minimizeOverlay),1);
+            this.addMinimizeOverlay(!this.week.collapsed);
+            if(overlaysActive)this.graph.addCellOverlay(this.vertex,this.minimizeOverlay);
+        }
+        var dy;
+        if(this.week.nodes.length==0)dy = emptyWeekSize-48;
+        else dy = this.getSizeForCollapse();
+        var mult = -1;
+        if(this.week.collapsed)mult=1;
+        this.graph.resizeCell(this.vertex,new mxGeometry(this.vertex.x(),this.vertex.y(),this.vertex.w(),this.vertex.h()+mult*dy));
+        for(var i=0;i<this.week.nodes.length;i++){
+            this.graph.cellsToggled([this.week.nodes[i].view.vertex],this.week.collapsed);
+        }
+        
+        
+        this.week.wf.view.pushWeeksFast(this.week.index+1,dy*mult)
+        
+    }
+    
+    getSizeForCollapse(){
+        return this.week.nodes[this.week.nodes.length-1].view.vertex.b()-this.week.nodes[0].view.vertex.y()+emptyWeekSize+cellSpacing-48;
+    }
+    
     deleted(){
         this.graph.removeCells([this.vertex]);
         //pull everything upward
@@ -292,8 +356,9 @@ class Weekview{
             node.view.createVertex(0,y);
             node.view.fillTags();
             node.view.columnUpdated();
+            if(week.collapsed)this.graph.toggleCells(false,[node.view.vertex]);
         }
-        if(week.nodes.length>0)this.resizeWeek(week.nodes[week.nodes.length-1].view.vertex.b()-week.nodes[0].view.vertex.y()+cellSpacing,0);
+        if(!week.collapsed&&week.nodes.length>0)this.resizeWeek(week.nodes[week.nodes.length-1].view.vertex.b()-week.nodes[0].view.vertex.y()+cellSpacing,0);
     }
     
     getStyle(){
@@ -335,6 +400,8 @@ class WFAreaview extends Weekview{
     
     addMoveOverlays(){}
     
+    addMinimizeOverlay(){}
+    
     getStyle(){
         return defaultWFAreaStyle;
     }
@@ -346,47 +413,70 @@ class Termview extends Weekview{
     nodeAdded(node,origin,index){
         var col = node.column;
         if(origin>0)this.makeFlushWithAbove(this.week.wf.weeks.indexOf(this.week));
-        if(this.getLargestColumn(col,-1)==this.week.nodesByColumn[col].length-1){
-            //pass 0 as origin to prevent making it flush (we do so automatically); we have to do this every time because we don't actually know whether or not the original week was resized
-            this.resizeWeek(node.view.vertex.h()+cellSpacing,0);
-        }
         index=this.week.nodesByColumn[col].indexOf(node);
         node.view.makeFlushWithAbove(index,col);
         if(index<this.week.nodesByColumn[col].length-1)this.pushNodesFast(index+1,-1,null,col);
+        //what used to be the largest
+        var largest = this.getLargestColumn(col,-node.view.vertex.h()-cellSpacing);
+        console.log(largest);
+        //what is the current column size
+        var newheight = this.getHeightOfCol(col);
+        console.log(newheight);
+        console.log(this.week.nodesByColumn[col]);
+        if(largest<newheight){
+            //pass 0 as origin to prevent making it flush (we do so automatically); we have to do this every time because we don't actually know whether or not the original week was resized
+            this.resizeWeek(newheight-largest,0);
+        }
     }
     
     
     nodeAddedSilently(node,origin,index){
         var col = node.column;
         if(origin>0)this.makeFlushWithAbove(this.week.wf.weeks.indexOf(this.week));
-        if(this.getLargestColumn(col,-1)==this.week.nodesByColumn[col].length-1){
-            //pass 0 as origin to prevent making it flush (we do so automatically); we have to do this every time because we don't actually know whether or not the original week was resized
-            this.resizeWeek(node.view.vertex.h()+cellSpacing,0);
-        }
         index=this.week.nodesByColumn[col].indexOf(node);
         node.view.makeFlushWithAbove(index,col);
+        //what used to be the largest
+        var largest = this.getLargestColumn(col,-node.view.vertex.h()-cellSpacing);
+        console.log(largest);
+        //what is the current column size
+        var newheight = this.getHeightOfCol(col);
+        console.log(newheight);
+        console.log(this.week.nodesByColumn[col]);
+        if(largest<newheight){
+            //pass 0 as origin to prevent making it flush (we do so automatically); we have to do this every time because we don't actually know whether or not the original week was resized
+            this.resizeWeek(newheight-largest,0);
+        }
     }
     
-    //Gets the largest column. Optionally we can add a modifier to a column's lenth (useful if we've just added a node and want to know if it USED to be the largest column, for example)
-    getLargestColumn(col=null,modifier=0){
-        var num=0;
+    //Gets the largest column. Includes a modifier to be used when, for example, we want to know what the biggest column will be after removing a node.
+    getLargestColumn(col,mod){
+        var height=0;
         for(var prop in this.week.nodesByColumn){
-            var length = this.week.nodesByColumn[prop].length;
-            if(prop==col)length+=modifier;
-            if(length>num){
-                num=length;
+            var b = this.getHeightOfCol(prop);
+            if(col==prop)b+=mod;
+            if(b>height){
+                height=b;
             }
         }
-        return num;
+        return height;
+    }
+    
+    getHeightOfCol(col){
+        var nodes = this.week.nodesByColumn[col];
+        if(nodes.length==0)return 0;
+        return nodes[nodes.length-1].view.vertex.b()+cellSpacing-nodes[0].view.vertex.y();
     }
     
     nodeRemoved(node,origin,index){
         if(origin<0)this.makeFlushWithAbove(this.week.wf.weeks.indexOf(this.week));
         var col = node.column;
-        
         if(index<this.week.nodesByColumn[col].length)this.pushNodesFast(index,-1,null,col);
-        if(this.getLargestColumn(col)==this.week.nodesByColumn[col].length){
-            this.resizeWeek(-1*node.view.vertex.h()-cellSpacing,0);
+        //The current largest column
+        var largest = this.getLargestColumn();
+        //the old height of the column
+        var oldheight = this.getHeightOfCol(col)+cellSpacing+node.view.vertex.h();
+        if(largest<oldheight){
+            this.resizeWeek(largest-oldheight,0);
         }
     }
     
@@ -467,6 +557,18 @@ class Termview extends Weekview{
     }
     
     
+    nodeResized(node,dy){
+        var prevlargest = this.getLargestColumn(node.column,-dy);
+        console.log(prevlargest);
+        var newlargest = this.getLargestColumn();
+        console.log(newlargest);
+        if(!this.week.collapsed&&newlargest!=prevlargest)this.resizeWeek(newlargest-prevlargest,0);
+        var index = this.week.nodesByColumn[node.column].indexOf(node);
+        if(index<this.week.nodesByColumn[node.column].length-1)this.pushNodesFast(index+1,-1,dy,node.column);
+        
+    }
+    
+    
     insertedBelow(week){
         this.createVertex(week.view.vertex.x(),week.view.vertex.b(),week.wf.view.weekWidth);
         //push everything downward
@@ -481,6 +583,7 @@ class Termview extends Weekview{
             var nodes = week.nodesByColumn[col];
             for(var i=0;i<nodes.length;i++){
                 var node = nodes[i];
+                console.log(node);
                 node.view = new Nodeview(this.graph,node);
                 var y;
                 if(i==0)y=week.view.vertex.y()+2*cellSpacing;
@@ -489,10 +592,24 @@ class Termview extends Weekview{
                 node.view.fillTags();
                 node.view.columnUpdated();
                 if(node.view.vertex.b()>b)b=node.view.vertex.b();
+                if(week.collapsed)this.graph.toggleCells(false,[node.view.vertex]);
             }
         }
-        
-        if(week.nodes.length>0)this.resizeWeek(b-week.nodes[0].view.vertex.y()+cellSpacing,0);
+        console.log(week.nodes);
+        if(!week.collapsed&&week.nodes.length>0)this.resizeWeek(b-week.nodes[0].view.vertex.y()+cellSpacing,0);
+    }
+    
+    
+    getSizeForCollapse(){
+        var nodesByColumn = this.week.nodesByColumn;
+        var dy=0;
+        for(var prop in nodesByColumn){
+            if(nodesByColumn[prop].length>0){
+                var y = nodesByColumn[prop][nodesByColumn[prop].length-1].view.vertex.b()-nodesByColumn[prop][0].view.vertex.y();
+                if(y>dy)dy=y;
+            }
+        }
+        return dy+emptyWeekSize+cellSpacing-48;
     }
     
     

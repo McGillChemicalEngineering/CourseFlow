@@ -17,10 +17,10 @@
 
 class Tag {
     constructor(project,parentTag){
+        this.project = project;
         if(parentTag==null)this.depth=0;
         else(this.depth = parentTag.depth+1);
         this.name=this.getDefaultName();
-        this.project = project;
         this.id = project.genID();
         this.children=[];
         this.buttons=[];
@@ -49,6 +49,8 @@ class Tag {
                 this.buttons[i].makeActive();
             }
             this.view.makeActive();
+            $("#duplicatewf").removeClass("disabled");
+            $("#export").removeClass("disabled");
         }catch(err){
             alert("Oops! The outcome could not be opened.");
             gaError("Outcome",err);
@@ -59,6 +61,8 @@ class Tag {
         for(var i=0;i<this.buttons.length;i++){
             this.buttons[i].makeInactive();
         } 
+        $("#duplicatewf").addClass("disabled");
+        $("#export").addClass("disabled");
         this.view.makeInactive();
         this.view = null;
     }
@@ -69,8 +73,8 @@ class Tag {
         }
     }
     
-    getDefaultName(){
-        return "New "+this.getType();
+    getDefaultName(term){
+        return "New "+this.getType(term);
     }
         
     addButton(container,recurse=true){
@@ -146,21 +150,42 @@ class Tag {
         this.project.changeActive(this.project.getCompIndex(this),false);
     }
     
-    getType(){
-        switch(this.depth){
+    getType(term){
+        if(!term)term = this.project.terminologySet;
+        if(term == "standard")switch(this.depth){
             case 0: return "Program Outcome";
             case 1: return "Course Outcome";
             case 2: return "Activity Outcome";
             default: return "Tag";
+        }else if(term == "cegep")switch(this.depth){
+            case 0: return "Competency";
+            case 1: return "Element of Competency";
+            case 2: return "Learning Outcome";
+            default: return "Tag";
         }
     }
     
-    getIcon(){
-        switch(this.depth){
+    getIcon(term){
+        if(!term)term = this.project.terminologySet;
+        if(term == "standard")switch(this.depth){
             case 0: return "program";
             case 1: return "course";
             case 2: return "activity";
             default: return "";
+        }else if(term == "cegep")switch(this.depth){
+            case 0: return "competency";
+            case 1: return "elementofcompetency";
+            case 2: return "learningobjective";
+            default: return "";
+        }
+    }
+    
+    terminologyUpdated(oldterm){
+        if(this.name==this.getDefaultName(oldterm))this.setName(this.getDefaultName());
+        for(var i=0;i<this.buttons.length;i++)this.buttons[i].updateButton();
+        if(this.view)this.view.terminologyUpdated();
+        for(var i=0;i<this.children.length;i++){
+            this.children[i].terminologyUpdated(oldterm);
         }
     }
     
@@ -229,6 +254,13 @@ class Tag {
     
     
     
+    requestPrint(){
+        if(this.view)this.view.print();
+    }
+    
+    expandAllNodes(expand){
+        if(this.view)this.view.expandAllNodes(expand);
+    }
     
     
 }

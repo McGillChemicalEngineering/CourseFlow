@@ -18,6 +18,7 @@
 class EditBar{
     constructor(container,wf){
         this.wf = wf;
+        this.width=400;
         var readOnly = wf.project.readOnly;
         var eb = this;
         this.container=container;
@@ -130,15 +131,25 @@ class EditBar{
     }
     
     enable(node){
+        if(this.node)this.disable();
         var eb = this;
         this.node=node;
+        var containerParent = eb.container.parentElement;
+        containerParent.style.width='0px';
+        containerParent.style.display="inline";
+        containerParent.style.transition='width 0.1s';
+        setTimeout(function(){
+            if(eb&&eb.node&&containerParent)containerParent.style.width=max(eb.width,100)+'px';
+            setTimeout(function(){
+                if(containerParent)containerParent.style.transition='none';
+            },100);
+        },10);
         if(node.name!=null)this.nameField.setText(node.name);
         else this.nameField.setText("<Name>");
         if(node.text!=null)this.textField.clipboard.dangerouslyPasteHTML(node.text,"silent");
         else this.textField.clipboard.dangerouslyPasteHTML("Insert a description here.","silent");
         //if(node.text!=null)this.textField.innerHTML=node.text;
         //else this.textField.innerHTML="Insert a description here.";
-        this.container.parentElement.style.display="inline";
         var iconList = node.getLeftIconList();
         if(iconList!=null){
             this.showParent(this.leftIcon);
@@ -220,8 +231,19 @@ class EditBar{
     }
     
     disable(){
-        this.node=null;
-        this.container.parentElement.style.display="none";
+        if(this.node!=null){
+            this.node=null;
+            this.width = int(this.container.parentElement.style.width);
+            console.log(this.width);
+            this.container.parentElement.style.transition='width 0.1s';
+            this.container.parentElement.style.width='0px';
+            var eb=this;
+            var containerParent = eb.container.parentElement;
+            setTimeout(function(){
+                if(eb&&eb.container&&eb.node==null)eb.container.parentElement.style.display="none";
+                if(containerParent)containerParent.style.transition='none';
+            },200);
+        }
     }
     
     fillIconSelect(iconSelect,list){

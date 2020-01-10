@@ -205,6 +205,11 @@ class Tagview{
         
     }
     
+    terminologyUpdated(){
+        for(var i=0;i<this.drops.length;i++){this.drops[i].updateButton();this.drops[i].updateChildren();}
+        
+    }
+    
     
     
 }

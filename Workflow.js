@@ -311,6 +311,11 @@ class Workflow{
                 this.currentUndo=-1;
                 this.addUndo("Initial",this);
             }
+            $("#outcomeview").removeClass("disabled");
+            $("#duplicatewf").removeClass("disabled");
+            $("#export").removeClass("disabled");
+            if(this.currentUndo>0)$("#undo").removeClass("disabled");
+            if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
         }catch(err){
             alert("Oops! The workflow could not be opened.");
@@ -322,6 +327,11 @@ class Workflow{
     
     makeInactive(){
         this.undoEnabled=false;
+        $("#outcomeview").addClass("disabled");
+        $("#duplicatewf").addClass("disabled");
+        $("#export").addClass("disabled");
+        $("#undo").addClass("disabled");
+        $("#redo").addClass("disabled");
         this.isActive=false;
         if(this.view)this.view.makeInactive();
         for(var i=0;i<this.buttons.length;i++){
@@ -590,12 +600,7 @@ class Workflow{
     }
     
     expandAllNodes(expand=true){
-        for(var i=0;i<this.weeks.length;i++){
-            for(var j=0;j<this.weeks[i].nodes.length;j++){
-                var node = this.weeks[i].nodes[j];
-                if(node.isDropped!=expand)node.toggleDropDown();
-            }
-        }
+        if(this.view)this.view.expandAllNodes(expand);
     }
     
     //Purge the workflow from this one
@@ -722,6 +727,7 @@ class Workflow{
         }
         this.undoHistory.push(undo);
         this.currentUndo++;
+        if(this.currentUndo>0)$("#undo").removeClass("disabled");
         this.undoEnabled=true;
     }
     
@@ -740,6 +746,8 @@ class Workflow{
                 wf.updateChildrenFromNodes();
                 if(wf.view)wf.view.makeActive();
                 wf.currentUndo--;
+                if(wf.currentUndo==0)$("#undo").addClass("disabled");
+                $("#redo").removeClass("disabled");
                 wf.undoEnabled=true;
             });
             
@@ -761,6 +769,8 @@ class Workflow{
                 wf.updateChildrenFromNodes();
                 wf.view.makeActive();
                 wf.currentUndo++;
+               if(wf.currentUndo==wf.undoHistory.length-1)$("#redo").addClass("disabled");
+               $("#undo").removeClass("disabled");
                 wf.undoEnabled=true;
             });
         }
@@ -787,7 +797,9 @@ class Workflow{
         for(i=0;i<linkedWF.length;i++)this.addChild(this.project.getWFByID(linkedWF[i]));
     }
     
-    
+    requestPrint(){
+        if(this.view)this.view.print();
+    }
     
     
     
