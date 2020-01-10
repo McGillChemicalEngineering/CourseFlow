@@ -500,6 +500,8 @@ class Project{
         this.competencies=[];
         this.name="New Project";
         this.terminologySet= "standard";
+        $("#terminologycegep").removeClass("disabled");
+        $("#terminologystandard").addClass("disabled");
         this.nameDiv.innerHTML = this.name;
         this.idNum="0";
         
@@ -829,7 +831,7 @@ class Project{
         }
         if(this.activeWF!=null&&this.workflows[this.activeWF].view){
             var wf = this.workflows[this.activeWF];
-            wf.view.populateTagSelect(this.competencies,wf.getTagDepth());
+            if(wf.view&&wf.view.tagSelect)wf.view.populateTagSelect(this.competencies,wf.getTagDepth());
         }
         if(term=="standard"){
             $("#terminologycegep").removeClass("disabled");
