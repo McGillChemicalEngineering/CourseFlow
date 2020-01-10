@@ -139,7 +139,7 @@ class EditBar{
         containerParent.style.display="inline";
         containerParent.style.transition='width 0.1s';
         setTimeout(function(){
-            if(eb&&eb.node&&containerParent)containerParent.style.width=max(eb.width,100)+'px';
+            if(eb&&eb.node&&containerParent)containerParent.style.width=Math.max(eb.width,100)+'px';
             setTimeout(function(){
                 if(containerParent)containerParent.style.transition='none';
             },100);
