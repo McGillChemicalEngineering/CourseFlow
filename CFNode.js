@@ -636,6 +636,7 @@ class WFLink{
         var portStyle = getXMLVal(xml,"portstyle");
         var text = getXMLVal(xml,"linktext",true);
         var style = getXMLVal(xml,"linkstyle");
+        console.log(targetid);
         this.id = targetid;
         this.targetNode = null;
         if(text)this.text = text;

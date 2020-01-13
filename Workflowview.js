@@ -48,6 +48,8 @@ class Workflowview{
                 if(node.autoLinkOut)node.autoLinkOut.redraw();
                 for(var k=0;k<this.wf.weeks[i].nodes[j].fixedLinksOut.length;k++){
                     var link = this.wf.weeks[i].nodes[j].fixedLinksOut[k];
+                    console.log(link);
+                    console.log(node);
                     node.view.fixedLinkAdded(link,null);
                 }
             }
@@ -396,8 +398,6 @@ class Workflowview{
     
     scrollToVertex(vertex){
         var newy = vertex.y();
-        console.log(this.container);
-        console.log(newy);
         document.getElementsByTagName("BODY")[0].scrollTo(0,newy);
     }
     
@@ -919,7 +919,6 @@ class Workflowview{
                 if(y>wf.weeks[wf.weeks.length-1].view.vertex.b()+200)dy=wf.weeks[wf.weeks.length-1].view.vertex.b()+200-comment.y;
                 comment.x+=dx;
                 comment.y+=dy;
-                console.log(cells[0].parent);
                 var parent = cells[0].parent;
                 return mxGraph.prototype.moveCells.apply(this,[cells,dx,dy,clone,parent,evt,mapping]);
             }

@@ -234,7 +234,6 @@ class EditBar{
         if(this.node!=null){
             this.node=null;
             this.width = int(this.container.parentElement.style.width);
-            console.log(this.width);
             this.container.parentElement.style.transition='width 0.1s';
             this.container.parentElement.style.width='0px';
             var eb=this;

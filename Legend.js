@@ -28,7 +28,6 @@ class Legend{
     
     createVertex(){
         if(this.wf.legendCoords){
-            console.log(this.wf.legendCoords);
             this.x = this.wf.legendCoords.x;
             this.y = this.wf.legendCoords.y;
         }else{

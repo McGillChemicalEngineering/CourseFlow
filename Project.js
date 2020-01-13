@@ -460,7 +460,6 @@ class Project{
     }
     
     printActive(){
-        console.log(this.activeWF);
         if(this.activeWF!=null)this.workflows[this.activeWF].requestPrint();
         else if(this.activeComp!=null)this.competencies[this.activeComp].requestPrint();
         
@@ -729,6 +728,7 @@ class Project{
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
             while(xmlString.indexOf("<topnode>"+replaceId+"</topnode>")>=0){xmlString = xmlString.replace("<topnode>"+replaceId+"</topnode>","<topnode>temporaryID"+id+"</topnode>");}
             while(xmlString.indexOf("<bottomnode>"+replaceId+"</bottomnode>")>=0){xmlString = xmlString.replace("<bottomnode>"+replaceId+"</bottomnode>","<bottomnode>temporaryID"+id+"</bottomnode>");}
+            while(xmlString.indexOf("<targetid>"+replaceId+"</targetid>")>=0){xmlString = xmlString.replace("<targetid>"+replaceId+"</targetid>","<targetid>temporaryID"+id+"</targetid>");}
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"fixedlinkARRAY",replaceId,""+id);
             id++;
         }

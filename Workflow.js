@@ -121,7 +121,6 @@ class Workflow{
         var legendx = int(getXMLVal(xmlData,'wflegendx'));
         var legendy = int(getXMLVal(xmlData,'wflegendy'));
         if(legendx&&legendy)this.legendCoords ={x:legendx,y:legendy};
-        console.log(this.legendCoords);
         
     }
     
@@ -182,6 +181,7 @@ class Workflow{
     getIcon(){return "";}
     
     addChild(child,recurse=true){
+        if(child==null)return;
         this.children.push(child);
         //If child is at the root level, remove its button
         if(child.buttons!=null&&child.buttons.length>0&&child.buttons[0].container.id=="layout"){
@@ -290,7 +290,7 @@ class Workflow{
     }
     
     makeActive(view){
-        try{
+        //try{
             this.isActive=true;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].makeActive();
@@ -317,10 +317,10 @@ class Workflow{
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
-        }catch(err){
-            alert("Oops! The workflow could not be opened.");
-            gaError("Workflow",err);
-        }
+        //}catch(err){
+        //    alert("Oops! The workflow could not be opened.");
+        //    gaError("Workflow",err);
+        //}
     }
     
     
@@ -490,6 +490,7 @@ class Workflow{
     }
     
     addTagSet(tag,checkParent=true){
+        if(tag==null)return;
         //Remove any children of the tag we are adding
         var allTags = tag.getAllTags([]);
         for(var i=0;i<this.tagSets.length;i++){

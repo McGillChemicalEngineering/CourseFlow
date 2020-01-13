@@ -85,7 +85,6 @@ class Week {
     
     //Adds a node. If we are just switching the node, we don't need to push weeks.
     addNode(node,origin=0,index=-1){
-        console.log("NODE ADDED");
         if(this.collapsed)this.toggleCollapse();
         if(index<0||origin<0||index>this.nodes.length-1){this.nodes.push(node);}
         else if(origin > 0) {this.nodes.splice(0,0,node);}

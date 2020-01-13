@@ -215,7 +215,6 @@ class Outcomeview{
     
     nodeAdded(node){
         if(!this.isValidNode(node))return;
-        console.log(node);
         var index = 1;
         for(var i=0;i<this.categoryViews.length;i++){
             var cv = this.categoryViews[i];
@@ -857,9 +856,7 @@ class ProgramOutcomeCategoryview extends OutcomeCategoryview{
     addNode(){
         var wf = this.wf;
         var week;
-        console.log(this.value);
         if(this.value!=null) week = wf.weeks[this.value];
-        console.log(week);
         if(week){
             var node = new CUSNode(wf);
             node.setColumn(wf.columns[0].name);

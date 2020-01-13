@@ -39,7 +39,6 @@ class Weekview{
         if(this.week.name!=null)name = this.week.name;
         var height = emptyWeekSize;
         if(this.week.collapsed)height=48;
-        console.log(this.week.collapsed);
         this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(),null,name,x,y,width,height,this.getStyle());
         var week = this.week;
         this.vertex.valueChanged = function(value){
@@ -280,7 +279,6 @@ class Weekview{
     
     //Add the overlay to collapse the week
     addMinimizeOverlay(collapsed=false){
-        console.log("adding overlay");
         var w = this.week;
         var imgsrc = 'resources/images/minus24.png';
         if(collapsed)imgsrc = 'resources/images/plus24.png';
@@ -418,11 +416,8 @@ class Termview extends Weekview{
         if(index<this.week.nodesByColumn[col].length-1)this.pushNodesFast(index+1,-1,null,col);
         //what used to be the largest
         var largest = this.getLargestColumn(col,-node.view.vertex.h()-cellSpacing);
-        console.log(largest);
         //what is the current column size
         var newheight = this.getHeightOfCol(col);
-        console.log(newheight);
-        console.log(this.week.nodesByColumn[col]);
         if(largest<newheight){
             //pass 0 as origin to prevent making it flush (we do so automatically); we have to do this every time because we don't actually know whether or not the original week was resized
             this.resizeWeek(newheight-largest,0);
@@ -437,11 +432,8 @@ class Termview extends Weekview{
         node.view.makeFlushWithAbove(index,col);
         //what used to be the largest
         var largest = this.getLargestColumn(col,-node.view.vertex.h()-cellSpacing);
-        console.log(largest);
         //what is the current column size
         var newheight = this.getHeightOfCol(col);
-        console.log(newheight);
-        console.log(this.week.nodesByColumn[col]);
         if(largest<newheight){
             //pass 0 as origin to prevent making it flush (we do so automatically); we have to do this every time because we don't actually know whether or not the original week was resized
             this.resizeWeek(newheight-largest,0);
@@ -559,9 +551,7 @@ class Termview extends Weekview{
     
     nodeResized(node,dy){
         var prevlargest = this.getLargestColumn(node.column,-dy);
-        console.log(prevlargest);
         var newlargest = this.getLargestColumn();
-        console.log(newlargest);
         if(!this.week.collapsed&&newlargest!=prevlargest)this.resizeWeek(newlargest-prevlargest,0);
         var index = this.week.nodesByColumn[node.column].indexOf(node);
         if(index<this.week.nodesByColumn[node.column].length-1)this.pushNodesFast(index+1,-1,dy,node.column);
@@ -583,7 +573,6 @@ class Termview extends Weekview{
             var nodes = week.nodesByColumn[col];
             for(var i=0;i<nodes.length;i++){
                 var node = nodes[i];
-                console.log(node);
                 node.view = new Nodeview(this.graph,node);
                 var y;
                 if(i==0)y=week.view.vertex.y()+2*cellSpacing;
@@ -595,7 +584,6 @@ class Termview extends Weekview{
                 if(week.collapsed)this.graph.toggleCells(false,[node.view.vertex]);
             }
         }
-        console.log(week.nodes);
         if(!week.collapsed&&week.nodes.length>0)this.resizeWeek(b-week.nodes[0].view.vertex.y()+cellSpacing,0);
     }
     
