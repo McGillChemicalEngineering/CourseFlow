@@ -597,7 +597,7 @@ class CUSNode extends CFNode {
         if(icon=="right"){
             if(this.wf instanceof Activityflow) return "task";
             else if(this.wf instanceof Programflow) return null;
-            else return "assessment";
+            else return null;
         }
     }
     
