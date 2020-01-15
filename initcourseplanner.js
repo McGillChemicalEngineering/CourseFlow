@@ -30,7 +30,11 @@ function main(container)
         window.onbeforeunload = function() {
           return "Are you sure you want to navigate away?";
         }
+        try{console.log(window.fileToOpen);}catch{}
+        try{console.log(fileToOpen);}catch{}
         makeSplashpage(container);
+        setTimeout(function(){try{console.log(window.fileToOpen)}catch{}});
+        setTimeout(function(){try{console.log(fileToOpen)}catch{}});
     }
 } //End of main
 
