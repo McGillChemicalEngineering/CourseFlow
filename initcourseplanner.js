@@ -33,8 +33,8 @@ function main(container)
         try{console.log(window.fileToOpen);}catch{}
         try{console.log(fileToOpen);}catch{}
         makeSplashpage(container);
-        setTimeout(function(){try{console.log(window.fileToOpen)}catch{}});
-        setTimeout(function(){try{console.log(fileToOpen)}catch{}});
+        setTimeout(function(){try{console.log(window.fileToOpen)}catch{}},3000);
+        setTimeout(function(){try{console.log(fileToOpen)}catch{}},3000);
     }
 } //End of main
 
