@@ -166,7 +166,7 @@ class Project{
         
         this.fileLoader = document.createElement("input");
         this.fileLoader.type="file";
-        this.fileLoader.accept=".xml";
+        this.fileLoader.accept=".xml,.CFlow";
         this.fileLoader.addEventListener('change',openProject);
         open.onclick = function(){
             p.loadAppend=false;
@@ -360,14 +360,14 @@ class Project{
     
     saveProject(readOnly=false){
         this.toXML(readOnly);
-        var filename = this.name;
+        var filename = this.name.replace(/[&,\[\]<>:\*\\/?|"']/g,"");
         if(readOnly)filename+="_ReadOnly";
-        filename+='.xml';
+        filename+='.CFlow';
         this.saveXML(this.xmlData,filename);
     }
     
     saveXML(xml,filename){
-        var file = new Blob([xml], {type: "data:text/xml;charset=utf-8;"});
+        var file = new Blob([xml], {type: "data:text;charset=utf-8;"});
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
@@ -405,7 +405,7 @@ class Project{
             xml+=children[i].toXML();
         }
         xml = makeXML(xml,"project");
-        var filename = wf.name+".xml";
+        var filename = wf.name+".CFlow";
         this.saveXML(xml,filename);
     }
     

@@ -30,11 +30,9 @@ function main(container)
         window.onbeforeunload = function() {
           return "Are you sure you want to navigate away?";
         }
-        try{console.log(window.fileToOpen);}catch{}
-        try{console.log(fileToOpen);}catch{}
+        console.log(window.navigator.language);
+        if(window.navigator.language.substr(0,2)=='fr')USER_LANGUAGE='fr';
         makeSplashpage(container);
-        setTimeout(function(){try{console.log(window.fileToOpen)}catch{}},3000);
-        setTimeout(function(){try{console.log(fileToOpen)}catch{}},3000);
     }
 } //End of main
 

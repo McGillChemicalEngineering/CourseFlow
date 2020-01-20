@@ -110,17 +110,17 @@ class Nodeview{
         return false;
     }
     
-    leftIconUpdated(value){
-        var oldvalue = this.node.lefticon;
-        this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),value,oldvalue);
-        if(value!=null)this.graph.setCellStyles("image",iconpath+value+"48.png",[this.lefticonnode]);
+    leftIconUpdated(oldvalue){
+        var newvalue = this.node.lefticon;
+        this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),newvalue,oldvalue);
+        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"48.png",[this.lefticonnode]);
         else this.graph.setCellStyles("image",null,[this.lefticonnode]);
     }
     
-    rightIconUpdated(value){
-        var oldvalue = this.node.righticon;
-        this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),value,oldvalue);
-        if(value!=null)this.graph.setCellStyles("image",iconpath+value+"48.png",[this.righticonnode]);
+    rightIconUpdated(oldvalue){
+        var newvalue = this.node.righticon;
+        this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),newvalue,oldvalue);
+        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"48.png",[this.righticonnode]);
         else this.graph.setCellStyles("image",null,[this.righticonnode]);
     }
 

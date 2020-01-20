@@ -89,6 +89,7 @@ makeHTML = function(text){
     return text;
 }
 
+
 //constants declaration
 const cellSpacing = 20;
 const emptyWeekSize=60;
@@ -156,11 +157,90 @@ const iconsList={
     assessment:[{text:'Exercises/Quizzes', value:'exercise'},{text:'Tests/Projects',value:'test'},{text:'Exam/Comprehensive',value:'exam'}],
     column:[{text:'Home',value:'home'},{text:'Instructor',value:'instructor'},{text:'Students',value:'noinstructor'},{text:'Activity',value:'lesson'},{text:'Assessment',value:'assessment'},{text:'Preparation',value:'homework'},{text:'Artifact',value:'artifact'},{text:'Individual',value:'solo'},{text:'Group',value:'group'},{text:'Class',value:'class'}]
 };
-
-
-      
-      
+ 
 const iconpath='resources/data/';
+
+
+//Language
+var USER_LANGUAGE = 'en';
+const LANGUAGE_TEXT = {
+    menus:{
+        file:{en:'File',fr:'Fichier'},
+        edit:{en:'Edit',fr:'Éditer'},
+        view:{en:'View',fr:'Vue'},
+        help:{en:'Help',fr:'Aide'},
+        newproject:{en:'New Project',fr:'Nouveau Projet'},
+        saveproject:{en:'Save Project',fr:'Sauver'},
+        openproject:{en:'Open Project',fr:'Ouvrir'},
+        exportwf:{en:'Export Current Workflow',fr:'Exporter'},
+        importwf:{en:'Import a Workflow',fr:'Importer'},
+        readonly:{en:'Save Read Only',fr:'Copie Lecture Seulment'},
+        undo: {en:'Undo',fr:'Annuler'},
+        redo: {en:'Redo',fr:'Refaire'},
+        duplicate:{en:'Duplicate Current Workflow',fr:""},
+        expand:{en:'Expand All',fr:""},
+        collapse:{en:'Collapse All',fr:""},
+        printerfriendly:{en:'Printer Friendly Version',fr:""},
+        legend:{en:'Show/Hide Legend',fr:""},
+        toggleoutcome:{en:'Toggle Outcome View',fr:""},
+        terminology:{en:'Terminology',fr:""},
+        terminologystandard:{en:'Standard',fr:""},
+        terminologycegep:{en:'CEGEP',fr:""},
+        genhelp:{en:'General Help',fr:""},
+        layouthelp:{en:'About the Layout',fr:""},
+        privacypolicy:{en:'Privacy Policy',fr:""}
+    },
+    layoutnav:{
+        project:'Project',
+        projectrename:'Enter a name for your project',
+        addwf:'Add Workflow',
+        outcomes:'Outcomes',
+        createnew:'Create New'
+    },
+    workflow:{
+
+    },
+    column:{
+
+    },
+    week:{
+
+    },
+    node:{
+
+    },
+    comment:{
+
+    }
+}
+
+function setMenuLanguage(){
+    $("#file").html(LANGUAGE_TEXT.menus.file[USER_LANGUAGE]);
+    $("#new").html(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
+    $("#open").html(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE]);
+    $("#save").html(LANGUAGE_TEXT.menus.saveproject[USER_LANGUAGE]);
+    $("#export").html(LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE]);
+    $("#import").html(LANGUAGE_TEXT.menus.importwf[USER_LANGUAGE]);
+    $("#savereadonly").html(LANGUAGE_TEXT.menus.savereadonly[USER_LANGUAGE]);
+    $("#edit").html(LANGUAGE_TEXT.menus.edit[USER_LANGUAGE]);
+    $("#undo").html(LANGUAGE_TEXT.menus.undo[USER_LANGUAGE]);
+    $("#redo").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#duplicatewf").html(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE]);
+    $("#view").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#expand").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#collapse").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#print").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#showlegend").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#outcomeview").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#terminology").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#terminologystandard").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#terminologycegep").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#help").html(LANGUAGE_TEXT.menus.help[USER_LANGUAGE]);
+    $("#genhelp").html(LANGUAGE_TEXT.menus.genhelp[USER_LANGUAGE]);
+    $("#layouthelp").html(LANGUAGE_TEXT.menus.layouthelp[USER_LANGUAGE]);
+    $("#privacy").html(LANGUAGE_TEXT.menus.privacypolicy[USER_LANGUAGE]);
+    
+}
 
 
 /*This function would usually be called inside the graph initialization function of Project. However, for reasons I cannot seem to understand, it simply does not work inside the scope of a class function. I therefore define the function out here and call it.*/

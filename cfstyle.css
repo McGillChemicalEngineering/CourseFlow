@@ -801,6 +801,11 @@ div.highlighted{
     bottom:0px;
 }
 
+.outcometable .nodetitle:not(.totalcell):not(.emptycell) .outcometableheadertext:hover{
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
+    border-radius: 2px;
+}
+
 .outcometable .hidden{
     visibility:collapse;
 }
@@ -912,6 +917,7 @@ div.highlighted{
 
 .outcometableheadertext{
     padding-left:20px;
+    height:100%;
 }
 
 .readonly .editlayoutdiv,.readonly .createlayoutdiv,.readonly .deletelayoutdiv{
@@ -995,6 +1001,10 @@ div.highlighted{
     width:50%;
     padding:4px;
     height:32px;
+}
+
+.ql-container{
+    border: 1px solid #cccccc;
 }
 
     

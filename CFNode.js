@@ -197,14 +197,16 @@ class CFNode {
     }
     
     setLeftIcon(value){
+        var oldvalue = this.lefticon;
         if(value=="")value=null;
-        if(this.view)this.view.leftIconUpdated(value);
         this.lefticon=value;
+        if(this.view)this.view.leftIconUpdated(oldvalue);
     }
     setRightIcon(value){
+        var oldvalue = this.righticon;
         if(value=="")value=null;
-        if(this.view)this.view.rightIconUpdated(value);
         this.righticon=value;
+        if(this.view)this.view.rightIconUpdated(oldvalue);
     }
     
     setWeek(week){
@@ -249,7 +251,7 @@ class CFNode {
             this.removeTag(this.tags[i]);
         }
         this.week.removeNode(this);
-        if(this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
+        if(this.autoLinkOut&&this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
         if(this.view)this.view.deleted();
     }
     
@@ -666,6 +668,7 @@ class WFLink{
     }
     
     redraw(){
+        console.log(this.id);
         if(this.id!=null&&this.targetNode==null) {
             this.targetNode = this.node.wf.findNodeById(this.id);
             //if the node is still null after this the connection is probably garbage (for example a connection to a node that has been destroyed).

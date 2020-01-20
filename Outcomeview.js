@@ -21,9 +21,11 @@ class Outcomeview{
         this.container = container;
         this.table;
         this.categoryViews;
+        this.headRow;
         this.tagViews;
         this.tableCells=[];
         this.toolbarDiv;
+        this.editbar;
     }
     
     nameUpdated(){
@@ -45,6 +47,14 @@ class Outcomeview{
         
         this.drawGraph();
         
+        var ebContainer = document.getElementById('ebWrapper');
+        makeResizable(ebContainer.parentElement,"left");
+        ebContainer.parentElement.style.zIndex='3';
+        ebContainer.parentElement.style.width = '400px';
+        var editbar = new EditBar(ebContainer,this.wf);
+        this.editbar = editbar;
+        
+        
         
         $("#print").removeClass("disabled");
         $("#expand").removeClass("disabled");
@@ -53,6 +63,8 @@ class Outcomeview{
     }
     
     makeInactive(){
+        this.editbar.disable();
+        
         this.toolbarDiv.parentElement.style.display="none";
         for(var i=0;i<this.wf.tagSets.length;i++){
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
@@ -106,6 +118,7 @@ class Outcomeview{
             }
         }
         table.appendChild(headRow);
+        this.headRow = headRow;
         
         var tbody = document.createElement('tbody');
         table.appendChild(tbody);
@@ -133,12 +146,20 @@ class Outcomeview{
     }
     
     updateTable(){
-        for(var i=0;i<this.tableCells.length;i++){
-            for(var j=0;j<this.tableCells[i].length;j++){
-                var tc = this.tableCells[i][j];
-                tc.validateSelf();
+        var wf = this;
+        var debouncetime = 100;
+        var prevUpdateCall = this.lastUpdateCall;
+        this.lastUpdateCall = Date.now();
+        if(prevUpdateCall&&this.lastUpdateCall-prevUpdateCall<=debouncetime)clearTimeout(this.lastUpdateTimer);
+        this.lastUpdateTimer = setTimeout(function(){
+            for(var i=0;i<wf.tableCells.length;i++){
+                for(var j=0;j<wf.tableCells[i].length;j++){
+                    var tc = wf.tableCells[i][j];
+                    tc.validateSelf();
+                }
             }
-        }
+        },debouncetime);
+        
     }
     
     createCategoryViews(){
@@ -165,18 +186,19 @@ class Outcomeview{
                 var nodes = this.categoryViews[i].nodeViews[j].nodes;
                 if(nodes.length>0)total.push(nodes[0]);
             }
-            this.categoryViews[i].nodeViews.push(new OutcomeNodeview(total,true));
+            this.categoryViews[i].nodeViews.push(new OutcomeNodeview(total,true,this.categoryViews[i]));
             grandtotal = grandtotal.concat(total);
         }
-        this.grandTotal=new OutcomeNodeview(grandtotal,true);
         this.categoryViews.push(new OutcomeCategoryview({value:"grandtotal",text:"Grand Total"},this.wf));
+        this.grandTotal=new OutcomeNodeview(grandtotal,true,this.categoryViews[this.categoryViews.length-1]);
         this.categoryViews[this.categoryViews.length-1].nodeViews.push(this.grandTotal);
         
     }
     
     addNodeView(node){
-        node.view = new OutcomeNodeview([node]);
-        this.getCategoryForNode(node).nodeViews.push(node.view);
+        var cv = this.getCategoryForNode(node);
+        node.view = new OutcomeNodeview([node],false,cv);
+        cv.nodeViews.push(node.view);
     }
             
     createTagViews(){
@@ -200,15 +222,40 @@ class Outcomeview{
         return list;
     }
     
+    insertCategory(cv){
+        var lastcv = this.categoryViews[this.categoryViews.length-1];
+        cv.createVertex();
+        this.table.insertBefore(cv.vertex,lastcv.vertex);
+        this.categoryViews.splice(this.categoryViews.length-1,0,cv);
+        cv.nodeViews[0].insertSelf(lastcv.nodeViews[0]);
+        cv.nodeViews.push(new OutcomeNodeview([],true,cv));
+        cv.nodeViews[1].insertSelf(lastcv.nodeViews[0]);
+        cv.createTableHead(lastcv.tablehead.parentElement,lastcv.tablehead);
+        
+    }
+    
+    removeCategory(cv){
+        console.log("removing category");
+        for(var i=0;i<cv.nodeViews.length;i++){
+            cv.nodeViews[i].removeSelf();
+        }
+        cv.vertex.parentElement.removeChild(cv.vertex);
+        cv.tablehead.parentElement.removeChild(cv.tablehead);
+        this.categoryViews.splice(this.categoryViews.indexOf(cv),1);
+    }
+    
     getCategoryForNode(node){
-        var category = node.lefticon;
+        var category = this.getCategoryFromNode(node);
         if(category==null)category="none";
         for(var i=0;i<this.categoryViews.length;i++){
             if(this.categoryViews[i].value==category)return this.categoryViews[i];
         }
         if(category=="none"){
-            this.categoryViews.push(new OutcomeCategoryview({text:"Uncategorized",value:"none"},this.wf));
-            return this.categoryViews[this.categoryViews.length-1];
+            var uncat = new OutcomeCategoryview({text:"Uncategorized",value:"none"},this.wf)
+            //it's possible that we are switching a node in a complete table into the uncategorized column. In this case its vertex/head need to be added, as well as its total column.
+            if(node.view)this.insertCategory(uncat);
+            else this.categoryViews.push(uncat);
+            return uncat;
         }
         return null;
     }
@@ -220,20 +267,10 @@ class Outcomeview{
             var cv = this.categoryViews[i];
             if(cv.value==this.getCategoryFromNode(node)||(cv.value=="none"&&this.getCategoryFromNode(node)==null)){
                 index+=cv.nodeViews.length-2;
-                var lastnv = cv.nodeViews[cv.nodeViews.length-1];
-                lastnv.nodes.push(node);
                 this.grandTotal.nodes.push(node);
-                var nv = new OutcomeNodeview([node]);
+                var nv = new OutcomeNodeview([node],false,cv);
                 node.view = nv;
-                nv.createVertex(lastnv.vertex.parentElement,lastnv.vertex);
-                nv.createTableHead(lastnv.tablehead.parentElement,lastnv.tablehead);
-                cv.nodeViews.splice(cv.nodeViews.length-1,0,nv);
-                cv.nodeAdded(node);
-                for(var j=0;j<this.tableCells.length;j++){
-                    var newCell = new OutcomeTableCell(this.tagViews[j].tag,nv);
-                    newCell.createVertex(this.tagViews[j].vertex,this.tableCells[j][index].vertex);
-                    this.tableCells[j].splice(index,0,newCell);
-                }
+                cv.nodeAdded(node,index);
                 break;
             }else{
                 index+=cv.nodeViews.length;
@@ -363,7 +400,7 @@ class OutcomeCategoryview{
         this.vertex;
         this.name = data.text;
         this.value = data.value;
-        this.nodeViews = [new OutcomeNodeview([])];
+        this.nodeViews = [new OutcomeNodeview([],false,this)];
         this.expandIcon=document.createElement('img');
     }
     
@@ -372,7 +409,7 @@ class OutcomeCategoryview{
         return this.vertex;
     }
     
-    createTableHead(parent){
+    createTableHead(parent,createBefore=null){
         var cv = this;
         var catHead = document.createElement('th');
         catHead.classList.add('expanded');
@@ -382,7 +419,7 @@ class OutcomeCategoryview{
         catHead.setAttribute("colspan",this.nodeViews.length);
         wrapper.innerHTML = this.name.replace(/\//g,"\/<wbr>");
         catHead.appendChild(wrapper);
-        parent.appendChild(catHead);
+        parent.insertBefore(catHead,createBefore);
         
         
         var expandDiv = document.createElement('div');
@@ -426,14 +463,37 @@ class OutcomeCategoryview{
         
     }
     
-    nodeAdded(node){
+    //The node, the overall index at which we want to place it, and the nodeview which comes directly after it - the totals column by default
+    nodeAdded(node,index,lastnv){
+        var cv = this;
+        var nv = node.view;
+        if(!lastnv)lastnv = cv.nodeViews[cv.nodeViews.length-1];
+        cv.nodeViews[cv.nodeViews.length-1].nodes.push(node);
+        cv.nodeViews.splice(cv.nodeViews.length-1,0,nv);
+        
+        
         this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))+1);
         this.tablehead.classList.add("haschildren");
+        
+        nv.insertSelf(lastnv);
+        
     }
     
-    nodeRemoved(node){
+    
+    nodeRemoved(node,index){
+        var cv = this;
+        var nv = node.view;
+        nv.removeSelf();
+        var totalview = cv.nodeViews[cv.nodeViews.length-1];
+        totalview.nodes.splice(totalview.nodes.indexOf(node),1);
+        cv.nodeViews.splice(cv.nodeViews.indexOf(node.view),1);
         this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))-1);
-        if(this.nodeViews.length<=2)this.tablehead.classList.remove("haschildren");
+        if(this.nodeViews.length<=2){
+            this.tablehead.classList.remove("haschildren");
+            if(this.value=="none")this.wf.view.removeCategory(this);
+        }
+        
+        
     }
     
     expand(){
@@ -457,22 +517,25 @@ class OutcomeCategoryview{
 }
 
 class OutcomeNodeview{
-    constructor(nodes,isTotal=false){
+    constructor(nodes,isTotal=false,cv){
         this.nodes=nodes;
         this.vertex;
         this.tablehead;
         this.textdiv;
         this.namediv;
+        this.cv = cv;
         this.isTotal=isTotal;
     }
     
     
+    
     tagRemoved(){
-        
+        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable();
     }
     
     tagAdded(){
-        
+        console.log("tag added");
+        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable();
     }
     
     createVertex(parent,createBefore=null){
@@ -492,6 +555,7 @@ class OutcomeNodeview{
         textwrapper.appendChild(this.textdiv);
         this.textdiv.classList.add("rotatedheader");
         this.namediv = document.createElement('div');
+        this.textdiv.onclick = function(evt){nv.openEditBar(evt);}
         this.namediv.classList.add("outcometableheadertext");
         this.textdiv.appendChild(this.namediv);
         if(this.isTotal){this.namediv.innerHTML = "Total";this.tablehead.classList.add("totalcell");}
@@ -518,6 +582,19 @@ class OutcomeNodeview{
             this.textdiv.appendChild(renameDiv);
         }
         parent.insertBefore(this.tablehead,createBefore);
+    }
+    
+    openEditBar(evt){
+        if(!this.isTotal&&this.nodes.length==1){
+            var node = this.nodes[0];
+            var eb = node.wf.view.editbar;
+            eb.enable(node);
+            evt.stopPropagation();
+            var listenerDestroyer = function(){document.removeEventListener("click",outsideClick);}
+            var outsideClick = function(evt2){if(eb&&!eb.container.parentElement.contains(evt2.target)){eb.disable();listenerDestroyer();console.log("click");}else if(!eb)listenerDestroyer();}
+            document.addEventListener("click",outsideClick);
+            
+        }
     }
     
     deleteClick(){
@@ -565,42 +642,103 @@ class OutcomeNodeview{
         else this.namediv.innerHTML = "New Node";
     }
     
-    leftIconUpdated(){
-        
-    }
+    leftIconUpdated(){this.categoryChanged();}
+    rightIconUpdated(){}
+    textUpdated(){}
+    linkedWFUpdated(){}
     
-    rightIconUpdated(){
-        
+    categoryChanged(){
+        console.log(this);
+        console.log(this.nodes[0]);
+        console.log("category changed");
+        var index = this.getOverallIndex();
+        var node = this.nodes[0];
+        this.cv.nodeRemoved(node,index);
+        var cv = node.wf.view.getCategoryForNode(node);
+        this.cv = cv;
+        console.log("Adding to category " + cv.name);
+        var lastnv;
+        var weeks = node.wf.weeks;
+        var weekindex = weeks.indexOf(node.week);
+        for(var i=0;i<cv.nodeViews.length;i++){
+            lastnv = cv.nodeViews[i];
+            if(lastnv.nodes.length==0)continue;
+            if(lastnv.isTotal)break;
+            if(weeks.indexOf(lastnv.nodes[0].week)>weekindex)break;
+            if(weeks.indexOf(lastnv.nodes[0].week)==weekindex&&weeks[weekindex].nodes.indexOf(lastnv.nodes[0])>weeks[weekindex].nodes.indexOf(node))break;
+            
+        }
+        if(!lastnv)return;
+        cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
+        cv.wf.view.updateTable();
     }
     
     deleted(){
         var node = this.nodes[0];
-        var index = 1;
-        var categoryViews = node.wf.view.categoryViews;
         var grandTotal = node.wf.view.grandTotal;
+        var placement = this.getOverallIndex();
+        if(placement>-1)this.cv.nodeRemoved(node,placement);
+        grandTotal.nodes.splice(grandTotal.nodes.indexOf(node),1);
+        node.wf.view.updateTable();
+        
+    }
+    
+    getOverallIndex(){
+        var categoryViews = this.cv.wf.view.categoryViews;
+        var index = 1;
         for(var i=0;i<categoryViews.length;i++){
             var cv = categoryViews[i];
-            if(cv.nodeViews.indexOf(this)>=0){
-                var totalview = cv.nodeViews[cv.nodeViews.length-1];
-                totalview.nodes.splice(totalview.nodes.indexOf(node),1);
+            if(cv==this.cv){
                 index+=cv.nodeViews.indexOf(this);
-                cv.nodeViews.splice(cv.nodeViews.indexOf(this),1);
-                cv.nodeRemoved(node);
-                this.tablehead.parentElement.removeChild(this.tablehead);
-                this.vertex.parentElement.removeChild(this.vertex);
-                grandTotal.nodes.splice(grandTotal.nodes.indexOf(node),1);
-                var tableCells = node.wf.view.tableCells;
-                for(var j=0;j<tableCells.length;j++){
-                    tableCells[j][index].vertex.parentElement.removeChild(tableCells[j][index-1].vertex);
-                    tableCells[j].splice(index-1,1);
-                }
-                break;
+                console.log(index);
+                return index;
             }else{
                 index+=cv.nodeViews.length;
             }
         }
-        node.wf.view.updateTable();
+        console.log("oopsie");
+        return -1;
         
+    }
+    
+    
+    insertSelf(lastnv){
+        var nv = this;
+        var vertexInsertBefore;
+        var headInsertBefore;
+        var vertexParent = nv.cv.vertex;
+        var headParent = nv.cv.wf.view.headRow;
+        if(lastnv){
+            if(lastnv.cv==nv.cv)vertexInsertBefore=lastnv.vertex;
+            headInsertBefore=lastnv.tablehead;
+        }
+        
+        if(nv.vertex)vertexParent.insertBefore(nv.vertex,vertexInsertBefore);
+        else nv.createVertex(vertexParent,vertexInsertBefore);
+        if(nv.tablehead)headParent.insertBefore(nv.tablehead,headInsertBefore);
+        else nv.createTableHead(headParent,headInsertBefore);
+        
+        var index = nv.getOverallIndex();
+        console.log(index);
+        var tableCells = this.cv.wf.view.tableCells;
+        var tagViews = this.cv.wf.view.tagViews;
+        for(var j=0;j<tableCells.length;j++){
+            var newCell = new OutcomeTableCell(tagViews[j].tag,nv);
+            newCell.createVertex(tagViews[j].vertex,tableCells[j][index-1].vertex);
+            tableCells[j].splice(index-1,0,newCell);
+        }
+    }
+    
+    removeSelf(){
+        var nv = this;
+        var index = nv.getOverallIndex();
+        nv.tablehead.parentElement.removeChild(nv.tablehead);
+        nv.vertex.parentElement.removeChild(nv.vertex);
+        var tableCells = this.cv.wf.view.tableCells;
+        for(var j=0;j<tableCells.length;j++){
+            tableCells[j][index].vertex.parentElement.removeChild(tableCells[j][index-1].vertex);
+            tableCells[j].splice(index-1,1);
+        }
     }
     
 }
@@ -720,6 +858,14 @@ class OutcomeTagview{
     terminologyUpdated(){
         
     }
+    
+    makeEditButton(container,node,editbar){
+        var tag = this;
+        var button = new EditBarTagButton(this.tag,container);
+        button.makeEditable(false,false,true,node);
+        button.b.onclick=null;
+        return button.childdiv;
+    }
 }
 
 class OutcomeTableCell{
@@ -752,7 +898,6 @@ class OutcomeTableCell{
                 }else{
                     node.removeTag(tag,true);
                 }
-                if(node.wf.view)node.wf.view.updateTable();
             }
             
             var validationImg = document.createElement('img');
@@ -775,7 +920,7 @@ class OutcomeTableCell{
             this.validationImg.src = "resources/images/check16.png";
         }else{
             this.checkbox.checked=false;
-            if(this.nodeview.isTotal)this.validationImg.src = "resources/images/warningcheck16.png";
+            if(completeness==0&&this.nodeview.isTotal)this.validationImg.src = "resources/images/warningcheck16.png";
             else if(completeness>0)this.validationImg.src = "resources/images/nocheck16.png";
             else this.validationImg.src = "";
         }

@@ -290,7 +290,7 @@ class Workflow{
     }
     
     makeActive(view){
-        try{
+        //try{
             this.isActive=true;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].makeActive();
@@ -317,10 +317,10 @@ class Workflow{
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
-        }catch(err){
-            alert("Oops! The workflow could not be opened.");
-            gaError("Workflow",err);
-        }
+       //}catch(err){
+        //    alert("Oops! The workflow could not be opened.");
+        //    gaError("Workflow",err);
+        //}
     }
     
     
