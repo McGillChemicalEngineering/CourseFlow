@@ -218,7 +218,7 @@ const LANGUAGE_TEXT = {
         file:{en:'File',fr:'Fichier'},
         edit:{en:'Edit',fr:'Édition'},
         view:{en:'View',fr:'Vue'},
-        language:{en:"Language",fr:"Lange"},
+        language:{en:"Language",fr:"Langue"},
         help:{en:'Help',fr:'Aide'},
         newproject:{en:'New Project',fr:'Nouveau Projet'},
         saveproject:{en:'Save Project',fr:'Enregistrer'},

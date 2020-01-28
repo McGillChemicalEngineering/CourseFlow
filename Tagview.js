@@ -103,7 +103,7 @@ class Tagview{
         for(var i=0;i<this.nodes.length;i++){
             this.nodes[i].view.highlight(on);
         }
-        if(this.tag.parentTag)this.tag.parentTag.view.updateNodeHighlight(on);
+        if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);
     }
     
     highlight(on){
@@ -153,7 +153,7 @@ class Tagview{
     }
     
     updateAncestorDrops(){
-        if(this.tag.parentTag){
+        if(this.tag.parentTag&&this.tag.parentTag.view){
             this.tag.parentTag.view.updateDrops();
             this.tag.parentTag.view.updateAncestorDrops();
         }
@@ -179,7 +179,7 @@ class Tagview{
     }
     
     validateParents(tag,col){
-        if(tag.parentTag){
+        if(tag.parentTag&&tag.parentTag.view){
             var tv = tag.parentTag.view;
             for(var i=0;i<tv.nodes.length;i++){
                 if(tv.nodes[i].column==col)return 1.0;
