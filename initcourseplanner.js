@@ -27,11 +27,15 @@ function main(container)
     }
     else
     {
-        window.onbeforeunload = function() {
-          return "Are you sure you want to navigate away?";
-        }
         console.log(window.navigator.language);
         if(window.navigator.language.substr(0,2)=='fr')USER_LANGUAGE='fr';
+        var nav = LANGUAGE_TEXT.confirm.navigate[USER_LANGUAGE]
+        window.onbeforeunload = function() {
+          return nav;
+        }
+        setMenuLanguage();
+        $("#english").bind("click",function(){USER_LANGUAGE='en';setMenuLanguage();});
+        $("#french").bind("click",function(){USER_LANGUAGE='fr';setMenuLanguage();});
         makeSplashpage(container);
     }
 } //End of main
@@ -44,7 +48,7 @@ function makeSplashpage(container){
     var openfile = document.getElementById('splashopenfile');
     newfile.onclick = function(){
         var project = new Project(container);
-        project.requestName("New Project");
+        project.requestName(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
         setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
     }
     openfile.onclick = function(){

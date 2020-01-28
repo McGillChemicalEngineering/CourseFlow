@@ -49,7 +49,7 @@ class Commentview{
         clickDiv.appendChild(textDiv);
         var inputField = document.createElement("textarea");
         var inputButton = document.createElement("button");
-        inputButton.innerHTML="Add Comment";
+        inputButton.innerHTML=LANGUAGE_TEXT.comment.addcomment[USER_LANGUAGE];
         
         
         var appendComment = function(evt2){
@@ -82,7 +82,7 @@ class Commentview{
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this.comment;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 12, 12), 'Delete this comment');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 12, 12), LANGUAGE_TEXT.comment.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -93,7 +93,7 @@ class Commentview{
         var graph = this.graph;
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            if(mxUtils.confirm("Delete this comment?")){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecomment[USER_LANGUAGE])){
                 graph.clearSelection();
                 n.deleteSelf();
                 n.wf.makeUndo("Delete Comment",n);
@@ -110,11 +110,11 @@ class Commentview{
     populateMenu(menu){
         var graph = this.graph;
         var comment=this.comment;
-        menu.addItem('Show', 'resources/images/view24.png', function(){
+        menu.addItem(LANGUAGE_TEXT.comment.show[USER_LANGUAGE], 'resources/images/view24.png', function(){
             comment.view.show();
         });
-        menu.addItem('Delete Comment','resources/images/delrect24.png',function(){
-            if(mxUtils.confirm("Delete this comment?")){
+        menu.addItem(LANGUAGE_TEXT.comment.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecomment[USER_LANGUAGE])){
                 graph.clearSelection();
                 comment.deleteSelf();
                 comment.wf.makeUndo("Delete Comment",comment);

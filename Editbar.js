@@ -22,11 +22,11 @@ class EditBar{
         var readOnly = wf.project.readOnly;
         var eb = this;
         this.container=container;
-        container.innerHTML='<h3>Edit Node</h3>';
+        container.innerHTML='<h3>'+LANGUAGE_TEXT.editbar.editnode[USER_LANGUAGE]+'</h3>';
         
         //Title div
         var nameDiv = document.createElement('div');
-        nameDiv.innerHTML = '<h4>Title:</h4>';
+        nameDiv.innerHTML = '<h4>'+LANGUAGE_TEXT.editbar.title[USER_LANGUAGE]+':</h4>';
         var quillDiv1 = document.createElement('div');
         quillDiv1.style.height='40px';
         nameDiv.appendChild(quillDiv1);
@@ -52,11 +52,11 @@ class EditBar{
         //Icons
         var iconDiv = document.createElement('div');
         var leftIconDiv = document.createElement('div');
-        leftIconDiv.innerHTML='<h4>Left Icon:</h4>';
+        leftIconDiv.innerHTML='<h4>'+LANGUAGE_TEXT.editbar.lefticon[USER_LANGUAGE]+':</h4>';
         this.leftIcon = document.createElement('select');
         leftIconDiv.appendChild(this.leftIcon);
         var rightIconDiv = document.createElement('div');
-        rightIconDiv.innerHTML='<h4>Right Icon:</h4>';
+        rightIconDiv.innerHTML='<h4>'+LANGUAGE_TEXT.editbar.righticon[USER_LANGUAGE]+':</h4>';
         this.rightIcon = document.createElement('select');
         rightIconDiv.appendChild(this.rightIcon);
         iconDiv.appendChild(leftIconDiv);
@@ -65,7 +65,7 @@ class EditBar{
         
         //description
         var descriptionDiv = document.createElement('div');
-        descriptionDiv.innerHTML='<h4>Description:</h4>';
+        descriptionDiv.innerHTML='<h4>'+LANGUAGE_TEXT.editbar.description[USER_LANGUAGE]+':</h4>';
         var quillDiv2 = document.createElement('div');
         quillDiv2.style.height='200px';
         descriptionDiv.appendChild(quillDiv2);
@@ -103,14 +103,14 @@ class EditBar{
         
         //linked wf
         var wfDiv = document.createElement('div');
-        wfDiv.innerHTML='<h4>Linked Workflow:</h4>';
+        wfDiv.innerHTML='<h4>'+LANGUAGE_TEXT.editbar.linkedwf[USER_LANGUAGE]+':</h4>';
         this.linkedWF = document.createElement('select');
         wfDiv.appendChild(this.linkedWF);
         container.appendChild(wfDiv);
         
         //tags
         var tagsDiv = document.createElement('div');
-        tagsDiv.innerHTML = '<h4>Tags:</h4>';
+        tagsDiv.innerHTML = '<h4>'+LANGUAGE_TEXT.editbar.tags[USER_LANGUAGE]+':</h4>';
         this.tagButtonsDiv = document.createElement('div');
         this.tagSelect=document.createElement('select');
         tagsDiv.appendChild(this.tagButtonsDiv);
@@ -147,7 +147,7 @@ class EditBar{
         if(node.name!=null)this.nameField.setText(node.name);
         else this.nameField.setText("<Name>");
         if(node.text!=null)this.textField.clipboard.dangerouslyPasteHTML(node.text,"silent");
-        else this.textField.clipboard.dangerouslyPasteHTML("Insert a description here.","silent");
+        else this.textField.clipboard.dangerouslyPasteHTML(LANGUAGE_TEXT.editbar.insertdescription[USER_LANGUAGE],"silent");
         //if(node.text!=null)this.textField.innerHTML=node.text;
         //else this.textField.innerHTML="Insert a description here.";
         var iconList = node.getLeftIconList();
@@ -208,7 +208,7 @@ class EditBar{
             allTags = this.node.wf.tagSets[i].getAllTags(allTags);
         }
         var opt0 = document.createElement('option');
-        opt0.text = "Select a tag to add";
+        opt0.text = LANGUAGE_TEXT.editbar.chooseone[USER_LANGUAGE];
         opt0.value="";
         this.tagSelect.add(opt0);
         for(i=0;i<allTags.length;i++){
@@ -248,12 +248,12 @@ class EditBar{
     fillIconSelect(iconSelect,list){
         while(iconSelect.length>0){iconSelect.remove(0);}
         var opt0 = document.createElement('option');
-        opt0.text = "None";
+        opt0.text = LANGUAGE_TEXT.editbar.none[USER_LANGUAGE];
         opt0.value = "";
         iconSelect.add(opt0);
         for(var i=0;i<list.length;i++){
             var opt = document.createElement('option');
-            opt.text = list[i].text;
+            opt.text = list[i].text[USER_LANGUAGE];
             opt.value = list[i].value;
             iconSelect.add(opt);
         }
@@ -262,7 +262,7 @@ class EditBar{
     fillWFSelect(list){
         while(this.linkedWF.length>0){this.linkedWF.remove(0);}
         var opt0 = document.createElement('option');
-        opt0.text = "None";
+        opt0.text = LANGUAGE_TEXT.editbar.none[USER_LANGUAGE];
         opt0.value = "";
         this.linkedWF.add(opt0);
         for(var i=0;i<list.length;i++){
@@ -272,7 +272,7 @@ class EditBar{
             this.linkedWF.add(opt);
         }
         var optNEW = document.createElement('option');
-        optNEW.text = "Create new "+this.node.getAcceptedWorkflowType();
+        optNEW.text = LANGUAGE_TEXT.editbar.createnew[USER_LANGUAGE]+" "+this.node.getAcceptedWorkflowType();
         optNEW.value = "NEW_"+this.node.getAcceptedWorkflowType();
         this.linkedWF.add(optNEW);
     }

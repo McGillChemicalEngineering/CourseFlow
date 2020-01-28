@@ -58,7 +58,7 @@ class Layoutbutton {
             for (var propt in des){
                 var s = propt;
                 if(des[propt]!=1){
-                    s=s.replace(/y$/,"ie");
+                    s=s.replace(/y$/,"ie").replace(/s$/,"");
                     s+="s";
                 }
                 text+=des[propt]+" ";

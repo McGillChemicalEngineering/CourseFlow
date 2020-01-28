@@ -34,7 +34,7 @@ class Legend{
             this.x = this.wf.weeks[0].view.vertex.r()+cellSpacing+100;
             this.y = this.wf.weeks[0].view.vertex.y()+cellSpacing;
         }
-       var vertex =  this.graph.insertVertex(this.graph.getDefaultParent(),null,"Legend",this.x,this.y,200,44,defaultLegendStyle);
+       var vertex =  this.graph.insertVertex(this.graph.getDefaultParent(),null,LANGUAGE_TEXT.legend.legend[USER_LANGUAGE],this.x,this.y,200,44,defaultLegendStyle);
         vertex.isLegend=true;
         vertex.legend=this;
         this.vertex = vertex;
@@ -95,11 +95,11 @@ class Legend{
         for(var prop in reducedList){
             var line = this.graph.insertVertex(this.vertex,null,"",20,y,this.vertex.w()-40,2,defaultBracketBarStyle+"fillColor="+SALTISEBLUE+";strokeColor="+SALTISEBLUE+";");
             y+=12;
-            var header = this.graph.insertVertex(this.vertex,null,prop[0].toUpperCase()+prop.substring(1)+" Icons:",2,y,this.vertex.w()-4,24,defaultLegendLineStyle);
+            var header = this.graph.insertVertex(this.vertex,null,LANGUAGE_TEXT.legend[prop][USER_LANGUAGE]+":",2,y,this.vertex.w()-4,24,defaultLegendLineStyle);
             y+=header.h()+2;
             this.vertices.push(header);
             for(var i=0;i<reducedList[prop].length;i++){
-                var label = this.graph.insertVertex(this.vertex,null,reducedList[prop][i].text,2,y,this.vertex.w()-4,24,defaultLegendLineStyle+"image="+iconpath+reducedList[prop][i].value+"24.png;fontColor=black;align=left;spacingLeft=40;");
+                var label = this.graph.insertVertex(this.vertex,null,reducedList[prop][i].text[USER_LANGUAGE],2,y,this.vertex.w()-4,24,defaultLegendLineStyle+"image="+iconpath+reducedList[prop][i].value+"24.png;fontColor=black;align=left;spacingLeft=40;");
                 y+=label.h()+2;
                 this.vertices.push(label);
             }

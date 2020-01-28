@@ -48,7 +48,7 @@ class Week {
     }  
     
     getDefaultName(){
-        return "Week "+(this.wf.weeks.indexOf(this)+1);
+        return LANGUAGE_TEXT.week.week[USER_LANGUAGE]+" "+(this.wf.weeks.indexOf(this)+1);
     }
     
     toXML(){
@@ -199,7 +199,7 @@ class Term extends Week{
     }
     
     getDefaultName(){
-        return "Term "+(this.wf.weeks.indexOf(this)+1);
+        return LANGUAGE_TEXT.week.term[USER_LANGUAGE]+" "+(this.wf.weeks.indexOf(this)+1);
     }
     
     //Adds a node. If we are just switching the node, we don't need to push weeks.

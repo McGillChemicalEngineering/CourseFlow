@@ -53,6 +53,7 @@ int = function(x){return parseInt(x,10);}
 //creates an xml line for the given name and value
 makeXML = function(value,name,isHTML=false){
     if(value==null)value="undefined"
+    value = purgeInvalidCharacters(""+value);
     if(isHTML||name.indexOf("HTML")>=0)value = cleanHTML(value);
     return "<"+name+">"+value+"</"+name+">\n";
 }
@@ -151,11 +152,60 @@ const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;
 
 //Icons
 const iconsList={
-    strategy:[{text:'Jigsaw',value:'jigsaw'},{text:'Peer Instruction',value:'peer-instruction'},{text:'Case Studies',value:'case-studies'},{text:'Gallery Walk',value:'gallery-walk'},{text:'Reflective Writing',value:'reflective-writing'},{text:'Two-Stage Exam',value:'two-stage-exam'},{text:'Toolkit',value:'toolkit'},{text:'One Minute Paper',value:'one-minute-paper'},{text:'Distributed Problem Solving',value:'distributed-problem-solving'},{text:'Peer Assessment',value:'peer-assessment'}],
-    context:[{text:'Individual Work',value:'solo'},{text:'Work in Groups',value:'group'},{text:'Whole Class',value:'class'},{text:'Orchestration',value:'orchestration'},{text:'Decision',value:'decision'},{text:'Resource Curation/Preparation',value:'curation'}],
-    task:[{text:'Gather Information',value:'research'},{text:'Discuss',value:'discuss'},{text:'Problem Solve',value:'problem'},{text:'Analyze',value:'analyze'},{text:'Assess/Review Peers',value:'peerreview'},{text:'Evaluate Peers',value:'evaluate'},{text:'Debate',value:'debate'},{text:'Game/Roleplay',value:'play'},{text:'Create/Design',value:'create'},{text:'Revise/Improve',value:'practice'},{text:'Read',value:'reading'},{text:'Write',value:'write'},{text:'Present',value:'present'},{text:'Experiment/Inquiry',value:'experiment'},{text:'Quiz/Test',value:'quiz'},{text:'Other',value:'other'}],
-    assessment:[{text:'Exercises/Quizzes', value:'exercise'},{text:'Tests/Projects',value:'test'},{text:'Exam/Comprehensive',value:'exam'}],
-    column:[{text:'Home',value:'home'},{text:'Instructor',value:'instructor'},{text:'Students',value:'noinstructor'},{text:'Activity',value:'lesson'},{text:'Assessment',value:'assessment'},{text:'Preparation',value:'homework'},{text:'Artifact',value:'artifact'},{text:'Individual',value:'solo'},{text:'Group',value:'group'},{text:'Class',value:'class'}]
+    strategy:[
+        {text:{en:'Jigsaw',fr:"Jigsaw (fr)"},value:'jigsaw'},
+        {text:{en:'Peer Instruction',fr:"PI (fr)"},value:'peer-instruction'},
+        {text:{en:'Case Studies',fr:"Case Studies (fr)"},value:'case-studies'},
+        {text:{en:'Gallery Walk',fr:"Gallery Wakl (fr)"},value:'gallery-walk'},
+        {text:{en:'Reflective Writing',fr:"RW (fr)"},value:'reflective-writing'},
+        {text:{en:'Two-Stage Exam',fr:"Two-Stage (fr)"},value:'two-stage-exam'},
+        {text:{en:'Toolkit',fr:"Tolkit(fr)"},value:'toolkit'},
+        {text:{en:'One Minute Paper',fr:"One Minute Paper (fr)"},value:'one-minute-paper'},
+        {text:{en:'Distributed Problem Solving',fr:"DPS (fr)"},value:'distributed-problem-solving'},
+        {text:{en:'Peer Assessment',fr:"Peer Assessment (fr)"},value:'peer-assessment'}
+    ],
+    context:[
+        {text:{en:'Individual Work',fr:"Travail Individuel"},value:'solo'},
+        {text:{en:'Work in Groups',fr:"Travail en Groupe"},value:'group'},
+        {text:{en:'Whole Class',fr:"Classe"},value:'class'},
+        {text:{en:'Orchestration',fr:"Orchestration"},value:'orchestration'},
+        {text:{en:'Decision',fr:"Décision"},value:'decision'},
+        {text:{en:'Resource Curation/Preparation',fr:"Préparation Des Ressources"},value:'curation'}
+    ],
+    task:[{text:{en:'Gather Information',fr:"Collecter Des Informations"},value:'research'},
+          {text:{en:'Discuss',fr:"Discuter"},value:'discuss'},
+          {text:{en:'Problem Solve',fr:"Résolution de Problèmes"},value:'problem'},
+          {text:{en:'Analyze',fr:"Analyser"},value:'analyze'},
+          {text:{en:'Assess/Review Peers',fr:"Examiner Ses Pairs"},value:'peerreview'},
+          {text:{en:'Evaluate Peers',fr:"Évaluer Ses Pairs"},value:'evaluate'},
+          {text:{en:'Debate',fr:"Débat"},value:'debate'},
+          {text:{en:'Game/Roleplay',fr:"Jeu"},value:'play'},
+          {text:{en:'Create/Design',fr:"Créer/Concevoir"},value:'create'},
+          {text:{en:'Revise/Improve',fr:"Réviser/Améliorer"},value:'practice'},
+          {text:{en:'Read',fr:"Lire"},value:'reading'},
+          {text:{en:'Write',fr:"Écrire"},value:'write'},
+          {text:{en:'Present',fr:"Présentation"},value:'present'},
+          {text:{en:'Experiment/Inquiry',fr:"Expérience/Enquête"},value:'experiment'},
+          {text:{en:'Quiz/Test',fr:"Quiz/Test"},value:'quiz'},
+          {text:{en:'Other',fr:"Autre"},value:'other'}
+         ],
+    assessment:[
+        {text:{en:'Exercises/Quizzes',fr:"Exercices/Quiz"}, value:'exercise'},
+        {text:{en:'Tests/Projects',fr:"Tests/Projets"},value:'test'},
+        {text:{en:'Exam/Comprehensive',fr:"Examen/Complet"},value:'exam'}
+    ],
+    column:[
+        {text:{en:'Home',fr:"Hors Classe"},value:'home'},
+        {text:{en:'Instructor',fr:"Instructeur"},value:'instructor'},
+        {text:{en:'Students',fr:"Étudiants"},value:'noinstructor'},
+        {text:{en:'Activity',fr:"Activité"},value:'lesson'},
+        {text:{en:'Assessment',fr:"Évaluation"},value:'assessment'},
+        {text:{en:'Preparation',fr:"Préparation"},value:'homework'},
+        {text:{en:'Artifact',fr:"Artefact"},value:'artifact'},
+        {text:{en:'Individual',fr:"Individuel"},value:'solo'},
+        {text:{en:'Group',fr:"Groupe"},value:'group'},
+        {text:{en:'Class',fr:"Classe"},value:'class'}
+    ]
 };
  
 const iconpath='resources/data/';
@@ -166,80 +216,253 @@ var USER_LANGUAGE = 'en';
 const LANGUAGE_TEXT = {
     menus:{
         file:{en:'File',fr:'Fichier'},
-        edit:{en:'Edit',fr:'Éditer'},
+        edit:{en:'Edit',fr:'Édition'},
         view:{en:'View',fr:'Vue'},
+        language:{en:"Language",fr:"Lange"},
         help:{en:'Help',fr:'Aide'},
         newproject:{en:'New Project',fr:'Nouveau Projet'},
-        saveproject:{en:'Save Project',fr:'Sauver'},
+        saveproject:{en:'Save Project',fr:'Enregistrer'},
         openproject:{en:'Open Project',fr:'Ouvrir'},
         exportwf:{en:'Export Current Workflow',fr:'Exporter'},
         importwf:{en:'Import a Workflow',fr:'Importer'},
-        readonly:{en:'Save Read Only',fr:'Copie Lecture Seulment'},
+        readonly:{en:'Save Read Only',fr:'Copie Lecture Seule'},
         undo: {en:'Undo',fr:'Annuler'},
-        redo: {en:'Redo',fr:'Refaire'},
-        duplicate:{en:'Duplicate Current Workflow',fr:""},
-        expand:{en:'Expand All',fr:""},
-        collapse:{en:'Collapse All',fr:""},
-        printerfriendly:{en:'Printer Friendly Version',fr:""},
-        legend:{en:'Show/Hide Legend',fr:""},
-        toggleoutcome:{en:'Toggle Outcome View',fr:""},
-        terminology:{en:'Terminology',fr:""},
-        terminologystandard:{en:'Standard',fr:""},
-        terminologycegep:{en:'CEGEP',fr:""},
-        genhelp:{en:'General Help',fr:""},
-        layouthelp:{en:'About the Layout',fr:""},
-        privacypolicy:{en:'Privacy Policy',fr:""}
+        redo: {en:'Redo',fr:' Rétablir'},
+        duplicate:{en:'Duplicate Current Workflow',fr:"Dupliquer Workflow"},
+        expand:{en:'Expand All',fr:"Développer Tout"},
+        collapse:{en:'Collapse All',fr:" Réduire tout"},
+        printerfriendly:{en:'Printer Friendly Version',fr:"Version Imprimante"},
+        legend:{en:'Show/Hide Legend',fr:"Afficher/Masquer La Légende"},
+        toggleoutcome:{en:'Toggle Outcome View',fr:"Basculer L’affichage Outcome"},
+        terminology:{en:'Terminology',fr:"Terminologie"},
+        terminologystandard:{en:'Standard',fr:"Standard"},
+        terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
+        genhelp:{en:'General Help',fr:"Aide Generale"},
+        layouthelp:{en:'About the Layout',fr:"Aide du Layout"},
+        privacypolicy:{en:'Privacy Policy',fr:"Politique de Confidentialité"}
     },
     layoutnav:{
-        project:'Project',
-        projectrename:'Enter a name for your project',
-        addwf:'Add Workflow',
-        outcomes:'Outcomes',
-        createnew:'Create New'
+        project:{en:'Project',fr:"Projet"},
+        projectreanmetitle:{en:"Rename Project",fr:"Renommer Le Projet"},
+        projectrename:{en:'Enter a name for your project',fr:"Entrez un nom pour votre projet"},
+        layout:{en:"Layout",fr:"Structure"},
+        cancel:{en:'Cancel',fr:'Annuler'},
+        addwf:{en:'Add Workflow',fr:"Adjouter un Workflow"},
+        outcomes:{en:'Outcomes',fr:'Les Outcomes'},
+        createnew:{en:'Create New',fr:'Créer Un Nouveau'}
     },
     workflow:{
-
+        activity:{en:"Activity",fr:"Activité"},
+        course:{en:"Course",fr:"Cours"},
+        program:{en:"Program",fr:"Programme"},
+        newactivity:{en:"New Activity",fr:"Nouvelle Activité"},
+        newcourse:{en:"New Course",fr:"Nouveau Cours"},
+        newprogram:{en:"New Program",fr:"Noveau Programme"},
+        inserttitle:{en:"Insert Title Here",fr:'Placez Le Titre Ici'},
+        insertauthor:{en:"Insert Author Here",fr:"Placez Le Nom de L'Auteur Ici"}
+    },
+    editbar:{
+        editnode:{en:'Edit Node',fr:'Modifier Le Noeud'},
+        title:{en:'Title',fr:'Titre'},
+        description:{en:'Description',fr:'Description'},
+        righticon:{en:'Right Icon',fr:'Icône de Droite'},
+        lefticon:{en:'Left Icon',fr:'Icône Gauche'},
+        linkedwf:{en:'Linked Workflow',fr:'Workflow Lié'},
+        tags:{en:'Outcomes',fr:'Outcomes'},
+        none:{en:'None',fr:'Aucun'},
+        chooseone:{en:"Select a tag to add",fr:'Choisissez-en un à ajouter'},
+        createnew:{en:"Create new ",fr:"Créer nouveau "},
+        insertdescription:{en:"Insert a description here.",fr:"Insérez la description ici."},
+        nameplaceholder:{en:"<Name>",fr:"<Nom>"}
+    },
+    workflowview:{
+        nodeheader:{en:"Nodes",fr:"Noeuds"},
+        jumpto:{en:"Jump To",fr:"Raccourcis"},
+        strategiesheader:{en:"Strategies",fr:"Stratégies"},
+        outcomesheader:{en:"Outcomes",fr:"Outcomes"},
+        assignoutcome:{en:"Assign Outcome",fr:"Attribuer"},
+        nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun Outcome ons été ajouté! Utilisez les boutons dessous pour en ajouter un."},
+        selectset:{en:"Select set to add",fr:'Choisissez-en un à ajouter'},
+        addcomment:{en:"Add Comment",fr:"Ajouter un commentaire"},
+        edittitle:{en:"Edit Title",fr:"Modifier le titre"},
+        whatsthis:{en:"What's This?",fr:"Aide"},
+        draganddrop:{en:"\A Drag and drop to add",fr:"\A Glisser-déplacer pour ajouter"}
+    },
+    outcomeview:{
+        total:{en:"Total",fr:"Totale"},
+        grandtotal:{en:"Grand Total",fr:"Somme Finale"},
+        uncategorized:{en:"Uncategorized",fr:"Non-Classé"}
+    },
+    tag:{
+        deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce Outcome? Attention: cela supprimera tous les contenus et les supprimera de tous les workflows!"},
+        unassigntext:{en:"Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.",fr:"Annuler l'attribution de ce Outcome? Attention: cela ne supprimera PAS le Outcome, mais supprimera toutes les références à celui-ci du workflow."},
+        standard:{
+            depth0:{en:"Program Outcome",fr:"Outcome de Programme"},
+            depth1:{en:"Course Outcome",fr:"Outcome de Cours"},
+            depth2:{en:"Activity Outcome",fr:"Outcome d'Activité"},
+            depth3:{en:"Tag",fr:"Tag"}
+        },
+        cegep:{
+            depth0:{en:"Competency",fr:"Competency"},
+            depth1:{en:"Element of Competency",fr:"Element of Competency"},
+            depth2:{en:"Learning Outcome",fr:"Learning Outcome"},
+            depth3:{en:"Tag",fr:"Tag"}
+        },
+        new:{en:"New",fr:"Nouveau"},
+        tagbuilder:{en:"<h3 class='hideforprint'>Learning Outcomes:</h3><p class='hideforprint'>This page allows you to create outcomes. For an explanation of the outcomes, click here:",fr:"<h3 class='hideforprint'>Learning Outcomes:</h3><p class='hideforprint'>Cette page vous permet de créer des Outcomes. Pour une explication des Outcomes, cliquez ici:"}
+        
+    
     },
     column:{
-
+        HW:{
+            text:{en:'Preparation',fr:'Preparation'},
+            nodetext:{en:'Preparation',fr:'Preparation'}
+        },
+        AC:{
+            text:{en:'Activities',fr:'Activités'},
+            nodetext:{en:'Activity',fr:'Activité'}
+        },
+        SA:{
+            text:{en:'Assessments',fr:'Évaluations'},
+            nodetext:{en:'Assessment',fr:'Évaluation'}
+        },
+        FA:{
+            text:{en:'Artifacts',fr:'Artefacts'},
+            nodetext:{en:'Artifact',fr:'Artefact'}
+        },
+        OOC:{
+            text:{en:'Out of Class',fr:'Hors Classe'},
+            nodetext:{en:'Home',fr:'Hors Classe'}
+        },
+        ICI:{
+            text:{en:'In Class (Instructor)',fr:'En Classe (Instructeur)'},
+            nodetext:{en:'Instructor',fr:'Instructeur'}
+        },
+        ICS:{
+            text:{en:'In Class (Students)',fr:'En Classe (Étudiants)'},
+            nodetext:{en:'Students',fr:'Étudiants'}
+        },
+        CO:{
+            text:{en:'Courses',fr:'Cours'},
+            nodetext:{en:'Course',fr:'Cour'}
+        },
+        CUS:{
+            text:{en:'Custom Column',fr:'Colonne Personnalisée'},
+            nodetext:{en:'New Custom',fr:'Nouvelle Colonne'}
+        },
+        CUSP:{
+            text:{en:'Course Category',fr:'Catégorie de Cours'},
+            nodetext:{en:'New Category',fr:'Nouvelle Catégorie'}
+        },
+        modifytext:{en:'Edit label',fr:"Modifier l'étiquette"},
+        delete:{en:'Delete column',fr:"Supprimer la colonne"},
+        deletelast:{en:"You can't delete the last column!",fr:"Vous ne pouvez pas supprimer la dernière colonne!"},
+        icon:{en:"Icon",fr:"Icône"}
     },
     week:{
-
+        week:{en:"Week",fr:"Semaine"},
+        term:{en:"Term",fr:"Terme"},
+        modifytext:{en:'Edit label',fr:"Modifier l'étiquette"},
+        duplicate:{en:'Duplicate Week',fr:"Dupliquer cette semaine"},
+        delete:{en:'Delete Week',fr:"Supprimer cette semaine"},
+        collapse:{en:'Collapse Week',fr:"Réduire cette semaine"},
+        createbelow:{en:'Insert week below',fr:"Insérer une semaine"},
+        moveweek:{en:'Move week',fr:"Déplacer la semaine"}
     },
     node:{
-
+        defaulttext:{en:"Click to edit",fr:"Cliquez pour modifier"},
+        delete:{en:"Delete Node",fr:"Supprimer ce noeud"},
+        duplicate:{en:"Duplicate Node",fr:"Dupliquer ce noeud"},
+        createbelow:{en:'Insert node below',fr:"Insérer un noeud"},
+        righticon:{en:'Right Icon',fr:'Icône de Droite'},
+        lefticon:{en:'Left Icon',fr:'Icône Gauche'},
+        modifytext:{en:'Edit label',fr:"Modifier l'étiquette"},
+        showhide:{en:"Show/Hide Description",fr:"Afficher/masquer la description"},
+        setlinkedwf:{en:"Set Linked WF",fr:"WF Lié"}
+    },
+    bracket:{
+        delete:{en:"Delete Bracket",fr:"Supprimer cette stratégie"}
     },
     comment:{
-
+        addcomment:{en:"Add Comment",fr:"Ajouter un commentaire"},
+        delete:{en:"Delete Comment",fr:"Supprimer ce commentaire"},
+        show:{en:"Show",fr:"Afficher"}
+    },
+    confirm:{
+        navigate:{en:'Are you sure you want to navigate away?',fr:'Êtes-vous sûr de vouloir quitter?'},
+        newproject:{en:"Are you sure you want to continue? You will lose any unsaved work.",fr:"Êtes-vous sûr de vouloir continuer? Vous perdrez tout travail non enregistré."},
+        deleteworkflow:{en:"Delete this workflow? Warning: this will delete all contents (but not any workflows used by it)!",fr:"Supprimer ce workflow? Ceci supprimera tout le contenu."},
+        unassignworkflow:{en:"Unassign this workflow? Note: this will NOT delete the workflow, but WILL remove this reference to it from the parent workflow.",fr:"Annuler l'attribution de ce workflow? Cela ne supprimera PAS le workflow mais supprimera cette référence du parent."},
+        deletecolumn:{en:"Delete this column?",fr:"Supprimer cette colonne?"},
+        deleteweek:{en:"Delete this week? Warning: this will delete any nodes still inside!",fr:"Supprimer cette semain? Attention: cela supprimera tous les nœuds encore à l'intérieur!"},
+        linkwf:{en:"This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?",fr:"Ce noeud a déjà des outcomes qui lui sont attribuer. Voulez-vous les attribuer au workflow nouvellement lié?"},
+        unlinkwf:{en:"You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the node?",fr:"Vous avez dissocié un workflow d'un noeud avec des outcomes. Voulez-vous effacer les outcomes du noeud?"},
+        deletenode:{en:"Delete this node?",fr:"Supprimer ce noeud?"},
+        deletecomment:{en:"Delete this comment?",fr:"Supprimer ce commentaire?"}
+    },
+    legend:{
+        legend:{en:"Legend",fr:"Légende"},
+        task:{en:"Task Icons",fr:"Icônes de Tâche"},
+        context:{en:"Context Icons",fr:"Icônes de Contexte"},
+        strategy:{en:"Strategy Icons",fr:"Icônes de Stratégie"},
+        assessment:{en:"Assessment Icons",fr:"Icônes d'Évaluation"},
+        column:{en:"Column Icons",fr:"Icônes de Colonne"}
+    },
+    errors:{
+        openoutcome:{en:"Oops! The outcome could not be opened.",fr:"Oups! Le résultat n'a pas pu être ouvert."},
+        filesave:{en:"Oops! The file could not be saved.",fr:"Oups! Le fichier n'a pas pu être enregistré."},
+        fileopen:{en:"Oops! The file could not be opened.",fr:"Oups! Impossible d'ouvrir le fichier."},
+        undo:{en:"Oops! Something went wrong with the undo function.",fr:"Oups! Quelque chose s'est mal passé avec la fonction d'annulation."},
+        redo:{en:"Oops! Something went wrong with the redo function.",fr:"Oups! Quelque chose s'est mal passé avec la fonction de rétablissement."},
+        wfopen:{en:"Oops! The workflow could not be opened.",fr:"Oups! Impossible d'ouvrir le workflow."}
+        
     }
 }
 
 function setMenuLanguage(){
     $("#file").html(LANGUAGE_TEXT.menus.file[USER_LANGUAGE]);
-    $("#new").html(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
-    $("#open").html(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE]);
-    $("#save").html(LANGUAGE_TEXT.menus.saveproject[USER_LANGUAGE]);
-    $("#export").html(LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE]);
-    $("#import").html(LANGUAGE_TEXT.menus.importwf[USER_LANGUAGE]);
-    $("#savereadonly").html(LANGUAGE_TEXT.menus.savereadonly[USER_LANGUAGE]);
+    $("#new").children().first().html(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
+    $("#open").children().first().html(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE]);
+    $("#save").children().first().html(LANGUAGE_TEXT.menus.saveproject[USER_LANGUAGE]);
+    $("#export").children().first().html(LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE]);
+    $("#import").children().first().html(LANGUAGE_TEXT.menus.importwf[USER_LANGUAGE]);
+    $("#savereadonly").children().first().html(LANGUAGE_TEXT.menus.readonly[USER_LANGUAGE]);
     $("#edit").html(LANGUAGE_TEXT.menus.edit[USER_LANGUAGE]);
-    $("#undo").html(LANGUAGE_TEXT.menus.undo[USER_LANGUAGE]);
-    $("#redo").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#duplicatewf").html(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE]);
-    $("#view").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#expand").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#collapse").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#print").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#showlegend").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#outcomeview").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#terminology").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#terminologystandard").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
-    $("#terminologycegep").html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#undo").children().first().html(LANGUAGE_TEXT.menus.undo[USER_LANGUAGE]);
+    $("#redo").children().first().html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
+    $("#duplicatewf").children().first().html(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE]);
+    $("#view").html(LANGUAGE_TEXT.menus.view[USER_LANGUAGE]);
+    $("#expand").children().first().html(LANGUAGE_TEXT.menus.expand[USER_LANGUAGE]);
+    $("#collapse").children().first().html(LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE]);
+    $("#print").children().first().html(LANGUAGE_TEXT.menus.printerfriendly[USER_LANGUAGE]);
+    $("#showlegend").children().first().html(LANGUAGE_TEXT.menus.legend[USER_LANGUAGE]);
+    $("#outcomeview").children().first().html(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE]);
+    $("#terminology").children().first().html(LANGUAGE_TEXT.menus.terminology[USER_LANGUAGE]);
+    $("#terminologystandard").children().first().html(LANGUAGE_TEXT.menus.terminologystandard[USER_LANGUAGE]);
+    $("#terminologycegep").children().first().html(LANGUAGE_TEXT.menus.terminologycegep[USER_LANGUAGE]);
+    $("#language").html(LANGUAGE_TEXT.menus.language[USER_LANGUAGE]);
     $("#help").html(LANGUAGE_TEXT.menus.help[USER_LANGUAGE]);
-    $("#genhelp").html(LANGUAGE_TEXT.menus.genhelp[USER_LANGUAGE]);
-    $("#layouthelp").html(LANGUAGE_TEXT.menus.layouthelp[USER_LANGUAGE]);
-    $("#privacy").html(LANGUAGE_TEXT.menus.privacypolicy[USER_LANGUAGE]);
+    $("#genhelp").children().first().html(LANGUAGE_TEXT.menus.genhelp[USER_LANGUAGE]);
+    $("#layouthelp").children().first().html(LANGUAGE_TEXT.menus.layouthelp[USER_LANGUAGE]);
+    $("#privacy").children().first().html(LANGUAGE_TEXT.menus.privacypolicy[USER_LANGUAGE]); $("#splashnewproject").html(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
+    $("#splashopenproject").html(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE]);
+    $("#splashrenametext").html(LANGUAGE_TEXT.layoutnav.projectrename[USER_LANGUAGE]);
+    $("#projectheader").html(LANGUAGE_TEXT.layoutnav.project[USER_LANGUAGE]+":");
+    $("#cancelrename").html(LANGUAGE_TEXT.layoutnav.cancel[USER_LANGUAGE]);
+    $("#prrename").html(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
+    $("#layoutheader").html(LANGUAGE_TEXT.layoutnav.layout[USER_LANGUAGE]+":");
+    $("#outcomesheader").html(LANGUAGE_TEXT.layoutnav.outcomes[USER_LANGUAGE]+":");
+    $("#addwfheader").html(LANGUAGE_TEXT.layoutnav.addwf[USER_LANGUAGE]+":");
+    $("#newwfbutton").html(LANGUAGE_TEXT.layoutnav.createnew[USER_LANGUAGE]);
+    $("#newcompbutton").html(LANGUAGE_TEXT.layoutnav.createnew[USER_LANGUAGE]);
+    $("html").attr("lang",USER_LANGUAGE);
+   
     
+}
+
+function purgeInvalidCharacters(input){
+    input =  input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g,'');
+    return input;
 }
 
 

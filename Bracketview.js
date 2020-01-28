@@ -83,7 +83,7 @@ class Bracketview{
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this.bracket;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this bracket');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -109,7 +109,7 @@ class Bracketview{
     populateMenu(menu){
         var graph = this.graph;
         var bracket=this.bracket;
-        menu.addItem('Delete Bracket','resources/images/delrect24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
             graph.clearSelection();
             bracket.deleteSelf();
             bracket.wf.makeUndo("Delete Bracket",bracket);

@@ -52,7 +52,7 @@ class Tag {
             $("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
         }catch(err){
-            alert("Oops! The outcome could not be opened.");
+            alert(LANGUAGE_TEXT.errors.openoutcome[USER_LANGUAGE]);
             gaError("Outcome",err);
         }
     }
@@ -74,7 +74,7 @@ class Tag {
     }
     
     getDefaultName(term){
-        return "New "+this.getType(term);
+        return LANGUAGE_TEXT.tag.new[USER_LANGUAGE]+" "+this.getType(term);
     }
         
     addButton(container,recurse=true){
@@ -109,11 +109,11 @@ class Tag {
     }
     
     getDeleteText(){
-            return "Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!";
+            return LANGUAGE_TEXT.tag.deletetext[USER_LANGUAGE];
     }
     
     getUnassignText(){
-        return "Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.";
+        return LANGUAGE_TEXT.tag.unassigntext[USER_LANGUAGE];
     }
     
     deleteSelf(button){
@@ -152,17 +152,9 @@ class Tag {
     
     getType(term){
         if(!term)term = this.project.terminologySet;
-        if(term == "standard")switch(this.depth){
-            case 0: return "Program Outcome";
-            case 1: return "Course Outcome";
-            case 2: return "Activity Outcome";
-            default: return "Tag";
-        }else if(term == "cegep")switch(this.depth){
-            case 0: return "Competency";
-            case 1: return "Element of Competency";
-            case 2: return "Learning Outcome";
-            default: return "Tag";
-        }
+        var depth = this.depth;
+        if(depth>3)depth=3;
+        return LANGUAGE_TEXT.tag[term]["depth"+depth][USER_LANGUAGE];
     }
     
     getIcon(term){

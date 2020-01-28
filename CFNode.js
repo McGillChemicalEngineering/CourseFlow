@@ -175,7 +175,7 @@ class CFNode {
                 this.wf.addChild(wfc);
                 if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
                 var addTags=false;
-                if(this.tags.length>0&&oldvalue==null)addTags = mxUtils.confirm("This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?");
+                if(this.tags.length>0&&oldvalue==null)addTags = mxUtils.confirm(LANGUAGE_TEXT.confirm.linkwf[USER_LANGUAGE]);
                 if(this.view)this.view.linkedWFUpdated(value,oldvalue);
                 this.refreshLinkedTags(addTags);
                 
@@ -184,7 +184,7 @@ class CFNode {
             }else{
                 if(this.view)this.view.linkedWFUpdated(value,oldvalue);
                 if(this.tags.length>0){
-                    if(mxUtils.confirm("You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the ndoe?"))while(this.tags.length>0)this.removeTag(this.tags[0],false);
+                    if(mxUtils.confirm(LANGUAGE_TEXT.confirm.unlinkwf[USER_LANGUAGE]))while(this.tags.length>0)this.removeTag(this.tags[0],false);
                 }
             }
         }
@@ -402,14 +402,10 @@ class CFNode {
 
 class ACNode extends CFNode {
     
-    setColumn(col){
-        this.wf.ensureColumn(col);
-        this.column="AC";
-        if(this.view)this.view.columnUpdated();
-    }
     
     getIconCategory(icon){
-        if(icon=="left")return "strategy";
+        console.log(this.column);
+        if(icon=="left")if(this.column=='SA')return "assessment"; else return "strategy";
         else return null;
     }
     
@@ -444,11 +440,7 @@ class ACNode extends CFNode {
 
 class CONode extends CFNode {
     
-    setColumn(col){
-        this.wf.ensureColumn(col);
-        this.column="CO";
-        if(this.view)this.view.columnUpdated();
-    }
+    
     
     
     getLinkedWFList(){
@@ -462,6 +454,9 @@ class CONode extends CFNode {
     
     
     
+    getIconCategory(icon){
+        return null;
+    }
     
     
     getAcceptedWorkflowType(){return "course";}
@@ -480,59 +475,6 @@ class CONode extends CFNode {
         return defaultWFNodeStyle;
     }
     
-    
-}
-
-class ASNode extends CFNode {
-    setColumn(col){
-        this.wf.ensureColumn(col);
-        if(this.column!=col&&(col=="FA"||col=="SA"||col=="HW")){
-            this.column=col;
-            if(this.view)this.view.columnUpdated();
-        }
-    }
-    
-    
-    getLinkedWFList(){
-        var wfs = this.wf.project.workflows;
-        var list=[];
-        for(var i=0;i<wfs.length;i++){
-            if( wfs[i] instanceof Activityflow)list.push([wfs[i].name,wfs[i].id]);
-        }
-        return list;
-    }
-    
-    
-    getAcceptedWorkflowType(){return "activity";}
-    
-    getIconCategory(icon){
-        if(icon=="left")return "assessment";
-    }
-    
-    getColumnStyle(){
-        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
-    }
-    
-    getVertexStyle(){
-        return defaultWFNodeStyle;
-    }
-    
-}
-
-class LONode extends CFNode {
-    setColumn(col){
-        this.wf.ensureColumn(col);
-        this.column="LO";
-        if(this.view)this.view.columnUpdated();
-    }
-    
-    getColumnStyle(){
-        return this.wf.columns[this.wf.getColIndex(this.column)].colour;
-    }
-    
-    getVertexStyle(){
-        return defaultWFNodeStyle;
-    }
     
 }
 
@@ -560,11 +502,7 @@ class WFNode extends CFNode {
 
 class CUSNode extends CFNode {
     
-    setColumn(col){
-        this.wf.ensureColumn(col);
-        if(col.substr(0,3)=='CUS')this.column=col;
-        if(this.view)this.view.columnUpdated();
-    }
+    
     
     getLinkedWFList(){
         if(this.wf instanceof Activityflow)return null;

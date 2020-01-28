@@ -62,13 +62,13 @@ class Columnview{
     populateMenu(menu){
         var graph = this.graph;
         var col=this.column;
-        menu.addItem('Edit label', 'resources/images/text24.png', function(){
+        menu.addItem(LANGUAGE_TEXT.column.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
 				graph.startEditingAtCell(col.view.vertex);
         });
         if(col.name.substr(0,3)=='CUS')this.populateIconMenu(menu,iconsList['column']);
-        menu.addItem('Delete Column','resources/images/delrect24.png',function(){
-            if(col.wf.columns.length==1)alert("You can't delete the last column!");
-            else if(mxUtils.confirm("Delete this column?")){
+        menu.addItem(LANGUAGE_TEXT.column.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(col.wf.columns.length==1)alert(LANGUAGE_TEXT.column.deletelast[USER_LANGUAGE]);
+            else if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecolumn[USER_LANGUAGE])){
                 graph.clearSelection();
                 col.deleteSelf();
                 col.wf.makeUndo("Delete Column",col);
@@ -79,10 +79,10 @@ class Columnview{
     populateIconMenu(menu,iconArray){
         var col = this.column;
         if(iconArray==null||iconArray.length==0)return;
-        var sub = menu.addItem("Icon",'resources/images/lefticon24.png');
+        var sub = menu.addItem(LANGUAGE_TEXT.column.icon[USER_LANGUAGE],'resources/images/lefticon24.png');
         for(var i=0;i<iconArray.length;i++){
             var tempfunc = function(value){
-                menu.addItem(value.text,iconpath+value.value+'24.png',function(){
+                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
                     col.setImage(value.value);
                 },sub);
             }

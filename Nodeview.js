@@ -125,9 +125,16 @@ class Nodeview{
     }
 
     linkedWFUpdated(value,oldvalue){
+        console.log(this.node.getRightIconList());
+        console.log(value);
+        console.log(oldvalue);
         if(this.node.getRightIconList()==null){
-            if(value&&!oldvalue)this.rightIconUpdated("linked");
-            else if(oldvalue&&!value)this.rightIconUpdated(null);
+            if(value&&!oldvalue){
+                this.graph.setCellStyles("image",iconpath+"linked48.png",[this.righticonnode]);
+            }
+            else if(oldvalue&&!value){
+                this.graph.setCellStyles("image",null,[this.righticonnode]);
+            }
         }
     }
     
@@ -200,7 +207,7 @@ class Nodeview{
     
     addPlusOverlay(){
         var n = this.node;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), 'Insert node below');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), LANGUAGE_TEXT.node.createbelow[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -220,7 +227,7 @@ class Nodeview{
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this.node;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this node');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.node.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -231,7 +238,7 @@ class Nodeview{
         var graph = this.graph;
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            if(mxUtils.confirm("Delete this node?")){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
                 graph.clearSelection();
                 n.deleteSelf();
                 n.wf.makeUndo("Delete Node",n);
@@ -243,7 +250,7 @@ class Nodeview{
     
     addCopyOverlay(){
         var n = this.node;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), 'Duplicate node');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -322,20 +329,20 @@ class Nodeview{
         var node=this.node;
         this.populateIconMenu(menu,node.getLeftIconList(),"Left");
         this.populateIconMenu(menu,node.getRightIconList(),"Right");
-        menu.addItem('Edit label', 'resources/images/text24.png', function(){
+        menu.addItem(LANGUAGE_TEXT.node.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
 				graph.startEditingAtCell(node.view.namenode);
         });
-        menu.addItem('Show/Hide Description','resources/images/view24.png',function(){node.toggleDropDown();});
+        menu.addItem(LANGUAGE_TEXT.node.showhide[USER_LANGUAGE],'resources/images/view24.png',function(){node.toggleDropDown();});
         if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow','resources/images/enterlinked24.png',function(){
             var linkedWF = node.linkedWF;
             if(linkedWF!=null)p.changeActive(p.workflows.indexOf(p.getWFByID(linkedWF)));
         });
         this.populateLinkedWFMenu(menu,node.getLinkedWFList());
-        menu.addItem('Duplicate Node','resources/images/copy24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){
            node.duplicateNode(); 
         });
-        menu.addItem('Delete Node','resources/images/delrect24.png',function(){
-            if(mxUtils.confirm("Delete this node?")){
+        menu.addItem(LANGUAGE_TEXT.node.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
                 graph.clearSelection();
                 node.deleteSelf();
                 node.wf.makeUndo("Delete Node",node);
@@ -344,12 +351,15 @@ class Nodeview{
     }
     
     populateIconMenu(menu,iconArray,icon){
+        var text;
+        if(icon=="Left")text = LANGUAGE_TEXT.node.lefticon[USER_LANGUAGE];
+        else if(icon=="Right")text = LANGUAGE_TEXT.node.righticon[USER_LANGUAGE];
         var node = this.node;
         if(iconArray==null||iconArray.length==0)return;
-        var sub = menu.addItem(icon+" Icon",'resources/images/'+icon.toLowerCase()+'icon24.png');
+        var sub = menu.addItem(text,'resources/images/'+icon.toLowerCase()+'icon24.png');
         for(var i=0;i<iconArray.length;i++){
             var tempfunc = function(value){
-                menu.addItem(value.text,iconpath+value.value+'24.png',function(){
+                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
                     node.setIcon(value.value,icon.toLowerCase());
                 },sub);
             }
@@ -360,7 +370,7 @@ class Nodeview{
     populateLinkedWFMenu(menu,WFArray){
         var node = this.node;
         if(WFArray==null)return;
-        var sub = menu.addItem("Set Linked WF",'resources/images/plusblack24.png');
+        var sub = menu.addItem(LANGUAGE_TEXT.node.setlinkedwf[USER_LANGUAGE],'resources/images/plusblack24.png');
         menu.addItem("None",'',function(){node.setLinkedWF("");},sub)
         for(var i=0;i<WFArray.length;i++){
             var tempfunc = function(value){
@@ -370,7 +380,7 @@ class Nodeview{
             }
             tempfunc(WFArray[i]);
         }
-        menu.addItem("Create new "+node.getAcceptedWorkflowType(),'',function(){
+        menu.addItem(LANGUAGE_TEXT.editbar.createnew[USER_LANGUAGE]+" "+node.getAcceptedWorkflowType(),'',function(){
             node.setLinkedWF("NEW_"+node.getAcceptedWorkflowType());
         },sub);
     }

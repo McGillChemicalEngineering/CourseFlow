@@ -24,6 +24,7 @@ class Project{
         this.activeWF;
         this.activeComp;
         this.terminologySet = "standard";
+        this.outcomesview = false;
         this.container=container;
         this.sidenav = document.getElementById("sidenav");
         this.layout = document.getElementById("layout");
@@ -36,7 +37,7 @@ class Project{
         var p = this;
         this.idNum=0;
         this.loadAppend=false;
-        this.name = "New Project";
+        this.name = LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE];
         this.readOnly=false;
         
         $("#save").removeClass("disabled");
@@ -57,7 +58,7 @@ class Project{
         var nameDiv = this.nameDiv;
         nameDiv.parentElement.onclick=function(){
             if(p.readOnly)return;
-            else p.requestName("Rename Project");
+            else p.requestName(LANGUAGE_TEXT.layoutnav.projectreanmetitle[USER_LANGUAGE]);
             /*var tempfunc = nameDiv.onclick;
             var name=p.name;
             if(name==null)name="";
@@ -86,11 +87,10 @@ class Project{
         
         
         
-        var newWFSelect = document.createElement('select');
+        var newWFSelect = $("#newwfselect").get()[0];
         this.fillWFSelect(newWFSelect);
         this.newWFDiv.appendChild(newWFSelect);
-        var newWF = document.createElement('button');
-        newWF.innerHTML="Add";
+        var newWF = $("#newwfbutton").get()[0];
         newWF.onclick= function(){
             var type = newWFSelect.value;
             p.addWorkflow(type);
@@ -100,8 +100,7 @@ class Project{
         this.newWFButton = newWF;
         this.newWFDiv.appendChild(newWF);
         
-        var newComp = document.createElement('button');
-        newComp.innerHTML="Create New";
+        var newComp = $("#newcompbutton").get()[0];
         newComp.onclick = function(){
             p.addCompetency();
             gaEvent('Outcome','Add','',p.competencies.length);
@@ -114,9 +113,9 @@ class Project{
         
         var newfile = document.getElementById('new');
         newfile.onclick = function(){
-            if(mxUtils.confirm("Are you sure you want to continue? You will lose any unsaved work.")){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.newproject[USER_LANGUAGE])){
                 p.clearProject();
-                p.requestName("New Project");
+                p.requestName(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
             }
         }
         
@@ -126,7 +125,7 @@ class Project{
                 p.saveProject();
                 gaEvent('Save/Open','Save',p.name,p.workflows.length+p.competencies.length);
             }catch(err){
-                alert("Oops! The file could not be saved.");
+                alert(LANGUAGE_TEXT.errors.filesave[USER_LANGUAGE]);
                 gaError("Save",err);
             }
         }
@@ -158,7 +157,7 @@ class Project{
                         setTimeout(function(){renamebarrier.style.display="none";},500)
                     }
                 }catch(err){
-                    alert("Oops! The file could not be opened.");
+                    alert(LANGUAGE_TEXT.errors.fileopen[USER_LANGUAGE]);
                     gaError("Open",err);
                 }
             }
@@ -207,7 +206,7 @@ class Project{
                 try{
                     p.workflows[p.activeWF].undo();
                 }catch(err){
-                    alert("Oops! Something went wrong with the undo function.");
+                    alert(LANGUAGE_TEXT.errors.undo[USER_LANGUAGE]);
                     gaError('Undo',err);
                 }
             }
@@ -219,7 +218,7 @@ class Project{
                 try{
                     p.workflows[p.activeWF].redo();
                 }catch(err){
-                    alert("Oops! Something went wrong with the redo function.");
+                    alert(LANGUAGE_TEXT.errors.redo[USER_LANGUAGE]);
                     gaError('Undo',err);
                 }
             }
@@ -245,18 +244,12 @@ class Project{
             if(p.activeWF!=null){
                 var wf = p.workflows[p.activeWF];
                 gaEvent('View','Outcomes Toggled',wf.getType(),wf.tagSets.length);
-                if(wf.view instanceof Workflowview){
-                    wf.makeInactive();
-                    var view;
-                    if(wf instanceof Programflow)view = new ProgramOutcomeview(p.container,wf);
-                    else view = new Outcomeview(p.container,wf);
-                    wf.makeActive(view);
-                }else if(wf.view instanceof Outcomeview){
-                    wf.makeInactive();
-                    wf.makeActive(new Workflowview(p.container,wf));
-                }
+                wf.makeInactive();
+                p.outcomesview=(!p.outcomesview);
+                wf.makeActive(p.container);
                 
             }
+        
         }
         
         var terminologyStandard = document.getElementById("terminologystandard");
@@ -264,10 +257,20 @@ class Project{
         terminologyStandard.onclick=function(){p.setTerminology("standard");}
         terminologyCegep.onclick=function(){p.setTerminology("cegep");}
         
+        
+        $("#english").bind("click",function(){
+            p.setLanguage('en');
+        });
+        $("#french").bind("click",function(){
+            p.setLanguage('fr');
+        });
+        
+        
         var genHelp = document.getElementById("genhelp");
         genHelp.onclick = function(){p.showHelp("help.html");}
         var layoutHelp = document.getElementById("layouthelp");
         layoutHelp.onclick = function(){p.showHelp("layouthelp.html");}
+        
         
         
         var helpDiv = document.getElementById("helpDiv");
@@ -510,7 +513,7 @@ class Project{
     fromXML(xmlData,isAppend){
         var parser = new DOMParser();
         if(isAppend)xmlData = this.assignNewIDsToXML(xmlData);
-        var xmlDoc = parser.parseFromString(xmlData,"text/xml");
+        var xmlDoc = parser.parseFromString(purgeInvalidCharacters(xmlData),"text/xml");
         if(!isAppend){
             this.clearProject();
             this.setName(getXMLVal(xmlDoc,"prname"));
@@ -644,16 +647,17 @@ class Project{
     }
     
     fillWFSelect(select){
+        select.innerHTML="";
         var opt = document.createElement('option');
-        opt.text="Activity";
+        opt.text=LANGUAGE_TEXT.workflow.activity[USER_LANGUAGE];
         opt.value="activity";
         select.add(opt);
         opt = document.createElement('option');
-        opt.text="Course";
+        opt.text=LANGUAGE_TEXT.workflow.course[USER_LANGUAGE];
         opt.value="course";
         select.add(opt);
         opt = document.createElement('option');
-        opt.text="Program";
+        opt.text=LANGUAGE_TEXT.workflow.program[USER_LANGUAGE];
         opt.value="program";
         select.add(opt);
     }
@@ -696,7 +700,7 @@ class Project{
             if(isWF){
                 p.activeComp = null;
                 p.activeWF=index;
-                p.workflows[p.activeWF].makeActive(new Workflowview(p.container,p.workflows[p.activeWF]));
+                p.workflows[p.activeWF].makeActive(p.container);
             }else{
                 p.activeWF = null;
                 p.activeComp=index;
@@ -840,5 +844,17 @@ class Project{
             $("#terminologycegep").addClass("disabled");
             $("#terminologystandard").removeClass("disabled");
         }
+    }
+    
+    setLanguage(lang){
+        var p = this;
+        makeLoad(function(){
+            if(p.activeWF!=null)p.workflows[p.activeWF].makeInactive();
+            if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive();
+            USER_LANGUAGE=lang;
+            setMenuLanguage();
+            if(p.activeWF!=null)p.workflows[p.activeWF].makeActive(p.container);
+            if(p.activeComp!=null)p.competencies[p.activeComp].makeActive(new Tagbuilder(p.container,p.competencies[p.activeComp]));
+        });
     }
 }

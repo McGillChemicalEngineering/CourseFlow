@@ -110,18 +110,18 @@
             <div class="topdropwrapper">
                 <button class = "topdropbutton" id = "file">File</button>
                 <div class="topdropdiv">
-                    <a id="new">New Project</a>
+                    <a id="new"><div>New Project</div></a>
                     <a id="save" class="disabled"><div>Save Project</div><div class="shortcut">Ctrl+S</div></a>
                     <a id="open"><div>Open Project</div><div class="shortcut">Ctrl+O</div></a>
-                    <a id="export" class="disabled">Export Current Workflow</a>
-                    <a id="import" class="disabled">Import a Workflow</a>
-                    <a id="savereadonly" class="disabled">Save Read Only</a>
+                    <a id="export" class="disabled"><div>Export Current Workflow</div></a>
+                    <a id="import" class="disabled"><div>Import a Workflow</div></a>
+                    <a id="savereadonly" class="disabled"><div>Save Read Only</div></a>
                 </div>
             </div>
             <div class="topdropwrapper">
                 <button class="topdropbutton" id = "edit">Edit</button>
                 <div class="topdropdiv">
-                    <a id="undo" class="disabled"><div>Undo </div><div class="shortcut">Ctrl+Z</div></a>
+                    <a id="undo" class="disabled"><div>Undo</div><div class="shortcut">Ctrl+Z</div></a>
                     <a id="redo" class="disabled"><div>Redo</div><div class="shortcut">Ctrl+Shift+Z</div></a>
                     <a id="duplicatewf" class="disabled"><div>Duplicate Current Workflow</div></a>
                 </div>
@@ -129,23 +129,30 @@
             <div class="topdropwrapper">
                 <button class="topdropbutton" id = "view">View</button>
                 <div class="topdropdiv">
-                    <a id="expand" class="disabled">Expand All</a>
-                    <a id="collapse" class="disabled">Collapse All</a>
-                    <a id="print" class="disabled">Printer Friendly Version</a>
-                    <a id="showlegend" class="disabled">Show/Hide Legend</a>
-                    <a id="outcomeview" class="disabled">Toggle Outcome View</a>
+                    <a id="expand" class="disabled"><div>Expand All</div></a>
+                    <a id="collapse" class="disabled"><div>Collapse All</div></a>
+                    <a id="print" class="disabled"><div>Printer Friendly Version</div></a>
+                    <a id="showlegend" class="disabled"><div>Show/Hide Legend</div></a>
+                    <a id="outcomeview" class="disabled"><div>Toggle Outcome View</div></a>
                     <hr>
-                    <a id="terminology" class = " disabled topdroptitle">Terminology:</a>
-                    <a id="terminologystandard" class = "disabled topdropindent">Standard</a>
-                    <a id="terminologycegep" class = "disabled topdropindent">CEGEP</a>
+                    <a id="terminology" class = " disabled topdroptitle"><div>Terminology:</div></a>
+                    <a id="terminologystandard" class = "disabled topdropindent"><div>Standard</div></a>
+                    <a id="terminologycegep" class = "disabled topdropindent"><div>CEGEP</div></a>
+                </div>
+            </div>
+            <div class="topdropwrapper">
+                <button class="topdropbutton" id = "language">Language</button>
+                <div class="topdropdiv">
+                    <a id="french"><div>Français</div></a>
+                    <a id="english"><div>English</div></a>
                 </div>
             </div>
             <div class="topdropwrapper">
                 <button class="topdropbutton" id = "help">Help</button>
                 <div class="topdropdiv">
-                    <a id="genhelp" class="disabled">General Help</a>
-                    <a id="layouthelp" class="disabled">About the Layout</a>
-                    <a id="privacy" href="privacy.html" target="_blank">Privacy Policy</a>
+                    <a id="genhelp" class="disabled"><div>General Help</div></a>
+                    <a id="layouthelp" class="disabled"><div>About the Layout</div></a>
+                    <a id="privacy" href="privacy.html" target="_blank"><div>Privacy Policy</div></a>
                 </div>
             </div>
         </div>
@@ -155,17 +162,17 @@
         <div class='splashwrapper'>
             <button class='splashimgwrapper'>
                 <img src='resources/images/new_basic.svg' id='splashnewfile'>
-                <div>New Project</div>
+                <div id="splashnewproject">New Project</div>
             </button><button class='splashimgwrapper' id='splashopenfile'>
                 <img src='resources/images/open_basic.svg'>
-                <div>Open Project</div>
+                <div id = "splashopenproject">Open Project</div>
             </button>
         </div>
     </div>
     <div class="splashpage renamepage" id="renamebarrier">
         <div class='splashwrapper'>
             <h2>New Project</h2>
-            <h3>Enter a name for your project:</h3>
+            <h3 id="splashrenametext">Enter a name for your project:</h3>
             <input type="text" class = fixedwidthinput id="renameproject">
             <div><button class = "renamebutton" id="acceptrename">Ok</button><button class = "renamebutton" id="cancelrename">Cancel</button></div>
         </div>
@@ -176,20 +183,23 @@
     <div id="helpDiv" class = "helpdiv"><iframe id="helpFrame" class="helpframe"></iframe><div id="helpDivHide" class = "helpdivhide"><img src="resources/images/delrect24.png"></div></div>
     
     <div class="sidenav" id="sidenav">
-        <h3>Project:</h3>
+        <h3 id="projectheader">Project:</h3>
         <div id=prnamewrapper>
             <div id=prname>New Project</div>
         </div>
-        <h3>Layout:</h3>
+        <h3 id = "layoutheader">Layout:</h3>
         <div id="layout"></div>
         <hr>
-        <h3>Add Workflow:</h3>
+        <h3 id="addwfheader">Add Workflow:</h3>
         <div id="newWFDiv">
+            <select id="newwfselect"></select>
+            <button id="newwfbutton">Create New</button>
         </div>
         <hr>
-        <h3>Outcomes:</h3>
+        <h3 id = "outcomesheader">Outcomes:</h3>
         <div id="competencydiv"></div>
-        <div id="newCompDiv"></div>
+        <div id="newCompDiv">
+        <button id="newcompbutton">Create New</button></div>
     </div>
 	<!-- Creates a container for the graph-->
     <div id="graphWrapper" class="containerwrapper">

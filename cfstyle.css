@@ -286,11 +286,15 @@ button:hover{
     margin-bottom:0px;
 }
 
+
 .nodebarh3::after{
     content: "\A Drag and drop to add";
     font-size: 10px;
     color: grey;
     white-space:pre;
+}
+*:lang('fr') .nodebarh3::after{
+    content: "\A Glisser-déplacer pour ajouter";
 }
 
 .emptytext{
@@ -842,11 +846,28 @@ div.highlighted{
 .outcometable tr td:first-child div:first-child{
     white-space:normal;
     max-height:36px;
+    min-height:26px;
     overflow:hidden;
 }
 
-.outcometable tr td:firstchild .deletelayoutdiv{
-    right:-16px;
+.outcometable tr td:first-child .deletelayoutdiv{
+    right:18px;
+}
+
+.outcometable tr td:first-child{
+    min-height:34px;
+}
+
+.outcometable tr td:first-child .editlayoutdiv{
+    position:absolute;
+    top:0px;
+    right:0px;
+    left:auto;
+    
+}
+
+.outcometable tr td:firstchild{
+    position:relative;
 }
 
 .outcometable tr.depth0 td:first-child{
@@ -900,6 +921,10 @@ div.highlighted{
     display:inline-block;
 }
 
+.outcometable *:hover>.editlayoutdiv{
+    display:inline-block;
+}
+
 .outcometable th .createlayoutdiv{
     left:-16px;
     padding:0px;
@@ -915,9 +940,29 @@ div.highlighted{
     right:auto;
 }
 
-.outcometableheadertext{
+
+.outcometable .outcometableheadertext{
     padding-left:20px;
     height:100%;
+}
+
+.outcometabletitleinput{
+    height:24px;
+    width:400px;
+    font-weight:600;
+    border:0px;
+}
+
+.outcometabletitle{
+    margin-top:20px;
+    font-size:22px;
+    margin-left:20px;
+}
+
+.outcometableauthor{
+    font-size:16px;
+    height:20px;
+    margin-left:600px;
 }
 
 .readonly .editlayoutdiv,.readonly .createlayoutdiv,.readonly .deletelayoutdiv{

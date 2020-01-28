@@ -73,8 +73,7 @@ class Workflowview{
         //Add the first cells
         // Adds cells to the model in a single step
         graph.getModel().beginUpdate();
-        try
-        {
+        try{
             //Create the title boxes
             this.createTitleNode();
             this.createLegend();
@@ -83,8 +82,7 @@ class Workflowview{
             this.createLegendVertex();
             //this.createSpanner();
         }
-        finally
-        {
+        finally{
             // Updates the display
             graph.getModel().endUpdate();
         }
@@ -165,7 +163,7 @@ class Workflowview{
     
     createTitleNode(){
         var wf = this.wf;
-        var title = "[Insert Title Here]";
+        var title = "["+LANGUAGE_TEXT.workflow.inserttitle[USER_LANGUAGE]+"]";
         if(wf.name&&wf.name!=wf.getDefaultName())title = wf.name;
         this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,wfStartY,300,50,defaultTitleStyle);
         this.titleNode.isTitle=true;
@@ -181,7 +179,7 @@ class Workflowview{
     
     createAuthorNode(){
         var wf = this.wf;
-        var title = "[Insert Author Here]";
+        var title = "["+LANGUAGE_TEXT.workflow.insertauthor[USER_LANGUAGE]+"]";
         if(wf.author)title = wf.author;
         this.authorNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,cellSpacing+this.weekWidth-300,wfStartY+cellSpacing,300,50,defaultTitleStyle+"align=right;fontSize=16;");
         this.authorNode.isTitle=true;
@@ -419,7 +417,7 @@ class Workflowview{
     generateNodeBar(){ 
         var header = document.createElement('h3');
         header.className="nodebarh3";
-        header.innerHTML="Nodes:";
+        header.innerHTML=LANGUAGE_TEXT.workflowview.nodeheader[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
         
         this.nodeBarDiv = document.createElement('div');
@@ -432,7 +430,7 @@ class Workflowview{
         var header = document.createElement('h3');
         //header.className="nodebarh3";
         header.style.after="";
-        header.innerHTML="Jump To:";
+        header.innerHTML=LANGUAGE_TEXT.workflowview.jumpto[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
         this.weekSelect = document.createElement('select');
         this.toolbarDiv.appendChild(this.weekSelect);
@@ -454,7 +452,7 @@ class Workflowview{
         if(this.wf.getBracketList()==null)return;
         var header = document.createElement('h3');
         header.className="nodebarh3";
-        header.innerHTML="Strategies:";
+        header.innerHTML=LANGUAGE_TEXT.workflowview.strategiesheader[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
         
         this.bracketBarDiv = document.createElement('div');
@@ -471,7 +469,7 @@ class Workflowview{
         var p=wf.project;
         var header = document.createElement('h3');
         header.className="nodebarh3";
-        header.innerHTML="Outcomes:";
+        header.innerHTML=LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
         
         this.tagBarDiv =  document.createElement('div');
@@ -484,7 +482,7 @@ class Workflowview{
         this.populateTagSelect(p.competencies,this.wf.getTagDepth());
         
         var addButton = document.createElement('button');
-        addButton.innerHTML = "Assign Outcome";
+        addButton.innerHTML = LANGUAGE_TEXT.workflowview.assignoutcome[USER_LANGUAGE];
         addButton.onclick=function(){
             var value = compSelect.value;
             if(value!=""){
@@ -552,7 +550,7 @@ class Workflowview{
         if(this.weekSelect==null)return;
         while(this.weekSelect.length>0)this.weekSelect.remove(0);
         var opt = document.createElement('option');
-        opt.text="Jump to...";
+        opt.text=LANGUAGE_TEXT.workflowview.jumpto[USER_LANGUAGE]+"...";
         opt.value="";
         this.weekSelect.appendChild(opt);
         for(var i=0;i<this.wf.weeks.length;i++){
@@ -602,7 +600,7 @@ class Workflowview{
         
         
         for(var i=0;i<bracketList.length;i++){
-            this.addNodebarItem(this.bracketBarDiv,bracketList[i]['text'],'resources/data/'+bracketList[i]['value']+'24.png',makeDropFunction(bracketList[i],this.wf),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
+            this.addNodebarItem(this.bracketBarDiv,bracketList[i].text[USER_LANGUAGE],'resources/data/'+bracketList[i]['value']+'24.png',makeDropFunction(bracketList[i],this.wf),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
         }
     }
     
@@ -634,7 +632,7 @@ class Workflowview{
         }
         if(tagSets.length==0){
             this.tagBarDiv.classList.add("emptytext");
-            this.tagBarDiv.innerHTML="<b>No outcomes have been added yet! Use the buttons below to add one.</b>"
+            this.tagBarDiv.innerHTML="<b>"+LANGUAGE_TEXT.workflowview.nooutcomes[USER_LANGUAGE]+"</b>"
         }else this.tagBarDiv.classList.remove("emptytext");
     }
     
@@ -686,7 +684,7 @@ class Workflowview{
             allTags = list[i].getAllTags(allTags,depth,currentIndices);
         }
         var opt = document.createElement('option');
-        opt.text = "Select set to add";
+        opt.text = LANGUAGE_TEXT.workflowview.selectset[USER_LANGUAGE];
         opt.value = "";
         compSelect.add(opt);
         for(var i=0;i<allTags.length;i++){
@@ -774,7 +772,7 @@ class Workflowview{
         if (cell != null){
             while (graph.isPart(cell)){cell=cell.getParent();}
         }
-        menu.addItem('Add Comment','resources/images/comment24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.addcomment[USER_LANGUAGE],'resources/images/comment24.png',function(){
             var comparent =null;
             if(cell)if(cell.isNode)comparent=cell.node;
             else if(cell.isBracket)comparent=cell.bracket;
@@ -793,13 +791,13 @@ class Workflowview{
             else if (cell.isComment)cell.comment.view.populateMenu(menu);
             else if (cell.isBracket)cell.bracket.view.populateMenu(menu);
             else if (cell.isLink)cell.link.view.populateMenu(menu);
-            else if (cell.isTitle)menu.addItem('Edit Title','resources/images/text24.png',function(){
+            else if (cell.isTitle)menu.addItem(LANGUAGE_TEXT.workflowview.edittitle[USER_LANGUAGE],'resources/images/text24.png',function(){
                 graph.startEditingAtCell(cell);
             });
         }
         menu.addSeparator();
 
-        menu.addItem("What's this?",'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
             if(cell==null){
                 if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
                 else if (wf instanceof Courseflow)wf.project.showHelp("coursehelp.html");

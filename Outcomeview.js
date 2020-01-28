@@ -29,6 +29,38 @@ class Outcomeview{
     }
     
     nameUpdated(){
+        this.titleInput.value = this.wf.name;
+    }
+    
+    createTitleNode(){
+        var wf = this.wf;
+        var title = "["+LANGUAGE_TEXT.workflow.inserttitle[USER_LANGUAGE]+"]";
+        if(wf.name&&wf.name!=wf.getDefaultName())title=wf.name;
+        var titleDiv = document.createElement('div');
+        this.container.appendChild(titleDiv);
+        var titleInput = document.createElement('input');
+        titleInput.type="text";
+        titleInput.value=title
+        titleInput.onchange=function(){wf.setNameSilent(titleInput.value)};
+        titleInput.className = "outcometabletitle outcometabletitleinput";
+        this.titleInput = titleInput;
+        titleDiv.appendChild(titleInput);
+        
+    }
+    
+    createAuthorNode(){
+        var wf = this.wf;
+        var title = "["+LANGUAGE_TEXT.workflow.insertauthor[USER_LANGUAGE]+"]";
+        if(wf.author)title = wf.author;
+        var authorDiv = document.createElement('div');
+        this.container.appendChild(authorDiv);
+        var authorInput = document.createElement('input');
+        authorInput.type="text";
+        authorInput.value=title;
+        authorInput.onchange=function(){wf.setAuthorSilent(authorInput.value)};
+        authorInput.className = "outcometableauthor outcometabletitleinput";
+        this.authorInput = authorInput;
+        authorDiv.appendChild(authorInput);
         
     }
     
@@ -37,6 +69,9 @@ class Outcomeview{
         this.container.style.height="";
         this.toolbarDiv = document.getElementById('nbWrapper');
         this.toolbarDiv.parentElement.style.display="inline-block";
+        
+        this.createTitleNode();
+        this.createAuthorNode();
         
         this.table = document.createElement('table');
         this.table.classList.add("outcometable");
@@ -189,7 +224,7 @@ class Outcomeview{
             this.categoryViews[i].nodeViews.push(new OutcomeNodeview(total,true,this.categoryViews[i]));
             grandtotal = grandtotal.concat(total);
         }
-        this.categoryViews.push(new OutcomeCategoryview({value:"grandtotal",text:"Grand Total"},this.wf));
+        this.categoryViews.push(new OutcomeCategoryview({value:"grandtotal",text:LANGUAGE_TEXT.outcomeview.grandtotal[USER_LANGUAGE]},this.wf));
         this.grandTotal=new OutcomeNodeview(grandtotal,true,this.categoryViews[this.categoryViews.length-1]);
         this.categoryViews[this.categoryViews.length-1].nodeViews.push(this.grandTotal);
         
@@ -197,6 +232,7 @@ class Outcomeview{
     
     addNodeView(node){
         var cv = this.getCategoryForNode(node);
+        if(!cv)return;
         node.view = new OutcomeNodeview([node],false,cv);
         cv.nodeViews.push(node.view);
     }
@@ -251,7 +287,7 @@ class Outcomeview{
             if(this.categoryViews[i].value==category)return this.categoryViews[i];
         }
         if(category=="none"){
-            var uncat = new OutcomeCategoryview({text:"Uncategorized",value:"none"},this.wf)
+            var uncat = new OutcomeCategoryview({text:LANGUAGE_TEXT.outcomeview.uncategorized[USER_LANGUAGE],value:"none"},this.wf)
             //it's possible that we are switching a node in a complete table into the uncategorized column. In this case its vertex/head need to be added, as well as its total column.
             if(node.view)this.insertCategory(uncat);
             else this.categoryViews.push(uncat);
@@ -288,6 +324,12 @@ class Outcomeview{
         this.makeActive();
     }
     
+    
+    tagSetsSwapped(i1,i2){
+        this.makeInactive();
+        this.makeActive();
+    }
+    
     tagSetAdded(tag){
         
     }
@@ -313,7 +355,7 @@ class Outcomeview{
         var p=wf.project;
         var header = document.createElement('h3');
         header.className="nodebarh3";
-        header.innerHTML="Outcomes:";
+        header.innerHTML=LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
         
         
@@ -324,7 +366,7 @@ class Outcomeview{
         this.populateTagSelect(p.competencies,this.wf.getTagDepth());
         
         var addButton = document.createElement('button');
-        addButton.innerHTML = "Assign Outcome";
+        addButton.innerHTML = LANGUAGE_TEXT.workflowview.assignoutcome[USER_LANGUAGE];
         addButton.onclick=function(){
             var value = compSelect.value;
             if(value!=""){
@@ -356,7 +398,7 @@ class Outcomeview{
             allTags = list[i].getAllTags(allTags,depth,currentIndices);
         }
         var opt = document.createElement('option');
-        opt.text = "Select set to add";
+        opt.text =LANGUAGE_TEXT.workflowview.selectset[USER_LANGUAGE];
         opt.value = "";
         compSelect.add(opt);
         for(var i=0;i<allTags.length;i++){
@@ -398,7 +440,9 @@ class OutcomeCategoryview{
         this.wf=wf;
         this.tablehead;
         this.vertex;
-        this.name = data.text;
+        this.name;
+        if(data.text.en)this.name = data.text[USER_LANGUAGE];
+        else this.name = data.text;
         this.value = data.value;
         this.nodeViews = [new OutcomeNodeview([],false,this)];
         this.expandIcon=document.createElement('img');
@@ -453,7 +497,7 @@ class OutcomeCategoryview{
         var wf = this.wf;
         var week = wf.weeks[wf.weeks.length-1];
         if(week){
-            var node = new ASNode(wf);
+            var node = new ACNode(wf);
             node.setColumn("SA");
             if(this.value!="none")node.setLeftIcon(this.value);
             node.week=week;
@@ -558,7 +602,7 @@ class OutcomeNodeview{
         this.textdiv.onclick = function(evt){nv.openEditBar(evt);}
         this.namediv.classList.add("outcometableheadertext");
         this.textdiv.appendChild(this.namediv);
-        if(this.isTotal){this.namediv.innerHTML = "Total";this.tablehead.classList.add("totalcell");}
+        if(this.isTotal){this.namediv.innerHTML = LANGUAGE_TEXT.outcomeview.total[USER_LANGUAGE];this.tablehead.classList.add("totalcell");}
         else if(this.nodes.length==0){this.namediv.innerHTML = "";this.tablehead.classList.add("emptycell");}
         else {
             this.nameUpdated();
@@ -601,7 +645,7 @@ class OutcomeNodeview{
         var nv = this;
         var node = this.nodes[0];
         if(!node)return;
-        if(mxUtils.confirm("Delete this node?")){
+        if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
             node.deleteSelf();
             node.wf.makeUndo("Delete Node",node);
         }
@@ -639,7 +683,7 @@ class OutcomeNodeview{
     
     nameUpdated(){
         if(this.nodes[0].name)this.namediv.innerHTML = this.nodes[0].name;
-        else this.namediv.innerHTML = "New Node";
+        else this.namediv.innerHTML = LANGUAGE_TEXT.node.defaulttext[USER_LANGUAGE];
     }
     
     leftIconUpdated(){this.categoryChanged();}
@@ -798,7 +842,45 @@ class OutcomeTagview{
             editdiv.appendChild(unassignicon);
             cell.appendChild(editdiv);
         }
+        
+        if(wf.tagSets.indexOf(this.tag)>=0){
+            var move = document.createElement('div');
+            move.className = "editlayoutdiv";
+            var up = document.createElement('img');
+            up.className="layoutchange";
+            up.src = "resources/images/moveup16.png";
+            up.onclick=function(){
+                tv.moveTag(true);
+            }
+            move.appendChild(up);
+            var down = document.createElement('img');
+            down.className="layoutchange";
+            down.src = "resources/images/movedown16.png";
+            down.onclick=function(){
+                tv.moveTag(false);
+            }
+            move.appendChild(down);
+            cell.appendChild(move);
+        }
+        
+        
     }
+    
+    moveTag(isup){
+        var tagSets = this.wf.tagSets;
+        if(tagSets.length<=1)return;
+        var index1 = tagSets.indexOf(this.tag);
+        var index2;
+        if(index1< tagSets.length-1&&!isup){
+            index2 = index1+1;
+        }else if(index1>0&&isup){
+            index2 = index1-1;
+        }
+        console.log(index1);
+        console.log(index2);
+        if(index2!=null)this.wf.swapTagSets(index1,index2);
+    }
+    
     
     expand(){
         if(this.tag==null)return;
@@ -920,7 +1002,7 @@ class OutcomeTableCell{
             this.validationImg.src = "resources/images/check16.png";
         }else{
             this.checkbox.checked=false;
-            if(completeness==0&&this.nodeview.isTotal)this.validationImg.src = "resources/images/warningcheck16.png";
+            if(completeness==0&&this.nodeview.isTotal&&this.nodeview==this.nodeview.cv.wf.view.grandTotal)this.validationImg.src = "resources/images/warningcheck16.png";
             else if(completeness>0)this.validationImg.src = "resources/images/nocheck16.png";
             else this.validationImg.src = "";
         }
@@ -986,7 +1068,7 @@ class ProgramOutcomeview extends Outcomeview{
             if(this.categoryViews[i].value==category)return this.categoryViews[i];
         }
         if(category=="none"){
-            this.categoryViews.push(new OutcomeCategoryview({text:"Uncategorized",value:"none"},this.wf));
+            this.categoryViews.push(new OutcomeCategoryview({text:LANGUAGE_TEXT.outcomeview.uncategorized[USER_LANGUAGE],value:"none"},this.wf));
             return this.categoryViews[this.categoryViews.length-1];
         }
         return null;
@@ -1003,7 +1085,7 @@ class ProgramOutcomeCategoryview extends OutcomeCategoryview{
         var week;
         if(this.value!=null) week = wf.weeks[this.value];
         if(week){
-            var node = new CUSNode(wf);
+            var node = new CONode(wf);
             node.setColumn(wf.columns[0].name);
             node.week=week;
             week.addNode(node);

@@ -180,7 +180,7 @@ class Weekview{
     //Add the overlay to create new weeks
     addPlusOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), 'Insert week below');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), LANGUAGE_TEXT.week.createbelow[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -201,7 +201,7 @@ class Weekview{
     //Add the overlay to delete the week
     addDelOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this week');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.week.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -212,7 +212,7 @@ class Weekview{
         var graph = this.graph;
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            if(mxUtils.confirm("Delete this week? Warning: this will delete any nodes still inside!")){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[USER_LANGUAGE])){
                 graph.clearSelection();
                 w.deleteSelf();
                 w.wf.makeUndo("Delete Week",w);
@@ -224,7 +224,7 @@ class Weekview{
     
     addCopyOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), 'Duplicate week');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), LANGUAGE_TEXT.week.duplicate[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -244,8 +244,8 @@ class Weekview{
     
     addMoveOverlays(){
         var w = this.week;
-        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), 'Move week');
-        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), 'Move week');
+        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), LANGUAGE_TEXT.week.moveweek[USER_LANGUAGE]);
+        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), LANGUAGE_TEXT.week.moveweek[USER_LANGUAGE]);
         overlayUp.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -282,7 +282,7 @@ class Weekview{
         var w = this.week;
         var imgsrc = 'resources/images/minus24.png';
         if(collapsed)imgsrc = 'resources/images/plus24.png';
-        var overlay = new mxCellOverlay(new mxImage(imgsrc, 24, 24), 'Collapse week');
+        var overlay = new mxCellOverlay(new mxImage(imgsrc, 24, 24), LANGUAGE_TEXT.week.collapse[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -368,13 +368,13 @@ class Weekview{
         var graph = this.graph;
         var week=this.week;
         if(!(week instanceof WFArea)){
-            menu.addItem('Edit label', 'resources/images/text24.png', function(){
+            menu.addItem(LANGUAGE_TEXT.week.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
 				graph.startEditingAtCell(week.view.vertex);
             });
-            menu.addItem('Duplicate Week','resources/images/copy24.png',function(){
+            menu.addItem(LANGUAGE_TEXT.week.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){
                 week.duplicateWeek(); 
             });
-            menu.addItem('Delete Week','resources/images/delrect24.png',function(){
+            menu.addItem(LANGUAGE_TEXT.week.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
                 if(mxUtils.confirm("Delete this week?")){
                     graph.clearSelection();
                     week.deleteSelf();

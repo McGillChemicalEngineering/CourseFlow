@@ -226,8 +226,9 @@ class Workflow{
         var children = this.children;
         for(var i=0;i<children.length;i++){
             var wfc = children[i];
-            if(des[wfc.getType()]==null)des[wfc.getType()]=1;
-            else des[wfc.getType()]=des[wfc.getType()]+1;
+            var type = LANGUAGE_TEXT.workflow[wfc.getType()][USER_LANGUAGE];
+            if(des[type]==null)des[type]=1;
+            else des[type]=des[type]+1;
             des = wfc.getNumberOfDescendants(des);
             
         }
@@ -289,8 +290,8 @@ class Workflow{
         
     }
     
-    makeActive(view){
-        //try{
+    makeActive(container){
+        try{
             this.isActive=true;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].makeActive();
@@ -303,6 +304,14 @@ class Workflow{
             }else{
                 this.createInitialColumns();
                 this.createBaseWeek();
+            }
+            var view;
+            if(this.project.outcomesview){
+                if(this instanceof Programflow)view = new ProgramOutcomeview(container,this);
+                else if(this instanceof Activityflow)view = new Workflowview(container,this);
+                else view = new Outcomeview(container,this);
+            }else{
+                view = new Workflowview(container,this);
             }
             this.view=view;
             if(this.view)this.view.makeActive();
@@ -317,10 +326,10 @@ class Workflow{
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
-       //}catch(err){
-        //    alert("Oops! The workflow could not be opened.");
-        //    gaError("Workflow",err);
-        //}
+        }catch(err){
+            alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
+            gaError("Workflow",err);
+        }
     }
     
     
@@ -445,12 +454,10 @@ class Workflow{
     createNodeOfType(column){
         var node;
         var wf = this;
-        if(column=="LO") node = new LONode(wf);
-        else if(column=="AC") node = new ACNode(wf);
-        else if(column=="SA"||column=="FA"||column=="HW") node = new ASNode(wf);
+        if(this instanceof Courseflow) node = new ACNode(wf);
         else if (column=="CO") node = new CONode(wf);
-        else if(column=="OOC"||column=="ICI"||column=="ICS")node = new WFNode(wf);
-        else if(column.substr(0,3)=="CUS")node = new CUSNode(wf);
+        else if(this instanceof Activityflow)node = new WFNode(wf);
+        else if(this instanceof Programflow)node = new CONode(wf);
         else node = new CFNode(wf);
         return node;
         
@@ -634,11 +641,11 @@ class Workflow{
     
     
     getDeleteText(){
-        return "Delete this workflow? Warning: this will delete all contents (but not any workflows used by it)!";
+        return LANGUAGE_TEXT.confirm.deleteworkflow[USER_LANGUAGE];
     }
     
     getUnassignText(){
-        return "Unassign this workflow? Note: this will NOT delete the workflow, but WILL remove this reference to it from the parent workflow.";
+        return LANGUAGE_TEXT.confirm.unassignworkflow[USER_LANGUAGE];
     }
 
     deleteSelf(){
@@ -661,6 +668,12 @@ class Workflow{
         var i2 = this.children.indexOf(c2);
         [this.children[i1],this.children[i2]]=[this.children[i2],this.children[i1]];
         
+    }
+    
+    //swap two tag sets
+    swapTagSets(i1,i2){
+        [this.tagSets[i1],this.tagSets[i2]]=[this.tagSets[i2],this.tagSets[i1]];
+        if(this.view)this.view.tagSetsSwapped(i1,i2);
     }
     
     
@@ -834,7 +847,7 @@ class Courseflow extends Workflow{
         return columns;
     }
     
-    getDefaultName(){return "New Course"};
+    getDefaultName(){return LANGUAGE_TEXT.workflow.newcourse[USER_LANGUAGE];}
     
     getType(){return "course"};
     getButtonClass(){return "layoutcourse";}
@@ -892,7 +905,7 @@ class Activityflow extends Workflow{
     
     typeToXML(){return makeXML("activity","wftype");}
     
-    getDefaultName(){return "New Activity"};
+    getDefaultName(){return LANGUAGE_TEXT.workflow.newactivity[USER_LANGUAGE];}
     
     
     
@@ -944,7 +957,7 @@ class Programflow extends Workflow{
     
     typeToXML(){return makeXML("program","wftype");}
     
-    getDefaultName(){return "New Program"};
+    getDefaultName(){return LANGUAGE_TEXT.workflow.newprogram[USER_LANGUAGE];}
     
     
     
