@@ -404,7 +404,6 @@ class ACNode extends CFNode {
     
     
     getIconCategory(icon){
-        console.log(this.column);
         if(icon=="left")if(this.column=='SA')return "assessment"; else return "strategy";
         else return null;
     }
@@ -576,7 +575,6 @@ class WFLink{
         var portStyle = getXMLVal(xml,"portstyle");
         var text = getXMLVal(xml,"linktext",true);
         var style = getXMLVal(xml,"linkstyle");
-        console.log(targetid);
         this.id = targetid;
         this.targetNode = null;
         if(text)this.text = text;
@@ -606,7 +604,6 @@ class WFLink{
     }
     
     redraw(){
-        console.log(this.id);
         if(this.id!=null&&this.targetNode==null) {
             this.targetNode = this.node.wf.findNodeById(this.id);
             //if the node is still null after this the connection is probably garbage (for example a connection to a node that has been destroyed).

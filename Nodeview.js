@@ -125,9 +125,6 @@ class Nodeview{
     }
 
     linkedWFUpdated(value,oldvalue){
-        console.log(this.node.getRightIconList());
-        console.log(value);
-        console.log(oldvalue);
         if(this.node.getRightIconList()==null){
             if(value&&!oldvalue){
                 this.graph.setCellStyles("image",iconpath+"linked48.png",[this.righticonnode]);

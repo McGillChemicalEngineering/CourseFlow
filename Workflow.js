@@ -291,7 +291,7 @@ class Workflow{
     }
     
     makeActive(container){
-        //try{
+        try{
             this.isActive=true;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].makeActive();
@@ -326,10 +326,10 @@ class Workflow{
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
-        //}catch(err){
-        //    alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
-        //    gaError("Workflow",err);
-        //}
+        }catch(err){
+            alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
+            gaError("Workflow",err);
+        }
     }
     
     
@@ -446,6 +446,8 @@ class Workflow{
     getTagByID(id){
         var tag;
         for(var i=0;i<this.tagSets.length;i++){
+            console.log(this.tagSets[i]);
+            console.log(this.tagSets);
             tag = this.tagSets[i].getTagByID(id);
             if(tag!=null)return tag;
         }
@@ -548,7 +550,6 @@ class Workflow{
         if(this.tagSets.indexOf(tag)>=0){
             this.tagSets.splice(this.tagSets.indexOf(tag),1);
         }else if(tag.parentTag!=null){
-            tag.parentTag.view = null;
             this.removeTagSet(tag.parentTag,true,false);
             for(var i=0;i<tag.parentTag.children.length;i++){
                 if(tag.parentTag.children[i]!=tag)this.addTagSet(tag.parentTag.children[i],false);
@@ -778,7 +779,6 @@ class Workflow{
                 wf.xmlData = nextUndo.xml;
                 wf.clearAll();
                 for(var i=0;i<nextUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getCompByID(nextUndo.tagSets[i]));
-                wf.tagSets = nextUndo.tagSets;
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
                 wf.view.makeActive();

@@ -27,7 +27,6 @@ function main(container)
     }
     else
     {
-        console.log(window.navigator.language);
         if(window.navigator.language.substr(0,2)=='fr')USER_LANGUAGE='fr';
         var nav = LANGUAGE_TEXT.confirm.navigate[USER_LANGUAGE]
         window.onbeforeunload = function() {

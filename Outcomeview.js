@@ -26,6 +26,7 @@ class Outcomeview{
         this.tableCells=[];
         this.toolbarDiv;
         this.editbar;
+        this.tbody;
     }
     
     nameUpdated(){
@@ -157,6 +158,7 @@ class Outcomeview{
         
         var tbody = document.createElement('tbody');
         table.appendChild(tbody);
+        this.tbody = tbody;
         
         
         //Create all the rows
@@ -171,6 +173,7 @@ class Outcomeview{
                     cellRow.push(tc);
                 }
             }
+            this.tagViews[i].cellRow = cellRow;
             this.tableCells.push(cellRow);
         }
         
@@ -271,7 +274,6 @@ class Outcomeview{
     }
     
     removeCategory(cv){
-        console.log("removing category");
         for(var i=0;i<cv.nodeViews.length;i++){
             cv.nodeViews[i].removeSelf();
         }
@@ -320,22 +322,69 @@ class Outcomeview{
     }
     
     populateTagBar(){
-        this.makeInactive();
-        this.makeActive();
+        this.populateTagSelect(this.wf.project.competencies,this.wf.getTagDepth());
     }
     
     
     tagSetsSwapped(i1,i2){
-        this.makeInactive();
-        this.makeActive();
-    }
-    
-    tagSetAdded(tag){
+        var min = Math.min(i1,i2);
+        var max = Math.max(i1,i2);
+        var tags1 =[];
+        var tags2 =[];
+        tags1 = this.wf.tagSets[min].getAllTags(tags1);
+        tags2 = this.wf.tagSets[max].getAllTags(tags2);
+        var vertices1 = [];
+        var vertices2 = [];
+        for(var i = 0;i<tags1.length;i++)vertices1.push(tags1[i].view.vertex);
+        for(var i = 0;i<tags2.length;i++)vertices2.push(tags2[i].view.vertex);
+        for(var i = 0;i<vertices2.length;i++)vertices2[i].parentElement.insertBefore(vertices2[i],vertices1[0]);
+        var nextEl = this.wf.tagSets[min+1].view.vertex;
+        for(var i = 0;i<vertices1.length;i++)vertices1[i].parentElement.insertBefore(vertices1[i],nextEl);
+        
         
     }
     
+    tagSetAdded(tag){
+        var allTags = [];
+        allTags = tag.getAllTags(allTags);
+        for(i=0;i<allTags.length;i++){
+            if(allTags[i].view)this.tagSetRemoved(allTags[i]);
+            allTags[i].view = new OutcomeTagview(allTags[i],this.wf);
+            this.tagViews.push(allTags[i].view);
+        }
+        //Create all the rows
+        for(var i=0;i<allTags.length;i++){
+            var cellRow=[];
+            allTags[i].view.createVertex(this.tbody);
+            for(var j=0;j<this.categoryViews.length;j++){
+                for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
+                    var nv = this.categoryViews[j].nodeViews[k];
+                    var tc = new OutcomeTableCell(allTags[i],nv);
+                    tc.createVertex(allTags[i].view.vertex);
+                    cellRow.push(tc);
+                }
+            }
+            allTags[i].view.cellRow = cellRow;
+            this.tableCells.push(cellRow);
+        }
+        
+        
+        this.updateTable();
+    }
+    
     tagSetRemoved(tag){
-        if(tag.view)tag.view.clearViews();
+        var allTags = [];
+        if(tag.view){
+            allTags = tag.getAllTags(allTags);
+            for(var i=0;i<allTags.length;i++){
+                var cellRow = allTags[i].view.cellRow;
+                this.tableCells.splice(this.tableCells.indexOf(cellRow),1);
+                allTags[i].view.vertex.parentElement.removeChild(allTags[i].view.vertex);
+                var tv = allTags[i].view;
+                this.tagViews.splice(this.tagViews.indexOf(tv),1);
+            }
+            tag.view.clearViews();
+        }
         this.populateTagBar();
     }
 
@@ -354,7 +403,7 @@ class Outcomeview{
         var wf = this.wf;
         var p=wf.project;
         var header = document.createElement('h3');
-        header.className="nodebarh3";
+        //header.className="nodebarh3";
         header.innerHTML=LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
         
@@ -578,7 +627,6 @@ class OutcomeNodeview{
     }
     
     tagAdded(){
-        console.log("tag added");
         if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable();
     }
     
@@ -635,7 +683,7 @@ class OutcomeNodeview{
             eb.enable(node);
             evt.stopPropagation();
             var listenerDestroyer = function(){document.removeEventListener("click",outsideClick);}
-            var outsideClick = function(evt2){if(eb&&!eb.container.parentElement.contains(evt2.target)){eb.disable();listenerDestroyer();console.log("click");}else if(!eb)listenerDestroyer();}
+            var outsideClick = function(evt2){if(eb&&!eb.container.parentElement.contains(evt2.target)){eb.disable();listenerDestroyer();}else if(!eb)listenerDestroyer();}
             document.addEventListener("click",outsideClick);
             
         }
@@ -692,15 +740,11 @@ class OutcomeNodeview{
     linkedWFUpdated(){}
     
     categoryChanged(){
-        console.log(this);
-        console.log(this.nodes[0]);
-        console.log("category changed");
         var index = this.getOverallIndex();
         var node = this.nodes[0];
         this.cv.nodeRemoved(node,index);
         var cv = node.wf.view.getCategoryForNode(node);
         this.cv = cv;
-        console.log("Adding to category " + cv.name);
         var lastnv;
         var weeks = node.wf.weeks;
         var weekindex = weeks.indexOf(node.week);
@@ -734,13 +778,11 @@ class OutcomeNodeview{
             var cv = categoryViews[i];
             if(cv==this.cv){
                 index+=cv.nodeViews.indexOf(this);
-                console.log(index);
                 return index;
             }else{
                 index+=cv.nodeViews.length;
             }
         }
-        console.log("oopsie");
         return -1;
         
     }
@@ -763,7 +805,6 @@ class OutcomeNodeview{
         else nv.createTableHead(headParent,headInsertBefore);
         
         var index = nv.getOverallIndex();
-        console.log(index);
         var tableCells = this.cv.wf.view.tableCells;
         var tagViews = this.cv.wf.view.tagViews;
         for(var j=0;j<tableCells.length;j++){
@@ -794,6 +835,7 @@ class OutcomeTagview{
         this.tag=tag;
         this.wf = wf;
         this.vertex;
+        this.cellrow;
         this.nameCell;
         this.expandIcon = document.createElement('img');
     }
@@ -876,8 +918,6 @@ class OutcomeTagview{
         }else if(index1>0&&isup){
             index2 = index1-1;
         }
-        console.log(index1);
-        console.log(index2);
         if(index2!=null)this.wf.swapTagSets(index1,index2);
     }
     

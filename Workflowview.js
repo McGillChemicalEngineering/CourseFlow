@@ -48,8 +48,6 @@ class Workflowview{
                 if(node.autoLinkOut)node.autoLinkOut.redraw();
                 for(var k=0;k<this.wf.weeks[i].nodes[j].fixedLinksOut.length;k++){
                     var link = this.wf.weeks[i].nodes[j].fixedLinksOut[k];
-                    console.log(link);
-                    console.log(node);
                     node.view.fixedLinkAdded(link,null);
                 }
             }

@@ -678,6 +678,8 @@ class Project{
     }
     
     getCompByID(id){
+        console.log(id);
+        console.log(this.competencies);
         for(var i=0;i<this.competencies.length;i++){
             if(this.competencies[i].id==id)return this.competencies[i];
         }
@@ -853,6 +855,7 @@ class Project{
             if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive();
             USER_LANGUAGE=lang;
             setMenuLanguage();
+            p.fillWFSelect($("#newwfselect").get()[0]);
             if(p.activeWF!=null)p.workflows[p.activeWF].makeActive(p.container);
             if(p.activeComp!=null)p.competencies[p.activeComp].makeActive(new Tagbuilder(p.container,p.competencies[p.activeComp]));
         });
