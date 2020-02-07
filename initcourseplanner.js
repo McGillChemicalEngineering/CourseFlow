@@ -33,8 +33,8 @@ function main(container)
           return nav;
         }
         setMenuLanguage();
-        $("#english").bind("click",function(){USER_LANGUAGE='en';setMenuLanguage();});
-        $("#french").bind("click",function(){USER_LANGUAGE='fr';setMenuLanguage();});
+        $("#english").get()[0].onclick = function(){USER_LANGUAGE='en';setMenuLanguage();};
+        $("#french").get()[0].onclick = function(){USER_LANGUAGE='fr';setMenuLanguage();};
         makeSplashpage(container);
     }
 } //End of main

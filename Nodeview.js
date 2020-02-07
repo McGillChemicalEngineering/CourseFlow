@@ -154,6 +154,7 @@ class Nodeview{
     }
     
     makeFlushWithAbove(index,column=null){
+        console.log(index);
         if(index==0) this.moveNode(0,this.node.week.view.vertex.y()+2*cellSpacing-this.vertex.y());
         else {
             var nodes;

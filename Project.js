@@ -258,12 +258,12 @@ class Project{
         terminologyCegep.onclick=function(){p.setTerminology("cegep");}
         
         
-        $("#english").bind("click",function(){
+        $("#english").get()[0].onclick = function(){
             p.setLanguage('en');
-        });
-        $("#french").bind("click",function(){
+        };
+        $("#french").get()[0].onclick = function(){
             p.setLanguage('fr');
-        });
+        };
         
         
         var genHelp = document.getElementById("genhelp");
@@ -463,6 +463,8 @@ class Project{
     }
     
     printActive(){
+        console.log(window.navigator.userAgent);
+        if(window.navigator.userAgent.match("Chrome"))alert(LANGUAGE_TEXT.errors.printchrome[USER_LANGUAGE]);
         if(this.activeWF!=null)this.workflows[this.activeWF].requestPrint();
         else if(this.activeComp!=null)this.competencies[this.activeComp].requestPrint();
         
@@ -851,11 +853,14 @@ class Project{
     setLanguage(lang){
         var p = this;
         makeLoad(function(){
+            console.log("Closing active wfs");
             if(p.activeWF!=null)p.workflows[p.activeWF].makeInactive();
             if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive();
+            console.log("Changing language from "+USER_LANGUAGE+" to "+lang);
             USER_LANGUAGE=lang;
             setMenuLanguage();
             p.fillWFSelect($("#newwfselect").get()[0]);
+            console.log("Reopening workflows");
             if(p.activeWF!=null)p.workflows[p.activeWF].makeActive(p.container);
             if(p.activeComp!=null)p.competencies[p.activeComp].makeActive(new Tagbuilder(p.container,p.competencies[p.activeComp]));
         });

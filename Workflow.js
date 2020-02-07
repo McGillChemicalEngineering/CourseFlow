@@ -36,6 +36,7 @@ class Workflow{
         this.undoEnabled=false;
         this.view;
         this.legendCoords;
+        this.isSimple = (this instanceof Activityflow);
     }
     
     getDefaultName(){return "Untitled Workflow"};
@@ -79,6 +80,7 @@ class Workflow{
             xml+=this.brackets[i].toXML();
         }
         if(this.legendCoords){xml+=makeXML(this.legendCoords.x,'wflegendx');xml+=makeXML(this.legendCoords.y,'wflegendy');}
+        if(this.isSimple != (this instanceof Activityflow))xml+=makeXML("true","simpletoggled");
         xml=makeXML(xml,"wfdata");
         this.xmlData = (new DOMParser).parseFromString(xml,"text/xml").childNodes[0];
     }
@@ -95,6 +97,9 @@ class Workflow{
             this.columns.push(col);
         }
         if(this.columns.length==0)this.createInitialColumns();
+        
+        var isSimple = getXMLVal(xmlData,"simpletoggled");
+        if(isSimple!=null)this.isSimple = !(this instanceof Activityflow);
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(i=0;i<xmlweeks.length;i++){
             var week = this.createWeek();
@@ -121,6 +126,7 @@ class Workflow{
         var legendx = int(getXMLVal(xmlData,'wflegendx'));
         var legendy = int(getXMLVal(xmlData,'wflegendy'));
         if(legendx&&legendy)this.legendCoords ={x:legendx,y:legendy};
+        
         
     }
     
@@ -291,7 +297,7 @@ class Workflow{
     }
     
     makeActive(container){
-        try{
+        //try{
             this.isActive=true;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].makeActive();
@@ -326,10 +332,10 @@ class Workflow{
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
-        }catch(err){
-            alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
-            gaError("Workflow",err);
-        }
+        //}catch(err){
+        //    alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
+        //    gaError("Workflow",err);
+        //}
     }
     
     
@@ -409,7 +415,7 @@ class Workflow{
     
     
     createBaseWeek(){
-        var baseWeek = new Week(this);
+        var baseWeek = this.createWeek();
         this.weeks.push(baseWeek);
         if(this.view)this.view.weekAdded(baseWeek);
         this.updateWeekIndices();
@@ -422,8 +428,10 @@ class Workflow{
     
     updateWeekIndices(){
         var weeks = this.weeks;
+        console.log("update");
         for(var i=0;i<weeks.length;i++){
             weeks[i].index=i;
+            console.log(this.view);
             if(this.view)this.view.weekIndexUpdated(weeks[i]);
             if(weeks[i].name==null&&weeks[i].name!="")weeks[i].setName(null);
         }
@@ -446,8 +454,6 @@ class Workflow{
     getTagByID(id){
         var tag;
         for(var i=0;i<this.tagSets.length;i++){
-            console.log(this.tagSets[i]);
-            console.log(this.tagSets);
             tag = this.tagSets[i].getTagByID(id);
             if(tag!=null)return tag;
         }
@@ -683,6 +689,14 @@ class Workflow{
         if(this.view)this.view.columnsSwitched(in1,in2);
     }
     
+    //Move node 1 to before or after node2
+    moveNodeTo(node1,node2,isAfter=true){
+        node1.week.removeNode(node1);
+        node1.week = node2.week;
+        node2.week.addNode(node1,0,node2.week.nodes.indexOf(node2)+isAfter);
+        if(this.view)this.view.nodeMovedTo(node1,node2,isAfter);
+    }
+    
     addNodesFromXML(week,startIndex,xml){
         xml = (new DOMParser()).parseFromString(this.project.assignNewIDsToXML(xml),"text/xml");
         //Add everything
@@ -816,6 +830,31 @@ class Workflow{
     }
     
     
+    toggleSimple(isSimple){
+        if(this.isSimple!=isSimple){
+            this.isSimple = isSimple;
+            console.log("Simple toggled to "+isSimple)
+            for(var i=0;i<this.weeks.length;i++){
+                if(this.weeks[i].view)this.weeks[i].view.simpleToggled();
+            }
+            if(isSimple){
+                var baseweek = this.weeks[0];
+                baseweek.setName(null);
+                while(this.weeks.length>1){
+                    var week = this.weeks[1];
+                    while(week.nodes.length>0){
+                        var node = week.nodes[0];
+                        week.removeNode(node);
+                        node.week = baseweek;
+                        baseweek.addNodeSilent(node);
+                    }
+                    week.deleteSelf();
+                }
+            }else{
+                this.updateWeekIndices();
+            }
+        }
+    }
     
     
 }
@@ -885,10 +924,11 @@ class Activityflow extends Workflow{
     }
     
     createBaseWeek(){
-        var baseWeek = new WFArea(this);
+        var baseWeek = this.createWeek();
         baseWeek.index=0;
         this.weeks.push(baseWeek);
         if(this.view)this.view.weekAdded(baseWeek);
+        this.updateWeekIndices();
     }
     
     createWeek(){
@@ -896,7 +936,7 @@ class Activityflow extends Workflow{
         return week;
     }
     
-    updateWeekIndices(){};
+    updateWeekIndices(){if(!this.isSimple)super.updateWeekIndices();}
     
     getType(){return "activity"};
     getButtonClass(){return "layoutactivity";}
@@ -936,10 +976,19 @@ class Programflow extends Workflow{
     }
     
     createWeek(){
-        return new Term(this);
+        var week = new Term(this);
+        return week;
     }
     
     
+    //Move node 1 to before or after node2
+    moveNodeTo(node1,node2,isAfter=true){
+        node1.week.removeNode(node1);
+        node1.week = node2.week;
+        node1.column = node2.column;
+        node2.week.addNode(node1,0,node2.week.nodesByColumn[node2.column].indexOf(node2)+isAfter);
+        if(this.view)this.view.nodeMovedTo(node1,node2,isAfter);
+    }
     
     createBaseWeek(){
         var baseWeek = new Term(this);

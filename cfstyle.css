@@ -866,6 +866,13 @@ div.highlighted{
     
 }
 
+.outcometable th .editlayoutdiv{
+    top:0px;
+    left:auto;
+    right:16px;
+    position:absolute;
+}
+
 .outcometable tr td:firstchild{
     position:relative;
 }
@@ -874,6 +881,7 @@ div.highlighted{
     font-size:16px;
     font-weight:500;
 }
+
 
 .outcometable tr.depth1 td:first-child{
     border-left:16px solid white;
@@ -886,6 +894,9 @@ div.highlighted{
     font-size:12px;
 }
 
+.outcometable tr.toplevel td:first-child{
+    border-left:0px;
+}
 
 .outcometable tbody tr:nth-child(2n+3){
     background-color:lightgray;
@@ -941,6 +952,7 @@ div.highlighted{
 }
 
 
+
 .outcometable .outcometableheadertext{
     padding-left:20px;
     height:100%;
@@ -963,6 +975,39 @@ div.highlighted{
     font-size:16px;
     height:20px;
     margin-left:600px;
+}
+
+.outcometable .outcomelegend{
+    width:200px;
+    margin-left:30px;
+    border:5px solid #1976bc;
+    padding:5px;
+    display:none;
+}
+
+.outcometable .legendline div, .outcometable .legendline img{
+    display:inline-block;
+    vertical-align: middle;
+}
+
+.outcometable .legendline{
+    text-align:left;
+    margin-left:10px;
+    padding:4px;
+}
+
+.outcometable .legendline img{
+    padding:4px;
+    margin-right:20px;
+}
+
+.outcometable .outcomelegend hr{
+    margin-left:20px;
+    margin-right:20px;
+    border:0px;
+    height:4px;
+    background:#1976bc;
+    
 }
 
 .readonly .editlayoutdiv,.readonly .createlayoutdiv,.readonly .deletelayoutdiv{

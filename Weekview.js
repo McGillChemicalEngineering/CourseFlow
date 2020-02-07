@@ -53,6 +53,7 @@ class Weekview{
         this.vertex.week=week;
         this.graph.orderCells(true,[this.vertex]);
         this.vertex.cellOverlays=[];
+        console.log(this.week.wf.isSimple);
         this.addPlusOverlay();
         this.addDelOverlay();
         this.addCopyOverlay();
@@ -150,7 +151,7 @@ class Weekview{
     
     makeFlushWithAbove(index){
         var wf = this.week.wf;
-        if(index==0) this.moveWeek(wf.columns[0].head.b()+cellSpacing-this.vertex.y());
+        if(index==0) this.moveWeek(wf.columns[0].view.vertex.b()+cellSpacing-this.vertex.y());
         else this.moveWeek(wf.weeks[index-1].view.vertex.b()-this.vertex.y());
     }
     
@@ -180,7 +181,7 @@ class Weekview{
     //Add the overlay to create new weeks
     addPlusOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), LANGUAGE_TEXT.week.createbelow[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), LANGUAGE_TEXT.week.createbelow[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -201,7 +202,7 @@ class Weekview{
     //Add the overlay to delete the week
     addDelOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.week.delete[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.week.delete[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -212,7 +213,7 @@ class Weekview{
         var graph = this.graph;
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
-            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[USER_LANGUAGE])){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[w.getType()][USER_LANGUAGE])){
                 graph.clearSelection();
                 w.deleteSelf();
                 w.wf.makeUndo("Delete Week",w);
@@ -224,7 +225,7 @@ class Weekview{
     
     addCopyOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), LANGUAGE_TEXT.week.duplicate[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), LANGUAGE_TEXT.week.duplicate[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -244,8 +245,8 @@ class Weekview{
     
     addMoveOverlays(){
         var w = this.week;
-        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), LANGUAGE_TEXT.week.moveweek[USER_LANGUAGE]);
-        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), LANGUAGE_TEXT.week.moveweek[USER_LANGUAGE]);
+        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), LANGUAGE_TEXT.week.move[w.getType()][USER_LANGUAGE]);
+        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), LANGUAGE_TEXT.week.move[w.getType()][USER_LANGUAGE]);
         overlayUp.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -282,7 +283,7 @@ class Weekview{
         var w = this.week;
         var imgsrc = 'resources/images/minus24.png';
         if(collapsed)imgsrc = 'resources/images/plus24.png';
-        var overlay = new mxCellOverlay(new mxImage(imgsrc, 24, 24), LANGUAGE_TEXT.week.collapse[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(imgsrc, 24, 24), LANGUAGE_TEXT.week.collapse[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -360,48 +361,72 @@ class Weekview{
     }
     
     getStyle(){
-        return defaultWeekStyle;
+        if(this.week.wf.isSimple)return defaultWFAreaStyle;
+        else return defaultWeekStyle;
     }
     
     
     populateMenu(menu){
         var graph = this.graph;
         var week=this.week;
-        if(!(week instanceof WFArea)){
-            menu.addItem(LANGUAGE_TEXT.week.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
-				graph.startEditingAtCell(week.view.vertex);
-            });
-            menu.addItem(LANGUAGE_TEXT.week.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){
-                week.duplicateWeek(); 
-            });
-            menu.addItem(LANGUAGE_TEXT.week.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
-                if(mxUtils.confirm("Delete this week?")){
-                    graph.clearSelection();
-                    week.deleteSelf();
-                    week.wf.makeUndo("Delete Week",week);
-                }
-            });
-        }
+        menu.addItem(LANGUAGE_TEXT.week.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
+            graph.startEditingAtCell(week.view.vertex);
+        });
+        menu.addItem(LANGUAGE_TEXT.week.duplicate[week.getType()][USER_LANGUAGE],'resources/images/copy24.png',function(){
+            week.duplicateWeek(); 
+        });
+        menu.addItem(LANGUAGE_TEXT.week.delete[week.getType()][USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[week.getType()][USER_LANGUAGE])){
+                graph.clearSelection();
+                week.deleteSelf();
+                week.wf.makeUndo("Delete Week",week);
+            }
+        });
     }
     
     
+    simpleToggled(){
+        if(this.vertex&&this.graph){
+            if(this.week.wf.isSimple)this.graph.setCellStyle(defaultWFAreaStyle,[this.vertex]);
+            else this.graph.setCellStyle(defaultWeekStyle,[this.vertex]);
+            this.vertex.cellOverlays=[];
+            this.graph.removeCellOverlays(this.vertex);
+            this.addPlusOverlay();
+            this.addDelOverlay();
+            this.addCopyOverlay();
+            this.addMoveOverlays();
+            this.addMinimizeOverlay(this.week.collapsed);
+        }
+    }
     
 
 }
 
 class WFAreaview extends Weekview{
-    addDelOverlay(){}
+    addDelOverlay(){if(!this.week.wf.isSimple)super.addDelOverlay();}
     
-    addPlusOverlay(){}
+    addPlusOverlay(){if(!this.week.wf.isSimple)super.addPlusOverlay();}
     
-    addCopyOverlay(){}
+    addCopyOverlay(){if(!this.week.wf.isSimple)super.addCopyOverlay();}
     
-    addMoveOverlays(){}
+    addMoveOverlays(){if(!this.week.wf.isSimple)super.addMoveOverlays();}
     
-    addMinimizeOverlay(){}
+    addMinimizeOverlay(){if(!this.week.wf.isSimple)super.addMinimizeOverlay();}
     
-    getStyle(){
-        return defaultWFAreaStyle;
+    
+    populateMenu(menu){
+        var week = this.week;
+        console.log(this.week.wf.isSimple);
+        if(!this.week.wf.isSimple){
+            super.populateMenu(menu);
+        }
+        var sub = menu.addItem(LANGUAGE_TEXT.week.options[USER_LANGUAGE],'resources/images/weekstyle24.png');
+        menu.addItem(LANGUAGE_TEXT.week.simple[USER_LANGUAGE],'resources/images/weekstylesimple24.png',function(){
+            week.wf.toggleSimple(true);
+        },sub);
+        menu.addItem(LANGUAGE_TEXT.week.parts[USER_LANGUAGE],'resources/images/weekstyleparts24.png',function(){
+            week.wf.toggleSimple(false);
+        },sub);
     }
     
 }
@@ -599,6 +624,7 @@ class Termview extends Weekview{
         }
         return dy+emptyWeekSize+cellSpacing-48;
     }
+    
     
     
 }

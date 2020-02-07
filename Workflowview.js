@@ -145,11 +145,12 @@ class Workflowview{
         while(this.toolbarDiv.firstChild)this.toolbarDiv.removeChild(this.toolbarDiv.firstChild);
         this.toolbarDiv.parentElement.style.display="none";
         this.graph.stopEditing(false);
+        $(".mxPopupMenu").remove();
         this.graph.clearSelection();
         for(var i=0;i<this.wf.tagSets.length;i++){
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
         }
-        this.nodeBarDiv.style.display="none";
+        if(this.nodeBarDiv)this.nodeBarDiv.style.display="none";
         if(this.graph!=null)this.graph.destroy();
         
         
@@ -293,7 +294,8 @@ class Workflowview{
         if(weeks[0].view)this.graph.moveCells([this.authorNode],weeks[0].view.vertex.r()-this.authorNode.r());
     }
     
-    weekIndexUpdated(week){
+    weekIndexUpdated(week){ 
+        console.log(week);
         if(week.collapsed){
             this.graph.setCellStyles("fontColor","#777777;",[week.view.vertex]);
             this.graph.setCellStyles("fillColor","#bbbbbb;",[week.view.vertex]);
@@ -832,6 +834,7 @@ class Workflowview{
     }
     
     
+    
     clearGraph(){
         while(this.wf.brackets.length>0){
             this.brackets[0].deleteSelf();
@@ -1317,6 +1320,7 @@ class Workflowview{
         var preview = new mxPrintPreview(graph, scale,mxConstants.PAGE_FORMAT_A4_PORTRAIT);
         preview.open();
     }
+    
     
     
     

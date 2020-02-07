@@ -51,11 +51,14 @@ class Week {
         return LANGUAGE_TEXT.week.week[USER_LANGUAGE]+" "+(this.wf.weeks.indexOf(this)+1);
     }
     
+    
+    getType(){return "week";}
+    
     toXML(){
         var xml = "";
         xml+=makeXML(this.id,"weekid");
         if(this.name!=null)xml+=makeXML(this.name,"weekname",true);
-        if(this.collapsed)xml+=makeXML("true","weekcollapsed")
+        if(this.collapsed)xml+=makeXML("true","weekcollapsed");
         for(var i=0;i<this.nodes.length;i++){
             xml+=this.nodes[i].toXML();
         }
@@ -100,6 +103,7 @@ class Week {
         else if(origin > 0) {this.nodes.splice(0,0,node);}
         else this.nodes.splice(index,0,node);
         index=this.nodes.indexOf(node);
+        console.log(index);
         if(this.view)this.view.nodeAddedSilently(node,origin,index);
     }
     
@@ -135,7 +139,7 @@ class Week {
         while(this.nodes.length>0){
             this.nodes[this.nodes.length-1].deleteSelf();
         }
-        this.wf.weeks.splice(this.index,1);
+        this.wf.weeks.splice(this.wf.weeks.indexOf(this),1);
         this.wf.updateWeekIndices();
         if(this.view)this.view.deleted();
     }
@@ -155,7 +159,7 @@ class Week {
     
     //Duplicate the week and insert the copy below
     duplicateWeek(){
-        var newWeek = new Week(this.wf);
+        var newWeek = this.wf.createWeek();
         this.wf.weeks.splice(this.index+1,0,newWeek);
         newWeek.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
         for(var i=0;i<newWeek.nodes.length;i++){
@@ -181,12 +185,17 @@ class Week {
     }
     
     
+    
 }
 
 class WFArea extends Week{
+    getType(){return "part";}
+    
     getDefaultName(){
-        return null;
+        if(this.wf.isSimple)return null;
+        else return LANGUAGE_TEXT.week.part[USER_LANGUAGE]+" "+(this.wf.weeks.indexOf(this)+1);
     }
+    
 }
 
 
@@ -201,6 +210,8 @@ class Term extends Week{
     getDefaultName(){
         return LANGUAGE_TEXT.week.term[USER_LANGUAGE]+" "+(this.wf.weeks.indexOf(this)+1);
     }
+    
+    getType(){return "term";}
     
     //Adds a node. If we are just switching the node, we don't need to push weeks.
     addNode(node,origin=0,index=-1){

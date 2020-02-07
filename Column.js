@@ -32,24 +32,22 @@ class Column {
         var xml = "";
         xml+=makeXML(this.name,"columnname");
         xml+=makeXML(this.image,"columnimage");
-        xml+=makeXML(this.text,"columntext",true);
-        xml+=makeXML(this.nodetext,"columnnodetext",true);
+        if(this.name.substr(0,3)=="CUS"||this.text!=LANGUAGE_TEXT.column[this.name].text[USER_LANGUAGE])xml+=makeXML(this.text,"columntext",true);
+        if(this.name.substr(0,3)=="CUS"||this.nodetext!=LANGUAGE_TEXT.column[this.name].nodetext[USER_LANGUAGE])xml+=makeXML(this.nodetext,"columnnodetext",true);
+        console.log(xml);
         return makeXML(xml,"column");
     }
     
     fromXML(xml){
         var name = getXMLVal(xml,"columnname");
         this.setName(name);
-        if(name.substr(0,3)=="CUS"){
-            this.image = getXMLVal(xml,"columnimage");
-            this.text = getXMLVal(xml,"columntext",true);
-            this.nodetext = getXMLVal(xml,"columnnodetext",true);
-            if(this.wf instanceof Programflow)this.colour = SALTISEGREEN;
-            else this.colour = "#a3b9df";
-        }else {
-            this.setDefaultValues(name);
-            this.text = getXMLVal(xml,"columntext",true);
-        }
+        this.setDefaultValues(name);
+        var text = getXMLVal(xml,"columntext",true);
+        var nodetext = getXMLVal(xml,"columntext",true);
+        if(text)this.text=text;
+        if(nodetext)this.nodetext=nodetext;
+        var image = getXMLVal(xml,"columnimage");
+        if(image)this.image=image;
         
     }
     

@@ -27,6 +27,7 @@ class Outcomeview{
         this.toolbarDiv;
         this.editbar;
         this.tbody;
+        this.legendDiv;
     }
     
     nameUpdated(){
@@ -95,6 +96,7 @@ class Outcomeview{
         $("#print").removeClass("disabled");
         $("#expand").removeClass("disabled");
         $("#collapse").removeClass("disabled");
+        $("#showlegend").removeClass("disabled");
         
     }
     
@@ -114,6 +116,7 @@ class Outcomeview{
         $("#print").addClass("disabled");
         $("#expand").addClass("disabled");
         $("#collapse").addClass("disabled");
+        $("#showlegend").addClass("disabled");
     }
     
     
@@ -145,6 +148,7 @@ class Outcomeview{
         //Create the next "head" row showing the actual node names
         var headRow = document.createElement('tr');
         var headBase = document.createElement('th');
+        this.drawLegend(headBase);
         headRow.appendChild(headBase);
         for(var i=0;i<this.categoryViews.length;i++){
             this.categoryViews[i].createTableHead(catRow);
@@ -198,6 +202,41 @@ class Outcomeview{
             }
         },debouncetime);
         
+    }
+    
+    drawLegend(container){
+        var legendDiv = document.createElement('div');
+        legendDiv.className = "outcomelegend";
+        container.appendChild(legendDiv);
+        var legHead = document.createElement('h4');
+        legHead.innerHTML=LANGUAGE_TEXT.legend.legend[USER_LANGUAGE];
+        legendDiv.appendChild(legHead);
+        legendDiv.appendChild(document.createElement('hr'));
+        this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.complete[USER_LANGUAGE],"check");
+        this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.partial[USER_LANGUAGE],"nocheck");
+        this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.incomplete[USER_LANGUAGE],"warningcheck");
+        this.legendDiv = legendDiv;
+    }
+    
+    drawLegendLine(container,title,image){
+        var lineDiv = document.createElement('div');
+        lineDiv.classList="legendline";
+        container.appendChild(lineDiv);
+        var titleDiv = document.createElement('div');
+        titleDiv.innerHTML = title;
+        var img = document.createElement('img');
+        img.src = "resources/images/"+image+"16.png";
+        lineDiv.appendChild(img);
+        lineDiv.appendChild(titleDiv);
+    }
+    
+    showLegend(){
+        console.log("showing legend");
+        console.log(this.legendDiv);
+        if(this.legendDiv){
+            console.log(this.legendDiv.style.display);
+            $(".outcomelegend").toggle();
+        }
     }
     
     createCategoryViews(){
@@ -298,6 +337,12 @@ class Outcomeview{
         return null;
     }
     
+    
+    changeCategoryForNode(nv,cv){
+        var node = nv.nodes[0];
+        node.setIcon(cv.value,"left");
+    }
+    
     nodeAdded(node){
         if(!this.isValidNode(node))return;
         var index = 1;
@@ -323,6 +368,10 @@ class Outcomeview{
     
     populateTagBar(){
         this.populateTagSelect(this.wf.project.competencies,this.wf.getTagDepth());
+    }
+    
+    nodeMovedTo(node1,node2,isAfter=true){
+        node1.view.categoryChanged();   
     }
     
     
@@ -562,7 +611,7 @@ class OutcomeCategoryview{
         var nv = node.view;
         if(!lastnv)lastnv = cv.nodeViews[cv.nodeViews.length-1];
         cv.nodeViews[cv.nodeViews.length-1].nodes.push(node);
-        cv.nodeViews.splice(cv.nodeViews.length-1,0,nv);
+        cv.nodeViews.splice(cv.nodeViews.indexOf(lastnv),0,nv);
         
         
         this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))+1);
@@ -606,6 +655,7 @@ class OutcomeCategoryview{
         }
         this.expandIcon.src="resources/images/plus16.png";
     }
+    
     
 }
 
@@ -672,6 +722,27 @@ class OutcomeNodeview{
             }
             renameDiv.appendChild(renameIcon);
             this.textdiv.appendChild(renameDiv);
+            
+            
+            var move = document.createElement('div');
+            move.className = "editlayoutdiv";
+            var up = document.createElement('img');
+            up.className="layoutchange";
+            up.src = "resources/images/moveup16.png";
+            up.onclick=function(){
+                nv.moveNode(true);
+            }
+            move.appendChild(up);
+            var down = document.createElement('img');
+            down.className="layoutchange";
+            down.src = "resources/images/movedown16.png";
+            down.onclick=function(){
+                nv.moveNode(false);
+            }
+            move.appendChild(down);
+            this.textdiv.appendChild(move);
+            
+            
         }
         parent.insertBefore(this.tablehead,createBefore);
     }
@@ -752,10 +823,50 @@ class OutcomeNodeview{
             lastnv = cv.nodeViews[i];
             if(lastnv.nodes.length==0)continue;
             if(lastnv.isTotal)break;
-            if(weeks.indexOf(lastnv.nodes[0].week)>weekindex)break;
-            if(weeks.indexOf(lastnv.nodes[0].week)==weekindex&&weeks[weekindex].nodes.indexOf(lastnv.nodes[0])>weeks[weekindex].nodes.indexOf(node))break;
+            var lastweekindex = weeks.indexOf(lastnv.nodes[0].week);
+            console.log(weekindex);
+            console.log(lastweekindex);
+            if(lastweekindex>weekindex)break;
+            if(lastweekindex==weekindex&&weeks[weekindex].nodes.indexOf(lastnv.nodes[0])>weeks[weekindex].nodes.indexOf(node))break;
             
         }
+        console.log(lastnv);
+        if(!lastnv)return;
+        cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
+        cv.wf.view.updateTable();
+    }
+    
+    categoryChangedProgram(){
+        var index = this.getOverallIndex();
+        var node = this.nodes[0];
+        this.cv.nodeRemoved(node,index);
+        var cv = node.wf.view.getCategoryForNode(node);
+        this.cv = cv;
+        var lastnv;
+        var week = node.week;
+        var cols = [];
+        for(var i=0;i<node.wf.columns.length;i++)cols.push(node.wf.columns[i].name);
+        var colindex = cols.indexOf(node.column);
+        console.log(node.column);
+        console.log(node.wf.columns);
+        console.log(cols);
+        console.log(colindex);
+        for(var i=0;i<cv.nodeViews.length;i++){
+            lastnv = cv.nodeViews[i];
+            if(lastnv.nodes.length==0)continue;
+            if(lastnv.isTotal)break;
+            var lastcolindex = cols.indexOf(lastnv.nodes[0].column);
+            console.log(lastcolindex);
+            if(lastcolindex>colindex)break;
+            if(lastcolindex==colindex){
+                var nodes = week.nodesByColumn[node.column];
+                if(!nodes)continue;
+                if(nodes.indexOf(lastnv.nodes[0])>nodes.indexOf(node))break;
+            }
+            
+            
+        }
+        console.log(lastnv);
         if(!lastnv)return;
         cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
         cv.wf.view.updateTable();
@@ -826,6 +937,29 @@ class OutcomeNodeview{
         }
     }
     
+    moveNode(isright){
+        console.log("trying to move the node");
+        var wf = this.cv.wf;
+        var node = this.nodes[0];
+        var nextnv = this.cv.nodeViews[this.cv.nodeViews.indexOf(this)+(isright)*2-1];
+        console.log(this);
+        console.log(nextnv);
+        //Check to see if we have to change categories
+        if(nextnv.isTotal||nextnv.nodes.length==0){
+            console.log("The node's category should be changed")
+            var nextcatindex = wf.view.categoryViews.indexOf(this.cv)+(isright)*2-1;
+            if(nextcatindex<0||nextcatindex>wf.view.categoryViews.length-2)return;
+            wf.view.changeCategoryForNode(this,wf.view.categoryViews[nextcatindex]);
+        }else{
+            //We have to move the actual node
+            console.log("The node should be moved");
+            var node2 = nextnv.nodes[0];
+            wf.moveNodeTo(node,node2,(isright))
+        }
+        
+        console.log(this);
+    }
+    
 }
 
 
@@ -852,6 +986,7 @@ class OutcomeTagview{
         this.vertex=vertex;
         if(this.tag&&this.tag.children.length>0)vertex.classList.add("haschildren");
         vertex.classList.add("expanded");
+        if(wf.tagSets.indexOf(this.tag)>=0)vertex.classList.add("toplevel")
         if(this.tag)vertex.classList.add("depth"+this.tag.depth);
         parent.appendChild(vertex);
         this.nameCell = document.createElement('div');
@@ -1092,6 +1227,34 @@ class ProgramOutcomeview extends Outcomeview{
         }
     }
     
+    
+    createNodeViews(){
+        for(var i=0;i<this.wf.weeks.length;i++){
+            for(var j=0;j<this.wf.columns.length;j++){
+                var nodes = this.wf.weeks[i].nodesByColumn[this.wf.columns[j].name];
+                if(!nodes)continue;
+                for(var k=0;k<nodes.length;k++){
+                    var node = nodes[k];
+                    if(this.isValidNode(node))this.addNodeView(node);
+                }
+            }
+        }
+        var grandtotal = [];
+        for(var i=0;i<this.categoryViews.length;i++){
+            var total = [];
+            for(var j=0;j<this.categoryViews[i].nodeViews.length;j++){
+                var nodes = this.categoryViews[i].nodeViews[j].nodes;
+                if(nodes.length>0)total.push(nodes[0]);
+            }
+            this.categoryViews[i].nodeViews.push(new OutcomeNodeview(total,true,this.categoryViews[i]));
+            grandtotal = grandtotal.concat(total);
+        }
+        this.categoryViews.push(new OutcomeCategoryview({value:"grandtotal",text:LANGUAGE_TEXT.outcomeview.grandtotal[USER_LANGUAGE]},this.wf));
+        this.grandTotal=new OutcomeNodeview(grandtotal,true,this.categoryViews[this.categoryViews.length-1]);
+        this.categoryViews[this.categoryViews.length-1].nodeViews.push(this.grandTotal);
+        
+    }
+    
     isValidNode(node){
         return true;
     }
@@ -1114,6 +1277,18 @@ class ProgramOutcomeview extends Outcomeview{
         return null;
     }
     
+    changeCategoryForNode(nv,cv){
+        var node = nv.nodes[0];
+        node.week.removeNode(node);
+        node.week = node.wf.weeks[cv.value];
+        node.wf.weeks[cv.value].addNode(node);
+        node.view.categoryChangedProgram();
+    }
+    
+    nodeMovedTo(node1,node2,isAfter=true){
+        node1.view.categoryChangedProgram();   
+    }
+    
     
 }
 
@@ -1126,7 +1301,7 @@ class ProgramOutcomeCategoryview extends OutcomeCategoryview{
         if(this.value!=null) week = wf.weeks[this.value];
         if(week){
             var node = new CONode(wf);
-            node.setColumn(wf.columns[0].name);
+            node.setColumn(wf.columns[wf.columns.length-1].name);
             node.week=week;
             week.addNode(node);
             if(wf.view)wf.view.nodeAdded(node);
