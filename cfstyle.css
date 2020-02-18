@@ -1097,6 +1097,40 @@ div.highlighted{
     border: 1px solid #cccccc;
 }
 
+.columnfloat{
+    width:100%;
+    background:white;
+    position:absolute;
+    height:30px;
+    top:160px;
+}
+
+.columnfloatcontainer{
+    pointer-events:none;
+    position:sticky;
+    top:-60px;
+    height:0px;
+    width:100%;
+    z-index:1;
+    font-size:16px;
+    font-family:sans-serif;
+}
+
+.columnfloatheader{
+    background:white;
+    position:absolute;
+    width:200px;
+    overflow-x:hidden;
+    text-decoration:underline;
+    font-weight:600;
+    bottom:13px;
+    text-align:center;
+}
+
+.columnfloat.hidden{
+    display:none;
+}
+
     
 .printpreview .expanddiv{display:none;}
 .printpreview .deletediv{display:none;}

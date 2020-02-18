@@ -20,6 +20,7 @@ class Columnview{
         this.graph = graph;
         this.column = column;
         this.pos=0;
+        this.vertex;
     }
     
     textChanged(){
@@ -39,8 +40,10 @@ class Columnview{
             var value1 = col.setTextSilent(value);
             if(value1!=value)col.view.graph.getModel().setValue(col.view.vertex,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
+            col.wf.view.fillColumnFloat();
             
         }
+        
         if(col.name.substr(0,3)=='CUS'&&col.nodetext!=this.text)col.setNodeText(col.text);
         
     }
@@ -52,10 +55,24 @@ class Columnview{
     
     updatePosition(){
         this.graph.moveCells([this.vertex],this.pos-this.vertex.w()/2-this.vertex.x());
+        if(this.column.wf.view)this.column.wf.view.fillColumnFloat();
     }
     
     deleted(){
         this.graph.removeCells([this.vertex]);
+        this.column.wf.view.fillColumnFloat();
+    }
+    
+    colourUpdated(){
+        var column = this.column;
+        var wf = this.column.wf;
+        for(var i=0;i<wf.weeks.length;i++){
+            for(var j=0;j<wf.weeks[i].nodes.length;j++){
+                var node = wf.weeks[i].nodes[j];
+                if(node.column==column.name&&node.view)node.view.columnUpdated();
+            }
+        }
+        if(wf.view)wf.view.populateNodeBar();
     }
     
     
@@ -73,6 +90,16 @@ class Columnview{
                 col.deleteSelf();
                 col.wf.makeUndo("Delete Column",col);
             }
+        });
+        if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],'', function(){
+            var input = document.createElement('input');
+            input.className = "jscolor";
+            input.type="color";
+            input.value = col.colour;
+            input.addEventListener('change',function(){
+                col.setColour(input.value);
+            });
+            input.click();
         });
     }
     

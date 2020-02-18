@@ -31,6 +31,7 @@ class Workflowview{
         this.titleNode;
         this.authorNode;
         this.weekWidth;
+        this.colFloat
     }
     
     nameUpdated(){
@@ -86,6 +87,7 @@ class Workflowview{
         }
         
         this.generateToolbars();
+        this.generateColumnFloat();
         
         
         var wfview = this;
@@ -151,6 +153,7 @@ class Workflowview{
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
         }
         if(this.nodeBarDiv)this.nodeBarDiv.style.display="none";
+        if(this.colFloat)this.colFloat.parentElement.parentElement.removeChild(this.colFloat.parentElement);
         if(this.graph!=null)this.graph.destroy();
         
         
@@ -238,6 +241,10 @@ class Workflowview{
             this.wf.columns[i].view.updatePosition();
         }
         this.updateWeekWidths();
+        for(var i=0;i<this.wf.brackets.length;i++){
+            var bv = this.wf.brackets[i].view;
+            if(bv)bv.updateHorizontal();
+        }
         
     }
     
@@ -602,6 +609,36 @@ class Workflowview{
         for(var i=0;i<bracketList.length;i++){
             this.addNodebarItem(this.bracketBarDiv,bracketList[i].text[USER_LANGUAGE],'resources/data/'+bracketList[i]['value']+'24.png',makeDropFunction(bracketList[i],this.wf),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
         }
+    }
+    
+    generateColumnFloat(){
+        var colFloatContainer = document.createElement('div');
+        var colFloat = document.createElement('div');
+        colFloatContainer.className = "columnfloatcontainer"
+        colFloat.className="columnfloat";
+        this.container.parentElement.insertBefore(colFloatContainer,this.container);
+        colFloatContainer.appendChild(colFloat);
+        this.colFloat = colFloat;
+        this.fillColumnFloat();
+    }
+    
+    fillColumnFloat(){
+        if(!this.colFloat)return;
+        this.colFloat.innerHTML = "";
+        for(var i=0;i<this.wf.columns.length;i++){
+            var col = this.wf.columns[i];
+            var title = document.createElement('div');
+            title.className = "columnfloatheader";
+            this.colFloat.appendChild(title);
+            title.innerHTML=col.text.replace(/\n/g,"<br>");
+            console.log(col.view.pos);
+            if(col.view)title.style.left = (col.view.pos-100)+"px";
+        }
+    }
+    
+    showColFloat(show){
+        if(show)this.colFloat.classList.remove("hidden");
+        else this.colFloat.classList.add("hidden");
     }
     
     tagSetAdded(tag){
@@ -1079,11 +1116,15 @@ class Workflowview{
         
         //handle the changing of the toolbar upon selection
         graph.selectCellForEvent = function(cell,evt){
-            if(cell.isWeek){graph.clearSelection();return;};
+            if(cell.isWeek){graph.clearSelection();return;}
+            if(cell.isHead){wfv.showColFloat(false);}
             mxGraph.prototype.selectCellForEvent.apply(this,arguments);
         }
         graph.clearSelection = function(){
+            console.log("clearing selection");
+            this.stopEditing(false);
             editbar.disable();
+            wfv.showColFloat(true);
             mxGraph.prototype.clearSelection.apply(this,arguments);
         }
         
@@ -1312,11 +1353,14 @@ class Workflowview{
         
     }
     
-    
+    //Scale such that there is no horizontal overflow, vertical can break over pages
     print(){
         var graph = this.graph;
         if(graph==null)return;
-        var scale = mxUtils.getScaleForPageCount(1, graph)*0.9;
+        var x = graph.getGraphBounds().width;
+        var x0 = mxConstants.PAGE_FORMAT_A4_PORTRAIT.width;
+        var scale = 0.95;
+        if(x>x0)scale=scale*x0/x;
         var preview = new mxPrintPreview(graph, scale,mxConstants.PAGE_FORMAT_A4_PORTRAIT);
         preview.open();
     }

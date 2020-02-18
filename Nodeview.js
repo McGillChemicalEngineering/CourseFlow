@@ -60,9 +60,11 @@ class Nodeview{
         if(this.node.isDropped)h+=this.node.textHeight;
         this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b(),this.vertex.w()-2*defaultTextPadding,h,defaultTextStyle);
         var dropDownStyle = defaultDropDownStyle;
-        if(this.node.isDropped)dropDownStyle+="image=resources/images/droptriangleup.png;";
-        else dropDownStyle+="image=resources/images/droptriangle.png;";
-        this.dropNode = this.graph.insertVertex(this.vertex,null,'',0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
+        if(this.node.isDropped)dropDownStyle+="image=resources/images/droptriangleup.png;fontColor=white;";
+        else dropDownStyle+="image=resources/images/droptriangle.png;fontColor=black;";
+        var dropText='';
+        if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')dropText='...';
+        this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
         this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
@@ -79,7 +81,10 @@ class Nodeview{
     }
 
     textUpdated(){
-        this.graph.cellLabelChanged(this.textnode,this.node.text);
+        var text = this.node.text;
+        this.graph.cellLabelChanged(this.textnode,text);
+        if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')this.graph.cellLabelChanged(this.dropNode,'...');
+        else this.graph.cellLabelChanged(this.dropNode,'');
     }
     
     addRightIcon(){
@@ -182,8 +187,13 @@ class Nodeview{
         if(this.node.isDropped)mult=-1;
         this.graph.resizeCell(this.vertex,new mxGeometry(this.vertex.x(),this.vertex.y(),this.vertex.w(),this.vertex.h()+mult*this.node.textHeight));
         this.graph.setCellStyles('resizable',1-this.node.isDropped,[this.vertex]);
-        if(this.node.isDropped)this.graph.setCellStyles('image',"resources/images/droptriangle.png",[this.dropNode]);
-        else this.graph.setCellStyles('image',"resources/images/droptriangleup.png",[this.dropNode]);
+        if(this.node.isDropped){
+            this.graph.setCellStyles('image',"resources/images/droptriangle.png",[this.dropNode]);
+            this.graph.setCellStyles('fontColor','black',[this.dropNode]);
+        }else {
+            this.graph.setCellStyles('image',"resources/images/droptriangleup.png",[this.dropNode]);
+            this.graph.setCellStyles('fontColor','white',[this.dropNode]);
+        }
         
     }
     
@@ -390,7 +400,7 @@ class Nodeview{
         else{
             link.view.addValuesToVertex();
         }
-        link.view.addDelOverlay();
+        if(link.id)link.view.addDelOverlay();
     }
     
     

@@ -901,6 +901,7 @@ class Activityflow extends Workflow{
     
     createInitialColumns(){
         var columns = this.columns;
+        columns.push(new Column(this,"OOCI"));
         columns.push(new Column(this,"OOC"));
         columns.push(new Column(this,"ICI"));
         columns.push(new Column(this,"ICS"));
@@ -908,6 +909,7 @@ class Activityflow extends Workflow{
     
     getPossibleColumns(){
         var columns = [];
+        columns.push(new Column(this,"OOCI"));
         columns.push(new Column(this,"OOC"));
         columns.push(new Column(this,"ICI"));
         columns.push(new Column(this,"ICS"));
