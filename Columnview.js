@@ -91,7 +91,7 @@ class Columnview{
                 col.wf.makeUndo("Delete Column",col);
             }
         });
-        if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],'', function(){
+        if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],'resources/images/spectrum24.png', function(){
             var input = document.createElement('input');
             input.className = "jscolor";
             input.type="color";
@@ -116,5 +116,7 @@ class Columnview{
             tempfunc(iconArray[i]);
         }
     }
+    
+    visibilityChanged(){return null;}
     
 }

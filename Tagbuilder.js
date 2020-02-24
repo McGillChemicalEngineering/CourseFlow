@@ -59,6 +59,8 @@ class Tagbuilder{
     
     clearViews(){
         for(var i=0;i<this.tag.children.length;i++){
+            console.log(this.tag);
+            console.log(this.tag.children[i]);
             this.tag.children[i].view.clearViews();
         }
         this.tag.view = null;
@@ -90,6 +92,7 @@ class Tagbuilder{
         }
         if(tag.depth<2)button.makeCreateChild(createchildfunction);
         this.button = button;
+        
         return button.childdiv;
     }
     

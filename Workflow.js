@@ -27,6 +27,7 @@ class Workflow{
         this.project=project;
         this.buttons=[];
         this.name = this.getDefaultName();
+        this.depth = this.getDepth();
         this.author;
         this.id = this.project.genID();
         this.tagSets=[];
@@ -36,10 +37,12 @@ class Workflow{
         this.undoEnabled=false;
         this.view;
         this.legendCoords;
+        this.outcomeSortType;
         this.isSimple = (this instanceof Activityflow);
     }
     
-    getDefaultName(){return "Untitled Workflow"};
+    getDefaultName(){return "Untitled Workflow";}
+    getDepth(){return 99;}
     getBracketList(){return null;}
     
     toXML(){
@@ -81,6 +84,7 @@ class Workflow{
         }
         if(this.legendCoords){xml+=makeXML(this.legendCoords.x,'wflegendx');xml+=makeXML(this.legendCoords.y,'wflegendy');}
         if(this.isSimple != (this instanceof Activityflow))xml+=makeXML("true","simpletoggled");
+        if(this.outcomeSortType)xml+=makeXML(this.outcomeSortType,"wfoutcomesorttype");
         xml=makeXML(xml,"wfdata");
         this.xmlData = (new DOMParser).parseFromString(xml,"text/xml").childNodes[0];
     }
@@ -100,6 +104,8 @@ class Workflow{
         
         var isSimple = getXMLVal(xmlData,"simpletoggled");
         if(isSimple!=null)this.isSimple = !(this instanceof Activityflow);
+        var outcomeSortType = getXMLVal(xmlData,"wfoutcomesorttype");
+        if(outcomeSortType)this.outcomeSortType=outcomeSortType;
         var xmlweeks = xmlData.getElementsByTagName("week");
         for(i=0;i<xmlweeks.length;i++){
             var week = this.createWeek();
@@ -179,7 +185,7 @@ class Workflow{
     }
     
     clickButton(){
-        this.project.changeActive(this.project.getWFIndex(this),true);
+        this.project.changeActive(this,true);
     }
     
     getType(){return "other";}
@@ -199,6 +205,11 @@ class Workflow{
         }
     }
     
+    moveChild(layout1,layout2,isAfter){
+        this.children.splice(this.children.indexOf(layout1),1);
+        this.children.splice(this.children.indexOf(layout2)+isAfter,0,layout1);
+    }
+    
     removeChild(child){
         this.children.splice(this.children.indexOf(child),1);
         //remove the button from all instances of the parent, but only once (we might use the same activity twice in one course, for example)
@@ -213,12 +224,8 @@ class Workflow{
         //if no instances still exist, move it back into the root
         if(child.buttons.length==0){
             child.addButton(this.project.layout);
-            var childIndex = this.project.workflows.indexOf(child);
-            var activeIndex = this.project.activeWF;
             this.project.workflows.splice(this.project.workflows.indexOf(child),1);
             this.project.workflows.push(child);
-            if (activeIndex!=null&&childIndex<activeIndex)this.project.activeWF-=1;
-            else if (activeIndex==childIndex)this.project.activeWF=this.project.workflows.length-1;
         }
         
         
@@ -428,10 +435,8 @@ class Workflow{
     
     updateWeekIndices(){
         var weeks = this.weeks;
-        console.log("update");
         for(var i=0;i<weeks.length;i++){
             weeks[i].index=i;
-            console.log(this.view);
             if(this.view)this.view.weekIndexUpdated(weeks[i]);
             if(weeks[i].name==null&&weeks[i].name!="")weeks[i].setName(null);
         }
@@ -833,7 +838,6 @@ class Workflow{
     toggleSimple(isSimple){
         if(this.isSimple!=isSimple){
             this.isSimple = isSimple;
-            console.log("Simple toggled to "+isSimple)
             for(var i=0;i<this.weeks.length;i++){
                 if(this.weeks[i].view)this.weeks[i].view.simpleToggled();
             }
@@ -887,6 +891,7 @@ class Courseflow extends Workflow{
     }
     
     getDefaultName(){return LANGUAGE_TEXT.workflow.newcourse[USER_LANGUAGE];}
+    getDepth(){return 1;}
     
     getType(){return "course"};
     getButtonClass(){return "layoutcourse";}
@@ -948,6 +953,7 @@ class Activityflow extends Workflow{
     typeToXML(){return makeXML("activity","wftype");}
     
     getDefaultName(){return LANGUAGE_TEXT.workflow.newactivity[USER_LANGUAGE];}
+    getDepth(){return 2;}
     
     
     
@@ -987,8 +993,8 @@ class Programflow extends Workflow{
     moveNodeTo(node1,node2,isAfter=true){
         node1.week.removeNode(node1);
         node1.week = node2.week;
-        node1.column = node2.column;
-        node2.week.addNode(node1,0,node2.week.nodesByColumn[node2.column].indexOf(node2)+isAfter);
+        if(node1.column!=node2.column)node2.week.addNode(node1);
+        else node2.week.addNode(node1,0,node2.week.nodesByColumn[node2.column].indexOf(node2)+isAfter);
         if(this.view)this.view.nodeMovedTo(node1,node2,isAfter);
     }
     
@@ -1009,6 +1015,7 @@ class Programflow extends Workflow{
     typeToXML(){return makeXML("program","wftype");}
     
     getDefaultName(){return LANGUAGE_TEXT.workflow.newprogram[USER_LANGUAGE];}
+    getDepth(){return 0;}
     
     
     

@@ -741,6 +741,10 @@ div.highlighted{
     vertical-align:middle;
 }
 
+.outcometable th.emptycell .rotatedheader{
+    height:44px;
+}
+
 .outcometable th:not(.emptycell):not(.totalcell) .rotatedheader{
     border-top:1px solid black;
 }
@@ -954,8 +958,8 @@ div.highlighted{
 
 
 .outcometable .outcometableheadertext{
-    padding-left:20px;
     height:100%;
+    box-sizing:border-box;
 }
 
 .outcometabletitleinput{
@@ -1008,6 +1012,21 @@ div.highlighted{
     height:4px;
     background:#1976bc;
     
+}
+
+.outcomesortradio{
+    display:inline-block;
+}
+
+.outcomesorttext{
+    padding-left:6px;
+    display:inline-block;
+    font-family:"Open Sans",sans-serif;
+}
+
+.outcomesortline{
+    padding:2px;
+    display:block;
 }
 
 .readonly .editlayoutdiv,.readonly .createlayoutdiv,.readonly .deletelayoutdiv{

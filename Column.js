@@ -24,6 +24,7 @@ class Column {
         this.colour;
         this.wf=wf;
         this.view;
+        this.outcomeVisibility;
         if(name!=null)this.setDefaultValues(name);
         
     }
@@ -35,7 +36,7 @@ class Column {
          if(this.name.substr(0,3)=="CUS"||this.colour!=columnValues[this.name].colour)xml+=makeXML(this.colour,"columncolour");
         if(this.name.substr(0,3)=="CUS"||this.text!=LANGUAGE_TEXT.column[this.name].text[USER_LANGUAGE])xml+=makeXML(this.text,"columntext",true);
         if(this.name.substr(0,3)=="CUS"||this.nodetext!=LANGUAGE_TEXT.column[this.name].nodetext[USER_LANGUAGE])xml+=makeXML(this.nodetext,"columnnodetext",true);
-        console.log(xml);
+        if((this.name=="SA"||(name.substr(0,3)=="CUS"&&this.wf instanceof Programflow))!=this.outcomeVisibility)xml+=makeXML(""+this.outcomeVisibility,"columnoutcomevisibility");
         return makeXML(xml,"column");
     }
     
@@ -46,6 +47,9 @@ class Column {
         var text = getXMLVal(xml,"columntext",true);
         var nodetext = getXMLVal(xml,"columntext",true);
         var colour = getXMLVal(xml,"columncolour");
+        var outcomeVisibility = getXMLVal(xml,"columnoutcomevisibility");
+        if(outcomeVisibility=="false")this.outcomeVisibility=false;
+        else if(outcomeVisibility=="true")this.outcomeVisibility=true;
         if(text)this.text=text;
         if(nodetext)this.nodetext=nodetext;
         if(colour)this.colour=colour;
@@ -55,6 +59,7 @@ class Column {
     }
     
     setDefaultValues(name){
+        if(name=="SA"||(name.substr(0,3)=="CUS"&&this.wf instanceof Programflow))this.outcomeVisibility=true;
         if(name.substr(0,3)!="CUS"){
             this.text=LANGUAGE_TEXT.column[name].text[USER_LANGUAGE];
             this.nodetext=LANGUAGE_TEXT.column[name].nodetext[USER_LANGUAGE];
@@ -118,6 +123,10 @@ class Column {
         if(this.view)this.view.deleted();
     }
     
+    setVisible(isVisible){
+        this.outcomeVisibility=isVisible;
+        if(this.view)this.view.visibilityChanged();
+    }
     
 }
 

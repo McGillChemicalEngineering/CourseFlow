@@ -53,7 +53,6 @@ class Weekview{
         this.vertex.week=week;
         this.graph.orderCells(true,[this.vertex]);
         this.vertex.cellOverlays=[];
-        console.log(this.week.wf.isSimple);
         this.addPlusOverlay();
         this.addDelOverlay();
         this.addCopyOverlay();
@@ -416,7 +415,6 @@ class WFAreaview extends Weekview{
     
     populateMenu(menu){
         var week = this.week;
-        console.log(this.week.wf.isSimple);
         if(!this.week.wf.isSimple){
             super.populateMenu(menu);
         }

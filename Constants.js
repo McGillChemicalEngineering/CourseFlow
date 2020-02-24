@@ -207,7 +207,7 @@ const iconsList={
         {text:{en:'Class',fr:"Classe"},value:'class'}
     ]
 };
- 
+
 const iconpath='resources/data/';
 
 
@@ -294,7 +294,14 @@ const LANGUAGE_TEXT = {
         uncategorized:{en:"Uncategorized",fr:"Non-Classé"},
         complete:{en:"Complete",fr:"Complet"},
         incomplete:{en:"Incomplete",fr:"Incomplet"},
-        partial:{en:"Partial",fr:"Partiel"}
+        partial:{en:"Partial",fr:"Partiel"},
+        displayheader:{en:"Display",fr:"Affichage"},
+        sortbyheader:{en:"Sort By",fr:"Trier Par"},
+        sortradio:{
+            week:{en:"Week",fr:"Semaine"},
+            icon:{en:"Icon",fr:"Icône"},
+            column:{en:"Column",fr:"Colonne"}
+        }
     },
     tag:{
         deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce Résulat? Attention: cela supprimera tous les contenus et les supprimera de tous les tracé!"},

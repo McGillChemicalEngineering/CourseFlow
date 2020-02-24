@@ -175,7 +175,30 @@ class Layoutbutton {
     makeMovable(){
         var layout = this.layout;
         var button = this;
-        var move = document.createElement('div');
+        var bdiv = this.bdiv;
+        
+        bdiv.draggable=true;
+        bdiv.ondragstart = function(evt){
+            var id = 'drag-'+(new Date()).getTime();
+            bdiv.id=id;
+            evt.dataTransfer.setData("text",id);
+            evt.stopPropagation();
+        }
+        bdiv.ondragover = function(evt){
+            var source = document.getElementById(evt.dataTransfer.getData("text"));
+            if(source==null||source.button==null||source.button.layout==null||layout instanceof Workflow!=source.button.layout instanceof Workflow)return;
+            evt.preventDefault();
+            var sourcebutton = source.button;
+            if(sourcebutton==null||sourcebutton==button)return;
+            sourcebutton.attemptToDrop(button);
+            evt.stopPropagation();
+            
+        }
+        button.bdiv.ondrop = function(evt){
+            evt.preventDefault();
+        }
+        
+        /*var move = document.createElement('div');
         move.className = "editlayoutdiv";
         var up = document.createElement('img');
         up.className="layoutchange";
@@ -191,7 +214,67 @@ class Layoutbutton {
             button.moveButton(false);
         }
         move.appendChild(down);
-        this.bwrap.appendChild(move);
+        this.bwrap.appendChild(move);*/
+    }
+    
+    attemptToDrop(target){
+        console.log("In drop function");
+        var parent = this.getParent();
+        if(parent==target||target.getParent()==this)return;
+        console.log("here");
+        //For workflows, we shouldn't be able to move them out of their parent. For tags, this might be desirable (ex moving a depth 2 tag from one depth 1 to another).
+        //For both: If you're dragging a root level, then find the highest ancestor of the target and just rearrange in whatever way is appropriate
+        if(parent==null){
+            var ancestor2 = target.getMostDistantAncestor();
+            if(this==ancestor2)return;
+            this.moveTo(ancestor2);
+        }else{
+        //Take the target, find the ancestor that is of the same class (or for tags at the same depth) as the source. For workflows move iff they have the same parent, for tags move iff they have the same most distant ancestor
+            var myDepth = this.layout.getDepth();
+            var targetDepth = target.layout.getDepth();
+            var moveInto = false;
+            console.log(myDepth);
+            console.log(targetDepth);
+            console.log(this.layout instanceof Tag);
+            if(targetDepth==myDepth-1&&this.layout instanceof Tag){
+                moveInto = true;
+            }else target = target.getAncestorWithDepth(this.layout.getDepth());
+            if(target==null)return;
+        console.log("here");
+            if(this.layout instanceof Workflow && target.getParent()!=parent)return;
+            if(this.layout instanceof Tag && this.getMostDistantAncestor() != target.getMostDistantAncestor())return;
+        console.log("here");
+            if(moveInto)this.moveInto(target);
+            else this.moveTo(target);
+        }
+        
+        
+    }
+    
+    getParent(){
+        if(this.container.parentElement.classList.contains("layoutdiv")){
+            return this.container.parentElement.button;
+        }
+        return null;
+    }
+    
+    getMostDistantAncestor(){
+        var ancestor =this;
+        while(true){
+            var parent = ancestor.getParent();
+            if(parent==null)return ancestor;
+            else ancestor = parent;
+        }
+    }
+        
+    getAncestorWithDepth(targetDepth){
+        var ancestor = this;
+        while(ancestor.layout.getDepth()!=targetDepth){
+            var parent = ancestor.getParent();
+            if(parent==null)return null;
+            else ancestor = parent;
+        }
+        return ancestor;
     }
     
     makeNodeIndicators(){
@@ -239,6 +322,45 @@ class Layoutbutton {
     makeInactive(){
         this.bdiv.classList.remove("active");
     }
+    
+    moveTo(target){
+        console.log("Attempting a drop");
+        //figure out of we are moving up or down
+        var parent = this.getParent();
+        var targetParent = target.getParent();
+        var isAfter = false;
+        var myindex = Array.prototype.indexOf.call(this.container.children,this.bdiv);
+        var targetindex = Array.prototype.indexOf.call(this.container.children,target.bdiv);
+        if(targetindex>myindex)isAfter=true;
+        var container = target.container;
+        console.log(target.bdiv);
+        console.log(container.children);
+        if(isAfter)container.insertBefore(this.bdiv,target.bdiv.nextElementSibling);
+        else container.insertBefore(this.bdiv,target.bdiv);
+        this.container = container;
+        if(parent == null){
+            //We are dropping at the root level
+            this.layout.project.moveLayout(this.layout,target.layout,isAfter);
+        }else{
+            //We are dropping at another level
+            targetParent.layout.moveChild(this.layout,target.layout,isAfter);
+        }
+        if(parent!=targetParent){
+            if(parent)parent.updateChildren();
+            if(targetParent)target.updateChildren();
+        }
+    }
+    
+    moveInto(target){
+        var parent = this.getParent();
+        this.container = target.childdiv;
+        target.childdiv.insertBefore(this.bdiv,target.childdiv.firstElementChild);
+        target.layout.moveChild(this.layout,null,true);
+        target.updateChildren();
+        target.expand();
+        if(parent)parent.updateChildren();
+    }
+    
     
     //moves the button up or down. If it's at the root level, this entails switching the workflow ordering and then switching the order of the buttons. If it's NOT at the root level, we have to switch it in children of the parent, then switch the order of the buttons.
     moveButton(up){

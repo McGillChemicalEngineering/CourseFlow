@@ -28,6 +28,9 @@ class Outcomeview{
         this.editbar;
         this.tbody;
         this.legendDiv;
+        this.sortType;
+        if(this.wf.outcomeSortType!=null)this.sortType=this.wf.outcomeSortType;
+        else this.sortType = this.getDefaultSortType();
     }
     
     nameUpdated(){
@@ -102,7 +105,7 @@ class Outcomeview{
     
     makeInactive(){
         this.editbar.disable();
-        
+
         this.toolbarDiv.parentElement.style.display="none";
         for(var i=0;i<this.wf.tagSets.length;i++){
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
@@ -110,6 +113,11 @@ class Outcomeview{
         this.tableCells=[];
         this.tagViews=[];
         this.categoryViews=[];
+        for(var i=0;i<this.wf.weeks.length;i++){
+            for(var j=0;j<this.wf.weeks[i].nodes.length;j++){
+                this.wf.weeks[i].nodes[j].view=null;
+            }
+        }
         this.container.innerHTML="";
         
         
@@ -231,10 +239,7 @@ class Outcomeview{
     }
     
     showLegend(){
-        console.log("showing legend");
-        console.log(this.legendDiv);
         if(this.legendDiv){
-            console.log(this.legendDiv.style.display);
             $(".outcomelegend").toggle();
         }
     }
@@ -292,11 +297,32 @@ class Outcomeview{
     }
     
     isValidNode(node){
-        return (node.column=="SA");
+        return (this.wf.columns[this.wf.getColIndex(node.column)].outcomeVisibility);
     }
     
     getNodeCategories(){
-        var list = iconsList['assessment'].slice(0);
+        var list;
+        switch(this.sortType){
+            case "icon":
+                list = iconsList['assessment'].slice(0);
+                break;
+            case "week":
+                list=[];
+                for(var i=0;i<this.wf.weeks.length;i++){
+                    var name = this.wf.weeks[i].name;
+                    if(!name)name=this.wf.weeks[i].getDefaultName();
+                    list.push({text:name,value:i});
+                }
+                break;
+            case "column":
+                list=[];
+                for(var i=0;i<this.wf.columns.length;i++){
+                    var name = this.wf.columns[i].text;
+                    list.push({text:name,value:this.wf.columns[i].name});
+                }
+                break;
+                
+        }
         return list;
     }
     
@@ -324,6 +350,11 @@ class Outcomeview{
     getCategoryForNode(node){
         var category = this.getCategoryFromNode(node);
         if(category==null)category="none";
+        for(var i=0;i<this.categoryViews.length;i++){
+            if(this.categoryViews[i].value==category)return this.categoryViews[i];
+        }
+        category="none";
+        //second pass in case we just had an invalid icon
         for(var i=0;i<this.categoryViews.length;i++){
             if(this.categoryViews[i].value==category)return this.categoryViews[i];
         }
@@ -363,7 +394,14 @@ class Outcomeview{
     }
     
     getCategoryFromNode(node){
-        return node.lefticon;
+        switch(this.sortType){
+            case "icon":
+                return node.lefticon;
+            case "week":
+                return node.wf.weeks.indexOf(node.week);
+            case "column":
+                return node.column;
+        }
     }
     
     populateTagBar(){
@@ -443,6 +481,8 @@ class Outcomeview{
         while(container.firstChild)container.removeChild(container.firstChild);
         makeResizable(container.parentElement,"left");
         this.generateTagBar(container);
+        this.generateDisplayBar(container);
+        this.generateSortBar(container);
         
     }
 
@@ -483,7 +523,65 @@ class Outcomeview{
         this.toolbarDiv.appendChild(addButton);
         
     }
+    
+    generateDisplayBar(){
+        var wf = this.wf;
+        
+        var header = document.createElement('h3');
+        header.innerHTML = LANGUAGE_TEXT.outcomeview.displayheader[USER_LANGUAGE]+":";
+        this.toolbarDiv.appendChild(header);
+        
+        for(var i=0;i<wf.columns.length;i++){
+            var col = wf.columns[i];
+            col.view = new OutcomeColumnview(col);
+            col.view.createVertex(this.toolbarDiv);
+        }
+    }
+    
+    generateSortBar(){
+        var wf = this.wf;
+        
+        var header = document.createElement('h3');
+        header.innerHTML = LANGUAGE_TEXT.outcomeview.sortbyheader[USER_LANGUAGE]+":";
+        this.toolbarDiv.appendChild(header);
+        
+        for(var prop in LANGUAGE_TEXT.outcomeview.sortradio){
+            if(this instanceof ProgramOutcomeview&&prop=="icon")continue;
+            this.toolbarDiv.appendChild(this.createSortRadio(prop));
+        }
+    }
+    
+    createSortRadio(type){
+        var wfv = this;
+        var sortradio = document.createElement("input");
+        sortradio.type="radio";
+        sortradio.name="sortradiobuttons";
+        sortradio.value=type;
+        sortradio.className="outcomesortradio";
+        if(this.sortType == type)sortradio.checked=true;
+        sortradio.onchange = function(){
+            wfv.setSortType(type);
+        }
+        var text = document.createElement("div");
+        text.innerHTML = LANGUAGE_TEXT.outcomeview.sortradio[type][USER_LANGUAGE];
+        text.className="outcomesorttext";
+        var line = document.createElement("div");
+        line.appendChild(sortradio);
+        line.appendChild(text);
+        line.className="outcomesortline";
+        return line;
+        
+    }
+    
+    setSortType(type){
+        if(type==this.getDefaultSortType())this.wf.outcomeSortType=null;
+        else this.wf.outcomeSortType = type;
+        this.makeInactive();
+        this.sortType=type;
+        this.makeActive();
+    }
 
+            
     populateTagSelect(list,depth=0){
         var compSelect=this.tagSelect;
         while(compSelect.length>0)compSelect.remove(0);
@@ -529,6 +627,8 @@ class Outcomeview{
         newwindow.document.write(div.innerHTML);
         newwindow.document.write('</body></html>');
     }
+    
+    getDefaultSortType(){return "icon";}
     
 }
 
@@ -681,6 +781,7 @@ class OutcomeNodeview{
     }
     
     createVertex(parent,createBefore=null){
+        var nv = this;
         this.vertex = document.createElement('col');
         parent.insertBefore(this.vertex,createBefore);
     }
@@ -713,18 +814,28 @@ class OutcomeNodeview{
                 nv.deleteClick();
             }
             renameDiv.append(deleteIcon);
+            this.textdiv.appendChild(renameDiv);
             
-            var renameIcon = document.createElement('img');
+            this.namediv.draggable="true";
+            
+            this.namediv.style.cursor="move";
+            
+            this.namediv.ondragstart = function(evt){
+                evt.dataTransfer.setData("text",nv.nodes[0].id)
+            }
+            
+            
+            this.textdiv.ondblclick = function(evt){nv.nodes[0].openLinkedWF();}
+            /*var renameIcon = document.createElement('img');
             renameIcon.src="resources/images/edit16.png";
             renameIcon.style.width='16px';
             renameIcon.onclick = function(){
                 nv.renameClick();
             }
-            renameDiv.appendChild(renameIcon);
-            this.textdiv.appendChild(renameDiv);
+            renameDiv.appendChild(renameIcon);*/
             
             
-            var move = document.createElement('div');
+            /*var move = document.createElement('div');
             move.className = "editlayoutdiv";
             var up = document.createElement('img');
             up.className="layoutchange";
@@ -740,11 +851,74 @@ class OutcomeNodeview{
                 nv.moveNode(false);
             }
             move.appendChild(down);
-            this.textdiv.appendChild(move);
+            this.textdiv.appendChild(move);*/
             
             
         }
         parent.insertBefore(this.tablehead,createBefore);
+        
+        if(this.isTotal||this.nodes.length>0)this.textdiv.ondragover = function(evt){
+            var node = nv.cv.wf.findNodeById(evt.dataTransfer.getData("text"));
+            evt.preventDefault();
+            if(node.view)node.view.attemptToDrop(nv);
+        }
+        this.textdiv.ondrop = function(evt){
+            evt.preventDefault();
+        }
+        this.styleForColumn();
+    }
+    
+    styleForColumn(){
+        if(this.nodes.length>0&&!this.isTotal){
+            this.textdiv.firstChild.style.background = this.nodes[0].getColumnStyle();
+            this.textdiv.firstChild.style.border="1px solid black";
+            this.textdiv.firstChild.style.color="white";
+        }
+    }
+    
+    attemptToDrop(target){
+        var wf = this.nodes[0].wf;
+        var sort = wf.view.sortType;
+        //If we're looking at the same nodeview or at anything in the grand total category this is invalid
+        if(this==target||target.cv.value=="grandtotal")return;
+        //For the icon and column sort methods, we don't move nodes individually, we just change their category
+        if(sort=="icon"||sort=="column"){
+            //if categories are already the same, no need to change anything
+            if(this.cv==target.cv)return;
+            if(sort=="icon"){
+                this.nodes[0].setLeftIcon(target.cv.value);
+                return;
+            }
+            if(sort=="column"){
+                this.nodes[0].setColumn(target.cv.value);
+                return;
+            }
+        }
+        if(sort=="week"){
+            var node = this.nodes[0];
+            var week = node.week;
+            var node2;
+            if(!target.isTotal&&target.nodes.length==1)node2=target.nodes[0];
+            
+            if(node2){
+                if(week.nodesByColumn==null&&week.nodes.indexOf(node2)==week.nodes.indexOf(node)+1)return;
+                else if(week.nodesByColumn!=null){
+                    if(node.column==node2.column){
+                        if(week.nodesByColumn[node.column].indexOf(node2)==week.nodesByColumn[node.column].indexOf(node)+1)return;
+                    }else{
+                        if(week.nodesByColumn[node.column].indexOf(node)==week.nodesByColumn[node.column].length-1&&wf.getColIndex(node2.column)>wf.getColIndex(node.column))return;
+                    }
+                }
+                wf.moveNodeTo(node,node2,false);
+            }else {
+                var week2 = wf.weeks[target.cv.value];
+                week.removeNode(node);
+                node.week=week2;
+                week2.addNode(node);
+                this.categoryChanged();
+            }
+        }
+        
     }
     
     openEditBar(evt){
@@ -807,6 +981,7 @@ class OutcomeNodeview{
     
     leftIconUpdated(){this.categoryChanged();}
     rightIconUpdated(){}
+    columnUpdated(){this.categoryChanged();this.styleForColumn();}
     textUpdated(){}
     linkedWFUpdated(){}
     
@@ -824,13 +999,15 @@ class OutcomeNodeview{
             if(lastnv.nodes.length==0)continue;
             if(lastnv.isTotal)break;
             var lastweekindex = weeks.indexOf(lastnv.nodes[0].week);
-            console.log(weekindex);
-            console.log(lastweekindex);
             if(lastweekindex>weekindex)break;
-            if(lastweekindex==weekindex&&weeks[weekindex].nodes.indexOf(lastnv.nodes[0])>weeks[weekindex].nodes.indexOf(node))break;
+            if(lastweekindex==weekindex){
+                if(node.week.nodesByColumn!=null){
+                    if(node.wf.getColIndex(lastnv.nodes[0].column)>node.wf.getColIndex(node.column))break;
+                    else if(weeks[weekindex].nodesByColumn[node.column].indexOf(lastnv.nodes[0])>weeks[weekindex].nodesByColumn[node.column].indexOf(node))break;
+                }else if(weeks[weekindex].nodes.indexOf(lastnv.nodes[0])>weeks[weekindex].nodes.indexOf(node))break;
+            }
             
         }
-        console.log(lastnv);
         if(!lastnv)return;
         cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
         cv.wf.view.updateTable();
@@ -847,16 +1024,11 @@ class OutcomeNodeview{
         var cols = [];
         for(var i=0;i<node.wf.columns.length;i++)cols.push(node.wf.columns[i].name);
         var colindex = cols.indexOf(node.column);
-        console.log(node.column);
-        console.log(node.wf.columns);
-        console.log(cols);
-        console.log(colindex);
         for(var i=0;i<cv.nodeViews.length;i++){
             lastnv = cv.nodeViews[i];
             if(lastnv.nodes.length==0)continue;
             if(lastnv.isTotal)break;
             var lastcolindex = cols.indexOf(lastnv.nodes[0].column);
-            console.log(lastcolindex);
             if(lastcolindex>colindex)break;
             if(lastcolindex==colindex){
                 var nodes = week.nodesByColumn[node.column];
@@ -866,7 +1038,6 @@ class OutcomeNodeview{
             
             
         }
-        console.log(lastnv);
         if(!lastnv)return;
         cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
         cv.wf.view.updateTable();
@@ -938,26 +1109,20 @@ class OutcomeNodeview{
     }
     
     moveNode(isright){
-        console.log("trying to move the node");
         var wf = this.cv.wf;
         var node = this.nodes[0];
         var nextnv = this.cv.nodeViews[this.cv.nodeViews.indexOf(this)+(isright)*2-1];
-        console.log(this);
-        console.log(nextnv);
         //Check to see if we have to change categories
         if(nextnv.isTotal||nextnv.nodes.length==0){
-            console.log("The node's category should be changed")
             var nextcatindex = wf.view.categoryViews.indexOf(this.cv)+(isright)*2-1;
             if(nextcatindex<0||nextcatindex>wf.view.categoryViews.length-2)return;
             wf.view.changeCategoryForNode(this,wf.view.categoryViews[nextcatindex]);
         }else{
             //We have to move the actual node
-            console.log("The node should be moved");
             var node2 = nextnv.nodes[0];
-            wf.moveNodeTo(node,node2,(isright))
+            wf.moveNodeTo(node,node2,(isright));
         }
         
-        console.log(this);
     }
     
 }
@@ -1208,15 +1373,7 @@ class OutcomeTableCell{
 
 class ProgramOutcomeview extends Outcomeview{
     
-    getNodeCategories(){
-        var list = [];
-        for(var i=0;i<this.wf.weeks.length;i++){
-            var name = this.wf.weeks[i].name;
-            if(!name)name=this.wf.weeks[i].getDefaultName();
-            list.push({text:name,value:i});
-        }
-        return list;
-    }
+    
     
     createCategoryViews(){
         var nodeCategories = this.getNodeCategories();
@@ -1255,27 +1412,7 @@ class ProgramOutcomeview extends Outcomeview{
         
     }
     
-    isValidNode(node){
-        return true;
-    }
     
-    getCategoryFromNode(node){
-        return node.wf.weeks.indexOf(node.week);
-    }
-    
-    
-    getCategoryForNode(node){
-        var category = node.wf.weeks.indexOf(node.week);
-        if(category==null)category="none";
-        for(var i=0;i<this.categoryViews.length;i++){
-            if(this.categoryViews[i].value==category)return this.categoryViews[i];
-        }
-        if(category=="none"){
-            this.categoryViews.push(new OutcomeCategoryview({text:LANGUAGE_TEXT.outcomeview.uncategorized[USER_LANGUAGE],value:"none"},this.wf));
-            return this.categoryViews[this.categoryViews.length-1];
-        }
-        return null;
-    }
     
     changeCategoryForNode(nv,cv){
         var node = nv.nodes[0];
@@ -1285,10 +1422,8 @@ class ProgramOutcomeview extends Outcomeview{
         node.view.categoryChangedProgram();
     }
     
-    nodeMovedTo(node1,node2,isAfter=true){
-        node1.view.categoryChangedProgram();   
-    }
     
+    getDefaultSortType(){return "week";}
     
 }
 
@@ -1307,5 +1442,37 @@ class ProgramOutcomeCategoryview extends OutcomeCategoryview{
             if(wf.view)wf.view.nodeAdded(node);
         }
         
+    }
+}
+
+class OutcomeColumnview{
+    constructor(column){
+        this.column = column;
+        this.vertex;
+    }
+    
+    createVertex(container){
+        var column = this.column;
+        var line = document.createElement("div");
+        var check = document.createElement("input");
+        check.type="checkbox";
+        check.checked = column.outcomeVisibility;
+        check.className="outcomesortradio";
+        var textbox = document.createElement("div");
+        textbox.innerHTML = column.text;
+        textbox.className="outcomesorttext";
+        line.appendChild(check);
+        line.appendChild(textbox);
+        line.className="outcomesortline";
+        container.appendChild(line);
+        
+        check.onchange = function(){
+            column.setVisible(check.checked);
+        }
+    }
+    
+    visibilityChanged(){
+        this.column.wf.view.makeInactive();
+        this.column.wf.view.makeActive();
     }
 }

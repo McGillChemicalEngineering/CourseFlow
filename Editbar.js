@@ -35,7 +35,8 @@ class EditBar{
             theme: 'bubble',
             modules: {
                 toolbar: toolbarOptions
-            }
+            },
+            placeholder:LANGUAGE_TEXT.editbar.nameplaceholder[USER_LANGUAGE]
         });
         quill1.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
@@ -45,7 +46,7 @@ class EditBar{
             }
           }
         });
-        quillDiv1.firstChild.onfocus = function(){quill1.setSelection(0,quill1.getLength());};
+        //quillDiv1.firstChild.onfocus = function(){quill1.setSelection(0,quill1.getLength());};
         this.nameField=quill1;
         container.appendChild(nameDiv);
         
@@ -74,7 +75,8 @@ class EditBar{
             theme: 'snow',
             modules: {
                 toolbar: toolbarOptions
-            }
+            },
+            placeholder:LANGUAGE_TEXT.editbar.insertdescription[USER_LANGUAGE]
         });
         quill2.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
@@ -145,9 +147,9 @@ class EditBar{
             },100);
         },10);
         if(node.name!=null)this.nameField.setText(node.name);
-        else this.nameField.setText("<Name>");
+        else this.nameField.setText("");
         if(node.text!=null)this.textField.clipboard.dangerouslyPasteHTML(node.text,"silent");
-        else this.textField.clipboard.dangerouslyPasteHTML(LANGUAGE_TEXT.editbar.insertdescription[USER_LANGUAGE],"silent");
+        else this.textField.clipboard.dangerouslyPasteHTML("","silent");
         //if(node.text!=null)this.textField.innerHTML=node.text;
         //else this.textField.innerHTML="Insert a description here.";
         var iconList = node.getLeftIconList();

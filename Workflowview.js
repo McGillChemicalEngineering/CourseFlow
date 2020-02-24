@@ -302,7 +302,6 @@ class Workflowview{
     }
     
     weekIndexUpdated(week){ 
-        console.log(week);
         if(week.collapsed){
             this.graph.setCellStyles("fontColor","#777777;",[week.view.vertex]);
             this.graph.setCellStyles("fillColor","#bbbbbb;",[week.view.vertex]);
@@ -631,7 +630,6 @@ class Workflowview{
             title.className = "columnfloatheader";
             this.colFloat.appendChild(title);
             title.innerHTML=col.text.replace(/\n/g,"<br>");
-            console.log(col.view.pos);
             if(col.view)title.style.left = (col.view.pos-100)+"px";
         }
     }
@@ -1121,7 +1119,6 @@ class Workflowview{
             mxGraph.prototype.selectCellForEvent.apply(this,arguments);
         }
         graph.clearSelection = function(){
-            console.log("clearing selection");
             this.stopEditing(false);
             editbar.disable();
             wfv.showColFloat(true);
@@ -1156,8 +1153,7 @@ class Workflowview{
                while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
                if(cell.isNode){
                    var node = cell.node;
-                   var linkedWF = node.linkedWF;
-                   if(linkedWF!=null)p.changeActive(p.workflows.indexOf(p.getWFByID(linkedWF)));
+                   node.openLinkedWF();
                }
            }
         });

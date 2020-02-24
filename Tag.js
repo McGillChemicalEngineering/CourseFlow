@@ -73,8 +73,18 @@ class Tag {
         }
     }
     
+    moveChild(layout1,layout2,isAfter=false){
+        layout1.parentTag.children.splice(layout1.parentTag.children.indexOf(layout1),1);
+        this.children.splice(this.children.indexOf(layout2)+isAfter,0,layout1);
+        layout1.parentTag = this;
+    }
+    
     getDefaultName(term){
         return LANGUAGE_TEXT.tag.new[USER_LANGUAGE]+" "+this.getType(term);
+    }
+    
+    getDepth(){
+        return this.depth;
     }
         
     addButton(container,recurse=true){
@@ -147,7 +157,7 @@ class Tag {
     }
     
     clickButton(){
-        this.project.changeActive(this.project.getCompIndex(this),false);
+        this.project.changeActive(this,false);
     }
     
     getType(term){

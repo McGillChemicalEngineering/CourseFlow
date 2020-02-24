@@ -21,8 +21,7 @@ class Project{
         this.workflows=[];
         this.competencies=[];
         this.graph;
-        this.activeWF;
-        this.activeComp;
+        this.activeLayout;
         this.terminologySet = "standard";
         this.outcomesview = false;
         this.container=container;
@@ -95,7 +94,7 @@ class Project{
             var type = newWFSelect.value;
             p.addWorkflow(type);
             gaEvent('Workflow','Add',type,p.workflows.length);
-            p.changeActive(p.workflows.length-1)
+            p.changeActive(p.workflows[p.workflows.length-1]);
         }
         this.newWFButton = newWF;
         this.newWFDiv.appendChild(newWF);
@@ -104,7 +103,7 @@ class Project{
         newComp.onclick = function(){
             p.addCompetency();
             gaEvent('Outcome','Add','',p.competencies.length);
-            p.changeActive(p.competencies.length-1,false);
+            p.changeActive(p.competencies[p.competencies.length-1],false);
         }
         this.newCompButton = newComp;
         this.newCompDiv.appendChild(newComp);
@@ -202,9 +201,9 @@ class Project{
         
         var undoButton = document.getElementById("undo");
         undoButton.onclick = function(){
-            if(p.activeWF!=null&&!p.readOnly){
+            if(p.activeLayout instanceof Workflow&&!p.readOnly){
                 try{
-                    p.workflows[p.activeWF].undo();
+                    p.activeLayout.undo();
                 }catch(err){
                     alert(LANGUAGE_TEXT.errors.undo[USER_LANGUAGE]);
                     gaError('Undo',err);
@@ -214,9 +213,9 @@ class Project{
         
         var redoButton = document.getElementById("redo");
         redoButton.onclick = function(){
-            if(p.activeWF!=null&&!p.readOnly){
+            if(p.activeLayout instanceof Workflow&&!p.readOnly){
                 try{
-                    p.workflows[p.activeWF].redo();
+                    p.activeLayout.redo();
                 }catch(err){
                     alert(LANGUAGE_TEXT.errors.redo[USER_LANGUAGE]);
                     gaError('Undo',err);
@@ -228,21 +227,19 @@ class Project{
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
         expand.onclick = function(){makeLoad(function(){
-            if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes();
-            else if(p.activeComp!=null)p.competencies[p.activeComp].expandAllNodes();
+            if(p.activeLayout!=null)p.activeLayout.expandAllNodes();
         })};
         collapse.onclick = function(){makeLoad(function(){
-            if(p.activeWF!=null)p.workflows[p.activeWF].expandAllNodes(false);
-            else if(p.activeComp!=null)p.competencies[p.activeComp].expandAllNodes(false);
+            if(p.activeLayout!=null)p.activeLayout.expandAllNodes(false);
         })};
         
         var showLegend = document.getElementById("showlegend");
-        showLegend.onclick = function(){if(p.activeWF!=null&&p.workflows[p.activeWF].view)p.workflows[p.activeWF].view.showLegend();};
+        showLegend.onclick = function(){if(p.activeLayout instanceof Workflow&&p.activeLayout.view)p.activeLayout.view.showLegend();};
         
         var outcomeView = document.getElementById("outcomeview");
         outcomeView.onclick = function(){
-            if(p.activeWF!=null){
-                var wf = p.workflows[p.activeWF];
+            if(p.activeLayout instanceof Workflow){
+                var wf = p.activeLayout;
                 gaEvent('View','Outcomes Toggled',wf.getType(),wf.tagSets.length);
                 wf.makeInactive();
                 p.outcomesview=(!p.outcomesview);
@@ -349,8 +346,8 @@ class Project{
         });
         
         document.addEventListener("click",function(evt){
-            if(p.activeWF!=null&&!p.container.contains(evt.target)){
-                var wf = p.workflows[p.activeWF];
+            if(p.activeLayout instanceof Workflow&&!p.container.contains(evt.target)){
+                var wf = p.activeLayout;
                 if(wf.view==null||wf.view.graph==null)return;
                 if(!wf.view.editbar.container.parentElement.contains(evt.target))wf.view.graph.clearSelection();
             }
@@ -390,10 +387,8 @@ class Project{
     
     exportCurrent(){
         var serializer = new XMLSerializer();
-        var wf;
-        if(this.activeWF!=null)wf = this.workflows[this.activeWF];
-        else if(this.activeComp!=null)wf = this.competencies[this.activeComp];
-        else return;
+        var wf = this.activeLayout;
+        if(wf==null)return;
         var children=[];
         if(wf instanceof Workflow) children= this.getDependencies(wf);
         var exported=[];
@@ -448,9 +443,9 @@ class Project{
     }
     
     duplicateActiveWF(){
-        if(this.activeWF==null)return;
-        var wf = this.workflows[this.activeWF];
-        var xml = (new DOMParser()).parseFromString(this.assignNewIDsToXML(this.workflows[this.activeWF].toXML(),false),"text/xml");
+        if(!this.activeLayout instanceof Workflow)return;
+        var wf = this.activeLayout;
+        var xml = (new DOMParser()).parseFromString(this.assignNewIDsToXML(wf.toXML(),false),"text/xml");
         var wfcopy = this.addWorkflowFromXML(xml);
         wfcopy.setName(wf.name+" (Copy)");
         wfcopy.id = this.genID();
@@ -463,10 +458,8 @@ class Project{
     }
     
     printActive(){
-        console.log(window.navigator.userAgent);
         if(window.navigator.userAgent.match("Chrome"))alert(LANGUAGE_TEXT.errors.printchrome[USER_LANGUAGE]);
-        if(this.activeWF!=null)this.workflows[this.activeWF].requestPrint();
-        else if(this.activeComp!=null)this.competencies[this.activeComp].requestPrint();
+        if(this.activeLayout!=null)this.activeLayout.requestPrint();
         
         
     }
@@ -496,8 +489,7 @@ class Project{
     }
     
     clearProject(){
-        if(this.activeWF!=null){this.workflows[this.activeWF].makeInactive();this.activeWF=null;}
-        if(this.activeComp!=null){this.competencies[this.activeComp].makeInactive(this.container);this.activeComp=null;}
+        if(this.activeLayout!=null){this.activeLayout.makeInactive();this.activeLayout=null;}
         while(this.layout.childElementCount>0)this.layout.removeChild(this.layout.firstElementChild);
         this.workflows=[];
         while(this.compDiv.childElementCount>0)this.compDiv.removeChild(this.compDiv.firstElementChild);
@@ -583,7 +575,14 @@ class Project{
         tag.fromXML(xml);
     }
     
-    
+    moveLayout(layout1,layout2,isAfter){
+        var array;
+        if(layout1 instanceof Tag)array=this.competencies;
+        else array=this.workflows;
+        if(array.indexOf(layout1)<0||array.indexOf(layout2)<0)console.log("OH NO!");
+        array.splice(array.indexOf(layout1),1);
+        array.splice(array.indexOf(layout2)+isAfter,0,layout1);
+    }
     
     
     getNumberOfDescendants(wfp,des){
@@ -612,14 +611,7 @@ class Project{
         while(wf.buttons.length>0){
             wf.removeButton(wf.buttons[0]);
         }
-        if(this.activeWF!=null){
-            if(wf.isActive){
-                this.workflows[this.activeWF].makeInactive();
-                this.activeWF=null;
-            }else if(this.workflows.indexOf(wf)<this.activeWF){
-                this.activeWF--;
-            }
-        }
+        if(this.activeLayout==wf){this.activeLayout.makeInactive();this.activeLayout=null;}
         this.workflows.splice(this.workflows.indexOf(wf),1);
     }
     
@@ -633,18 +625,11 @@ class Project{
         for(i=0;i<tag.buttons.length;i++){
             tag.removeButton(tag.buttons[i]);
         }
-        if(this.activeComp!=null){
-            if(tag.isActive){
-                this.competencies[this.activeComp].makeInactive(this.container);
-                this.activeComp=null;
-            }else if(this.competencies.indexOf(tag)<this.activeComp){
-                this.activeComp--;
-            }
-        }
+        if(this.activeLayout==tag){this.activeLayout.makeInactive();this.activeLayout=null;}
         this.competencies.splice(this.competencies.indexOf(tag),1);
-        if(this.activeWF!=null&&this.workflows[this.activeWF].tagSelect!=null){
-            this.workflows[this.activeWF].populateTagBar();
-            this.workflows[this.activeWF].populateTagSelect(this.competencies);
+        if(this.activeLayout instanceof Workflow&&this.activeLayout.view&&this.activeLayout.view.tagSelect!=null){
+            this.activeLayout.view.populateTagBar();
+            this.activeLayout.view.populateTagSelect(this.competencies,wf.getTagDepth());
         }
     }
     
@@ -680,8 +665,6 @@ class Project{
     }
     
     getCompByID(id){
-        console.log(id);
-        console.log(this.competencies);
         for(var i=0;i<this.competencies.length;i++){
             if(this.competencies[i].id==id)return this.competencies[i];
         }
@@ -696,20 +679,13 @@ class Project{
         return null;
     }
     
-    changeActive(index,isWF=true){
+    changeActive(layout){
         var p = this;
         makeLoad(function(){
-            if(p.activeWF!=null)p.workflows[p.activeWF].makeInactive();
-            if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive();
-            if(isWF){
-                p.activeComp = null;
-                p.activeWF=index;
-                p.workflows[p.activeWF].makeActive(p.container);
-            }else{
-                p.activeWF = null;
-                p.activeComp=index;
-                p.competencies[p.activeComp].makeActive(new Tagbuilder(p.container,p.competencies[p.activeComp]));
-            }
+            if(p.activeLayout!=null)p.activeLayout.makeInactive();
+            p.activeLayout = layout;
+            if(layout instanceof Workflow)layout.makeActive(p.container);
+            else if (layout instanceof Tag)layout.makeActive(new Tagbuilder(p.container,layout));
         });
     }
     
@@ -837,8 +813,8 @@ class Project{
                 this.competencies[i].terminologyUpdated(oldterm);
             }
         }
-        if(this.activeWF!=null&&this.workflows[this.activeWF].view){
-            var wf = this.workflows[this.activeWF];
+        if(this.activeLayout instanceof Workflow){
+            var wf = this.activeLayout;
             if(wf.view&&wf.view.tagSelect)wf.view.populateTagSelect(this.competencies,wf.getTagDepth());
         }
         if(term=="standard"){
@@ -853,16 +829,12 @@ class Project{
     setLanguage(lang){
         var p = this;
         makeLoad(function(){
-            console.log("Closing active wfs");
-            if(p.activeWF!=null)p.workflows[p.activeWF].makeInactive();
-            if(p.activeComp!=null)p.competencies[p.activeComp].makeInactive();
-            console.log("Changing language from "+USER_LANGUAGE+" to "+lang);
+            if(p.activeLayout!=null)p.activeLayout.makeInactive();
             USER_LANGUAGE=lang;
             setMenuLanguage();
             p.fillWFSelect($("#newwfselect").get()[0]);
-            console.log("Reopening workflows");
-            if(p.activeWF!=null)p.workflows[p.activeWF].makeActive(p.container);
-            if(p.activeComp!=null)p.competencies[p.activeComp].makeActive(new Tagbuilder(p.container,p.competencies[p.activeComp]));
+            if(p.activeLayout instanceof Workflow)p.activeLayout.makeActive(p.container);
+            if(p.activeLayout instanceof Tag)p.activeLayout.makeActive(new Tagbuilder(p.container,p.activeLayout));
         });
     }
 }

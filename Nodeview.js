@@ -159,7 +159,6 @@ class Nodeview{
     }
     
     makeFlushWithAbove(index,column=null){
-        console.log(index);
         if(index==0) this.moveNode(0,this.node.week.view.vertex.y()+2*cellSpacing-this.vertex.y());
         else {
             var nodes;
@@ -343,7 +342,7 @@ class Nodeview{
         menu.addItem(LANGUAGE_TEXT.node.showhide[USER_LANGUAGE],'resources/images/view24.png',function(){node.toggleDropDown();});
         if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow','resources/images/enterlinked24.png',function(){
             var linkedWF = node.linkedWF;
-            if(linkedWF!=null)p.changeActive(p.workflows.indexOf(p.getWFByID(linkedWF)));
+            if(linkedWF!=null)p.changeActive(p.getWFByID(linkedWF));
         });
         this.populateLinkedWFMenu(menu,node.getLinkedWFList());
         menu.addItem(LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){

@@ -180,7 +180,7 @@ class CFNode {
                 this.refreshLinkedTags(addTags);
                 
                 
-                if(autoswitch)wfc.project.changeActive(wfc.project.workflows.indexOf(wfc));
+                if(autoswitch)wfc.project.changeActive(wfc);
             }else{
                 if(this.view)this.view.linkedWFUpdated(value,oldvalue);
                 if(this.tags.length>0){
@@ -232,6 +232,11 @@ class CFNode {
         if(this.view)this.view.vertexResized(dy);
     }
     
+    openLinkedWF(){
+        var p = this.wf.project;
+        var linkedWF = this.linkedWF;
+        if(linkedWF!=null)p.changeActive(p.getWFByID(linkedWF));
+    }
     
     
     styleForColumn(){}

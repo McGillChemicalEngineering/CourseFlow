@@ -103,7 +103,6 @@ class Week {
         else if(origin > 0) {this.nodes.splice(0,0,node);}
         else this.nodes.splice(index,0,node);
         index=this.nodes.indexOf(node);
-        console.log(index);
         if(this.view)this.view.nodeAddedSilently(node,origin,index);
     }
     
