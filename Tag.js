@@ -86,6 +86,20 @@ class Tag {
     getDepth(){
         return this.depth;
     }
+    
+    getParentWithDepth(depth){
+        var parent = this;
+        while(true){
+            if(parent.depth==depth||parent.parentTag==null)break;
+            parent = parent.parentTag;
+        }
+        return parent;
+    }
+    
+    getLastDescendant(){
+        if(this.children.length==0)return this;
+        else return this.children[this.children.length-1].getLastDescendant();
+    }
         
     addButton(container,recurse=true){
         var button = new Layoutbutton(this,container);
@@ -262,6 +276,38 @@ class Tag {
     
     expandAllNodes(expand){
         if(this.view)this.view.expandAllNodes(expand);
+    }
+    
+    populateMenu(menu){
+        var layout = this;
+        
+        menu.addItem(LANGUAGE_TEXT.menus.expand[USER_LANGUAGE],'',function(){
+            $("#expand").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE],'',function(){
+            $("#collapse").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE],'',function(){
+            $("#outcomeview").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE],'',function(){
+            $("#export").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE],'',function(){
+            $("#duplicatewf").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            layout.project.showHelp("outcomehelp.html");
+        });
+    }
+    
+    toCSV(){
+        var csv = "";
+        csv += "\""+this.name+"\"";
+        for(var i=0;i<this.children.length;i++){
+            if(i>0)csv += (",").repeat(this.children[i].depth);
+            csv += this.children[i].toCSV();
+        }
     }
     
     

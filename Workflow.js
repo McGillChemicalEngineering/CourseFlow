@@ -206,9 +206,15 @@ class Workflow{
     }
     
     moveChild(layout1,layout2,isAfter){
-        this.children.splice(this.children.indexOf(layout1),1);
-        this.children.splice(this.children.indexOf(layout2)+isAfter,0,layout1);
+        var array;
+        if(layout1 instanceof Workflow)array = this.children;
+        else array = this.tagSets;
+        if(array.indexOf(layout1)<0||array.indexOf(layout2)<0)return;
+        
+        array.splice(array.indexOf(layout1),1);
+        array.splice(array.indexOf(layout2)+isAfter,0,layout1);
     }
+    
     
     removeChild(child){
         this.children.splice(this.children.indexOf(child),1);
@@ -387,6 +393,7 @@ class Workflow{
     
     addColumn(name){
         var col = new Column(this,name);
+        if(col.name.substr(0,3)=='CUS'&&col.nodetext!=col.text)col.setNodeText(col.text);
         this.columns.push(col);
         if(this.view)this.view.columnAdded(col);
         
@@ -394,8 +401,8 @@ class Workflow{
     
     removeColumn(column){
         var index = this.columns.indexOf(column);
-        if(this.view)this.view.columnRemoved(column);
         this.columns.splice(index,1);
+        if(this.view instanceof Workflowview)this.view.columnRemoved(column);
         for(var i=0;i<this.weeks.length;i++){
             for(var j=0;j<this.weeks[i].nodes.length;j++){
                 var node = this.weeks[i].nodes[j];
@@ -403,6 +410,7 @@ class Workflow{
                 if(node.view)node.view.columnUpdated();
             }
         }
+        if(this.view instanceof Outcomeview)this.view.columnRemoved(column);
     }
     
     getColIndex(name){
@@ -458,6 +466,7 @@ class Workflow{
     
     getTagByID(id){
         var tag;
+        console.log(this.tagSets);
         for(var i=0;i<this.tagSets.length;i++){
             tag = this.tagSets[i].getTagByID(id);
             if(tag!=null)return tag;
@@ -731,7 +740,6 @@ class Workflow{
     
     //Call to create an undo event, which will debounce calls
     makeUndo(type,source=null){
-        
         var debouncetime=500;
         var prevUndoCall = this.lastUndoCall;
         this.lastUndoCall=Date.now();
@@ -797,6 +805,7 @@ class Workflow{
                 var nextUndo = wf.undoHistory[wf.currentUndo+1];
                 wf.xmlData = nextUndo.xml;
                 wf.clearAll();
+                wf.tagSets=[];
                 for(var i=0;i<nextUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getCompByID(nextUndo.tagSets[i]));
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
@@ -834,6 +843,11 @@ class Workflow{
         if(this.view)this.view.print();
     }
     
+    weekDeleted(){
+        this.updateWeekIndices();
+        if(this.view)this.view.weekDeleted();
+    }
+    
     
     toggleSimple(isSimple){
         if(this.isSimple!=isSimple){
@@ -861,6 +875,35 @@ class Workflow{
     }
     
     
+    populateMenu(menu){
+        var layout = this;
+        
+        menu.addItem(LANGUAGE_TEXT.menus.expand[USER_LANGUAGE],'',function(){
+            $("#expand").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE],'',function(){
+            $("#collapse").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.legend[USER_LANGUAGE],'',function(){
+            $("#showlegend").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE],'',function(){
+            $("#outcomeview").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE],'',function(){
+            $("#export").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE],'',function(){
+            $("#duplicatewf").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            
+            if(layout instanceof Activityflow)layout.project.showHelp('activityhelp.html');
+            else if(layout instanceof Courseflow)layout.project.showHelp('coursehelp.html');
+            else if(layout instanceof Progamflow)layout.project.showHelp('programhelp.html');
+            else layout.project.showHelp('help.html');
+        });
+    }
 }
 
 class Courseflow extends Workflow{
@@ -1016,7 +1059,6 @@ class Programflow extends Workflow{
     
     getDefaultName(){return LANGUAGE_TEXT.workflow.newprogram[USER_LANGUAGE];}
     getDepth(){return 0;}
-    
     
     
     

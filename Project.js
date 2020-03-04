@@ -46,6 +46,9 @@ class Project{
         $("#layouthelp").removeClass("disabled");
         $("#terminology").removeClass("disabled");
         $("#terminologycegep").removeClass("disabled");
+        document.body.contextItem=p;
+        $("#sidenav").get()[0].contextItem=p;
+        $("#topnav").get()[0].contextItem=p;
         
         makeResizable(this.sidenav,"right");
         
@@ -666,7 +669,8 @@ class Project{
     
     getCompByID(id){
         for(var i=0;i<this.competencies.length;i++){
-            if(this.competencies[i].id==id)return this.competencies[i];
+            var tag = this.competencies[i].getTagByID(id);
+            if(tag!=null)return tag;
         }
         return null;
     }
@@ -836,5 +840,22 @@ class Project{
             if(p.activeLayout instanceof Workflow)p.activeLayout.makeActive(p.container);
             if(p.activeLayout instanceof Tag)p.activeLayout.makeActive(new Tagbuilder(p.container,p.activeLayout));
         });
+    }
+    
+    populateMenu(menu){
+        var p = this;
+        menu.addItem(LANGUAGE_TEXT.layoutnav.projectreanmetitle[USER_LANGUAGE],'',function(){
+            p.requestName(LANGUAGE_TEXT.layoutnav.projectreanmetitle[USER_LANGUAGE]);
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.saveproject[USER_LANGUAGE],'',function(){
+            $("#save").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE],'',function(){
+            $("#open").click();
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            p.showHelp('help.html');
+        });
+        
     }
 }

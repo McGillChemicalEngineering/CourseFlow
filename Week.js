@@ -66,7 +66,6 @@ class Week {
     }
     
     fromXML(xmlData){
-        var graph = this.graph;
         var wf = this.wf;
         this.id = getXMLVal(xmlData,"weekid");
         var name = getXMLVal(xmlData,"weekname",true);
@@ -139,7 +138,9 @@ class Week {
             this.nodes[this.nodes.length-1].deleteSelf();
         }
         this.wf.weeks.splice(this.wf.weeks.indexOf(this),1);
-        this.wf.updateWeekIndices();
+        this.wf.weekDeleted();
+        //if we deleted all the weeks, better make a fresh one!
+        if(this.wf.weeks.length==0)this.wf.createBaseWeek();
         if(this.view)this.view.deleted();
     }
     
@@ -152,6 +153,7 @@ class Week {
             newWeek.view.insertedBelow(this);
         }
         this.wf.updateWeekIndices();
+        if(this.wf.view)this.wf.view.weekAdded(newWeek);
         
     }
     
@@ -160,6 +162,7 @@ class Week {
     duplicateWeek(){
         var newWeek = this.wf.createWeek();
         this.wf.weeks.splice(this.index+1,0,newWeek);
+        console.log(this.wf.weeks);
         newWeek.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
         for(var i=0;i<newWeek.nodes.length;i++){
             if(newWeek.nodes[i].linkedWF!=null)newWeek.nodes[i].linkedWF=null;
@@ -171,6 +174,7 @@ class Week {
         }
         this.wf.updateWeekIndices();
         if(this.view)newWeek.view.fillNodes();
+        if(this.wf.view)this.wf.view.weekAdded(newWeek);
     }
     
     
@@ -183,6 +187,29 @@ class Week {
         this.wf.addUndo("Week Collapsed",this);
     }
     
+    populateMenu(menu){
+        var week = this;
+        
+        menu.addItem(LANGUAGE_TEXT.week.createbelow[week.getType()][USER_LANGUAGE],'resources/images/add24.png',function(){
+            week.insertBelow(); 
+        });
+        menu.addItem(LANGUAGE_TEXT.week.duplicate[week.getType()][USER_LANGUAGE],'resources/images/copy24.png',function(){
+            week.duplicateWeek(); 
+        });
+        menu.addItem(LANGUAGE_TEXT.week.delete[week.getType()][USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[week.getType()][USER_LANGUAGE])){
+                week.deleteSelf();
+                week.wf.makeUndo("Delete Week",week);
+            }
+        });
+        
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            p.showHelp('weekhelp.html');
+        });
+        
+        
+    }
+    
     
     
 }
@@ -193,6 +220,30 @@ class WFArea extends Week{
     getDefaultName(){
         if(this.wf.isSimple)return null;
         else return LANGUAGE_TEXT.week.part[USER_LANGUAGE]+" "+(this.wf.weeks.indexOf(this)+1);
+    }
+    
+    populateMenu(menu){
+        var week = this;
+        var p = this.wf.project;
+        
+        var sub = menu.addItem(LANGUAGE_TEXT.week.options[USER_LANGUAGE],'resources/images/weekstyle24.png');
+        menu.addItem(LANGUAGE_TEXT.week.simple[USER_LANGUAGE],'resources/images/weekstylesimple24.png',function(){
+            week.wf.toggleSimple(true);
+        },sub);
+        menu.addItem(LANGUAGE_TEXT.week.parts[USER_LANGUAGE],'resources/images/weekstyleparts24.png',function(){
+            week.wf.toggleSimple(false);
+        },sub);
+        
+        if(!week.wf.isSimple){
+            super.populateMenu(menu);
+        } else {
+            menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            p.showHelp('weekhelp.html');
+        });
+        }
+        
+        
+        
     }
     
 }

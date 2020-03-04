@@ -90,6 +90,7 @@
 		<script type="text/javascript" src="Undo.js"></script>
 		<script type="text/javascript" src="Legend.js"></script>
 		<script type="text/javascript" src="Outcomeview.js"></script>
+		<script type="text/javascript" src="CFContext.js"></script>
         <script type="text/javascript" src="TempXMLStorage.js"></script>
 <!--    	<script src="resources/pdftex.js"></script> -->
 <!--    	<script src="resources/promise/promise.js"></script> -->
@@ -101,7 +102,7 @@
 
 <!-- Page passes the container for the graph to the program -->
 <body onload="main(document.getElementById('graphContainer'),document.getElementById('outlineContainer'))" ondrop="return false">
-    <div class="topnav">
+    <div id="topnav" class="topnav">
         <div class = "titlebar">
         <div class="title">
                 <font size="6"><b>CourseFlow</b></font>
@@ -186,23 +187,25 @@
     <div id="helpDiv" class = "helpdiv"><iframe id="helpFrame" class="helpframe"></iframe><div id="helpDivHide" class = "helpdivhide"><img src="resources/images/delrect24.png"></div></div>
     
     <div class="sidenav" id="sidenav">
-        <h3 id="projectheader">Project:</h3>
-        <div id=prnamewrapper>
-            <div id=prname>New Project</div>
+        <div class="sidenavwrapper" id="sidenavwrapper">
+            <h3 id="projectheader">Project:</h3>
+            <div id=prnamewrapper>
+                <div id=prname>New Project</div>
+            </div>
+            <h3 id = "layoutheader">Layout:</h3>
+            <div id="layout"></div>
+            <hr>
+            <h3 id="addwfheader">Add Workflow:</h3>
+            <div id="newWFDiv">
+                <select id="newwfselect"></select>
+                <button id="newwfbutton">Create New</button>
+            </div>
+            <hr>
+            <h3 id = "outcomesheader">Outcomes:</h3>
+            <div id="competencydiv"></div>
+            <div id="newCompDiv">
+            <button id="newcompbutton">Create New</button></div>
         </div>
-        <h3 id = "layoutheader">Layout:</h3>
-        <div id="layout"></div>
-        <hr>
-        <h3 id="addwfheader">Add Workflow:</h3>
-        <div id="newWFDiv">
-            <select id="newwfselect"></select>
-            <button id="newwfbutton">Create New</button>
-        </div>
-        <hr>
-        <h3 id = "outcomesheader">Outcomes:</h3>
-        <div id="competencydiv"></div>
-        <div id="newCompDiv">
-        <button id="newcompbutton">Create New</button></div>
     </div>
 	<!-- Creates a container for the graph-->
     <div id="graphWrapper" class="containerwrapper">

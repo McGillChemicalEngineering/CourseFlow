@@ -108,17 +108,6 @@ class Commentview{
     }
     
     populateMenu(menu){
-        var graph = this.graph;
-        var comment=this.comment;
-        menu.addItem(LANGUAGE_TEXT.comment.show[USER_LANGUAGE], 'resources/images/view24.png', function(){
-            comment.view.show();
-        });
-        menu.addItem(LANGUAGE_TEXT.comment.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
-            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecomment[USER_LANGUAGE])){
-                graph.clearSelection();
-                comment.deleteSelf();
-                comment.wf.makeUndo("Delete Comment",comment);
-            }
-        });
+        this.comment.populateMenu(menu);
     }
 }

@@ -29,6 +29,7 @@ class Layoutbutton {
         this.b.onclick = function(){layout.clickButton();}
         this.namediv = document.createElement('div');
         this.icon = document.createElement('img');
+        this.icon.draggable=false;
         this.hiddenchildren = document.createElement('div');
         this.hiddenchildren.className = "hiddenchildrendiv";
         this.expandIcon = document.createElement('img');
@@ -41,8 +42,9 @@ class Layoutbutton {
         this.childdiv.className="layoutchilddiv";
         this.bdiv.appendChild(this.childdiv);
         this.container.appendChild(this.bdiv);
+        this.bdiv.contextItem = this;
         if(container.parentElement.button!=null){container.parentElement.button.updateChildren();}
-        this.updateButton();        
+        this.updateButton();
     }
     
     makeB(){return document.createElement('button');}
@@ -84,6 +86,9 @@ class Layoutbutton {
     
     
     makeEditable(renamable=true,deletable=true,unassignable=true,parent=null){
+        this.renamable=renamable;
+        this.deletable=deletable;
+        this.unassignable=unassignable;
         var p = this.layout.project;
         var layout = this.layout;
         var bl = this;
@@ -104,9 +109,7 @@ class Layoutbutton {
             delicon.src="resources/images/delrect16.png";
             delicon.style.width='16px';
             delicon.onclick=function(){
-                if(mxUtils.confirm(layout.getDeleteText())){
-                    layout.deleteSelf(bl);
-                }
+                bl.deleteClick();
             }
             edit.appendChild(delicon);
         }
@@ -116,18 +119,32 @@ class Layoutbutton {
         this.bwrap.appendChild(edit);
     }
     
+    deleteClick(){
+        if(mxUtils.confirm(this.layout.getDeleteText())){
+            this.layout.deleteSelf(this);
+        }
+    }
+    
     makeUnassign(parent){
         var layout = this.layout;
+        var b = this;
         if(parent==null&&this.container.layout!=null)parent = this.container.layout;
+        this.unassignParent = parent;
         var unassignicon = document.createElement('img');
         unassignicon.src="resources/images/unassign16.png";
         unassignicon.style.width='16px';
         unassignicon.onclick=function(){
-            if(mxUtils.confirm(layout.getUnassignText())){
-                layout.unassignFrom(parent);
-            }
+            b.unassignClick();
         }
         return unassignicon;
+    }
+    
+    unassignClick(){
+        var parent = this.unassignParent;
+        var layout = this.layout;
+        if(mxUtils.confirm(layout.getUnassignText())){
+            layout.unassignFrom(parent);
+        }
     }
     
     renameClick(){
@@ -142,8 +159,8 @@ class Layoutbutton {
         bl.namediv.firstElementChild.focus();
         bl.namediv.firstElementChild.select();
         b.onclick=null;
-        p.container.addEventListener('click',function(){
-            if(bl.namediv.firstElementChild!=null)bl.namediv.firstElementChild.blur();
+        p.container.addEventListener('click',function(evt){
+            if(bl.namediv.firstElementChild!=null&&!bl.namediv.contains(evt.target))bl.namediv.firstElementChild.blur();
         },true);
         var enterfunc =function(evt){
             if(evt.key!=null&&evt.key=="Enter"){
@@ -152,6 +169,7 @@ class Layoutbutton {
         }
         document.addEventListener('keydown',enterfunc);
         bl.namediv.firstElementChild.addEventListener("focusout",function(){
+            console.log("focus out");
             b.onclick=tempfunc;
             if(bl.namediv.firstElementChild.value=="")bl.namediv.innerHTML=layout.name;
             else {
@@ -162,14 +180,12 @@ class Layoutbutton {
     }
     
     makeCreateChild(createfunction){
+        this.createfunction=createfunction;
         var create = document.createElement('div');
         create.className="createlayoutdiv";
-        var childicon = document.createElement('img');
-        childicon.src="resources/images/createchild16.png";
-        childicon.style.width='16px';
-        childicon.onclick=createfunction;
-        create.appendChild(childicon);
-        this.bwrap.appendChild(create);
+        create.innerHTML = "+"+LANGUAGE_TEXT.layoutnav.createnew[USER_LANGUAGE];
+        create.onclick=createfunction;
+        this.bdiv.appendChild(create);
     }
     
     makeMovable(){
@@ -177,44 +193,51 @@ class Layoutbutton {
         var button = this;
         var bdiv = this.bdiv;
         
-        bdiv.draggable=true;
+        bdiv.draggable=false;
         bdiv.ondragstart = function(evt){
-            var id = 'drag-'+(new Date()).getTime();
+            var id = 'drag-'+Date.now();
             bdiv.id=id;
             evt.dataTransfer.setData("text",id);
             evt.stopPropagation();
         }
         bdiv.ondragover = function(evt){
+            evt.stopPropagation();
             var source = document.getElementById(evt.dataTransfer.getData("text"));
             if(source==null||source.button==null||source.button.layout==null||layout instanceof Workflow!=source.button.layout instanceof Workflow)return;
             evt.preventDefault();
             var sourcebutton = source.button;
             if(sourcebutton==null||sourcebutton==button)return;
+            var currentTime = Date.now();
+            if(sourcebutton.lastDragged!=null&&(sourcebutton.nextNewDrop>currentTime||(sourcebutton.lastDragged==button&&sourcebutton.nextSameDrop>currentTime)))return;
+            sourcebutton.lastDragged=button;
+            sourcebutton.nextNewDrop = currentTime+300;
+            sourcebutton.nextSameDrop = currentTime+500;
             sourcebutton.attemptToDrop(button);
-            evt.stopPropagation();
             
         }
         button.bdiv.ondrop = function(evt){
             evt.preventDefault();
         }
+        button.bdiv.ondragend=function(evt){
+            bdiv.draggable=false;
+            bdiv.classList.remove("dragging");
+        }
         
-        /*var move = document.createElement('div');
-        move.className = "editlayoutdiv";
+        var movehandle = document.createElement('div');
+        movehandle.className = "movehandle";
         var up = document.createElement('img');
-        up.className="layoutchange";
-        up.src = "resources/images/moveup16.png";
-        up.onclick=function(){
-            button.moveButton(true);
+        up.src = "resources/images/movehandle24.png";
+        up.draggable=false;
+        movehandle.onmousedown=function(evt){
+            bdiv.draggable=true;
+            bdiv.classList.add("dragging");
         }
-        move.appendChild(up);
-        var down = document.createElement('img');
-        down.className="layoutchange";
-        down.src = "resources/images/movedown16.png";
-        down.onclick=function(){
-            button.moveButton(false);
+        movehandle.onmouseup = function(){
+            bdiv.draggable=false;
+            bdiv.classList.remove("dragging");
         }
-        move.appendChild(down);
-        this.bwrap.appendChild(move);*/
+        movehandle.appendChild(up);
+        this.bdiv.insertBefore(movehandle,this.childdiv);
     }
     
     attemptToDrop(target){
@@ -413,6 +436,32 @@ class Layoutbutton {
             circle.style.background = colours[i];
             this.indicatorWrap.appendChild(circle);
         }
+    }
+    
+    populateMenu(menu){
+        var b = this;
+        if(this.renamable)menu.addItem(LANGUAGE_TEXT.workflow.rename[USER_LANGUAGE],'resources/images/edit24.png',function(){
+            b.renameClick();
+        });
+        if(this.deletable)menu.addItem(LANGUAGE_TEXT.workflow.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            b.deleteClick();
+        });
+         if(this.unassignable)menu.addItem(LANGUAGE_TEXT.workflow.unassign[USER_LANGUAGE],'resources/images/unassign24.png',function(){
+            b.unassignClick();
+        });
+        
+        if(this.createfunction)menu.addItem(LANGUAGE_TEXT.workflow.createchild[USER_LANGUAGE],'resources/images/createchild24.png',function(){
+            b.createfunction();
+        });
+        
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            var layout = b.layout;
+            if(layout instanceof Tag)layout.project.showHelp('outcomehelp.html');
+            else if(layout instanceof Activityflow)layout.project.showHelp('activityhelp.html');
+            else if(layout instanceof Activityflow)layout.project.showHelp('coursehelp.html');
+            else if(layout instanceof Activityflow)layout.project.showHelp('programhelp.html');
+            else layout.project.showHelp('help.html');
+        });
     }
 
 

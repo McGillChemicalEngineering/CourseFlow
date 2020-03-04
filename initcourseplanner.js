@@ -36,6 +36,22 @@ function main(container)
         $("#english").get()[0].onclick = function(){USER_LANGUAGE='en';setMenuLanguage();};
         $("#french").get()[0].onclick = function(){USER_LANGUAGE='fr';setMenuLanguage();};
         makeSplashpage(container);
+        
+        //Create the popup menu
+        document.addEventListener('contextmenu',function(evt){
+            if(evt.ctrlKey)return evt;
+            evt.preventDefault();
+            var target = evt.target;
+            while(target.contextItem==null){
+                target = target.parentElement;
+                if(target==null)return;
+            }
+            var context = new CFContext(document.body,target.contextItem,evt.pageX,evt.pageY);
+            context.populate();
+            context.open();
+
+        },false);
+        
     }
 } //End of main
 

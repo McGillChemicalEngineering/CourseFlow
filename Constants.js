@@ -153,15 +153,15 @@ const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;
 //Icons
 const iconsList={
     strategy:[
-        {text:{en:'Jigsaw',fr:"Groupe d'experts"},value:'jigsaw'},
+        {text:{en:'Jigsaw',fr:"Stratégie croisée"},value:'jigsaw'},
         {text:{en:'Peer Instruction',fr:"Enseignement par les pairs"},value:'peer-instruction'},
         {text:{en:'Case Studies',fr:"Étude de cas"},value:'case-studies'},
-        {text:{en:'Gallery Walk',fr:"Galerie"},value:'gallery-walk'},
+        {text:{en:'Gallery Walk',fr:"Atelier-carrousel"},value:'gallery-walk'},
         {text:{en:'Reflective Writing',fr:"Écriture réflexive"},value:'reflective-writing'},
-        {text:{en:'Two-Stage Exam',fr:"Examen en deux temps"},value:'two-stage-exam'},
+        {text:{en:'Two-Stage Exam',fr:"Test en deux phases"},value:'two-stage-exam'},
         {text:{en:'Toolkit',fr:"Boite à outils"},value:'toolkit'},
         {text:{en:'One Minute Paper',fr:"Papier-minute"},value:'one-minute-paper'},
-        {text:{en:'Distributed Problem Solving',fr:"Atelier de résolution de problème"},value:'distributed-problem-solving'},
+        {text:{en:'Distributed Problem Solving',fr:"Résolution distribué de problèmes"},value:'distributed-problem-solving'},
         {text:{en:'Peer Assessment',fr:"Évaluation par les pairs"},value:'peer-assessment'}
     ],
     context:[
@@ -176,7 +176,7 @@ const iconsList={
           {text:{en:'Assess/Review Peers',fr:"Examiner Ses Pairs"},value:'peerreview'},
           {text:{en:'Evaluate Peers',fr:"Évaluer Ses Pairs"},value:'evaluate'},
           {text:{en:'Debate',fr:"Débat"},value:'debate'},
-          {text:{en:'Game/Roleplay',fr:"Jeu"},value:'play'},
+          {text:{en:'Game/Roleplay',fr:"Jeu/Jeu de rôle"},value:'play'},
           {text:{en:'Create/Design',fr:"Créer/Concevoir"},value:'create'},
           {text:{en:'Revise/Improve',fr:"Réviser/Améliorer"},value:'practice'},
           {text:{en:'Read',fr:"Lire"},value:'reading'},
@@ -184,14 +184,15 @@ const iconsList={
           {text:{en:'Present',fr:"Présentation"},value:'present'},
           {text:{en:'Experiment/Inquiry',fr:"Expérience/Enquête"},value:'experiment'},
           {text:{en:'Quiz/Test',fr:"Quiz/Test"},value:'quiz'},
-          {text:{en:'Resource Curation/Preparation',fr:"Préparation Des Ressources"},value:'curation'},
+          {text:{en:'Instructor Resource Curation',fr:"Préparation Des Ressources (Instructeur)"},value:'curation'},
           {text:{en:'Instructor Decision',fr:"Décision (Instructeur)"},value:'decision'},
-          {text:{en:'Orchestration',fr:"Orchestration"},value:'orchestration'},
+          {text:{en:'Instructor Orchestration',fr:"Orchestration (Instructeur)"},value:'orchestration'},
+          {text:{en:'Instructor Evaluation',fr:"Évaluation (Instructeur)"},value:'instrevaluate'},
           {text:{en:'Other',fr:"Autre"},value:'other'}
          ],
     assessment:[
-        {text:{en:'Formative',fr:"Exercices/Quiz"}, value:'exercise'},
-        {text:{en:'Summative',fr:"Tests/Projets"},value:'test'},
+        {text:{en:'Formative',fr:"Formatif"}, value:'exercise'},
+        {text:{en:'Summative',fr:"Sommatif"},value:'test'},
         {text:{en:'Comprehensive',fr:"Exhaustif"},value:'exam'}
     ],
     column:[
@@ -217,20 +218,20 @@ const LANGUAGE_TEXT = {
     menus:{
         file:{en:'File',fr:'Fichier'},
         edit:{en:'Edit',fr:'Édition'},
-        view:{en:'View',fr:'Vue'},
+        view:{en:'View',fr:'Affichage'},
         language:{en:"Language",fr:"Langue"},
         help:{en:'Help',fr:'Aide'},
-        newproject:{en:'New Project',fr:'Nouveau Projet'},
-        saveproject:{en:'Save Project',fr:'Enregistrer'},
-        openproject:{en:'Open Project',fr:'Ouvrir'},
-        exportwf:{en:'Export Current Workflow',fr:'Exporter'},
-        importwf:{en:'Import a Workflow',fr:'Importer'},
+        newproject:{en:'New Project',fr:'Nouveau projet'},
+        saveproject:{en:'Save Project',fr:'Savegarder le projet'},
+        openproject:{en:'Open Project',fr:'Ouvrir un projet'},
+        exportwf:{en:'Export Current Workflow',fr:'Exporter le plan de travail courant'},
+        importwf:{en:'Import a Workflow',fr:'Importer un plan de travail'},
         readonly:{en:'Save Read Only',fr:'Copie Lecture Seule'},
         undo: {en:'Undo',fr:'Annuler'},
         redo: {en:'Redo',fr:' Rétablir'},
-        duplicate:{en:'Duplicate Current Workflow',fr:"Dupliquer Tracé"},
-        expand:{en:'Expand All',fr:"Développer Tout"},
-        collapse:{en:'Collapse All',fr:" Réduire tout"},
+        duplicate:{en:'Duplicate Current Workflow',fr:"Dupliquer le plan de travail courant"},
+        expand:{en:'Expand All',fr:"Afficher Tout"},
+        collapse:{en:'Collapse All',fr:"Cacher tout"},
         printerfriendly:{en:'Printer Friendly Version',fr:"Version Imprimante"},
         legend:{en:'Show/Hide Legend',fr:"Afficher/Masquer La Légende"},
         toggleoutcome:{en:'Toggle Outcome View',fr:"Basculer L’affichage Résultats"},
@@ -238,16 +239,16 @@ const LANGUAGE_TEXT = {
         terminologystandard:{en:'Standard',fr:"Standard"},
         terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
         genhelp:{en:'General Help',fr:"Aide Generale"},
-        layouthelp:{en:'About the Layout',fr:"Aide du Layout"},
+        layouthelp:{en:'About the Layout',fr:"À propos de la mise en page"},
         privacypolicy:{en:'Privacy Policy',fr:"Politique de Confidentialité"}
     },
     layoutnav:{
         project:{en:'Project',fr:"Projet"},
         projectreanmetitle:{en:"Rename Project",fr:"Renommer Le Projet"},
         projectrename:{en:'Enter a name for your project',fr:"Entrez un nom pour votre projet"},
-        layout:{en:"Layout",fr:"Structure"},
+        layout:{en:"Layout",fr:"Mise en page"},
         cancel:{en:'Cancel',fr:'Annuler'},
-        addwf:{en:'Add Workflow',fr:"Adjouter un Tracé"},
+        addwf:{en:'Add Workflow',fr:"Adjouter un plan de travail"},
         outcomes:{en:'Outcomes',fr:'Les Résultats'},
         createnew:{en:'Create New',fr:'Créer Un Nouveau'}
     },
@@ -259,7 +260,11 @@ const LANGUAGE_TEXT = {
         newcourse:{en:"New Course",fr:"Nouveau Cours"},
         newprogram:{en:"New Program",fr:"Noveau Programme"},
         inserttitle:{en:"Insert Title Here",fr:'Placez Le Titre Ici'},
-        insertauthor:{en:"Insert Author Here",fr:"Placez Le Nom de L'Auteur Ici"}
+        insertauthor:{en:"Insert Author Here",fr:"Placez Le Nom de L'Auteur Ici"},
+        rename:{en:"Rename",fr:"Renommer"},
+        delete:{en:"Delete",fr:"Supprimer"},
+        unassign:{en:"Unassign",fr:"Annuler L'attribution"},
+        createchild:{en:"Create Child",fr:"Ajouter un enfant"}
     },
     editbar:{
         editnode:{en:'Edit Node',fr:'Modifier Le Noeud'},
@@ -267,12 +272,12 @@ const LANGUAGE_TEXT = {
         description:{en:'Description',fr:'Description'},
         righticon:{en:'Right Icon',fr:'Icône de Droite'},
         lefticon:{en:'Left Icon',fr:'Icône Gauche'},
-        linkedwf:{en:'Linked Workflow',fr:'Tracé en lien'},
+        linkedwf:{en:'Linked Workflow',fr:'Plan de travail en lien'},
         tags:{en:'Outcomes',fr:'Résultats'},
         none:{en:'None',fr:'Aucun'},
         chooseone:{en:"Select a tag to add",fr:'Choisissez-en un à ajouter'},
         createnew:{en:"Create new ",fr:"Créer nouveau "},
-        insertdescription:{en:"Insert a description here.",fr:"Insérez la description ici."},
+        insertdescription:{en:"Insert a description here.",fr:"Insérer la description ici."},
         nameplaceholder:{en:"<Name>",fr:"<Nom>"}
     },
     workflowview:{
@@ -280,11 +285,12 @@ const LANGUAGE_TEXT = {
         jumpto:{en:"Jump To",fr:"Raccourcis"},
         strategiesheader:{en:"Strategies",fr:"Stratégies"},
         outcomesheader:{en:"Outcomes",fr:"Résultats"},
-        assignoutcome:{en:"Assign Outcome",fr:"Attribuer"},
-        nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun résultat a été ajouté! Utilisez les boutons ci-dessous pour en ajouter un."},
+        assignoutcome:{en:"Assign Outcome",fr:"Attribuer le résultat"},
+        nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun résultat n'a été ajouté! Utilisez les boutons ci-dessous pour en ajouter un."},
         selectset:{en:"Select set to add",fr:'Choisissez-en un à ajouter'},
         addcomment:{en:"Add Comment",fr:"Ajouter un commentaire"},
         edittitle:{en:"Edit Title",fr:"Modifier le titre"},
+        editauthor:{en:"Edit Author",fr:"Modifier l'auteur"},
         whatsthis:{en:"What's This?",fr:"Aide"},
         draganddrop:{en:"\A Drag and drop to add",fr:"\A Glisser-déplacer pour ajouter"}
     },
@@ -295,6 +301,7 @@ const LANGUAGE_TEXT = {
         complete:{en:"Complete",fr:"Complet"},
         incomplete:{en:"Incomplete",fr:"Incomplet"},
         partial:{en:"Partial",fr:"Partiel"},
+        addnode:{en:"Add Node",fr:"Adjouter un noeud"},
         displayheader:{en:"Display",fr:"Affichage"},
         sortbyheader:{en:"Sort By",fr:"Trier Par"},
         sortradio:{
@@ -304,8 +311,8 @@ const LANGUAGE_TEXT = {
         }
     },
     tag:{
-        deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce Résulat? Attention: cela supprimera tous les contenus et les supprimera de tous les tracé!"},
-        unassigntext:{en:"Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.",fr:"Annuler l'attribution de ce Résultat? Attention: cela ne supprimera PAS le Résultat, mais supprimera toutes les références à celui-ci du tracé."},
+        deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce Résulat? Attention: cela supprimera tous les contenus et les supprimera de tous les plans de travails!"},
+        unassigntext:{en:"Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.",fr:"Annuler l'attribution de ce Résultat? Attention: cela ne supprimera PAS le Résultat, mais supprimera toutes les références à celui-ci du plan de travail."},
         standard:{
             depth0:{en:"Program Outcome",fr:"Résultat de Programme"},
             depth1:{en:"Course Outcome",fr:"Résultat de Cours"},
@@ -417,7 +424,7 @@ const LANGUAGE_TEXT = {
         lefticon:{en:'Left Icon',fr:'Icône Gauche'},
         modifytext:{en:'Edit label',fr:"Modifier l'étiquette"},
         showhide:{en:"Show/Hide Description",fr:"Afficher/masquer la description"},
-        setlinkedwf:{en:"Set Linked WF",fr:"Tracé en lien"}
+        setlinkedwf:{en:"Set Linked WF",fr:"Spécifier le plan de travail lié"}
     },
     bracket:{
         delete:{en:"Delete Bracket",fr:"Supprimer cette stratégie"}
@@ -428,18 +435,18 @@ const LANGUAGE_TEXT = {
         show:{en:"Show",fr:"Afficher"}
     },
     confirm:{
-        navigate:{en:'Are you sure you want to navigate away?',fr:'Êtes-vous sûr de vouloir quitter?'},
-        newproject:{en:"Are you sure you want to continue? You will lose any unsaved work.",fr:"Êtes-vous sûr de vouloir continuer? Vous perdrez tout travail non enregistré."},
-        deleteworkflow:{en:"Delete this workflow? Warning: this will delete all contents (but not any workflows used by it)!",fr:"Supprimer ce tracé? Ceci supprimera tout le contenu."},
-        unassignworkflow:{en:"Unassign this workflow? Note: this will NOT delete the workflow, but WILL remove this reference to it from the parent workflow.",fr:"Annuler l'attribution de ce tracé? Cela ne supprimera PAS le tracé mais supprimera cette référence du parent."},
+        navigate:{en:'Are you sure you want to navigate away?',fr:"Êtes-vous sûr de vouloir quitter l'application?"},
+        newproject:{en:"Are you sure you want to continue? You will lose any unsaved work.",fr:"Êtes-vous sûr de vouloir continuer? Vous perdrez tout le travail non enregistré."},
+        deleteworkflow:{en:"Delete this workflow? Warning: this will delete all contents (but not any workflows used by it)!",fr:"Supprimer ce plan de travail? Ceci supprimera le contenu mais pas les plan de travail qu'il contient."},
+        unassignworkflow:{en:"Unassign this workflow? Note: this will NOT delete the workflow, but WILL remove this reference to it from the parent workflow.",fr:"Annuler l'attribution de ce plan de travail? Cela ne supprimera PAS le plan de travail mais supprimera cette référence de la source."},
         deletecolumn:{en:"Delete this column?",fr:"Supprimer cette colonne?"},
         deleteweek:{
-            week:{en:"Delete this week? Warning: this will delete any nodes still inside!",fr:"Supprimer cette semain? Attention: cela supprimera tous les nœuds encore à l'intérieur!"},
-            term:{en:"Delete this term? Warning: this will delete any nodes still inside!",fr:"Supprimer cette session? Attention: cela supprimera tous les nœuds encore à l'intérieur!"},
-            part:{en:"Delete this part? Warning: this will delete any nodes still inside!",fr:"Supprimer cette partie? Attention: cela supprimera tous les nœuds encore à l'intérieur!"}
+            week:{en:"Delete this week? Warning: this will delete any nodes still inside!",fr:"Supprimer cette semain? Attention: cela supprimera tous les noeuds encore à l'intérieur!"},
+            term:{en:"Delete this term? Warning: this will delete any nodes still inside!",fr:"Supprimer cette session? Attention: cela supprimera tous les noeuds encore à l'intérieur!"},
+            part:{en:"Delete this part? Warning: this will delete any nodes still inside!",fr:"Supprimer cette partie? Attention: cela supprimera tous les noeuds encore à l'intérieur!"}
         },
-        linkwf:{en:"This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?",fr:"Ce noeud a déjà des résultats qui lui sont attribuer. Voulez-vous les attribuer au tracé nouvellement lié?"},
-        unlinkwf:{en:"You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the node?",fr:"Vous avez dissocié un tracé d'un noeud avec des outcomes. Voulez-vous effacer les tracé du noeud?"},
+        linkwf:{en:"This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?",fr:"Ce noeud a déjà des résultats qui lui sont attribuer. Voulez-vous les attribuer au plan de travail nouvellement lié?"},
+        unlinkwf:{en:"You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the node?",fr:"Vous avez dissocié un plan de travail d'un noeud avec des résultats. Voulez-vous effacer les résultats du noeud?"},
         deletenode:{en:"Delete this node?",fr:"Supprimer ce noeud?"},
         deletecomment:{en:"Delete this comment?",fr:"Supprimer ce commentaire?"},
     },
@@ -455,10 +462,10 @@ const LANGUAGE_TEXT = {
         openoutcome:{en:"Oops! The outcome could not be opened.",fr:"Oups! Le résultat n'a pas pu être ouvert."},
         filesave:{en:"Oops! The file could not be saved.",fr:"Oups! Le fichier n'a pas pu être enregistré."},
         fileopen:{en:"Oops! The file could not be opened.",fr:"Oups! Impossible d'ouvrir le fichier."},
-        undo:{en:"Oops! Something went wrong with the undo function.",fr:"Oups! Quelque chose s'est mal passé avec la fonction d'annulation."},
-        redo:{en:"Oops! Something went wrong with the redo function.",fr:"Oups! Quelque chose s'est mal passé avec la fonction de rétablissement."},
-        wfopen:{en:"Oops! The workflow could not be opened.",fr:"Oups! Impossible d'ouvrir le tracé."},
-        printchrome:{en:"Warning: based on your browser, you may need to change your paper size (to A4) from the default when printing. Failing to do so can result in a blank page.",fr:"Avertissement: en fonction de votre navigateur, vous devrez peut-être modifier le format du papier (en A4) lors de l'impression. Si vous ne le faites pas, cela peut entraîner une page vierge."}
+        undo:{en:"Oops! Something went wrong with the undo function.",fr:"Oups! Il y a eu un problème lors de l'annulation de l'action."},
+        redo:{en:"Oops! Something went wrong with the redo function.",fr:"Oups! Il y a eu un problème lors du rétablissement de l'action."},
+        wfopen:{en:"Oops! The workflow could not be opened.",fr:"Oups! Impossible d'ouvrir le plan de travail."},
+        printchrome:{en:"Warning: based on your browser, you may need to change your paper size (to A4) from the default when printing. Failing to do so can result in a blank page.",fr:"Avertissement lié à votre navigateur: vous devez sélectionner le format A4 lors de l'impression. Si vous ne le faites pas, vous imprimerez une page blanche."}
         
     }
 }

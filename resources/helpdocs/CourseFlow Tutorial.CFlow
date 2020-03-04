@@ -1,0 +1,886 @@
+<project><prname>CourseFlow Tutorial</prname>
+<idnum>574</idnum>
+<terminologyset>standard</terminologyset>
+<workflow><wfname>Basic Activity Creation</wfname>
+<wfauthor>Jeremie Choquette</wfauthor>
+<wfid>31</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOCI</columnname>
+</column>
+<column><columnname>OOC</columnname>
+</column>
+<column><columnname>ICI</columnname>
+</column>
+<column><columnname>ICS</columnname>
+</column>
+<week><weekid>32</weekid>
+<node><name>Read me first!</name>
+<id>33</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>OOCI</column>
+<textHTML>&lt;p&gt;This activity will teach you the basics of creating activities.&lt;/p&gt;&lt;p&gt;To create an activity, we add nodes to it in order. This one has already been started, but let's add more nodes.&lt;/p&gt;&lt;p&gt;Hover over the node and click the (+) button to insert a new node below it. Then drag that node into a different column.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>154</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Read me second!</name>
+<id>34</id>
+<lefticon>solo</lefticon>
+<righticon>research</righticon>
+<column>OOC</column>
+<textHTML>&lt;p&gt;You can change the icons of this activity either by right clicking it or by clicking this node and using the edit menu. Try changing the icons.&lt;/p&gt;&lt;p&gt;The left hand icon gives the context in which a node takes place, while the right hand icon tells you which type of task is being completed.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>68</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Read me third!</name>
+<id>35</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Nodes can also be added by dragging them in from the bar that appears on the right hand side when you have nothing selected.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>70</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Further Reading: Nodes</name>
+<id>45</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Nodes can be collapsed and expanded to show/hide their descriptions, which can give you a more condensed view. Click the arrow at the bottom of this node to hide or show its text.&lt;/p&gt;&lt;p&gt;You can also collapse or expand all nodes on the page by going to the View menu and selecting Expand All or Collapse All.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>134</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Further Reading: Columns</name>
+<id>37</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;The columns above give categories to organize your nodes. Their order can be rearranged by dragging their icon horizontally. Right clicking the icon will give you some additional options.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>74</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Further Reading: Title and Author</name>
+<id>145</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;You can change the author and title of an activity by double clicking them at the top of the page. The title can also be changed by hovering over the activity in the left hand sidebar and clicking the edit button.&lt;/p&gt;&lt;p&gt;Change the title of this activity to "Completed" and change the author to your own name!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>144</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Using Learning Outcomes</wfname>
+<wfauthor>Jeremie Choquette</wfauthor>
+<wfid>10</wfid>
+<wftype>course</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>HW</columnname>
+</column>
+<column><columnname>AC</columnname>
+</column>
+<column><columnname>SA</columnname>
+</column>
+<week><weekid>11</weekid>
+<weekname>Adding Outcomes</weekname>
+<node><name>Adding Outcomes</name>
+<id>12</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;A few sets of outcomes have been created in this project but are not yet associated with any course. Let's change that.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>64</textheight>
+<isdropped>true</isdropped>
+<link><targetid>311</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Adding Outcomes 2</name>
+<id>311</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;In the right hand menu, use the dropdown under "Outcomes" to select the course outcome "Instructors are able to integrate outcomes into their courses". Then click "Assign Outcome".&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>74</textheight>
+<isdropped>true</isdropped>
+<link><targetid>312</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Adding Outcomes 3</name>
+<id>312</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;The outcome has now been added to this course workflow, signifying that this course in some way addresses that outcome.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>78</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>310</weekid>
+<weekname>Tagging Outcomes</weekname>
+<node><name>Tagging Outcomes</name>
+<id>305</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Now in the right hand sidebar, you should see the outcome set you've added.&lt;/p&gt;&lt;p&gt;We're going to tag the nodes, which represent the activities, with the outcomes they address. There are only two activity outcomes available.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>110</textheight>
+<isdropped>true</isdropped>
+<link><targetid>309</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Tagging Outcomes 2</name>
+<id>309</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Click and drag the outcomes to the relevant nodes. The first outcome should be dragged onto the first three nodes (which address it), and the second onto the last three nodes.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>84</textheight>
+<isdropped>true</isdropped>
+<link><targetid>313</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Tagging Outcomes 3</name>
+<id>313</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Notice that as you tag the nodes with the outcomes, indicators next to the outcomes change to show in which node type they have addressed. When they have been addressed in each column, these change to a check mark (ideally we address outcomes across the board, though this won't always be the case). And as we address the lower level outcomes, the higher level ones are also populated.&lt;/p&gt;&lt;p&gt;You can also click an outcome in the right hand bar to highlight all the nodes it is tagged in.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>154</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Introduction to Strategies</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>38</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOCI</columnname>
+</column>
+<column><columnname>OOC</columnname>
+</column>
+<column><columnname>ICI</columnname>
+</column>
+<column><columnname>ICS</columnname>
+</column>
+<week><weekid>39</weekid>
+<node><name>Identifying Strategies</name>
+<id>47</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>OOCI</column>
+<textHTML>&lt;p&gt;Strategies are used at the Activity level to denote known scripts. Each is documented in the &lt;a href="https://www.saltise.ca/strategies/" target="_blank"&gt;SALTISE resources&lt;/a&gt;. Click the link to see examples!&lt;/p&gt;&lt;p&gt;There are two ways to add a strategy. The first is to identify it based on the nodes you already have.&lt;/p&gt;&lt;p&gt;Click and drag a strategy from the sidebar and drop it directly onto this node.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>164</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Moving Strategies</name>
+<id>48</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>OOC</column>
+<textHTML>&lt;p&gt;The node above should now have a bracket around it to denote the strategy you chose. By clicking the bracket and resizing it vertically, you can make it stretch across this node as well!&lt;/p&gt;&lt;p&gt;When you move either of the nodes at the ends of the bracket, it will move with them.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>124</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Adding Full Strategies</name>
+<id>49</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;You might instead just want to add a complete strategy script all in one go. In that case, just drag and drop the strategy into the active area (the box containing the nodes) without dropping it on a node. The complete script will appear, and can then be editing as you desire. Try adding a Peer Instruction strategy below this node!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>114</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Advanced Styling</wfname>
+<wfauthor>Jeremie Choquette</wfauthor>
+<wfid>1</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>ICI</columnname>
+</column>
+<column><columnname>ICS</columnname>
+</column>
+<week><weekid>2</weekid>
+<node><name>Activity styles: simple and parts</name>
+<id>70</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;You might have noticed this activity is divided into Parts. There are two styles, Simple and Parts. The Parts divide an activity and work just like the weeks at the course level. Rename this part from Part 1 to "Our First Lesson" by right clicking or double clicking it.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Adding Custom Columns</name>
+<id>58</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Sometimes none of the existing columns really "fit" what you're trying to do. Add a custom column by dragging the "New Custom" node from the right hand sidebar.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>74</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Styling Custom Columns</name>
+<id>5</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Drag this node into your newly created custom column.&lt;/p&gt;&lt;p&gt;You can right click the column heading above to change the icon, text, or even the colour of the nodes within it! Make your custom column a good colour that will contrast with the text.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>54</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Deleting Links</name>
+<id>6</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;You can delete the default link between nodes. To do so, right click the link and click delete. Delete the link between this node and the next one.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>74</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>3</weekid>
+<node><name>Adding Custom Links</name>
+<id>7</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;You can create your own links between nodes. To do so, hover over this node, and click and drag from one of the small open circles (left, right, and bottom). Then connect it to the node below.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>84</textheight>
+<isdropped>true</isdropped>
+<noautolink>true</noautolink>
+<tagARRAY/>
+</node>
+<node><name>Styling a Link</name>
+<id>8</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Now that you've created a custom (non-default) link, you can style it by right clicking it. You can add text or make it dashed. Make the link you made dashed, and add the text "If we have time"&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+<simpletoggled>true</simpletoggled>
+</wfdata></workflow>
+<workflow><wfname>Basic Course Creation</wfname>
+<wfauthor>Jeremie Choquette</wfauthor>
+<wfid>148</wfid>
+<wftype>course</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>HW</columnname>
+</column>
+<column><columnname>AC</columnname>
+</column>
+<column><columnname>SA</columnname>
+</column>
+<week><weekid>149</weekid>
+<node><name>Creating a Course</name>
+<id>196</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;A course is typically made up of preparation, lessons, and assessments. Each of these might be rather simple, or might be a more detailed activity worthy of its own workflow.&lt;/p&gt;&lt;p&gt;Add a Lesson node below this one by dragging and dropping it from the right hand side.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>114</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>289</weekid>
+<node><name>Links</name>
+<id>290</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;You can add links between nodes to show the flow of information or related concepts, or to show dependencies (preparation for a lesson should definitely come before the lesson).&lt;/p&gt;&lt;p&gt;Hover over this node and click the open circles that appear, then drag the link to the node "Modifying Weeks". You can style the link or add text through its right-click menu.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>267</weekid>
+<node><name>Weeks</name>
+<id>268</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Courses are split up week by week. Add another week below this one by hovering over the week box and clicking the (+).&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>74</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Modifying Weeks</name>
+<id>269</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;You can delete, duplicate, or modify weeks. A common reason to modify the text is because some instructors think in terms of topics more naturally than weeks. Right click this week then click "Edit Label" and enter the topic "Working with Weeks".&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>114</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>270</weekid>
+<node><name>Columns</name>
+<id>271</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;By Default, the columns in your course workflow are those shown. However you'll notice that the orange column is shown in the nodes in the right hand toolbar, but not here. Drag a node of this type into this week to automatically add the column.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>114</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Deleting Columns</name>
+<id>288</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;You can also delete any columns you add using the right click menu. Delete the column you just added. Notice the node moves into another column rather than being deleted.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>The Course Outcomes View</wfname>
+<wfauthor>Jeremie Choquette</wfauthor>
+<wfid>330</wfid>
+<wftype>course</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY>207,203</tagsetARRAY>
+<wfdata><column><columnname>HW</columnname>
+</column>
+<column><columnname>AC</columnname>
+</column>
+<column><columnname>SA</columnname>
+</column>
+<week><weekid>331</weekid>
+<node><name>Preparation: The Outcomes View</name>
+<id>332</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;This course already has outcomes attached to it. We're going to use it to look at a more outcomes-focused view of courses.&lt;/p&gt;&lt;p&gt;There are different terminologies available for outcomes. The standard is Program Outcome &amp;gt; Course Outcome &amp;gt; Activity Outcome, but in CEGEPS these become Competency &amp;gt; Element of Competency &amp;gt; Learning Outcome. If you prefer the latter, use View -&amp;gt; Terminology -&amp;gt; CEGEP to toggle it.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>184</textheight>
+<isdropped>true</isdropped>
+<link><targetid>333</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Switching to the outcomes view</name>
+<id>333</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;To switch to the outcomes view, you'll go View-&amp;gt; Outcomes View in the menu. Before doing so, note: you will no longer be able to see these descriptions, but will be able to see them in the node editing menu by clicking the nodes. When you first open the outcomes view, all you will see is the Assessment nodes.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>124</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Click on me in Outcomes View</name>
+<id>334</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;This is the outcomes view! You can see there is less focus on the timelike flow of information, and more on the outcomes.&lt;/p&gt;&lt;p&gt;The table you see shows categories of nodes on the horizontal axis, and outcomes on the vertical. The table cells tell you where the outcome is addressed, and the totals column show you the total for a category.&lt;/p&gt;&lt;p&gt;Now, click on the node "Tagging and untagging".&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>214</tagARRAY>
+</node>
+<node><name>Tagging/Untagging</name>
+<id>347</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;You can tag or untag outcomes in this view as well. Just mouse over the intersection of this node with the outcome "Instructors are able to add and remove tagged outcomes in the outcomes view" and click the check box to tag it.&lt;/p&gt;&lt;p&gt;Notice you are given a green check mark to show the outcome was addressed. The total and grand total column now also show this outcome was addressed. An empty green circle has appeared in the higher level outcome to show it has been PARTIALLY addressed. And in the "total" column, we see that the higher level outcome is completely addressed, because we have addressed all its sub-outcomes.&lt;/p&gt;&lt;p&gt;Now click the node "Edit Nodes".&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>359</weekid>
+<node><name>Edit Nodes</name>
+<id>348</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;You can still add and edit nodes in this view. Hover over the above category (Formative) and you'll see an icon appear allowing you to add a node to it. Then, click on the node and change its left icon from Formative to Summative. It will automatically change categories.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>215</tagARRAY>
+</node>
+</week>
+<week><weekid>360</weekid>
+<node><name>Click Me Last</name>
+<id>349</id>
+<lefticon>exam</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;You can also, using the right hand panel (upon unselecting this node), change which types of nodes are displayed and the way in which they are categorized. Change the view so that all the nodes are displayed, and sort by week, and you should see a new node pop up that says "Now Click Me!"&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Now Click me!</name>
+<id>350</id>
+<lefticon>exam</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;You can rearrange nodes by clicking and dragging them. This can also be used to change their category. Just keep in mind that rearranging them also impacts the standard view. Click and drag this node all the way to the first position, then go View-&amp;gt; Toggle Outcome View to see the effect.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Basic Program Creation</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>249</wfid>
+<wftype>program</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>CUS1</columnname>
+<columnimage>other</columnimage>
+<columncolour>#369934</columncolour>
+<columntext>Course Category 1</columntext>
+<columnnodetext>Course Category 1</columnnodetext>
+</column>
+<column><columnname>CUS2</columnname>
+<columnimage>other</columnimage>
+<columncolour>#369934</columncolour>
+<columntext>Course Category 2</columntext>
+<columnnodetext>Course Category 2</columnnodetext>
+</column>
+<column><columnname>CUS3</columnname>
+<columnimage>other</columnimage>
+<columncolour>#369934</columncolour>
+<columntext>Course Category 3</columntext>
+<columnnodetext>Course Category 3</columnnodetext>
+</column>
+<week><weekid>250</weekid>
+<node><name>Adding/Removing Course Nodes</name>
+<id>251</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;At the program level, these nodes represent courses. Add and remove them as you would a course or activity node. Add a new program node below this one!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Using Terms</name>
+<id>252</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Unlike at the other levels, course nodes can sit side by side, since a program's term takes place all at once.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Adding Terms</name>
+<id>253</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;You can still re-order and move nodes as usual. Time is split into terms rather than weeks, but these otherwise act a lot like the weeks at the course level. Use the (+) button in this term to add a new one below. Double click it to rename it "Maybe I'd rather call these terms years".&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>158</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Course Categories</name>
+<id>254</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;Courses are organized into categories, and you can add as many of these as you want. They help you organize similarly-themed courses (for example all the Math or English courses in a program might be grouped).&lt;/p&gt;&lt;p&gt;You can right click the column icon to change the icon, text, or even the colour.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>184</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>255</weekid>
+<node><name>Prerequisites</name>
+<id>256</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Creating links between the courses (by hovering then dragging from the small open circles) can show prerequisites, and help demonstrate the logical flow of the program. &lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Linking Courses</name>
+<id>264</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;You can link a course workflow to one of the course nodes by either right clicking it and selecting Set Active WF or through the edit menu.&lt;/p&gt;&lt;p&gt;Link the course "Basic Course Creation" to this node. You can now double click this node to go directly to the course, and it now appears under this course in the left hand panel!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>84</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Advanced Program Creation</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>501</wfid>
+<wftype>program</wftype>
+<usedwfARRAY>521</usedwfARRAY>
+<tagsetARRAY>218</tagsetARRAY>
+<wfdata><column><columnname>CUS1</columnname>
+<columnimage>home</columnimage>
+<columncolour>#76319b</columncolour>
+<columntext>First Steps</columntext>
+<columnnodetext>First Steps</columnnodetext>
+</column>
+<column><columnname>CUS2</columnname>
+<columnimage>instructor</columnimage>
+<columncolour>#32499a</columncolour>
+<columntext>Tagging and Untagging</columntext>
+<columnnodetext>Tagging and Untagging</columnnodetext>
+</column>
+<column><columnname>CUS3</columnname>
+<columnimage>assessment</columnimage>
+<columncolour>#369934</columncolour>
+<columntext>Checking the Results</columntext>
+<columnnodetext>Checking the Results</columnnodetext>
+</column>
+<week><weekid>502</weekid>
+<node><name>Assigning outcome sets</name>
+<id>503</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Here we'll deal with adding outcomes to a program and adding them to it in the Outcomes view.&lt;/p&gt;&lt;p&gt;There are different terminologies available for outcomes. The standard is Program Outcome &amp;gt; Course Outcome &amp;gt; Activity Outcome, but in CEGEPS these become Competency &amp;gt; Element of Competency &amp;gt; Learning Outcome. If you prefer the latter, use View -&amp;gt; Terminology -&amp;gt; CEGEP to toggle it.&lt;/p&gt;&lt;p&gt;In the drop down menu in the right hand panel, select the remaining two program level outcomes and click "Assign outcome". Our program now has three outcome sets, including the one that was already added.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>314</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Tagging Outcomes</name>
+<id>504</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Your outcomes should now appear in the right hand panel. They, and their sub-levels, can be added to nodes in this program by dragging and dropping them onto the nodes. The indicators next to the outcomes show in which columns they have been used. Drag and drop the outcome "Instructors are able to add and use outcomes in their program" to this node.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>184</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Visualizing Outcomes</name>
+<id>519</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;You'll see that a small indicator has popped up next to the outcome you just tagged. You can also hover over it or to highlight the courses that address it, or click it to toggle the highlighting on and off.&lt;/p&gt;&lt;p&gt;NOTE: If a course workflow is linked to a node that you have just tagged with an outcome, that course will automatically have that outcome assigned to it. Tag this node with the same outcome, the double click it to see the linked course workflow.&lt;/p&gt;</textHTML>
+<linkedwf>521</linkedwf>
+<textheight>234</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>520</weekid>
+<node><name>Outcomes View</name>
+<id>530</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Now let's have a look at the Outcomes View. Just showing our programs and the terms they are in isn't very useful for most people, it's more useful to see explicitly how outcomes are addressed and developed throughout the program. You can open this by clicking View -&amp;gt; Toggle Outcomes View. You will no longer be able to see these descriptions on the nodes, but you can click the nodes to see the description in the edit menu. Once you've switched modes, click the node "Click me after switching views".&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>274</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Click me after switching views!</name>
+<id>531</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;You're now in an outcomes-based view, which focuses on the outcomes rather than the flow of time. By default, at the program level, nodes are organized into terms and all categories of courses are visible, however you can use the right hand panel (after deselecting this node) to hide categories and change their sorting. Hide all the First Steps nodes by unselecting the box.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Click me after hiding the "First Steps" nodes</name>
+<id>532</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Since the focus here is on outcomes, we have made it easy to add or remove them. At the intersection of this node and "Instructors are able to use the outcomes view to modify their program", hover over the table cell and click the checkbox to add the outcome.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Click me after tagging an outcome in the outcomes view.</name>
+<id>534</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;You can see that a green check mark has appeared to denote that the outcome is addressed in that course. Additionally, the outcome is now shown as addressed in the total column for this category as well as the grand total column. An open circle has appeared for the top-level outcome showing it is partially addressed (because one of its sub-outcomes is addressed). &lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>164</textheight>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>535</weekid>
+<node><name>Click me last!</name>
+<id>533</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;You can also add nodes and move them around in this view. Hover over the term for this node and you'll see a button appear to create a node in the category. Do so, then click and drag it into the first term. Then switch back to the standard view (View-&amp;gt; Toggle Outcomes View) and you'll see your change reflected there. In fact, most changes can be made directly in the outcomes view!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Advanced Program Creation Course</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>521</wfid>
+<wftype>course</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>HW</columnname>
+</column>
+<column><columnname>AC</columnname>
+</column>
+<column><columnname>SA</columnname>
+</column>
+<week><weekid>522</weekid>
+<node><name>Info</name>
+<id>523</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;This "course" is used as an example linked workflow in the "Advanced Program Creation" section. &lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>64</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Automatic Assigning of Outcomes</name>
+<id>524</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;If you've followed the instructions correctly, in the right hand side panel you should see the outcome available, even though it was never directly assigned to this course workflow.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<tag><tagname>Instructors are able to use CourseFlow to design and implement their courses.</tagname>
+<tagid>201</tagid>
+<tag><tagname>Instructors are able to create a basic course level workflow</tagname>
+<tagid>202</tagid>
+<tag><tagname>Instructors are able to add and delete nodes in a course level workflow</tagname>
+<tagid>204</tagid>
+</tag>
+<tag><tagname>Instructors are able to create, modify, and delete links</tagname>
+<tagid>208</tagid>
+</tag>
+<tag><tagname>Instructors are able to add, delete, and modify weeks</tagname>
+<tagid>206</tagid>
+</tag>
+<tag><tagname>Instructors are able to add, delete, and modify columns</tagname>
+<tagid>205</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors understand the relationship between activity and course workflows</tagname>
+<tagid>211</tagid>
+<tag><tagname>Instructors are able to link/unlink an activity workflow from their course</tagname>
+<tagid>212</tagid>
+</tag>
+<tag><tagname>Instructors are able to navigate to a linked activity workflow</tagname>
+<tagid>213</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to integrate learning outcomes into their course</tagname>
+<tagid>207</tagid>
+<tag><tagname>Instructors are able to add sets of outcomes to their course</tagname>
+<tagid>209</tagid>
+</tag>
+<tag><tagname>Instructors are able to tag/untag outcomes from nodes</tagname>
+<tagid>210</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors understand the outcomes view of a course and its relationship to the standard view</tagname>
+<tagid>203</tagid>
+<tag><tagname>Instructors are able to toggle between the outcomes view and the standard view</tagname>
+<tagid>214</tagid>
+</tag>
+<tag><tagname>Instructors are able to add and remove tagged outcomes in the outcomes view</tagname>
+<tagid>216</tagid>
+</tag>
+<tag><tagname>Instructors are able to edit nodes in the outcomes view</tagname>
+<tagid>215</tagid>
+</tag>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to use CourseFlow to design and implement an Activity</tagname>
+<tagid>217</tagid>
+<tag><tagname>Instructors are able to create a basic activity</tagname>
+<tagid>219</tagid>
+<tag><tagname>Instructors are able to add/remove nodes</tagname>
+<tagid>222</tagid>
+</tag>
+<tag><tagname>Instructors are able to move and modify nodes</tagname>
+<tagid>223</tagid>
+</tag>
+<tag><tagname>Instructors are able to move and modify columns</tagname>
+<tagid>224</tagid>
+</tag>
+<tag><tagname>Instructors are able to edit the title and author of an activity</tagname>
+<tagid>236</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to use and modify strategies within a workflow</tagname>
+<tagid>220</tagid>
+<tag><tagname>Instructors are able to add a strategy to existing nodes</tagname>
+<tagid>225</tagid>
+</tag>
+<tag><tagname>Instructors are able to add a complete script to a workflow</tagname>
+<tagid>226</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to use advanced activity features</tagname>
+<tagid>221</tagid>
+<tag><tagname>Instructors are able to style and customize custom columns</tagname>
+<tagid>227</tagid>
+</tag>
+<tag><tagname>Instructors are able to create, delete, and style links</tagname>
+<tagid>228</tagid>
+</tag>
+<tag><tagname>Instructors are able to toggle between Simple style and Parts</tagname>
+<tagid>237</tagid>
+</tag>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to use CourseFlow to design and navigate a Program</tagname>
+<tagid>218</tagid>
+<tag><tagname>Instructors are able to create a basic program logigram</tagname>
+<tagid>238</tagid>
+<tag><tagname>Instructors are able to add/remove/modify nodes</tagname>
+<tagid>244</tagid>
+</tag>
+<tag><tagname>Instructors are able to add/remove/modify terms</tagname>
+<tagid>245</tagid>
+</tag>
+<tag><tagname>Instructors are able to add links to show prerequisites</tagname>
+<tagid>246</tagid>
+</tag>
+<tag><tagname>Instructors are able to add and modify course categories</tagname>
+<tagid>247</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to add and use outcomes in their program</tagname>
+<tagid>239</tagid>
+<tag><tagname>Instructors are able to add outcome sets</tagname>
+<tagid>241</tagid>
+</tag>
+<tag><tagname>Instructors are able to tag/untag outcomes</tagname>
+<tagid>248</tagid>
+</tag>
+</tag>
+<tag><tagname>Instructors are able to use the outcomes view to modify their program</tagname>
+<tagid>240</tagid>
+<tag><tagname>Instructors are able to toggle between outcome view and standard</tagname>
+<tagid>242</tagid>
+</tag>
+<tag><tagname>Instructors are able to modify their program within the outcomes view</tagname>
+<tagid>243</tagid>
+</tag>
+</tag>
+</tag>
+</project>

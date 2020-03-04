@@ -71,6 +71,21 @@ class WFComment{
         if(this.view)this.view.deleted();
     }
     
+    populateMenu(menu){
+        var p = this.wf.project;
+        var comment = this;
+        menu.addItem(LANGUAGE_TEXT.comment.show[USER_LANGUAGE], 'resources/images/view24.png', function(){
+            if(comment.view)comment.view.show();
+        });
+        menu.addItem(LANGUAGE_TEXT.comment.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecomment[USER_LANGUAGE])){
+                comment.deleteSelf();
+                comment.wf.makeUndo("Delete Comment",comment);
+            }
+        }); menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            p.showHelp('commenthelp.html');
+        });
+    }
     
     
 }

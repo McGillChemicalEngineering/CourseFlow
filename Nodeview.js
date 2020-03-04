@@ -45,7 +45,7 @@ class Nodeview{
         var left = 0;
         if(this.addRightIcon()){width-=this.righticonnode.w()+2*defaultIconPadding;}
         if(this.addLeftIcon()){left+=this.lefticonnode.w()+2*defaultIconPadding;width-=this.lefticonnode.w()+2*defaultIconPadding;}
-        var name = 'Click to edit';
+        var name = LANGUAGE_TEXT.node.defaulttext[USER_LANGUAGE];
         if(this.node.name)name=this.node.name;
         this.namenode = this.graph.insertVertex(this.vertex,null,name,left,0,width,minCellHeight,defaultNameStyle);
         var node = this.node;
@@ -196,6 +196,11 @@ class Nodeview{
         
     }
     
+    insertBelow(node){
+        node.view = new this.constructor(this.graph,node);
+        node.view.insertedBelow(this.node);
+    }
+    
     insertedBelow(node){
         this.createVertex(node.view.vertex.x(),node.view.vertex.y());
     }
@@ -331,66 +336,12 @@ class Nodeview{
     
     
     populateMenu(menu){
-        var graph = this.graph;
-        var p = this.node.wf.project;
         var node=this.node;
-        this.populateIconMenu(menu,node.getLeftIconList(),"Left");
-        this.populateIconMenu(menu,node.getRightIconList(),"Right");
-        menu.addItem(LANGUAGE_TEXT.node.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
-				graph.startEditingAtCell(node.view.namenode);
-        });
         menu.addItem(LANGUAGE_TEXT.node.showhide[USER_LANGUAGE],'resources/images/view24.png',function(){node.toggleDropDown();});
-        if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow','resources/images/enterlinked24.png',function(){
-            var linkedWF = node.linkedWF;
-            if(linkedWF!=null)p.changeActive(p.getWFByID(linkedWF));
-        });
-        this.populateLinkedWFMenu(menu,node.getLinkedWFList());
-        menu.addItem(LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){
-           node.duplicateNode(); 
-        });
-        menu.addItem(LANGUAGE_TEXT.node.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
-            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
-                graph.clearSelection();
-                node.deleteSelf();
-                node.wf.makeUndo("Delete Node",node);
-            }
-        });
+        node.populateMenu(menu);
     }
     
-    populateIconMenu(menu,iconArray,icon){
-        var text;
-        if(icon=="Left")text = LANGUAGE_TEXT.node.lefticon[USER_LANGUAGE];
-        else if(icon=="Right")text = LANGUAGE_TEXT.node.righticon[USER_LANGUAGE];
-        var node = this.node;
-        if(iconArray==null||iconArray.length==0)return;
-        var sub = menu.addItem(text,'resources/images/'+icon.toLowerCase()+'icon24.png');
-        for(var i=0;i<iconArray.length;i++){
-            var tempfunc = function(value){
-                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
-                    node.setIcon(value.value,icon.toLowerCase());
-                },sub);
-            }
-            tempfunc(iconArray[i]);
-        }
-    }
     
-    populateLinkedWFMenu(menu,WFArray){
-        var node = this.node;
-        if(WFArray==null)return;
-        var sub = menu.addItem(LANGUAGE_TEXT.node.setlinkedwf[USER_LANGUAGE],'resources/images/plusblack24.png');
-        menu.addItem("None",'',function(){node.setLinkedWF("");},sub)
-        for(var i=0;i<WFArray.length;i++){
-            var tempfunc = function(value){
-                menu.addItem(value[0],'',function(){
-                    node.setLinkedWF(value[1]);
-                },sub);
-            }
-            tempfunc(WFArray[i]);
-        }
-        menu.addItem(LANGUAGE_TEXT.editbar.createnew[USER_LANGUAGE]+" "+node.getAcceptedWorkflowType(),'',function(){
-            node.setLinkedWF("NEW_"+node.getAcceptedWorkflowType());
-        },sub);
-    }
     
     fixedLinkAdded(link,edge){
         link.view = new WFLinkview(this.graph,link);
@@ -402,6 +353,9 @@ class Nodeview{
         if(link.id)link.view.addDelOverlay();
     }
     
+    startTitleEdit(){
+        this.graph.startEditingAtCell(this.namenode);
+    }
     
     
 

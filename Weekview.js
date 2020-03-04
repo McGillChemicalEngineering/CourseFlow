@@ -332,8 +332,6 @@ class Weekview{
         this.graph.removeCells([this.vertex]);
         //pull everything upward
         if(this.week.index<this.week.wf.weeks.length)this.week.wf.view.pushWeeksFast(this.week.index);
-        //if we deleted all the weeks, better make a fresh one!
-        if(this.week.wf.weeks.length==0)this.week.wf.createBaseWeek(this.graph);
         this.week.wf.view.populateWeekBar();
     }
     
@@ -371,16 +369,7 @@ class Weekview{
         menu.addItem(LANGUAGE_TEXT.week.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
             graph.startEditingAtCell(week.view.vertex);
         });
-        menu.addItem(LANGUAGE_TEXT.week.duplicate[week.getType()][USER_LANGUAGE],'resources/images/copy24.png',function(){
-            week.duplicateWeek(); 
-        });
-        menu.addItem(LANGUAGE_TEXT.week.delete[week.getType()][USER_LANGUAGE],'resources/images/delrect24.png',function(){
-            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[week.getType()][USER_LANGUAGE])){
-                graph.clearSelection();
-                week.deleteSelf();
-                week.wf.makeUndo("Delete Week",week);
-            }
-        });
+        week.populateMenu(menu);
     }
     
     
@@ -398,6 +387,7 @@ class Weekview{
         }
     }
     
+    
 
 }
 
@@ -412,20 +402,12 @@ class WFAreaview extends Weekview{
     
     addMinimizeOverlay(){if(!this.week.wf.isSimple)super.addMinimizeOverlay();}
     
-    
     populateMenu(menu){
-        var week = this.week;
-        if(!this.week.wf.isSimple){
-            super.populateMenu(menu);
-        }
-        var sub = menu.addItem(LANGUAGE_TEXT.week.options[USER_LANGUAGE],'resources/images/weekstyle24.png');
-        menu.addItem(LANGUAGE_TEXT.week.simple[USER_LANGUAGE],'resources/images/weekstylesimple24.png',function(){
-            week.wf.toggleSimple(true);
-        },sub);
-        menu.addItem(LANGUAGE_TEXT.week.parts[USER_LANGUAGE],'resources/images/weekstyleparts24.png',function(){
-            week.wf.toggleSimple(false);
-        },sub);
+        var week=this.week;
+        week.populateMenu(menu);
     }
+    
+    
     
 }
 

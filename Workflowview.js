@@ -92,7 +92,12 @@ class Workflowview{
         
         var wfview = this;
         // Installs a popupmenu handler.
-        if(!this.wf.project.readOnly)graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){return wfview.createPopupMenu(menu, cell, evt);};
+        if(!this.wf.project.readOnly)graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){
+            if(evt.ctrlKey)return;
+            return wfview.createPopupMenu(menu, cell, evt);
+        };
+        this.container.contextItem={dummyObject:true};
+        document.body.contextItem = this.wf;
         
         $("#expand").removeClass("disabled");
         $("#collapse").removeClass("disabled");
@@ -155,6 +160,8 @@ class Workflowview{
         if(this.nodeBarDiv)this.nodeBarDiv.style.display="none";
         if(this.colFloat)this.colFloat.parentElement.parentElement.removeChild(this.colFloat.parentElement);
         if(this.graph!=null)this.graph.destroy();
+        this.container.contextItem=null;
+        document.body.contextItem = this.wf.project;
         
         
         $("#expand").addClass("disabled");
@@ -229,18 +236,12 @@ class Workflowview{
         col.view.pos = wfStartX+cellSpacing+defaultCellWidth/2+i*(defaultCellWidth-2*cellSpacing);
         col.view.createVertex();
         col.view.updatePosition();
-        if(this.nodeBarDiv!=null&&name.substr(0,3)=='CUS')this.populateNodeBar();
+        if(this.nodeBarDiv!=null&&col.name.substr(0,3)=='CUS')this.populateNodeBar();
         this.updateWeekWidths();
     }
     
     columnRemoved(col){
-        var index = this.wf.columns.indexOf(col);
-        if(index==0)index++;
-        for(var i=this.wf.columns.length-1;i>=index;i--){
-            this.wf.columns[i].view.pos=this.wf.columns[i-1].view.pos;
-            this.wf.columns[i].view.updatePosition();
-        }
-        this.updateWeekWidths();
+        this.positionColumns();
         for(var i=0;i<this.wf.brackets.length;i++){
             var bv = this.wf.brackets[i].view;
             if(bv)bv.updateHorizontal();
@@ -279,6 +280,9 @@ class Workflowview{
         this.populateWeekBar();
     }
     
+    
+    weekDeleted(){}
+    
     pushWeeks(startIndex){
         var weeks = this.wf.weeks;
         //this should never start at 0, the top week should not be moved
@@ -299,6 +303,9 @@ class Workflowview{
             if(weeks[i].view)weeks[i].view.vertex.resize(this.graph,this.weekWidth-oldWidth,0);
         }
         if(weeks[0].view)this.graph.moveCells([this.authorNode],weeks[0].view.vertex.r()-this.authorNode.r());
+        for(var i=0;i<this.wf.brackets.length;i++){
+            if(this.wf.brackets[i].view)this.wf.brackets[i].view.updateHorizontal();
+        }
     }
     
     weekIndexUpdated(week){ 
@@ -412,7 +419,7 @@ class Workflowview{
         if(this.wf.project.readOnly)container.parentElement.style.display="none";
         else container.parentElement.style.display="inline";
         while(container.firstChild)container.removeChild(container.firstChild);
-        makeResizable(container.parentElement,"left");
+        if(container.nextElementSibling==null||!container.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(container.parentElement,"left");
         this.generateNodeBar(container);
         if(this.wf instanceof Courseflow || this.wf instanceof Programflow)this.generateWeekBar(container);
         this.generateBracketBar(container);
@@ -826,13 +833,10 @@ class Workflowview{
             else if (cell.isComment)cell.comment.view.populateMenu(menu);
             else if (cell.isBracket)cell.bracket.view.populateMenu(menu);
             else if (cell.isLink)cell.link.view.populateMenu(menu);
-            else if (cell.isTitle)menu.addItem(LANGUAGE_TEXT.workflowview.edittitle[USER_LANGUAGE],'resources/images/text24.png',function(){
-                graph.startEditingAtCell(cell);
-            });
-        }
-        menu.addSeparator();
+            else this.populateMenu(menu);
+        }else this.populateMenu(menu);
 
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        /*menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
             if(cell==null){
                 if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
                 else if (wf instanceof Courseflow)wf.project.showHelp("coursehelp.html");
@@ -853,6 +857,17 @@ class Workflowview{
             }else{
                 wf.project.showHelp("help.html");
             }
+        });*/
+    }
+    
+    populateMenu(menu){
+       var wfv = this;
+        var graph = this.graph;
+        menu.addItem(LANGUAGE_TEXT.workflowview.edittitle[USER_LANGUAGE],'resources/images/text24.png',function(){
+            graph.startEditingAtCell(wfv.titleNode);
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],'resources/images/text24.png',function(){
+            graph.startEditingAtCell(wfv.authorNode);
         });
     }
     
@@ -899,7 +914,7 @@ class Workflowview{
         var outln = new mxOutline(graph, minimap);
         
         var ebContainer = document.getElementById('ebWrapper');
-        makeResizable(ebContainer.parentElement,"left");
+        if(ebContainer.nextElementSibling==null||!ebContainer.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(ebContainer.parentElement,"left");
         //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
         ebContainer.parentElement.style.zIndex='3';
         ebContainer.parentElement.style.width = '400px';
@@ -936,7 +951,8 @@ class Workflowview{
         //expand menus on hover
         graph.popupMenuHandler.autoExpand = true;
         //disable regular popup
-        mxEvent.disableContextMenu(this.container);
+        //mxEvent.disableContextMenu(this.container);
+        
         
         
         //Disable cell movement associated with user events
@@ -1122,6 +1138,7 @@ class Workflowview{
             this.stopEditing(false);
             editbar.disable();
             wfv.showColFloat(true);
+            $("body>.mxPopupMenu").remove();
             mxGraph.prototype.clearSelection.apply(this,arguments);
         }
         

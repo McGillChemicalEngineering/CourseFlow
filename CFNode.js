@@ -263,8 +263,7 @@ class CFNode {
     insertBelow(){
         var node = this.wf.createNodeOfType(this.column);
         if(this.view){
-            node.view = new this.view.constructor(this.view.graph,node);
-            node.view.insertedBelow(this);
+            this.view.insertBelow(node);
         }
         if(this.wf.view)this.wf.view.bringCommentsToFront();
         node.setColumn(this.column);
@@ -280,13 +279,13 @@ class CFNode {
         node.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
         if(node.linkedWF!=null)node.linkedWF=null;
         if(this.view){
-            node.view = new this.view.constructor(this.view.graph,node);
-            node.view.insertedBelow(this);
+            this.view.insertBelow(node);
             node.view.columnUpdated();
-            node.view.fillTags();
+            if(node.view.fillTags)node.view.fillTags();
         }
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
         this.wf.makeUndo("Add Node",node);
+        if(node.view.categoryChanged)node.view.categoryChanged();
     }
     
     getVertexStyle(){return '';}
@@ -401,6 +400,73 @@ class CFNode {
                 if(allID.indexOf(wf.tagSets[i].id)>=0&&this.tags.indexOf(wf.tagSets[i])<0)this.addTag(wf.tagSets[i],false,false);
             }
         }
+    }
+    
+    populateMenu(menu){
+        var node = this;
+        var p = this.wf.project;
+        
+        
+        menu.addItem(LANGUAGE_TEXT.node.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
+            if(node.view)node.view.startTitleEdit();
+        });
+        
+        this.populateIconMenu(menu,node.getLeftIconList(),"Left");
+        this.populateIconMenu(menu,node.getRightIconList(),"Right");
+        
+        if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow','resources/images/enterlinked24.png',function(){
+            var linkedWF = node.linkedWF;
+            if(linkedWF!=null)p.changeActive(p.getWFByID(linkedWF));
+        });
+        this.populateLinkedWFMenu(menu,node.getLinkedWFList());
+        menu.addItem(LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){
+           node.duplicateNode(); 
+        });
+        menu.addItem(LANGUAGE_TEXT.node.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
+                node.deleteSelf();
+                node.wf.makeUndo("Delete Node",node);
+            }
+        });
+        
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            p.showHelp('nodehelp.html');
+        });
+    }
+    
+    populateIconMenu(menu,iconArray,icon){
+        var node = this;
+        var text;
+        if(icon=="Left")text = LANGUAGE_TEXT.node.lefticon[USER_LANGUAGE];
+        else if(icon=="Right")text = LANGUAGE_TEXT.node.righticon[USER_LANGUAGE];
+        if(iconArray==null||iconArray.length==0)return;
+        var sub = menu.addItem(text,'resources/images/'+icon.toLowerCase()+'icon24.png');
+        for(var i=0;i<iconArray.length;i++){
+            var tempfunc = function(value){
+                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
+                    node.setIcon(value.value,icon.toLowerCase());
+                },sub);
+            }
+            tempfunc(iconArray[i]);
+        }
+    }
+    
+    populateLinkedWFMenu(menu,WFArray){
+        var node = this;
+        if(WFArray==null)return;
+        var sub = menu.addItem(LANGUAGE_TEXT.node.setlinkedwf[USER_LANGUAGE],'resources/images/plusblack24.png');
+        menu.addItem("None",'',function(){node.setLinkedWF("");},sub)
+        for(var i=0;i<WFArray.length;i++){
+            var tempfunc = function(value){
+                menu.addItem(value[0],'',function(){
+                    node.setLinkedWF(value[1]);
+                },sub);
+            }
+            tempfunc(WFArray[i]);
+        }
+        menu.addItem(LANGUAGE_TEXT.editbar.createnew[USER_LANGUAGE]+" "+node.getAcceptedWorkflowType(),'',function(){
+            node.setLinkedWF("NEW_"+node.getAcceptedWorkflowType());
+        },sub);
     }
     
 }

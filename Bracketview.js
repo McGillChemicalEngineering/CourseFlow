@@ -107,13 +107,7 @@ class Bracketview{
     
     
     populateMenu(menu){
-        var graph = this.graph;
-        var bracket=this.bracket;
-        menu.addItem(LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
-            graph.clearSelection();
-            bracket.deleteSelf();
-            bracket.wf.makeUndo("Delete Bracket",bracket);
-        });
+        this.bracket.populateMenu(menu);
     }
     
     

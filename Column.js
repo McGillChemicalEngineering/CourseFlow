@@ -128,5 +128,46 @@ class Column {
         if(this.view)this.view.visibilityChanged();
     }
     
+    populateMenu(menu){
+        var col = this;
+        if(col.name.substr(0,3)=='CUS')this.populateIconMenu(menu,iconsList['column']);
+        menu.addItem(LANGUAGE_TEXT.column.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+            if(col.wf.columns.length==1)alert(LANGUAGE_TEXT.column.deletelast[USER_LANGUAGE]);
+            else if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecolumn[USER_LANGUAGE])){
+                col.deleteSelf();
+                col.wf.makeUndo("Delete Column",col);
+            }
+        });
+        if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],'resources/images/spectrum24.png', function(){
+            var input = document.createElement('input');
+            input.className = "jscolor";
+            input.type="color";
+            input.value = col.colour;
+            input.addEventListener('change',function(){
+                col.setColour(input.value);
+            });
+            input.click();
+        });
+        
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            p.showHelp('columnhelp.html');
+        });
+    }
+    
+    
+    populateIconMenu(menu,iconArray){
+        var col = this;
+        if(iconArray==null||iconArray.length==0)return;
+        var sub = menu.addItem(LANGUAGE_TEXT.column.icon[USER_LANGUAGE],'resources/images/lefticon24.png');
+        for(var i=0;i<iconArray.length;i++){
+            var tempfunc = function(value){
+                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
+                    col.setImage(value.value);
+                },sub);
+            }
+            tempfunc(iconArray[i]);
+        }
+    }
+    
 }
 

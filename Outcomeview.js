@@ -25,6 +25,7 @@ class Outcomeview{
         this.tagViews;
         this.tableCells=[];
         this.toolbarDiv;
+        this.displayBar;
         this.editbar;
         this.tbody;
         this.legendDiv;
@@ -50,6 +51,9 @@ class Outcomeview{
         titleInput.className = "outcometabletitle outcometabletitleinput";
         this.titleInput = titleInput;
         titleDiv.appendChild(titleInput);
+        titleInput.readOnly=true;
+        titleInput.ondblclick = function(){titleInput.readOnly=false;titleInput.select();}
+        titleInput.addEventListener("focusout",function(){titleInput.readOnly=true;});
         
     }
     
@@ -66,6 +70,9 @@ class Outcomeview{
         authorInput.className = "outcometableauthor outcometabletitleinput";
         this.authorInput = authorInput;
         authorDiv.appendChild(authorInput);
+        authorInput.readOnly=true;
+        authorInput.ondblclick = function(){authorInput.readOnly=false;authorInput.select();}
+        authorInput.addEventListener("focusout",function(){authorInput.readOnly=true;});
         
     }
     
@@ -88,12 +95,13 @@ class Outcomeview{
         this.drawGraph();
         
         var ebContainer = document.getElementById('ebWrapper');
-        makeResizable(ebContainer.parentElement,"left");
+        if(ebContainer.nextElementSibling==null||!ebContainer.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(ebContainer.parentElement,"left");
         ebContainer.parentElement.style.zIndex='3';
         ebContainer.parentElement.style.width = '400px';
         var editbar = new EditBar(ebContainer,this.wf);
         this.editbar = editbar;
         
+        document.body.contextItem = this;
         
         
         $("#print").removeClass("disabled");
@@ -120,6 +128,7 @@ class Outcomeview{
         }
         this.container.innerHTML="";
         
+        document.body.contextItem = this.wf.project;
         
         $("#print").addClass("disabled");
         $("#expand").addClass("disabled");
@@ -134,6 +143,7 @@ class Outcomeview{
         this.createCategoryViews();
         this.createNodeViews();
         this.createTagViews();
+        this.wf.updateWeekIndices();
         
         //Create all the columns/column groups
         table.appendChild(document.createElement('col'));
@@ -311,7 +321,7 @@ class Outcomeview{
                 for(var i=0;i<this.wf.weeks.length;i++){
                     var name = this.wf.weeks[i].name;
                     if(!name)name=this.wf.weeks[i].getDefaultName();
-                    list.push({text:name,value:i});
+                    list.push({text:name,value:this.wf.weeks[i]});
                 }
                 break;
             case "column":
@@ -326,11 +336,13 @@ class Outcomeview{
         return list;
     }
     
-    insertCategory(cv){
-        var lastcv = this.categoryViews[this.categoryViews.length-1];
+    insertCategory(cv,index=-1){
+        var lastcv;
+        if(index<0) lastcv = this.categoryViews[this.categoryViews.length-1];
+        else lastcv = this.categoryViews[index];
         cv.createVertex();
         this.table.insertBefore(cv.vertex,lastcv.vertex);
-        this.categoryViews.splice(this.categoryViews.length-1,0,cv);
+        this.categoryViews.splice(this.categoryViews.indexOf(lastcv),0,cv);
         cv.nodeViews[0].insertSelf(lastcv.nodeViews[0]);
         cv.nodeViews.push(new OutcomeNodeview([],true,cv));
         cv.nodeViews[1].insertSelf(lastcv.nodeViews[0]);
@@ -369,25 +381,18 @@ class Outcomeview{
     }
     
     
-    changeCategoryForNode(nv,cv){
-        var node = nv.nodes[0];
-        node.setIcon(cv.value,"left");
-    }
     
     nodeAdded(node){
+        console.log("adding node");
         if(!this.isValidNode(node))return;
-        var index = 1;
         for(var i=0;i<this.categoryViews.length;i++){
             var cv = this.categoryViews[i];
             if(cv.value==this.getCategoryFromNode(node)||(cv.value=="none"&&this.getCategoryFromNode(node)==null)){
-                index+=cv.nodeViews.length-2;
                 this.grandTotal.nodes.push(node);
                 var nv = new OutcomeNodeview([node],false,cv);
                 node.view = nv;
-                cv.nodeAdded(node,index);
+                cv.nodeAdded(node,nv.getCategoryPlacement());
                 break;
-            }else{
-                index+=cv.nodeViews.length;
             }
         }
         this.updateTable();
@@ -398,7 +403,7 @@ class Outcomeview{
             case "icon":
                 return node.lefticon;
             case "week":
-                return node.wf.weeks.indexOf(node.week);
+                return node.week;
             case "column":
                 return node.column;
         }
@@ -479,12 +484,63 @@ class Outcomeview{
         var container = this.toolbarDiv;
         container.parentElement.style.display="inline";
         while(container.firstChild)container.removeChild(container.firstChild);
-        makeResizable(container.parentElement,"left");
+        if(container.nextElementSibling==null||!container.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(container.parentElement,"left");
+        this.generateNodeBar(container);
         this.generateTagBar(container);
         this.generateDisplayBar(container);
         this.generateSortBar(container);
         
     }
+    
+    generateNodeBar(){
+        var header = document.createElement('h3');
+        header.className="nodebarh3";
+        header.innerHTML=LANGUAGE_TEXT.workflowview.nodeheader[USER_LANGUAGE]+":";
+        this.toolbarDiv.appendChild(header);
+        
+        this.nodeBarDiv = document.createElement('div');
+        this.toolbarDiv.appendChild(this.nodeBarDiv);
+        this.populateNodeBar();
+    }
+    
+    populateNodeBar(){
+        if(this.nodeBarDiv==null)return;
+        this.nodeBarDiv.innerHTML = "";
+        var wf = this.wf;
+    
+        var allColumns = this.wf.getPossibleColumns();
+        for(var i=0;i<allColumns.length;i++){
+            var button = this.createDropButton(this.nodeBarDiv,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png');
+            button.style.borderColor=allColumns[i].colour;
+            button.style.borderWidth='3px';
+            button.id = 'NEW-'+allColumns[i].name;
+            button.ondragstart = function(evt){
+                evt.dataTransfer.setData("text",this.id);
+            }
+            button.ondragend = function(evt){
+                this.nodeBeingDropped=null;
+                if(wf.view.nodeBarDiv)wf.view.populateNodeBar();
+                if(wf.view.displayBar)wf.view.populateDisplayBar();
+            }
+            
+        }
+    }
+    
+    createDropButton(container,name,image){
+        var button = document.createElement('button');
+        var img = document.createElement('img');
+        var namediv = document.createElement('div');
+        img.src = image;
+        namediv.innerHTML = name;
+        button.appendChild(img);
+        button.appendChild(namediv);
+        container.appendChild(button);
+        img.draggable=false;
+        button.draggable=true;
+        
+        return button;
+    }
+    
 
     generateTagBar(){
         if(this.wf.getTagDepth()<0)return;
@@ -525,16 +581,24 @@ class Outcomeview{
     }
     
     generateDisplayBar(){
-        var wf = this.wf;
         
         var header = document.createElement('h3');
         header.innerHTML = LANGUAGE_TEXT.outcomeview.displayheader[USER_LANGUAGE]+":";
         this.toolbarDiv.appendChild(header);
+        this.displayBar = document.createElement('div');
+        this.toolbarDiv.appendChild(this.displayBar);
         
+        this.populateDisplayBar();
+        
+    }
+    
+    populateDisplayBar(){
+        var wf = this.wf;
+        this.displayBar.innerHTML=null;
         for(var i=0;i<wf.columns.length;i++){
             var col = wf.columns[i];
             col.view = new OutcomeColumnview(col);
-            col.view.createVertex(this.toolbarDiv);
+            col.view.createVertex(this.displayBar);
         }
     }
     
@@ -578,6 +642,45 @@ class Outcomeview{
         else this.wf.outcomeSortType = type;
         this.makeInactive();
         this.sortType=type;
+        this.makeActive();
+    }
+    
+    columnAdded(col){
+        col.outcomeVisibility=true;
+        if(this.sortType=="column"){
+            var newcat = new OutcomeCategoryview({text:col.text,value:col.name},this.wf);
+            this.insertCategory(newcat);
+        }
+        
+    }
+    
+    weekAdded(week){
+        console.log(this.wf.weeks);
+        if(this.sortType=="week"){
+            var name = week.name;
+            if(!name)name=week.getDefaultName();
+            var newcat = new OutcomeCategoryview({text:name,value:week},this.wf);
+            this.insertCategory(newcat,week.index);
+            for(var i=0;i<week.nodes.length;i++)this.wf.view.nodeAdded(week.nodes[i]);
+            for(var i=0;i<this.categoryViews.length-1;i++)this.categoryViews[i].nameChanged();
+        }
+        
+    }
+    
+    columnRemoved(col){
+        for(var i=0;i<this.categoryViews.length;i++){
+            if(this.categoryViews[i].value==col.name){
+                this.removeCategory(this.categoryViews[i]);
+                break;
+            }
+        }
+    }
+    
+    weekIndexUpdated(week){
+    }
+    
+    weekDeleted(){
+        this.makeInactive();
         this.makeActive();
     }
 
@@ -630,6 +733,22 @@ class Outcomeview{
     
     getDefaultSortType(){return "icon";}
     
+    populateMenu(menu){
+        var ocv = this;
+        menu.addItem(LANGUAGE_TEXT.workflowview.edittitle[USER_LANGUAGE],'resources/images/text24.png',function(){
+            ocv.titleInput.readOnly=false;
+            ocv.titleInput.select();
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],'resources/images/text24.png',function(){
+            ocv.authorInput.readOnly=false;
+            ocv.authorInput.select();
+        });
+        var layout = this.wf;
+        
+        layout.populateMenu(menu);
+        
+    }
+    
 }
 
 class OutcomeCategoryview{
@@ -639,6 +758,7 @@ class OutcomeCategoryview{
         this.tablehead;
         this.vertex;
         this.name;
+        this.headerwrap;
         if(data.text.en)this.name = data.text[USER_LANGUAGE];
         else this.name = data.text;
         this.value = data.value;
@@ -648,65 +768,132 @@ class OutcomeCategoryview{
     
     createVertex(parent){
         this.vertex = document.createElement('colgroup');
+        this.vertex.classList.add('expanded');
         return this.vertex;
     }
     
     createTableHead(parent,createBefore=null){
         var cv = this;
         var catHead = document.createElement('th');
-        catHead.classList.add('expanded');
-        if(this.nodeViews.length>2)catHead.classList.add('haschildren');
-        var wrapper = document.createElement('div');
+        var wrapper = document.createElement('textarea');
         wrapper.classList.add("categoryhead");
         catHead.setAttribute("colspan",this.nodeViews.length);
-        wrapper.innerHTML = this.name.replace(/\//g,"\/<wbr>");
+        wrapper.value = this.name.replace(/\//g,"\/<wbr>");
         catHead.appendChild(wrapper);
         parent.insertBefore(catHead,createBefore);
+        if(cv.wf.view.sortType=="week")wrapper.onchange = function(){cv.value.setNameSilent(wrapper.value);}
+        else if(cv.wf.view.sortType=="column")wrapper.onchange = function(){cv.wf.columns[cv.wf.getColIndex(cv.value)].setTextSilent(wrapper.value);}
+        else wrapper.readOnly=true;
+        this.headerwrap = wrapper;
+        catHead.contextItem = this;
         
         
-        var expandDiv = document.createElement('div');
-        expandDiv.className="expanddiv";
-        this.expandIcon.src="resources/images/minus16.png";
-        this.expandIcon.style.width='16px';
-        this.expandIcon.onclick=function(){
-            if(catHead.classList.contains("expanded")){cv.collapse();}
-            else {cv.expand();}
-        }
-        expandDiv.appendChild(this.expandIcon);
-        catHead.appendChild(expandDiv);
-
-        if(this.value!="grandtotal"&&this.value!="none"){
+        if(this.value!="grandtotal"){
             var newChildDiv = document.createElement('div');
             newChildDiv.classList.add("createlayoutdiv");
-            var newChildIcon = document.createElement('img');
-            newChildIcon.src="resources/images/createchild16.png";
-            newChildIcon.style.width='16px';
-            newChildIcon.onclick = function(){
+            newChildDiv.innerHTML = "+"+LANGUAGE_TEXT.outcomeview.addnode[USER_LANGUAGE];
+            newChildDiv.onclick = function(){
                 cv.addNode();
             }
-            newChildDiv.append(newChildIcon);
             catHead.appendChild(newChildDiv);
         }
-        
+        wrapper.readOnly = true;
+
         this.tablehead = catHead;
-    }
-    
-    addNode(){
-        var wf = this.wf;
-        var week = wf.weeks[wf.weeks.length-1];
-        if(week){
-            var node = new ACNode(wf);
-            node.setColumn("SA");
-            if(this.value!="none")node.setLeftIcon(this.value);
-            node.week=week;
-            week.addNode(node);
-            if(wf.view)wf.view.nodeAdded(node);
+        catHead.cv = this;
+        
+        if(this.value!="grandtotal"&&(this.wf.view.sortType=="week"||this.wf.view.sortType=="column")){
+            var movehandle = document.createElement('div');
+            var moveimg = document.createElement('img');
+            moveimg.src = 'resources/images/movehandle24.png';
+            movehandle.appendChild(moveimg);
+            catHead.appendChild(movehandle);
+            moveimg.draggable=false;
+            movehandle.className="movehandle";
+            movehandle.onmousedown = function(evt){
+                catHead.draggable=true;
+                catHead.classList.add("dragging");
+            }
+            movehandle.onmouseup = function(){
+                catHead.draggable=false;
+                catHead.classList.remove("dragging");
+            }
+            
+            wrapper.addEventListener("focusout",function(){wrapper.readOnly=true;});
+            wrapper.ondblclick = function(){wrapper.readOnly=false;wrapper.select();}
         }
         
+        catHead.draggable=false;
+        catHead.ondragstart = function(evt){
+            var id = 'drag-'+Date.now();
+            catHead.id=id;
+            evt.dataTransfer.setData("text",id);
+            evt.stopPropagation();
+        }
+        catHead.ondragover = function(evt){
+            evt.stopPropagation();
+            var source = document.getElementById(evt.dataTransfer.getData("text"));
+            if(source==null||source.cv==null)return;
+            evt.preventDefault();
+            var sourcecv = source.cv;
+            if(sourcecv == cv)return;
+            var currentTime = Date.now();
+            if(sourcecv.lastDragged!=null&&(sourcecv.nextNewDrop>currentTime||(sourcecv.lastDragged==catHead&&sourcecv.nextSameDrop>currentTime)))return;
+            sourcecv.lastDragged=catHead;
+            sourcecv.nextNewDrop = currentTime+300;
+            sourcecv.nextSameDrop = currentTime+500;
+            sourcecv.attemptToDrop(cv);
+        }
+        
+        catHead.ondrop = function(evt){
+            evt.preventDefault();
+        }
+        catHead.ondragend = function(evt){
+            catHead.draggable=false;
+            catHead.classList.remove('dragging');
+        }
+        
+        
+        
+        
+    }
+    
+    nameChanged(){
+        console.log("name changed");
+        if(this.wf.view.sortType=='week'){
+            console.log(this.value.index);
+            var name = this.value.name;
+            if(!name)name=this.value.getDefaultName();
+            this.headerwrap.value = name.replace(/\//g,"\/<wbr>");
+        }
+    }
+    
+    addNode(col){
+        var wf = this.wf;
+        var week;
+        if(wf.view==null)return;
+        if(wf.view.sortType=="week")week = this.value;
+        else week = wf.weeks[wf.weeks.length-1];
+        var column;
+        if(col!=null&&wf.getColIndex(col)>=0)column=col;
+        else if(wf.view.sortType=="column")column = this.value;
+        else if(wf.getColIndex("SA")>=0)column = "SA";
+        else column=wf.columns[0].name;
+        var icon;
+        if(wf.view.sortType=="icon"&&this.value!="none")icon = this.value;
+        if(week){
+            var node = new ACNode(wf);
+            node.setColumn(column);
+            if(icon)node.setLeftIcon(icon);
+            node.week=week;
+            week.addNode(node);
+            wf.view.nodeAdded(node);
+            return node;
+        }
     }
     
     //The node, the overall index at which we want to place it, and the nodeview which comes directly after it - the totals column by default
-    nodeAdded(node,index,lastnv){
+    nodeAdded(node,lastnv){
         var cv = this;
         var nv = node.view;
         if(!lastnv)lastnv = cv.nodeViews[cv.nodeViews.length-1];
@@ -715,10 +902,10 @@ class OutcomeCategoryview{
         
         
         this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))+1);
-        this.tablehead.classList.add("haschildren");
+        this.expandIcon.classList.add("haschildren");
         
         nv.insertSelf(lastnv);
-        
+        this.expand();
     }
     
     
@@ -731,7 +918,7 @@ class OutcomeCategoryview{
         cv.nodeViews.splice(cv.nodeViews.indexOf(node.view),1);
         this.tablehead.setAttribute("colspan",int(this.tablehead.getAttribute("colspan"))-1);
         if(this.nodeViews.length<=2){
-            this.tablehead.classList.remove("haschildren");
+            this.expandIcon.classList.remove("haschildren");
             if(this.value=="none")this.wf.view.removeCategory(this);
         }
         
@@ -739,7 +926,7 @@ class OutcomeCategoryview{
     }
     
     expand(){
-        this.tablehead.classList.add("expanded");
+        this.vertex.classList.add("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
             this.nodeViews[i].vertex.classList.remove("hidden");
             this.nodeViews[i].textdiv.classList.remove("hidden");
@@ -748,12 +935,118 @@ class OutcomeCategoryview{
     }
     
     collapse(){
-        this.tablehead.classList.remove("expanded");
+        this.vertex.classList.remove("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
             this.nodeViews[i].vertex.classList.add("hidden");
             this.nodeViews[i].textdiv.classList.add("hidden");
         }
         this.expandIcon.src="resources/images/plus16.png";
+    }
+    
+    populateMenu(menu){
+        var cv = this;
+        var item = this.getItem();
+        if(item==null)item=this.wf.view;
+        else{
+            menu.addItem(LANGUAGE_TEXT.column.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
+                    cv.headerwrap.readOnly=false;
+                    cv.headerwrap.select();
+            });
+        }
+        item.populateMenu(menu);
+    }
+    
+    getItem(){
+        var wf = this.wf;
+        var sortType = wf.view.sortType;
+        if(sortType=="week")return this.value;
+        else if(sortType=="column")return wf.columns[wf.getColIndex(this.value)];
+        else return null;
+    }
+    
+    attemptToDrop(target){
+        console.log("In drop function");
+        
+        this.moveTo(target);
+        
+    }
+    
+    moveTo(target){
+        var cvs = this.wf.view.categoryViews;
+        var isAfter=false;
+        var myindex = cvs.indexOf(this);
+        var tableindex = 0;
+        for(var i=0;i<cvs.length;i++){
+            if(cvs[i]==this)break;
+            else tableindex=tableindex+cvs[i].nodeViews.length;
+        }
+        var targetindex = cvs.indexOf(target);
+        if(target.value!="grandtotal"&&targetindex>myindex)isAfter=true;
+        var lastcv;
+        if(isAfter)lastcv = cvs[targetindex+1];
+        else lastcv = target;
+        this.insertSelf(lastcv);
+        cvs.splice(myindex,1);
+        cvs.splice(cvs.indexOf(lastcv),0,this);
+        var lastnv = lastcv.nodeViews[0];
+        for(var i=0;i<this.nodeViews.length;i++){
+            var nv = this.nodeViews[i];
+            nv.tablehead.parentElement.insertBefore(nv.tablehead,lastnv.tablehead);
+        }
+        
+        var newtableindex = 0;
+        for(var i=0;i<cvs.length;i++){
+            if(cvs[i]==this)break;
+            else newtableindex=newtableindex+cvs[i].nodeViews.length;
+        }
+        var cutlength = this.nodeViews.length;
+        console.log(tableindex);
+        console.log(newtableindex);
+        //if(tableindex<newtableindex)newtableindex-=cutlength;
+        
+        var tableCells = this.wf.view.tableCells;
+        for(var i=0;i<tableCells.length;i++){
+            
+            var cut = tableCells[i].splice(tableindex,cutlength);
+            console.log(newtableindex);
+            var nextCell = tableCells[i][newtableindex];
+            for(var j=0;j<cut.length;j++){
+                tableCells[i].splice(newtableindex+j,0,cut[j]);
+                cut[j].vertex.parentElement.insertBefore(cut[j].vertex,nextCell.vertex);
+            }
+        }
+        
+        var sortType = this.wf.view.sortType;
+        var sortarray;
+        if(sortType=="column")sortarray = this.wf.columns;
+        else if(sortType=="week")sortarray = this.wf.weeks;
+        else return;
+        var myitem = this.getItem();
+        var targetitem = target.getItem();
+        console.log(targetitem);
+        sortarray.splice(sortarray.indexOf(myitem),1);
+        if(targetitem=="grandtotal")sortarray.push(myitem);
+        else sortarray.splice(sortarray.indexOf(targetitem)+isAfter,0,myitem);
+        if(sortType=="week"){
+            this.wf.updateWeekIndices();
+            for(var i=0;i<cvs.length-1;i++)cvs[i].nameChanged();
+            this.wf.makeUndo("Week Moved",myitem);
+        }else if(sortType=="column"){
+            this.wf.view.populateDisplayBar();
+            this.wf.makeUndo("Column Moved",myitem);
+        }
+        
+    }
+    
+    insertSelf(lastcv){
+        var lastvertex;
+        var lasthead;
+        if(lastcv!=null){
+            lastvertex = lastcv.vertex;
+            lasthead = lastcv.tablehead;
+        }
+        this.vertex.parentElement.insertBefore(this.vertex,lastvertex);
+        this.tablehead.parentElement.insertBefore(this.tablehead,lasthead);
     }
     
     
@@ -798,10 +1091,28 @@ class OutcomeNodeview{
         textwrapper.appendChild(this.textdiv);
         this.textdiv.classList.add("rotatedheader");
         this.namediv = document.createElement('div');
-        this.textdiv.onclick = function(evt){nv.openEditBar(evt);}
+        this.textdiv.onclick = function(evt){$(".selected").removeClass("selected");nv.openEditBar(evt);}
         this.namediv.classList.add("outcometableheadertext");
         this.textdiv.appendChild(this.namediv);
-        if(this.isTotal){this.namediv.innerHTML = LANGUAGE_TEXT.outcomeview.total[USER_LANGUAGE];this.tablehead.classList.add("totalcell");}
+        if(this.isTotal){
+            var cv = this.cv;
+            var catVertex = cv.vertex;
+            this.namediv.innerHTML = LANGUAGE_TEXT.outcomeview.total[USER_LANGUAGE];
+            this.tablehead.classList.add("totalcell");
+            
+            var expandDiv = document.createElement('div');
+            expandDiv.className="expanddiv";
+            if(cv.nodeViews.length>2)cv.expandIcon.classList.add('haschildren');
+            cv.expandIcon.src="resources/images/minus16.png";
+            cv.expandIcon.style.width='16px';
+            cv.expandIcon.onclick=function(){
+                if(catVertex.classList.contains("expanded")){cv.collapse();}
+                else {cv.expand();}
+            }
+            expandDiv.appendChild(cv.expandIcon);
+            this.textdiv.appendChild(expandDiv);
+
+        }
         else if(this.nodes.length==0){this.namediv.innerHTML = "";this.tablehead.classList.add("emptycell");}
         else {
             this.nameUpdated();
@@ -815,50 +1126,40 @@ class OutcomeNodeview{
             }
             renameDiv.append(deleteIcon);
             this.textdiv.appendChild(renameDiv);
+            this.textdiv.contextItem = this;
             
             this.namediv.draggable="true";
             
             this.namediv.style.cursor="move";
             
             this.namediv.ondragstart = function(evt){
-                evt.dataTransfer.setData("text",nv.nodes[0].id)
+                evt.dataTransfer.setData("text",nv.nodes[0].id);
             }
             
             
             this.textdiv.ondblclick = function(evt){nv.nodes[0].openLinkedWF();}
-            /*var renameIcon = document.createElement('img');
-            renameIcon.src="resources/images/edit16.png";
-            renameIcon.style.width='16px';
-            renameIcon.onclick = function(){
-                nv.renameClick();
-            }
-            renameDiv.appendChild(renameIcon);*/
             
-            
-            /*var move = document.createElement('div');
-            move.className = "editlayoutdiv";
-            var up = document.createElement('img');
-            up.className="layoutchange";
-            up.src = "resources/images/moveup16.png";
-            up.onclick=function(){
-                nv.moveNode(true);
-            }
-            move.appendChild(up);
-            var down = document.createElement('img');
-            down.className="layoutchange";
-            down.src = "resources/images/movedown16.png";
-            down.onclick=function(){
-                nv.moveNode(false);
-            }
-            move.appendChild(down);
-            this.textdiv.appendChild(move);*/
             
             
         }
         parent.insertBefore(this.tablehead,createBefore);
         
-        if(this.isTotal||this.nodes.length>0)this.textdiv.ondragover = function(evt){
-            var node = nv.cv.wf.findNodeById(evt.dataTransfer.getData("text"));
+        if(this.cv.value!="grandtotal"&&(this.isTotal||this.nodes.length>0))this.textdiv.ondragover = function(evt){
+            var node;
+            if(evt.dataTransfer.getData("text").substr(0,3)=="NEW"){
+                var source = document.getElementById(evt.dataTransfer.getData("text"));
+                if(source.nodeBeingDropped){
+                    node = source.nodeBeingDropped;
+                    if(nv.cv.wf.view.sortType=="column"&&nv.cv.value!=node.column)return;
+                }
+                else {
+                    node = nv.cv.addNode(evt.dataTransfer.getData("text").substr(4));
+                    source.nodeBeingDropped = node;
+                    return;
+                }
+            }
+            else node = nv.cv.wf.findNodeById(evt.dataTransfer.getData("text"));
+            if(node==null)return;
             evt.preventDefault();
             if(node.view)node.view.attemptToDrop(nv);
         }
@@ -876,21 +1177,27 @@ class OutcomeNodeview{
         }
     }
     
+    startTitleEdit(){
+        this.openEditBar();
+    }
+    
     attemptToDrop(target){
         var wf = this.nodes[0].wf;
         var sort = wf.view.sortType;
-        //If we're looking at the same nodeview or at anything in the grand total category this is invalid
-        if(this==target||target.cv.value=="grandtotal")return;
+        //If we're looking at the same nodeview this is invalid
+        if(this==target)return;
         //For the icon and column sort methods, we don't move nodes individually, we just change their category
         if(sort=="icon"||sort=="column"){
             //if categories are already the same, no need to change anything
             if(this.cv==target.cv)return;
             if(sort=="icon"){
                 this.nodes[0].setLeftIcon(target.cv.value);
+                wf.makeUndo("Icon Changed",node);
                 return;
             }
             if(sort=="column"){
                 this.nodes[0].setColumn(target.cv.value);
+                wf.makeUndo("Node Moved",node);
                 return;
             }
         }
@@ -901,17 +1208,18 @@ class OutcomeNodeview{
             if(!target.isTotal&&target.nodes.length==1)node2=target.nodes[0];
             
             if(node2){
-                if(week.nodesByColumn==null&&week.nodes.indexOf(node2)==week.nodes.indexOf(node)+1)return;
+                var isAfter=false;
+                if(week.nodesByColumn==null&&week.nodes.indexOf(node2)==week.nodes.indexOf(node)+1)isAfter=true;
                 else if(week.nodesByColumn!=null){
                     if(node.column==node2.column){
-                        if(week.nodesByColumn[node.column].indexOf(node2)==week.nodesByColumn[node.column].indexOf(node)+1)return;
+                        if(week.nodesByColumn[node.column].indexOf(node2)==week.nodesByColumn[node.column].indexOf(node)+1)isAfter=true;
                     }else{
                         if(week.nodesByColumn[node.column].indexOf(node)==week.nodesByColumn[node.column].length-1&&wf.getColIndex(node2.column)>wf.getColIndex(node.column))return;
                     }
                 }
-                wf.moveNodeTo(node,node2,false);
+                wf.moveNodeTo(node,node2,isAfter);
             }else {
-                var week2 = wf.weeks[target.cv.value];
+                var week2 = target.cv.value;
                 week.removeNode(node);
                 node.week=week2;
                 week2.addNode(node);
@@ -925,10 +1233,12 @@ class OutcomeNodeview{
         if(!this.isTotal&&this.nodes.length==1){
             var node = this.nodes[0];
             var eb = node.wf.view.editbar;
+            var td = this.textdiv;
+            td.classList.add("selected");
             eb.enable(node);
-            evt.stopPropagation();
+            if(evt)evt.stopPropagation();
             var listenerDestroyer = function(){document.removeEventListener("click",outsideClick);}
-            var outsideClick = function(evt2){if(eb&&!eb.container.parentElement.contains(evt2.target)){eb.disable();listenerDestroyer();}else if(!eb)listenerDestroyer();}
+            var outsideClick = function(evt2){if(eb&&!eb.container.parentElement.contains(evt2.target)){eb.disable();if(td)td.classList.remove("selected");listenerDestroyer();}else if(!eb)listenerDestroyer();}
             document.addEventListener("click",outsideClick);
             
         }
@@ -991,7 +1301,17 @@ class OutcomeNodeview{
         this.cv.nodeRemoved(node,index);
         var cv = node.wf.view.getCategoryForNode(node);
         this.cv = cv;
+        var lastnv = this.getCategoryPlacement();
+        
+        if(!lastnv)return;
+        cv.nodeAdded(node,lastnv);
+        cv.wf.view.updateTable();
+    }
+    
+    getCategoryPlacement(){
+        var cv = this.cv;
         var lastnv;
+        var node = this.nodes[0];
         var weeks = node.wf.weeks;
         var weekindex = weeks.indexOf(node.week);
         for(var i=0;i<cv.nodeViews.length;i++){
@@ -1008,9 +1328,7 @@ class OutcomeNodeview{
             }
             
         }
-        if(!lastnv)return;
-        cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
-        cv.wf.view.updateTable();
+        return lastnv;
     }
     
     categoryChangedProgram(){
@@ -1039,7 +1357,7 @@ class OutcomeNodeview{
             
         }
         if(!lastnv)return;
-        cv.nodeAdded(node,lastnv.getOverallIndex()-1,lastnv);
+        cv.nodeAdded(node,lastnv);
         cv.wf.view.updateTable();
     }
     
@@ -1052,6 +1370,11 @@ class OutcomeNodeview{
         node.wf.view.updateTable();
         
     }
+    
+    insertBelow(node){
+        node.wf.view.nodeAdded(node);
+    }
+    
     
     getOverallIndex(){
         var categoryViews = this.cv.wf.view.categoryViews;
@@ -1087,6 +1410,7 @@ class OutcomeNodeview{
         else nv.createTableHead(headParent,headInsertBefore);
         
         var index = nv.getOverallIndex();
+        console.log(index);
         var tableCells = this.cv.wf.view.tableCells;
         var tagViews = this.cv.wf.view.tagViews;
         for(var j=0;j<tableCells.length;j++){
@@ -1108,21 +1432,9 @@ class OutcomeNodeview{
         }
     }
     
-    moveNode(isright){
-        var wf = this.cv.wf;
+    populateMenu(menu){
         var node = this.nodes[0];
-        var nextnv = this.cv.nodeViews[this.cv.nodeViews.indexOf(this)+(isright)*2-1];
-        //Check to see if we have to change categories
-        if(nextnv.isTotal||nextnv.nodes.length==0){
-            var nextcatindex = wf.view.categoryViews.indexOf(this.cv)+(isright)*2-1;
-            if(nextcatindex<0||nextcatindex>wf.view.categoryViews.length-2)return;
-            wf.view.changeCategoryForNode(this,wf.view.categoryViews[nextcatindex]);
-        }else{
-            //We have to move the actual node
-            var node2 = nextnv.nodes[0];
-            wf.moveNodeTo(node,node2,(isright));
-        }
-        
+        node.populateMenu(menu);
     }
     
 }
@@ -1159,6 +1471,7 @@ class OutcomeTagview{
         cell.appendChild(this.nameCell);
         this.updateName()
         vertex.appendChild(cell);
+        vertex.tagView = this;
         
         var expandDiv = document.createElement('div');
         expandDiv.className="expanddiv";
@@ -1185,26 +1498,104 @@ class OutcomeTagview{
             cell.appendChild(editdiv);
         }
         
-        if(wf.tagSets.indexOf(this.tag)>=0){
-            var move = document.createElement('div');
-            move.className = "editlayoutdiv";
-            var up = document.createElement('img');
-            up.className="layoutchange";
-            up.src = "resources/images/moveup16.png";
-            up.onclick=function(){
-                tv.moveTag(true);
+        var vertex = this.vertex;
+        vertex.ondragover = function(evt){
+            var source = document.getElementById(evt.dataTransfer.getData("text"));
+            if(source==null)return;
+            //throttle function
+            if(int(source.id.substr(5))+1000>Date.now())return;
+            var stv = source.tagView;
+            evt.stopPropagation();
+            if(stv==null)return;
+            var target = vertex.tagView;
+            if(target==null||target.tag==null)return;
+            evt.preventDefault();
+            if(target.tag.depth<stv.tag.depth||target.tag.getParentWithDepth(stv.tag.depth)!=stv.tag){
+                //throttle the function. We want it to be droppable with another tag in 300 ms, and droppable with the same tag in 0.5s.
+                var currentTime = Date.now();
+                if(stv.lastDragged!=null&&(stv.nextNewDrop>currentTime||(stv.lastDragged==target&&stv.nextSameDrop>currentTime)))return;
+                stv.lastDragged=target;
+                stv.nextNewDrop = currentTime+300;
+                stv.nextSameDrop = currentTime+500;
+                stv.attemptToDrop(target);
             }
-            move.appendChild(up);
-            var down = document.createElement('img');
-            down.className="layoutchange";
-            down.src = "resources/images/movedown16.png";
-            down.onclick=function(){
-                tv.moveTag(false);
-            }
-            move.appendChild(down);
-            cell.appendChild(move);
         }
         
+        vertex.ondrop = function(evt){
+            evt.preventDefault();
+        }
+        vertex.ondragend = function(evt){
+            vertex.draggable=false;
+            var allTags=[];
+            allTags = vertex.tagView.tag.getAllTags(allTags);
+            for(var i=0;i<allTags.length;i++){
+                if(allTags[i].view&&allTags[i].view.vertex)allTags[i].view.vertex.classList.remove("dragging");
+            }
+        }
+        
+        if(wf.tagSets.indexOf(this.tag)>=0){
+            vertex.draggable=false;
+            vertex.ondragstart = function(evt){
+                var id = 'drag-'+Date.now();
+                vertex.id=id;
+                evt.dataTransfer.setData("text",id);
+                evt.stopPropagation();
+                var allTags=[];
+                allTags = vertex.tagView.tag.getAllTags(allTags);
+                for(var i=0;i<allTags.length;i++){
+                    if(allTags[i].view&&allTags[i].view.vertex)allTags[i].view.vertex.classList.add("dragging");
+                }
+            }
+            
+            
+            
+            
+            
+            var movehandle = document.createElement('div');
+            movehandle.className = "movehandle";
+            var up = document.createElement('img');
+            up.src = "resources/images/movehandle24.png";
+            up.draggable=false;
+            up.onmousedown=function(){
+                vertex.draggable=true;
+            }
+            movehandle.onmouseup = function(){
+                vertex.draggable=false;
+            }
+            movehandle.appendChild(up);
+            cell.appendChild(movehandle);
+        }
+        
+        
+    }
+    
+    attemptToDrop(target){
+        var wf = this.wf;
+        console.log("attempting to drop");
+        while(wf.tagSets.indexOf(target.tag)<0){
+            var targetTag = target.tag.parentTag;
+            if(targetTag==null)return;
+            target = targetTag.view;
+            if(target==null)return;
+        }
+        this.moveTo(target);
+        
+    }
+
+    moveTo(target){
+        var wf = this.wf;
+        var isAfter=false;
+        if(wf.tagSets.indexOf(target.tag)>wf.tagSets.indexOf(this.tag))isAfter=true;
+        var tagArray=[];
+        tagArray = this.tag.getAllTags(tagArray);
+        var tvtarget;
+        if(isAfter)tvtarget = target.tag.getLastDescendant().view.vertex.nextElementSibling;
+        else tvtarget = target.vertex;
+        for(var i=0;i<tagArray.length;i++){
+            this.vertex.parentElement.insertBefore(tagArray[i].view.vertex,tvtarget);
+        }
+        wf.moveChild(this.tag,target.tag,isAfter);
+        wf.makeUndo("Tagset Moved",this.tag);
         
     }
     
@@ -1317,8 +1708,10 @@ class OutcomeTableCell{
             checkbox.onclick=function(){
                 if(checkbox.checked){
                     node.addTag(tag,false,true);
+                    node.wf.makeUndo("Add Tag",node);
                 }else{
                     node.removeTag(tag,true);
+                    node.wf.makeUndo("Remove Tag",node);
                 }
             }
             
@@ -1414,13 +1807,6 @@ class ProgramOutcomeview extends Outcomeview{
     
     
     
-    changeCategoryForNode(nv,cv){
-        var node = nv.nodes[0];
-        node.week.removeNode(node);
-        node.week = node.wf.weeks[cv.value];
-        node.wf.weeks[cv.value].addNode(node);
-        node.view.categoryChangedProgram();
-    }
     
     
     getDefaultSortType(){return "week";}
@@ -1430,16 +1816,24 @@ class ProgramOutcomeview extends Outcomeview{
 class ProgramOutcomeCategoryview extends OutcomeCategoryview{
     
     
-    addNode(){
+    addNode(col){
         var wf = this.wf;
         var week;
-        if(this.value!=null) week = wf.weeks[this.value];
+        if(wf.view==null)return;
+        if(wf.view.sortType=="week")week = this.value;
+        else week = wf.weeks[wf.weeks.length-1];
+        var column;
+        if(col!=null&&wf.getColIndex(col)>=0)column=col;
+        else if(wf.view.sortType=="column")column = this.value;
+        else column = wf.columns[0].name;
         if(week){
-            var node = new CONode(wf);
-            node.setColumn(wf.columns[wf.columns.length-1].name);
+            var node = new CUSNode(wf);
+            node.setColumn(column);
             node.week=week;
             week.addNode(node);
-            if(wf.view)wf.view.nodeAdded(node);
+            wf.view.nodeAdded(node);
+            wf.makeUndo("Node Added",node);
+            return node;
         }
         
     }
@@ -1469,6 +1863,34 @@ class OutcomeColumnview{
         check.onchange = function(){
             column.setVisible(check.checked);
         }
+    }
+    
+    deleted(){
+        this.column.wf.view.populateNodeBar();
+        this.column.wf.view.populateDisplayBar();
+    }
+    
+    colourUpdated(){
+        var column = this.column;
+        var wf = this.column.wf;
+        for(var i=0;i<wf.weeks.length;i++){
+            for(var j=0;j<wf.weeks[i].nodes.length;j++){
+                var node = wf.weeks[i].nodes[j];
+                if(node.column==column.name&&node.view)node.view.columnUpdated();
+            }
+        }
+        wf.view.populateNodeBar();
+        wf.view.populateDisplayBar();
+    }
+    
+    imageUpdated(){
+        this.column.wf.view.populateNodeBar();
+        this.column.wf.view.populateDisplayBar();
+    }
+    
+    nodeTextChanged(){
+        this.column.wf.view.populateNodeBar();
+        this.column.wf.view.populateDisplayBar();
     }
     
     visibilityChanged(){

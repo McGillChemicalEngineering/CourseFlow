@@ -210,6 +210,10 @@ class Tagview{
         
     }
     
+    populateMenu(menu){
+        this.tag.populateMenu(menu);
+    }
+    
     
     
 }

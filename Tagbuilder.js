@@ -34,9 +34,11 @@ class Tagbuilder{
         this.wrapperDiv.className = "competencywrapper";
         container.appendChild(this.wrapperDiv);
         document.getElementById('outcomeinfo').onclick = function(){p.showHelp("outcomehelp.html");}
+        var ul = document.createElement('ul');
+        this.wrapperDiv.appendChild(ul);
+        this.makeInitialLine(ul);
         
-        this.makeInitialLine(this.wrapperDiv);
-        
+        document.body.contextItem = this;
         
         $("#print").removeClass("disabled");
         $("#expand").removeClass("disabled");
@@ -47,6 +49,7 @@ class Tagbuilder{
         this.clearViews();
         this.container.removeChild(this.wrapperDiv);
         
+        document.body.contextItem = this.tag.project;
         
         $("#print").addClass("disabled");
         $("#expand").addClass("disabled");
@@ -80,7 +83,7 @@ class Tagbuilder{
         var view = this;
         var button = new CompetencyEditButton(tag,container);
         button.makeEditable(true,tag.depth>0,false);
-        button.makeMovable();
+        if(tag.depth>0)button.makeMovable();
         button.makeExpandable();
         button.b.onclick=function(){button.renameClick();}
         var createchildfunction = function(){
@@ -119,6 +122,10 @@ class Tagbuilder{
     terminologyUpdated(){
         this.button.updateButton();
         this.button.updateChildren();
+    }
+    
+    populateMenu(menu){
+        this.tag.populateMenu(menu);
     }
     
     
