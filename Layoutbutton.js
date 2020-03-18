@@ -76,7 +76,7 @@ class Layoutbutton {
     
     updateButton(){
         this.namediv.innerHTML = this.layout.name;
-        this.icon.src="resources/data/"+this.layout.getIcon()+"24.png";
+        if(this.layout.getIcon())this.icon.src="resources/data/"+this.layout.getIcon()+"24.png";
     }
     
     removeSelf(){
@@ -149,7 +149,9 @@ class Layoutbutton {
     
     renameClick(){
         
-        var p = this.layout.project;
+        var p;
+        if(this.layout instanceof Project)p=this.layout;
+        else p = this.layout.project;
         var layout = this.layout;
         var bl = this;
         var b = this.b;
@@ -248,6 +250,8 @@ class Layoutbutton {
         //For workflows, we shouldn't be able to move them out of their parent. For tags, this might be desirable (ex moving a depth 2 tag from one depth 1 to another).
         //For both: If you're dragging a root level, then find the highest ancestor of the target and just rearrange in whatever way is appropriate
         if(parent==null){
+            //We should have the same parents
+            if(this.bdiv.parentElement!=target.bdiv.parentElement)return;
             var ancestor2 = target.getMostDistantAncestor();
             if(this==ancestor2)return;
             this.moveTo(ancestor2);
@@ -317,7 +321,7 @@ class Layoutbutton {
         var bl = this;
         var expandDiv = document.createElement('div');
         expandDiv.className="expanddiv";
-        this.expandIcon.src="resources/images/plus16.png";
+        this.expandIcon.src="resources/images/arrowright16.png";
         this.expandIcon.style.width='16px';
         this.expandIcon.onclick=function(){
             if(bl.bdiv.classList.contains("expanded")){bl.collapse();}
@@ -330,12 +334,12 @@ class Layoutbutton {
     
     expand(){
         this.bdiv.classList.add("expanded");
-        this.expandIcon.src="resources/images/minus16.png";
+        this.expandIcon.src="resources/images/arrowdown16.png";
     }
     
     collapse(){
         this.bdiv.classList.remove("expanded");
-        this.expandIcon.src="resources/images/plus16.png";
+        this.expandIcon.src="resources/images/arrowright16.png";
     }
     
     makeActive(){
@@ -384,43 +388,6 @@ class Layoutbutton {
         if(parent)parent.updateChildren();
     }
     
-    
-    //moves the button up or down. If it's at the root level, this entails switching the workflow ordering and then switching the order of the buttons. If it's NOT at the root level, we have to switch it in children of the parent, then switch the order of the buttons.
-    moveButton(up){
-        var parent = this.container;
-        var button2;
-        var myindex = Array.prototype.indexOf.call(parent.childNodes,this.bdiv);
-        if(up&&myindex>0&&parent.childNodes[myindex-1].classList.contains("layoutdiv")){
-            //move it up
-            button2 = parent.childNodes[myindex-1].button;
-            parent.insertBefore(parent.childNodes[myindex],parent.childNodes[myindex-1]);
-
-        }else if(!up&&myindex<parent.childNodes.length-1&&parent.childNodes[myindex+1].classList.contains("layoutdiv")){
-            //move it down
-            button2 = parent.childNodes[myindex+1].button;
-            parent.insertBefore(parent.childNodes[myindex+1],parent.childNodes[myindex]);
-        }
-        if(button2!=null&&button2.layout!=null){
-            if(!parent.parentElement.classList.contains("layoutdiv")){
-                var p = this.layout.project;
-                if(this.layout instanceof Workflow && button2.layout instanceof Workflow){
-                    [p.workflows[p.workflows.indexOf(this.layout)],p.workflows[p.workflows.indexOf(button2.layout)]] = [p.workflows[p.workflows.indexOf(button2.layout)],p.workflows[p.workflows.indexOf(this.layout)]];
-                    if(this.layout.isActive)p.activeWF = p.workflows.indexOf(this.layout);
-                    else if (button2.layout.isActive)p.activeWF = p.workflows.indexOf(button2.layout);
-                }else if(this.layout instanceof Tag && button2.layout instanceof Tag){
-                    [p.competencies[p.competencies.indexOf(this.layout)],p.competencies[p.competencies.indexOf(button2.layout)]] = [p.competencies[p.competencies.indexOf(button2.layout)],p.competencies[p.competencies.indexOf(this.layout)]];
-                    if(this.layout.isActive)p.activeComp = p.competencies.indexOf(this.layout);
-                    else if (button2.layout.isActive)p.activeComp = p.competencies.indexOf(button2.layout);
-                }
-            }else{
-                var buttonp = parent.parentElement.button;
-                if(buttonp!=null&&buttonp.layout!=null){
-                    buttonp.layout.swapChildren(this.layout,button2.layout);
-                }
-                
-            }
-        }
-    }
     
     updateNodeIndicators(colours,isComplete){
         this.indicatorWrap.innerHTML="";

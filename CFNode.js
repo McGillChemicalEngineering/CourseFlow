@@ -481,10 +481,10 @@ class ACNode extends CFNode {
     
     
     getLinkedWFList(){
-        var wfs = this.wf.project.workflows;
+        var wfs = this.wf.project.workflows[this.getAcceptedWorkflowType()];
         var list=[];
         for(var i=0;i<wfs.length;i++){
-            if( wfs[i] instanceof Activityflow)list.push([wfs[i].name,wfs[i].id]);
+            list.push([wfs[i].name,wfs[i].id]);
         }
         return list;
     }
@@ -514,10 +514,10 @@ class CONode extends CFNode {
     
     
     getLinkedWFList(){
-        var wfs = this.wf.project.workflows;
+        var wfs = this.wf.project.workflows[this.getAcceptedWorkflowType()];
         var list=[];
         for(var i=0;i<wfs.length;i++){
-            if( wfs[i] instanceof Courseflow)list.push([wfs[i].name,wfs[i].id]);
+            list.push([wfs[i].name,wfs[i].id]);
         }
         return list;
     }
@@ -576,20 +576,13 @@ class CUSNode extends CFNode {
     
     getLinkedWFList(){
         if(this.wf instanceof Activityflow)return null;
-        var wfs = this.wf.project.workflows;
+        var wfs = this.wf.project.workflows[this.getAcceptedWorkflowType()];
         var list=[];
-        if(this.wf instanceof Courseflow){
-            for(var i=0;i<wfs.length;i++){
-                if( wfs[i] instanceof Activityflow)list.push([wfs[i].name,wfs[i].id]);
-            }
-            return list;
+        for(var i=0;i<wfs.length;i++){
+            list.push([wfs[i].name,wfs[i].id]);
         }
-        if(this.wf instanceof Programflow){
-            for(var i=0;i<wfs.length;i++){
-                if( wfs[i] instanceof Courseflow)list.push([wfs[i].name,wfs[i].id]);
-            }
-            return list;
-        }
+        return list;
+            
     }
     
     

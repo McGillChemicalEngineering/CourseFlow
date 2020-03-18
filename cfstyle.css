@@ -34,6 +34,7 @@ h2{
 }
 h3{
     color: rgb(25,118,188);
+    margin-bottom:5px;
 }
 h4{
     color: rgb(25,118,188);
@@ -41,9 +42,13 @@ h4{
     margin-bottom:5px;
     margin-left:5px;
 }
+
+*{
+    font-family:'Open Sans',sans-serif;
+}
+
 body, html{
     overflow:auto;
-    height:100%;
     margin:0px;
 }
 
@@ -51,7 +56,7 @@ body{
     background:#EEEEEE;
 }
 
-body, .nodebarwrapper, .sidenavwrapper, ebwrapper{
+body, .nodebarwrapper, .sidenavwrapper, .ebwrapper{
     scrollbar-width:thin;
 }
 
@@ -97,22 +102,20 @@ button:hover{
 }
 
 .layoutactivity{
-    color: black;
+    color:black;
 }
 
 .layoutcourse{
-    background: rgb(216, 229, 240);
-    color: black;
+    color:black;
 }
 
 .layoutprogram{
-    background: rgb(177, 204, 224);
-    color: black;
+    color:black;
 }
 
 .layoutdiv.active > div > button{
-    background: rgb(25,118,188);
     color: white;
+    background:rgb(25,118,188);
 }
 
 .layoutdiv:not(.haschildren) > .expanddiv,.layoutdiv:not(.haschildren) > .hiddenchildrendiv{
@@ -125,6 +128,40 @@ button:hover{
     text-align:left;
     white-space:nowrap;
     display:inline-block;
+}
+
+#sidenav .layoutdiv{
+    padding-bottom:0px;
+    padding-top:0px;
+}
+
+#sidenav .layoutdiv button{
+    padding:0px;
+    min-height:0px;
+    border:none;
+}
+
+#sidenav .layoutdiv button img{
+    width:12px;
+    padding-left:2px;
+}
+
+#sidenav .layoutdiv button div{
+    white-space:nowrap;
+    font-size:16px;
+    padding-top:2px;
+    padding-bottom:2px;
+}
+
+
+#sidenav .layoutdiv .movehandle{
+    left:-8px;
+    top:0px;
+    right:auto;
+}
+
+#sidenav .layoutdiv .deletelayoutdiv{
+    padding-right:0px;
 }
 
 .layoutdiv button input, .layoutdiv li input{
@@ -150,8 +187,8 @@ button:hover{
 
 .expanddiv{
     position:absolute;
-    left:-16px;
-    top:12px;
+    left:-18px;
+    top:4px;
 }
 
 
@@ -215,6 +252,10 @@ button:hover{
     bottom:5px;
 }
 
+.title *{
+    font-family:initial;
+}
+
 .menubar{
     display:block;
     height:50px;
@@ -245,12 +286,13 @@ button:hover{
     z-index: 2;
     top: 102px;
     left: 0;
-    box-shadow: 20px 0px 3px -20px;
+    box-shadow: 1px 0px 3px -1px;
     background: #ffffff;
 }
 
 .sidenavwrapper{
     overflow-y:auto;
+    overflow-x:hidden;
     padding: 20px;
     height:100%;
     width:100%;
@@ -304,7 +346,7 @@ button:hover{
     content: "\A Drag and drop to add";
     font-size: 10px;
     color: grey;
-    white-space:pre;
+    white-space:normal;
 }
 *:lang('fr') .nodebarh3::after{
     content: "\A Glisser-déplacer pour ajouter";
@@ -370,9 +412,19 @@ li img{
     height:100%;    
 }
 
+ul .expanddiv{
+    left:-18px;
+    top:10px;
+}
+
 ol .expanddiv{
     left:-40px;
-    top:8px;
+    top:10px;
+}
+
+
+.competencywrapper ul{
+    list-style-type:none;
 }
 
 .indicatordot{
@@ -680,20 +732,27 @@ div.highlighted{
     box-shadow:0px 0px 0px 5px yellow;
 }
 
+.bodywrapper{
+    text-align:center;
+    top:100px;
+    width:100%;
+    position:absolute;
+}
+
 .containerwrapper{
-    left:202px;
-    top:102px;
-    display:inline-block;
     position:relative;
+    display:inline-block;
     white-space:nowrap;
+    text-align:left;
 }
 
 .graphcontainer{
     display:inline-block;
     overflow:hidden;
     cursor:default;
-    margin:20px;
+    margin:40px;
     margin-right:400px;
+    margin-left:100px;
     background:#FFFFFF;
     box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
 }
@@ -731,10 +790,14 @@ div.highlighted{
 .helptextwrapper{
     white-space:normal;
     padding:20px;
+    margin:20px;
     position:relative;
     left:202px;
     top:102px;
+    box-sizing:border-box;
     width: calc(100% - 242px);
+    background:#FFFFFF;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
 }
 
 .helptextwrapper li{
@@ -745,6 +808,8 @@ div.highlighted{
 .sidenav a{
     width:100%;
     display:block;
+    padding:2px;
+    padding-left:10px;
 }
 
 .helptextwrapper h4::after{
@@ -924,11 +989,18 @@ div.highlighted{
     max-height:36px;
 }
 
-.outcometable tr td:first-child div:first-child{
+.outcometable .tagcell img{
+    vertical-align:middle;
+    display:inline-block;
+    margin-right:5px;
+}
+
+.outcometable .tagcell .tagtext{
     white-space:normal;
     max-height:36px;
-    min-height:26px;
     overflow:hidden;
+    vertical-align:middle;
+    display:inline-block;
 }
 
 .outcometable tr td:first-child .deletelayoutdiv{
@@ -955,7 +1027,7 @@ div.highlighted{
     position:absolute;
 }
 
-.outcometable tr td:firstchild{
+.outcometable tr td:first-child{
     position:relative;
 }
 
@@ -973,7 +1045,7 @@ div.highlighted{
 
 .outcometable tr.depth2 td:first-child{
     border-left:32px solid white;
-    font-size:12px;
+    font-size:14px;
 }
 
 .outcometable tr.toplevel td:first-child{
@@ -1038,14 +1110,14 @@ div.highlighted{
     right:auto;
 }
 
-.outcometable th .createlayoutdiv{
+.outcometable th .createlayoutdiv,.projectoverview .createlayoutdiv,.wftoolbar .createlayoutdiv{
     display:block;
     position:relative;
     color:rgb(25,118,188);
     font-size: 10px;
     left:10px;
     text-align:left;
-    width:90px;
+    width:95px;
     font-weight:100;
     
 }
@@ -1229,16 +1301,16 @@ div.highlighted{
     background:white;
     position:absolute;
     height:30px;
-    top:180px;
+    top:200px;
 }
 
 .columnfloatcontainer{
     pointer-events:none;
     position:sticky;
-    top:-80px;
+    top:-100px;
     height:0px;
-    width:calc(100% - 420px);
-    margin-left:20px;
+    width:calc(100% - 500px);
+    margin-left:100px;
     z-index:1;
     font-size:16px;
     font-family:sans-serif;
@@ -1273,6 +1345,175 @@ div.highlighted{
     background:#000066;
     color:#FFFFFF;
 }
+
+.projectoverview{
+    margin:40px;
+    width:800px;
+    box-sizing:border-box;
+    white-space:normal;
+    text-align:center;
+    
+}
+
+.projectoverview hr{
+    color:lightgray;
+}
+
+.projectoverview h1{
+    margin:36px;
+}
+
+.projectoverview h3{
+    margin-top:5px;
+}
+
+.projectoverview .projecttitle{
+    font-size:20px;
+    margin-bottom:12px;
+    position:relative;
+}
+
+.projectoverview .projecttitle > .deletelayoutdiv{
+    display:inline-block;
+}
+
+.projectoverview .categorywrapper{
+    width:220px;
+    display:inline-block;
+    vertical-align:top;
+    padding:10px;
+    border-radius:20px;
+    border: 2px solid rgb(25,118,188);
+    margin:10px;
+}
+
+.projectoverview .categorywrapper:hover{
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
+}
+
+.projectoverview .movehandle{
+    left:6px;
+    right:auto;
+    top:4px;
+    white-space:nowrap;
+    height:calc(100% - 8px);
+}
+
+.projectoverview .movehandle img{
+    vertical-align: middle;
+    display:inline-block;
+}
+
+.projectoverview .movehandle::before{
+    vertical-align:middle;
+    display:inline-block;
+    height:100%;
+    content:"";
+}
+
+.wftoolbar{
+    position:fixed;
+    width:240px;
+    height:calc(100% - 100px);
+    overflow-y:visible;
+    overflow-x:visible;
+    z-index:2;
+    top:100px;
+    box-shadow:0px 0px 3px 0px;
+    background:white;
+}
+
+.wftoolbar .contentwrapper{
+    overflow-y:auto;
+    overflow-x:hidden;
+    scrollbar-width:thin;
+    height:100%;
+    padding:0px;
+    width:100%;
+    box-sizing:border-box;
+}
+
+.wftoolbar.nodebar button{
+    text-align: left;
+    color: rgb(25,118,188);
+    border-color: rgb(25,118,188);
+    background-color: white;
+    padding: 4px;
+    overflow-x:hidden;
+    white-space:nowrap;
+    cursor:grab;
+    width: 100%;
+    margin: 1px;
+}
+
+.wftoolbar .blockwrapper{
+    margin-bottom:20px;
+    padding-left:24px;
+    padding-right:24px;
+}
+
+.wftoolbar .showhide{
+    top:12px;
+    position:absolute;
+    cursor:pointer;
+}
+
+.wftoolbar .showhide img{
+    filter:grayscale(100%);
+}
+
+.wftoolbar .showhide.toggled img{
+    filter:none;
+}
+
+.wftoolbar h4, .wftoolbar h3{
+    position:relative;
+}
+
+.wftoolbar .expandheaderdiv{
+    position:absolute;
+    left:-24px;
+    top:2px;
+}
+
+.wftoolbar hr{
+    margin-left:20%;
+    margin-right:20%;
+    color:lightgray;
+}
+
+.floatbardiv{
+    background: rgb(25,118,188);
+    padding: 5px;
+    height:100%;
+    box-sizing:border-box;
+    white-space: nowrap;
+    cursor:pointer;
+    display:none;
+}
+
+.floatbardiv img{
+    display:inline-block;
+    vertical-align: middle;
+}
+
+.floatbardiv div{
+    display:inline-block;
+    vertical-align: middle;
+    padding-left:6px;
+    padding-right:6px;
+}
+
+.floatbar{
+    position: absolute;
+    top:12px;
+    left: calc(100% + 72px);
+    white-space:nowrap;
+    color: white;
+    height:36px;
+}
+
+
 
     
 .printpreview .expanddiv{display:none;}

@@ -160,6 +160,7 @@ class Workflow{
     }
     
     addButton(container,recurse=true){
+        console.log("making a button");
         var button = new Layoutbutton(this,container);
         button.makeEditable(true,true,false);
         button.makeMovable();
@@ -168,6 +169,7 @@ class Workflow{
         if(recurse)for(var i=0;i<this.children.length;i++){
             this.children[i].addButton(button.childdiv);
         }
+        return button;
     }
     
     removeButton(button){
@@ -195,10 +197,6 @@ class Workflow{
     addChild(child,recurse=true){
         if(child==null)return;
         this.children.push(child);
-        //If child is at the root level, remove its button
-        if(child.buttons!=null&&child.buttons.length>0&&child.buttons[0].container.id=="layout"){
-            child.removeButton(child.buttons[0]);
-        }
         //Add it to the parent at all locations in the tree
         for(var i=0;i<this.buttons.length;i++){
             child.addButton(this.buttons[i].childdiv,recurse);
@@ -227,12 +225,7 @@ class Workflow{
                 }
             }
         }
-        //if no instances still exist, move it back into the root
-        if(child.buttons.length==0){
-            child.addButton(this.project.layout);
-            this.project.workflows.splice(this.project.workflows.indexOf(child),1);
-            this.project.workflows.push(child);
-        }
+        
         
         
     }
@@ -339,9 +332,11 @@ class Workflow{
                 this.currentUndo=-1;
                 this.addUndo("Initial",this);
             }
+            
             $("#outcomeview").removeClass("disabled");
             $("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
+            $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
@@ -567,6 +562,7 @@ class Workflow{
     }
     
     removeTagSet(tag,purge=true,purgechildren=true){
+        console.log(tag);
         if(this.tagSets.indexOf(tag)>=0){
             this.tagSets.splice(this.tagSets.indexOf(tag),1);
         }else if(tag.parentTag!=null){
@@ -578,6 +574,20 @@ class Workflow{
         if(purge)this.purgeTag(tag,purgechildren);
         if(this.view)this.view.tagSetRemoved(tag);
             
+    }
+    
+    deleteTagSet(tag){
+        var allTags = [];
+        allTags = tag.getAllTags(allTags);
+        for(var i=0;i<allTags.length;i++){
+            var currentTag = allTags[i];
+            if(this.tagSets.indexOf(currentTag)>=0){
+                this.tagSets.splice(this.tagSets.indexOf(currentTag),1);
+                if(this.view)this.view.tagSetRemoved(currentTag);
+            }
+        }
+        this.purgeTag(tag,true);
+        
     }
     
     purgeTag(tag,purgechildren){
@@ -758,7 +768,7 @@ class Workflow{
         //If we have just done one or more undos, the index will be less than the max; we should destroy everything past the current index.
         if(this.currentUndo<this.undoHistory.length-1){
             this.undoHistory.splice(this.currentUndo+1,this.undoHistory.length-2-this.currentUndo)
-        }        
+        }
         //If the most recent undo is of the same type and source, we probably only need to keep one.
         if(this.undoHistory.length>1){
             var lastUndo = this.undoHistory[this.undoHistory.length-1];
@@ -783,7 +793,7 @@ class Workflow{
                 wf.xmlData = lastUndo.xml;
                 wf.clearAll();
                 wf.tagSets = [];
-                for(var i=0;i<lastUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getCompByID(lastUndo.tagSets[i]));
+                for(var i=0;i<lastUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getTagByID(lastUndo.tagSets[i]));
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
                 if(wf.view)wf.view.makeActive();
@@ -806,7 +816,7 @@ class Workflow{
                 wf.xmlData = nextUndo.xml;
                 wf.clearAll();
                 wf.tagSets=[];
-                for(var i=0;i<nextUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getCompByID(nextUndo.tagSets[i]));
+                for(var i=0;i<nextUndo.tagSets.length;i++)                wf.tagSets.push(wf.project.getTagByID(nextUndo.tagSets[i]));
                 wf.openXMLData();
                 wf.updateChildrenFromNodes();
                 wf.view.makeActive();

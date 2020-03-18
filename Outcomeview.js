@@ -24,7 +24,7 @@ class Outcomeview{
         this.headRow;
         this.tagViews;
         this.tableCells=[];
-        this.toolbarDiv;
+        this.toolbar;
         this.displayBar;
         this.editbar;
         this.tbody;
@@ -79,8 +79,8 @@ class Outcomeview{
     makeActive(){
         this.container.style.width="";
         this.container.style.height="";
-        this.toolbarDiv = document.getElementById('nbWrapper');
-        this.toolbarDiv.parentElement.style.display="inline-block";
+        this.toolbar = new WFToolbar(this.wf.project,document.getElementById('nbContainer'),"right","nodebar36");
+        this.toolbar.container.classList.add("nodebar");
         
         this.createTitleNode();
         this.createAuthorNode();
@@ -105,6 +105,7 @@ class Outcomeview{
         
         
         $("#print").removeClass("disabled");
+        $("#exportcsv").removeClass("disabled");
         $("#expand").removeClass("disabled");
         $("#collapse").removeClass("disabled");
         $("#showlegend").removeClass("disabled");
@@ -114,7 +115,7 @@ class Outcomeview{
     makeInactive(){
         this.editbar.disable();
 
-        this.toolbarDiv.parentElement.style.display="none";
+        this.toolbar.container.style.display="none";
         for(var i=0;i<this.wf.tagSets.length;i++){
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
         }
@@ -131,6 +132,7 @@ class Outcomeview{
         document.body.contextItem = this.wf.project;
         
         $("#print").addClass("disabled");
+        $("#exportcsv").addClass("disabled");
         $("#expand").addClass("disabled");
         $("#collapse").addClass("disabled");
         $("#showlegend").addClass("disabled");
@@ -410,7 +412,7 @@ class Outcomeview{
     }
     
     populateTagBar(){
-        this.populateTagSelect(this.wf.project.competencies,this.wf.getTagDepth());
+        this.populateTagSelect(this.wf.project.workflows["outcome"],this.wf.getTagDepth());
     }
     
     nodeMovedTo(node1,node2,isAfter=true){
@@ -481,25 +483,22 @@ class Outcomeview{
     }
 
     generateToolbars(){
-        var container = this.toolbarDiv;
-        container.parentElement.style.display="inline";
-        while(container.firstChild)container.removeChild(container.firstChild);
-        if(container.nextElementSibling==null||!container.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(container.parentElement,"left");
-        this.generateNodeBar(container);
-        this.generateTagBar(container);
-        this.generateDisplayBar(container);
-        this.generateSortBar(container);
+        var toolbar = this.toolbar;
+        if(this.wf.project.readOnly)toolbar.container.style.display="none";
+        else toolbar.container.style.display="inline";
+       
+        this.generateNodeBar();
+        this.generateTagBar();
+        this.generateDisplayBar();
+        this.generateSortBar();
+        this.toolbar.show();
+        this.toolbar.toggleShow();
+        this.toolbar.toggled=true;
         
     }
     
     generateNodeBar(){
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML=LANGUAGE_TEXT.workflowview.nodeheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
-        
-        this.nodeBarDiv = document.createElement('div');
-        this.toolbarDiv.appendChild(this.nodeBarDiv);
+        this.nodeBarDiv = this.toolbar.addBlock(LANGUAGE_TEXT.workflowview.nodeheader[USER_LANGUAGE],null,"nodebarh3");
         this.populateNodeBar();
     }
     
@@ -547,17 +546,12 @@ class Outcomeview{
         
         var wf = this.wf;
         var p=wf.project;
-        var header = document.createElement('h3');
-        //header.className="nodebarh3";
-        header.innerHTML=LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
         
-        
-        
+        var tagBarDiv = this.toolbar.addBlock(LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE],null);
         
         var compSelect = document.createElement('select');
         this.tagSelect=compSelect;
-        this.populateTagSelect(p.competencies,this.wf.getTagDepth());
+        this.populateTagSelect(p.workflows["outcome"],this.wf.getTagDepth());
         
         var addButton = document.createElement('button');
         addButton.innerHTML = LANGUAGE_TEXT.workflowview.assignoutcome[USER_LANGUAGE];
@@ -575,19 +569,14 @@ class Outcomeview{
         }
         
         
-        this.toolbarDiv.appendChild(compSelect);
-        this.toolbarDiv.appendChild(addButton);
+        tagBarDiv.parentElement.appendChild(compSelect);
+        tagBarDiv.parentElement.appendChild(addButton);
         
     }
     
     generateDisplayBar(){
         
-        var header = document.createElement('h3');
-        header.innerHTML = LANGUAGE_TEXT.outcomeview.displayheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
-        this.displayBar = document.createElement('div');
-        this.toolbarDiv.appendChild(this.displayBar);
-        
+        this.displayBar = this.toolbar.addBlock(LANGUAGE_TEXT.outcomeview.displayheader[USER_LANGUAGE]);       
         this.populateDisplayBar();
         
     }
@@ -605,13 +594,13 @@ class Outcomeview{
     generateSortBar(){
         var wf = this.wf;
         
-        var header = document.createElement('h3');
-        header.innerHTML = LANGUAGE_TEXT.outcomeview.sortbyheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
+        var sortDiv = this.toolbar.addBlock(LANGUAGE_TEXT.outcomeview.sortbyheader[USER_LANGUAGE]);
+        
+        
         
         for(var prop in LANGUAGE_TEXT.outcomeview.sortradio){
             if(this instanceof ProgramOutcomeview&&prop=="icon")continue;
-            this.toolbarDiv.appendChild(this.createSortRadio(prop));
+            sortDiv.appendChild(this.createSortRadio(prop));
         }
     }
     
@@ -702,7 +691,7 @@ class Outcomeview{
         compSelect.add(opt);
         for(var i=0;i<allTags.length;i++){
             opt = document.createElement('option');
-            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getType()[0]+" - "+allTags[i].name;
+            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getNameType()[0]+" - "+allTags[i].name;
             opt.value = allTags[i].id;
             compSelect.add(opt);
         }
@@ -746,6 +735,48 @@ class Outcomeview{
         var layout = this.wf;
         
         layout.populateMenu(menu);
+        
+    }
+    
+    toCSV(){
+        var table = this.table;
+        var items = table.childNodes;
+        var rows = [];
+        //Find all the rows
+        for(var i=0;i<items.length;i++){
+            console.log(items.item(i));
+            if(items.item(i).nodeName=="TBODY"){
+                var bodyitems = items.item(i).childNodes;
+                for(var j=0;j<bodyitems.length;j++){
+                    if(bodyitems.item(j).nodeName=="TR")rows.push(bodyitems.item(j));
+                }
+            }
+        }
+        var csv = "\""+this.wf.name+"\"";
+        for(var i=0;i<this.categoryViews.length;i++){
+            csv+=",,\""+this.categoryViews[i].name+"\"";
+            csv+=(",").repeat(this.categoryViews[i].nodeViews.length-2);
+        }
+        csv+="\n"
+        for(var i=0;i<this.categoryViews.length;i++){
+            for(var j=0;j<this.categoryViews[i].nodeViews.length;j++){
+                csv+=",\""+this.categoryViews[i].nodeViews[j].namediv.innerHTML+"\""
+            }
+        }
+        csv+="\n";
+        for(var i=0;i<rows.length;i++){
+            var cells = rows[i].childNodes;
+            for(var j=0;j<cells.length;j++){
+                var cell = cells.item(j);
+                if(j>0)csv+=",";
+                if(cell.classList.contains("tagcell")){
+                    csv+="\""+$(cell).children(".tagtext")[0].innerHTML+"\"";
+                }else if(cell.csvtext)csv+=cell.csvtext;
+            }
+            csv+="\n";
+            
+        }
+        return csv;
         
     }
     
@@ -1466,8 +1497,13 @@ class OutcomeTagview{
         if(wf.tagSets.indexOf(this.tag)>=0)vertex.classList.add("toplevel")
         if(this.tag)vertex.classList.add("depth"+this.tag.depth);
         parent.appendChild(vertex);
+        var img = document.createElement('img');
+        if(this.tag)img.src = "resources/data/"+this.tag.getIcon()+"24.png";
         this.nameCell = document.createElement('div');
+        this.nameCell.classList.add("tagtext");
         var cell = document.createElement('td');
+        cell.classList.add("tagcell");
+        cell.appendChild(img);
         cell.appendChild(this.nameCell);
         this.updateName()
         vertex.appendChild(cell);
@@ -1694,6 +1730,7 @@ class OutcomeTableCell{
         var tag = this.tag;
         var node = this.nodeview.nodes[0];
         this.vertex = document.createElement('td');
+        this.vertex.csvtext="";
         if(this.nodeview.isTotal)this.vertex.classList.add("totalcell");
         else if(this.nodeview.nodes.length==0)this.vertex.classList.add("emptycell");
         parent.insertBefore(this.vertex,createBefore);
@@ -1733,11 +1770,19 @@ class OutcomeTableCell{
         if(completeness==1){
             this.checkbox.checked=true;
             this.validationImg.src = "resources/images/check16.png";
+            this.vertex.csvtext="(Y)";
         }else{
             this.checkbox.checked=false;
-            if(completeness==0&&this.nodeview.isTotal&&this.nodeview==this.nodeview.cv.wf.view.grandTotal)this.validationImg.src = "resources/images/warningcheck16.png";
-            else if(completeness>0)this.validationImg.src = "resources/images/nocheck16.png";
-            else this.validationImg.src = "";
+            if(completeness==0&&this.nodeview.isTotal&&this.nodeview==this.nodeview.cv.wf.view.grandTotal){
+                this.validationImg.src = "resources/images/warningcheck16.png";
+                this.vertex.csvtext="(N)";
+            }else if(completeness>0){
+                this.validationImg.src = "resources/images/nocheck16.png";
+                this.vertex.csvtext="(P)";
+            }else {
+                this.validationImg.src = "";
+                this.vertex.csvtext="";
+            }
         }
     }
     

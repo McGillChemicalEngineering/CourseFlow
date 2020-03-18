@@ -18,29 +18,29 @@
 class Project{
     constructor(container){
         this.xmlData;
-        this.workflows=[];
-        this.competencies=[];
+        this.workflows={activity:[],course:[],program:[],outcome:[]};
         this.graph;
         this.activeLayout;
         this.terminologySet = "standard";
         this.outcomesview = false;
         this.container=container;
-        this.sidenav = document.getElementById("sidenav");
-        this.layout = document.getElementById("layout");
+        this.sidenav = new WFToolbar(this,document.getElementById("sidenav"),"left","layoutnav36");
+        this.navigatorDivs = {};
         this.newWFDiv = document.getElementById("newWFDiv");
         this.newWFButton;
-        this.compDiv = document.getElementById("competencydiv");
-        this.newCompDiv = document.getElementById("newCompDiv");
-        this.newCompButton;
-        this.nameDiv = document.getElementById("prname");
+        this.nameDiv = this.sidenav.addBlock(LANGUAGE_TEXT.layoutnav.navigator[USER_LANGUAGE],null,null,'3');
+        this.buttons=[];
+        this.addButton(this.nameDiv,false);
         var p = this;
         this.idNum=0;
         this.loadAppend=false;
         this.name = LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE];
         this.readOnly=false;
+        this.floatbar = document.createElement('div');
         
         $("#save").removeClass("disabled");
         $("#import").removeClass("disabled");
+        $("#importcsv").removeClass("disabled");
         $("#savereadonly").removeClass("disabled");
         $("#genhelp").removeClass("disabled");
         $("#layouthelp").removeClass("disabled");
@@ -50,66 +50,30 @@ class Project{
         $("#sidenav").get()[0].contextItem=p;
         $("#topnav").get()[0].contextItem=p;
         
-        makeResizable(this.sidenav,"right");
         
         
         //Add the ability to edit the name of the project
-        var nameIcon = document.createElement('img');
+        /*var nameIcon = document.createElement('img');
         nameIcon.src="resources/images/edit16.png";
         nameIcon.style.width='16px';
         var nameDiv = this.nameDiv;
         nameDiv.parentElement.onclick=function(){
             if(p.readOnly)return;
             else p.requestName(LANGUAGE_TEXT.layoutnav.projectreanmetitle[USER_LANGUAGE]);
-            /*var tempfunc = nameDiv.onclick;
-            var name=p.name;
-            if(name==null)name="";
-            //create an input, on enter or exit make that the new name
-            nameDiv.innerHTML="<input type='text' class = 'fixedwidthinput' value = '"+p.name+"'placeholder='<type a new name here>'></input>";
-            nameDiv.firstElementChild.focus();
-            nameDiv.firstElementChild.select();
-            nameDiv.onclick=null;
-            container.onclick=function(){
-                if(nameDiv.firstElementChild!=null)nameDiv.firstElementChild.blur();
-                container.onclick=null;
-            };
-            nameDiv.firstElementChild.addEventListener("focusout",function(){
-                nameDiv.onclick=tempfunc;
-                if(nameDiv.firstElementChild.value=="")nameDiv.innerHTML=p.name;
-                else p.setName(nameDiv.firstElementChild.value);
-            });*/
-        }
-        var editNameDiv = document.createElement('div');
+            
+        }*/
+        /*var editNameDiv = document.createElement('div');
         editNameDiv.className="deletelayoutdiv";
         editNameDiv.appendChild(nameIcon);
         editNameDiv.style.display="inline-block";
         editNameDiv.style.top="0px";
         nameDiv.parentElement.style.position="relative";
         nameDiv.parentElement.appendChild(editNameDiv);
+        */
+        this.createNavigators();
+        this.createFloatBar();
         
         
-        
-        var newWFSelect = $("#newwfselect").get()[0];
-        this.fillWFSelect(newWFSelect);
-        this.newWFDiv.appendChild(newWFSelect);
-        var newWF = $("#newwfbutton").get()[0];
-        newWF.onclick= function(){
-            var type = newWFSelect.value;
-            p.addWorkflow(type);
-            gaEvent('Workflow','Add',type,p.workflows.length);
-            p.changeActive(p.workflows[p.workflows.length-1]);
-        }
-        this.newWFButton = newWF;
-        this.newWFDiv.appendChild(newWF);
-        
-        var newComp = $("#newcompbutton").get()[0];
-        newComp.onclick = function(){
-            p.addCompetency();
-            gaEvent('Outcome','Add','',p.competencies.length);
-            p.changeActive(p.competencies[p.competencies.length-1],false);
-        }
-        this.newCompButton = newComp;
-        this.newCompDiv.appendChild(newComp);
         
         
         
@@ -125,7 +89,7 @@ class Project{
         save.onclick = function(){
             try{
                 p.saveProject();
-                gaEvent('Save/Open','Save',p.name,p.workflows.length+p.competencies.length);
+                gaEvent('Save/Open','Save',p.name);
             }catch(err){
                 alert(LANGUAGE_TEXT.errors.filesave[USER_LANGUAGE]);
                 gaError("Save",err);
@@ -145,7 +109,7 @@ class Project{
                 var readData = evt.target.result;
                 try{
                     p.fromXML(readData,p.loadAppend);
-                    gaEvent('Save/Open','Open',p.name,p.workflows.length+p.competencies.length);
+                    gaEvent('Save/Open','Open',p.name);
                     var splash = document.getElementById("splashpage");
                     var renamebarrier = document.getElementById("renamebarrier");
                     if(splash.style.display!="none"){
@@ -162,6 +126,8 @@ class Project{
                     alert(LANGUAGE_TEXT.errors.fileopen[USER_LANGUAGE]);
                     gaError("Open",err);
                 }
+                
+                p.changeActive(p);
             }
         }
         
@@ -169,6 +135,27 @@ class Project{
         this.fileLoader.type="file";
         this.fileLoader.accept=".xml,.CFlow";
         this.fileLoader.addEventListener('change',openProject);
+        
+        
+        var openCSV = function(){
+            var reader = new FileReader();
+            reader.readAsText(p.csvLoader.files[0]);
+            reader.onload = function(evt){
+                var readData = evt.target.result;
+                try{
+                    p.loadCSV(readData);
+                    gaEvent('Save/Open','ImportCSV',p.name);
+                }catch(err){
+                    alert(LANGUAGE_TEXT.errors.loadcsv[USER_LANGUAGE]);
+                }
+            }
+        }
+        
+        this.csvLoader = document.createElement("input");
+        this.csvLoader.type="file";
+        this.csvLoader.accept=".csv";
+        this.csvLoader.addEventListener('change',openCSV);
+        
         open.onclick = function(){
             p.loadAppend=false;
             p.fileLoader.click();
@@ -178,8 +165,14 @@ class Project{
         
         var exportWF = document.getElementById('export');
         exportWF.onclick = function(){
-            gaEvent('Save/Open','Export',p.name,p.workflows.length+p.competencies.length);
+            gaEvent('Save/Open','Export',p.name);
             p.exportCurrent();
+        }
+        
+        var exportCSV = document.getElementById('exportcsv');
+        exportCSV.onclick = function(){
+            gaEvent('Save/Open','ExportCSV',p.name);
+            p.exportCSV();
         }
         
         var importWF = document.getElementById('import');
@@ -187,19 +180,25 @@ class Project{
             if(p.readOnly)return;
             p.loadAppend=true;
             p.fileLoader.click();
-            gaEvent('Save/Open','Import',p.name,p.workflows.length+p.competencies.length);
+            gaEvent('Save/Open','Import',p.name);
+        }
+        
+        var importCSV = document.getElementById('importcsv');
+        importCSV.onclick = function(){
+            if(p.readOnly)return;
+            p.csvLoader.click();
         }
         
         var saveReadOnly = document.getElementById('savereadonly');
         saveReadOnly.onclick = function(){
-            gaEvent('Save/Open','Save Read Only',p.name,p.workflows.length+p.competencies.length);
+            gaEvent('Save/Open','Save Read Only',p.name);
             p.saveProject(true);
         }
         
         var printWF = document.getElementById("print");
         printWF.onclick = function(){
             p.printActive();
-            gaEvent('Save/Open','Print',p.name,p.workflows.length+p.competencies.length);
+            gaEvent('Save/Open','Print',p.name);
         }
         
         var undoButton = document.getElementById("undo");
@@ -356,6 +355,8 @@ class Project{
             }
         });
         
+        this.changeActive(this);
+        
         
         
 		
@@ -371,6 +372,25 @@ class Project{
     
     saveXML(xml,filename){
         var file = new Blob([xml], {type: "data:text;charset=utf-8;"});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            a.target="save as";
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+    
+    saveCSV(csv,filename){
+        var file = new Blob([csv], {type: "data:text;charset=utf-8;"});
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
@@ -410,6 +430,20 @@ class Project{
         this.saveXML(xml,filename);
     }
     
+    exportCSV(){
+        var csv;
+        var filename;
+        if(this.activeLayout instanceof Tag){
+            csv = this.activeLayout.toCSV();
+            filename = "Exported_Outcome";
+        }else if(this.activeLayout.view instanceof Outcomeview){
+            csv = this.activeLayout.view.toCSV();
+            filename = "Outcomes_Table"
+        }
+        if(csv)this.saveCSV(csv,filename+".csv");
+        
+    }
+    
     getDependencies(wf){
         var array = [];
         for(var i=0;i<wf.children.length;i++){
@@ -440,7 +474,6 @@ class Project{
         if(p.readOnly==readOnly)return;
         p.readOnly=readOnly;
         p.newWFButton.disabled=readOnly;
-        p.newCompButton.disabled=readOnly;
         if(readOnly)document.body.classList.add("readonly");
         else document.body.classList.remove("readonly");
     }
@@ -470,7 +503,8 @@ class Project{
     setName(name){
         name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
         this.name=name;
-        this.nameDiv.innerHTML=name;
+        for(var i=0;i<this.buttons.length;i++)this.buttons[i].updateButton();
+        if(this.view)this.view.nameUpdated();
     }
     
     
@@ -482,26 +516,23 @@ class Project{
         xml+=makeXML(this.idNum,"idnum");
         xml+=makeXML(this.terminologySet,"terminologyset");
         if(readOnly)xml+=makeXML("true","readonly");
-        for(var i=0;i<this.workflows.length;i++){
-            xml+=this.workflows[i].toXML();
-        }
-        for(var i=0;i<this.competencies.length;i++){
-            xml+=this.competencies[i].toXML();
+        for(var prop in this.workflows){
+            for(var i=0;i<this.workflows[prop].length;i++){
+                xml+=this.workflows[prop][i].toXML();
+            }
         }
         this.xmlData = makeXML(xml,"project");
     }
     
     clearProject(){
         if(this.activeLayout!=null){this.activeLayout.makeInactive();this.activeLayout=null;}
-        while(this.layout.childElementCount>0)this.layout.removeChild(this.layout.firstElementChild);
-        this.workflows=[];
-        while(this.compDiv.childElementCount>0)this.compDiv.removeChild(this.compDiv.firstElementChild);
-        this.competencies=[];
+        for(var prop in this.navigatorDivs)while(this.navigatorDivs[prop].childElementCount>0)this.navigatorDivs[prop].removeChild(this.navigatorDivs[prop].firstElementChild);
+        this.workflows={activity:[],course:[],program:[],outcome:[]};
         this.name="New Project";
         this.terminologySet= "standard";
         $("#terminologycegep").removeClass("disabled");
         $("#terminologystandard").addClass("disabled");
-        this.nameDiv.innerHTML = this.name;
+        for(var i=0;i<this.buttons.length;i++)this.buttons[i].updateButton();
         this.idNum="0";
         
     }
@@ -521,20 +552,20 @@ class Project{
             if(readOnly)this.makeReadOnly(true);
             else this.makeReadOnly(false);
         }
-        var startWF = this.workflows.length;
+        var addedWF = [];
         var xmltags = [];
         for(var i=0;i<xmlDoc.childNodes[0].childNodes.length;i++){
             if(xmlDoc.childNodes[0].childNodes[i].tagName=="tag")xmltags.push(xmlDoc.childNodes[0].childNodes[i]);
         }
         for(i=0;i<xmltags.length;i++){
-            this.addCompetencyFromXML(xmltags[i]);
+            this.addWorkflowFromXML(xmltags[i]);
         }
         var xmlwfs = xmlDoc.getElementsByTagName("workflow");
         for(i=0;i<xmlwfs.length;i++){
-            this.addWorkflowFromXML(xmlwfs[i]);
+            addedWF.push(this.addWorkflowFromXML(xmlwfs[i]));
         }
-        for(i=startWF;i<this.workflows.length;i++){
-            var wf = this.workflows[i];
+        for(i=0;i<addedWF.length;i++){
+            var wf =addedWF[i];
             for(var j=0;j<wf.usedWF.length;j++){
                 wf.addChild(this.getWFByID(wf.usedWF[j]),false);
             }
@@ -554,34 +585,27 @@ class Project{
         var wf;
         if(type=="activity")wf = new Activityflow(this.container,this);
         else if(type=="program")wf = new Programflow(this.container,this);
-        else wf = new Courseflow(this.container,this);
-        wf.addButton(this.layout);
-        this.workflows.push(wf);
+        else if(type=="course")wf = new Courseflow(this.container,this);
+        else if(type=="outcome")wf = new Tag(this);
+        else return;
+        wf.addButton(this.navigatorDivs[type]);
+        if(this.view)this.view.workflowAdded(wf);
+        this.workflows[type].push(wf);
         return wf;
     }
     
-    addCompetency(){
-        var tag = new Tag(this,null);
-        tag.addButton(this.compDiv);
-        this.competencies.push(tag);
-        return tag;
-    }
     
     addWorkflowFromXML(xml){
-        var wf = this.addWorkflow(getXMLVal(xml,"wftype"));
+        var type = getXMLVal(xml,"wftype");
+        if(type==null)type="outcome";
+        var wf = this.addWorkflow(type);
         wf.fromXML(xml);
         return wf;
     }
     
-    addCompetencyFromXML(xml){
-        var tag = this.addCompetency();
-        tag.fromXML(xml);
-    }
     
     moveLayout(layout1,layout2,isAfter){
-        var array;
-        if(layout1 instanceof Tag)array=this.competencies;
-        else array=this.workflows;
+        var array = this.workflows[layout1.getType()];
         if(array.indexOf(layout1)<0||array.indexOf(layout2)<0)console.log("OH NO!");
         array.splice(array.indexOf(layout1),1);
         array.splice(array.indexOf(layout2)+isAfter,0,layout1);
@@ -603,81 +627,45 @@ class Project{
     
     //Causes the workflow to delete itself and all its contents
     deleteWF(wf){
-        for(var i=wf.children.length-1;i>=0;i--){
+        if(wf instanceof Workflow)for(var i=wf.children.length-1;i>=0;i--){
             wf.removeChild(wf.children[i]);
         }
         //Seek out all wf that use this one, remove it from children and from any nodes that use it
-        for(i=0;i<this.workflows.length;i++){
-            var wfp = this.workflows[i];
-            wfp.purgeUsedWF(wf);
+        for(var prop in this.workflows){
+            for(i=0;i<this.workflows[prop].length;i++){
+                var wfp = this.workflows[prop][i];
+                if(wfp instanceof Workflow){
+                    if(wf instanceof Workflow)wfp.purgeUsedWF(wf);
+                    else if(wf instanceof Tag)wfp.deleteTagSet(wf);
+                }
+            }
         }
         while(wf.buttons.length>0){
             wf.removeButton(wf.buttons[0]);
         }
-        if(this.activeLayout==wf){this.activeLayout.makeInactive();this.activeLayout=null;}
-        this.workflows.splice(this.workflows.indexOf(wf),1);
-    }
-    
-    //Causes the competency to delete itself and all its contents
-    deleteComp(tag){
-        //Seek out all wf that use this one, remove it from tags and from any nodes that use it
-        for(var i=0;i<this.workflows.length;i++){
-            var wf = this.workflows[i];
-            wf.removeTagSet(tag);
-        }
-        for(i=0;i<tag.buttons.length;i++){
-            tag.removeButton(tag.buttons[i]);
-        }
-        if(this.activeLayout==tag){this.activeLayout.makeInactive();this.activeLayout=null;}
-        this.competencies.splice(this.competencies.indexOf(tag),1);
-        if(this.activeLayout instanceof Workflow&&this.activeLayout.view&&this.activeLayout.view.tagSelect!=null){
+        if(this.activeLayout==wf){this.changeActive(this);}
+        this.workflows[wf.getType()].splice(this.workflows[wf.getType()].indexOf(wf),1);
+        
+        if(wf instanceof Tag && this.activeLayout instanceof Workflow&&this.activeLayout.view&&this.activeLayout.view.tagSelect!=null){
             this.activeLayout.view.populateTagBar();
-            this.activeLayout.view.populateTagSelect(this.competencies,wf.getTagDepth());
+            this.activeLayout.view.populateTagSelect(this.workflows["outcome"],this.activeLayout.getTagDepth());
         }
     }
     
-    fillWFSelect(select){
-        select.innerHTML="";
-        var opt = document.createElement('option');
-        opt.text=LANGUAGE_TEXT.workflow.activity[USER_LANGUAGE];
-        opt.value="activity";
-        select.add(opt);
-        opt = document.createElement('option');
-        opt.text=LANGUAGE_TEXT.workflow.course[USER_LANGUAGE];
-        opt.value="course";
-        select.add(opt);
-        opt = document.createElement('option');
-        opt.text=LANGUAGE_TEXT.workflow.program[USER_LANGUAGE];
-        opt.value="program";
-        select.add(opt);
-    }
-    
-    getWFIndex(wf){
-        return this.workflows.indexOf(wf);
-    }
-    
-    getCompIndex(tag){
-        return this.competencies.indexOf(tag);
-    }
     
     getWFByID(id){
-        for(var i=0;i<this.workflows.length;i++){
-            if(this.workflows[i].id==id)return this.workflows[i];
+        for(var prop in this.workflows){
+            for(var i=0;i<this.workflows[prop].length;i++){
+                if(this.workflows[prop][i].id==id)return this.workflows[prop][i];
+            }
         }
         return null;
     }
     
-    getCompByID(id){
-        for(var i=0;i<this.competencies.length;i++){
-            var tag = this.competencies[i].getTagByID(id);
-            if(tag!=null)return tag;
-        }
-        return null;
-    }
     
     getTagByID(id){
-        for(var i=0;i<this.competencies.length;i++){
-            var tag = this.competencies[i].getTagByID(id);
+        for(var i=0;i<this.workflows["outcome"].length;i++){
+            var tag = this.workflows["outcome"][i].getTagByID(id);
             if(tag!=null)return tag;
         }
         return null;
@@ -686,15 +674,101 @@ class Project{
     changeActive(layout){
         var p = this;
         makeLoad(function(){
+            if(layout==p)$("#returndiv").css("display","none");
+            else $("#returndiv").css("display","inline-block");
             if(p.activeLayout!=null)p.activeLayout.makeInactive();
             p.activeLayout = layout;
             if(layout instanceof Workflow)layout.makeActive(p.container);
             else if (layout instanceof Tag)layout.makeActive(new Tagbuilder(p.container,layout));
+            else if (layout instanceof Project)layout.makeActive(p.container);
         });
     }
     
+    makeActive(container){
+        for(var i=0;i<this.buttons.length;i++)this.buttons[i].makeActive();
+        this.view = new ProjectOverview(container,this);
+        this.view.makeActive();
+    }
+        
+    makeInactive(){
+        for(var i=0;i<this.buttons.length;i++)this.buttons[i].makeInactive();
+        this.view.makeInactive();
+        this.view = null;
+    }
+    
+    createNavigators(){
+        for(var prop in this.workflows){
+            this.createNavigator(prop);
+        }
+    }
+    
+    createNavigator(type){
+        var p = this;
+        var createNew = document.createElement('div');
+        createNew.innerHTML = "+"+LANGUAGE_TEXT.layoutnav.createnew[USER_LANGUAGE];
+        createNew.className = "createlayoutdiv";
+        createNew.onclick = function(){p.addWorkflow(type);}
+        this.navigatorDivs[type] = this.sidenav.addBlock(LANGUAGE_TEXT.workflow.plurals[type][USER_LANGUAGE],createNew);
+        
+        
+    }
+    
+    addButton(container,recurse=true){
+        console.log("making a button");
+        var button = new Layoutbutton(this,container);
+        button.makeEditable(true,false,false);
+        this.buttons.push(button);
+        if(recurse)for(var i=0;i<this.children.length;i++){
+            this.children[i].addButton(button.childdiv);
+        }
+        console.log(button);
+        return button;
+    }
+    
+    getButtonClass(){
+        return "layoutactivity";
+    }
+    
+    getIcon(){
+        return null;
+    }
+    
+    clickButton(){
+        this.changeActive(this);
+    }
+    
+    createFloatBar(){
+        var p = this;
+        var floatbar = this.floatbar;
+        floatbar.classList.add("floatbar");
+        this.sidenav.container.appendChild(floatbar);
+        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.layoutnav.returntooverview[USER_LANGUAGE],"returnimg","returndiv"));
+        console.log(floatbar);
+        console.log($("#returndiv"));
+        $("#returndiv")[0].onclick = function(){p.changeActive(p)};
+        /*floatbar.appendChild(this.createFloatBarButton("","expand","expandfloatbar"));
+        $("#expandfloatbar")[0].onclick = function(){$("#expand")[0].click();}
+        floatbar.appendChild(this.createFloatBarButton("","collapse","collapsefloatbar"));
+        $("#collapsefloatbar")[0].onclick = function(){$("#collapse")[0].click();}
+        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE],"outcomeview","outcomeviewfloatbar"));*/
+        
+    }
+    
+    createFloatBarButton(text,imgname,id){
+        var div = document.createElement('div');
+        var img = document.createElement("img");
+        var textdiv = document.createElement('div');
+        div.id = id;
+        div.classList.add("floatbardiv")
+        div.appendChild(img);
+        div.appendChild(textdiv);
+        img.src="resources/images/"+imgname+"24.png";
+        textdiv.innerHTML = text;
+        return div;
+    }
+    
     showHelp(url){
-        gaEvent('View','Help',url,this.workflows.length+this.competencies.length);
+        gaEvent('View','Help',url);
         var helpFrame = document.getElementById("helpFrame");
         helpFrame.src = "resources/helpdocs/"+url;
         helpFrame.parentElement.classList.add("active");
@@ -813,13 +887,13 @@ class Project{
         if(term!=this.terminologySet){
             var oldterm = this.terminologySet;
             this.terminologySet = term;
-            for(var i=0;i<this.competencies.length;i++){
-                this.competencies[i].terminologyUpdated(oldterm);
+            for(var i=0;i<this.workflows["outcome"].length;i++){
+                this.workflows["outcome"][i].terminologyUpdated(oldterm);
             }
         }
         if(this.activeLayout instanceof Workflow){
             var wf = this.activeLayout;
-            if(wf.view&&wf.view.tagSelect)wf.view.populateTagSelect(this.competencies,wf.getTagDepth());
+            if(wf.view&&wf.view.tagSelect)wf.view.populateTagSelect(this.workflows["outcome"],wf.getTagDepth());
         }
         if(term=="standard"){
             $("#terminologycegep").removeClass("disabled");
@@ -835,11 +909,25 @@ class Project{
         makeLoad(function(){
             if(p.activeLayout!=null)p.activeLayout.makeInactive();
             USER_LANGUAGE=lang;
+            p.nameDiv.headertext.innerHTML = LANGUAGE_TEXT.layoutnav.navigator[lang]+":";
+            for(var prop in p.navigatorDivs){p.navigatorDivs[prop].headertext.innerHTML=LANGUAGE_TEXT.workflow.plurals[prop][lang];}
+            $("#sidenav .createlayoutdiv").html("+"+LANGUAGE_TEXT.layoutnav.createnew[lang]);
+            p.floatbar.innerHTML = "";
+            p.createFloatBar();
             setMenuLanguage();
-            p.fillWFSelect($("#newwfselect").get()[0]);
             if(p.activeLayout instanceof Workflow)p.activeLayout.makeActive(p.container);
-            if(p.activeLayout instanceof Tag)p.activeLayout.makeActive(new Tagbuilder(p.container,p.activeLayout));
+            else if(p.activeLayout instanceof Tag)p.activeLayout.makeActive(new Tagbuilder(p.container,p.activeLayout));
+            else p.activeLayout.makeActive(p.container);
         });
+    }
+    
+    loadCSV(csv){
+        var array = parseCSV(csv);
+        var currentdepth=0;
+        var tag = this.addCompetency();
+        console.log(array);
+        tag.fromCSV(array,0,0);
+        console.log(tag);
     }
     
     populateMenu(menu){

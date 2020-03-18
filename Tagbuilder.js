@@ -51,6 +51,7 @@ class Tagbuilder{
         
         document.body.contextItem = this.tag.project;
         
+        
         $("#print").addClass("disabled");
         $("#expand").addClass("disabled");
         $("#collapse").addClass("disabled");

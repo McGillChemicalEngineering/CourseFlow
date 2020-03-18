@@ -36,7 +36,7 @@ class Commentview{
     
     show(){
         var com = this.comment;
-        var graphWrapper = document.getElementById("graphWrapper");
+        var graphWrapper = document.getElementById("graphContainer");
         var clickDiv = document.createElement('div');
         clickDiv.className = "commentDiv";
         var parentOffsetx = 0;

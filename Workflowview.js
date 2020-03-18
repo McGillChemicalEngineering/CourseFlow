@@ -30,7 +30,7 @@ class Workflowview{
         this.editbar;
         this.titleNode;
         this.authorNode;
-        this.weekWidth;
+        this.weekWidth=0;
         this.colFloat
     }
     
@@ -62,7 +62,8 @@ class Workflowview{
         var parent = graph.getDefaultParent();
         var minimap = document.getElementById('outlineContainer');
         
-        this.toolbarDiv = document.getElementById('nbWrapper');
+        this.toolbar = new WFToolbar(this.wf.project,document.getElementById('nbContainer'),"right","nodebar36");
+        this.toolbar.container.classList.add("nodebar");
         
         //create views for the tags
         for(var i=0;i<this.wf.tagSets.length;i++){
@@ -76,10 +77,10 @@ class Workflowview{
             //Create the title boxes
             this.createTitleNode();
             this.createLegend();
+            this.createSpanner();
             this.drawGraph();
             this.createAuthorNode();
             this.createLegendVertex();
-            //this.createSpanner();
         }
         finally{
             // Updates the display
@@ -149,15 +150,13 @@ class Workflowview{
     }
     
     makeInactive(){
-        while(this.toolbarDiv.firstChild)this.toolbarDiv.removeChild(this.toolbarDiv.firstChild);
-        this.toolbarDiv.parentElement.style.display="none";
+        this.toolbar.container.style.display="none";
         this.graph.stopEditing(false);
         $(".mxPopupMenu").remove();
         this.graph.clearSelection();
         for(var i=0;i<this.wf.tagSets.length;i++){
             if(this.wf.tagSets[i].view)this.wf.tagSets[i].view.clearViews();
         }
-        if(this.nodeBarDiv)this.nodeBarDiv.style.display="none";
         if(this.colFloat)this.colFloat.parentElement.parentElement.removeChild(this.colFloat.parentElement);
         if(this.graph!=null)this.graph.destroy();
         this.container.contextItem=null;
@@ -273,10 +272,10 @@ class Workflowview{
     }
     
     weekAdded(week){
-        if(week instanceof Term) week.view = new Termview(this.graph,week);
-        else week.view = new Weekview(this.graph,week);
-        week.view.createVertex(cellSpacing,0,this.weekWidth);
-        week.view.makeFlushWithAbove(this.wf.weeks.indexOf(week));
+        //if(week instanceof Term) week.view = new Termview(this.graph,week);
+        //else week.view = new Weekview(this.graph,week);
+        //week.view.createVertex(cellSpacing,0,this.weekWidth);
+        //week.view.makeFlushWithAbove(this.wf.weeks.indexOf(week));
         this.populateWeekBar();
     }
     
@@ -306,6 +305,7 @@ class Workflowview{
         for(var i=0;i<this.wf.brackets.length;i++){
             if(this.wf.brackets[i].view)this.wf.brackets[i].view.updateHorizontal();
         }
+        this.graph.moveCells([this.spanner],2*cellSpacing+this.weekWidth-this.spanner.x(),0);
     }
     
     weekIndexUpdated(week){ 
@@ -409,44 +409,35 @@ class Workflowview{
     
     scrollToVertex(vertex){
         var newy = vertex.y();
-        document.getElementsByTagName("BODY")[0].scrollTo(0,newy);
+        console.log(newy);
+        $("HTML")[0].scrollTo(0,newy);
     }
     
     
     //Executed when we generate all the toolbars
     generateToolbars(){
-        var container = this.toolbarDiv;
-        if(this.wf.project.readOnly)container.parentElement.style.display="none";
-        else container.parentElement.style.display="inline";
-        while(container.firstChild)container.removeChild(container.firstChild);
-        if(container.nextElementSibling==null||!container.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(container.parentElement,"left");
-        this.generateNodeBar(container);
-        if(this.wf instanceof Courseflow || this.wf instanceof Programflow)this.generateWeekBar(container);
-        this.generateBracketBar(container);
-        this.generateTagBar(container);
+        var toolbar = this.toolbar;
+        if(this.wf.project.readOnly)toolbar.container.style.display="none";
+        else toolbar.container.style.display="inline";
+        this.generateNodeBar();
+        if(this.wf instanceof Courseflow || this.wf instanceof Programflow)this.generateWeekBar();
+        this.generateBracketBar();
+        this.generateTagBar();
+        this.toolbar.show();
+        this.toolbar.toggleShow();
+        this.toolbar.toggled=true;
     }
     
     
     generateNodeBar(){ 
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML=LANGUAGE_TEXT.workflowview.nodeheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
-        
-        this.nodeBarDiv = document.createElement('div');
-        this.toolbarDiv.appendChild(this.nodeBarDiv);
-        
+        this.nodeBarDiv = this.toolbar.addBlock(LANGUAGE_TEXT.workflowview.nodeheader[USER_LANGUAGE],null,"nodebarh3");
         this.populateNodeBar();
     }
     
     generateWeekBar(){
-        var header = document.createElement('h3');
-        //header.className="nodebarh3";
-        header.style.after="";
-        header.innerHTML=LANGUAGE_TEXT.workflowview.jumpto[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
+        var weekDiv = this.toolbar.addBlock(LANGUAGE_TEXT.workflowview.jumpto[USER_LANGUAGE]);
         this.weekSelect = document.createElement('select');
-        this.toolbarDiv.appendChild(this.weekSelect);
+        weekDiv.appendChild(this.weekSelect);
         var wfv = this;
         var weekSelect = this.weekSelect;
         this.weekSelect.onchange = function(){
@@ -463,14 +454,7 @@ class Workflowview{
     
     generateBracketBar(){
         if(this.wf.getBracketList()==null)return;
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML=LANGUAGE_TEXT.workflowview.strategiesheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
-        
-        this.bracketBarDiv = document.createElement('div');
-        this.toolbarDiv.appendChild(this.bracketBarDiv);
-        
+        this.bracketBarDiv = this.toolbar.addBlock(LANGUAGE_TEXT.workflowview.strategiesheader[USER_LANGUAGE],null,"nodebarh3");
         this.populateBracketBar();
         
     }
@@ -480,19 +464,12 @@ class Workflowview{
         
         var wf = this.wf;
         var p=wf.project;
-        var header = document.createElement('h3');
-        header.className="nodebarh3";
-        header.innerHTML=LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE]+":";
-        this.toolbarDiv.appendChild(header);
         
-        this.tagBarDiv =  document.createElement('div');
-        
-        
-        this.toolbarDiv.appendChild(this.tagBarDiv);
+        this.tagBarDiv = this.toolbar.addBlock(LANGUAGE_TEXT.workflowview.outcomesheader[USER_LANGUAGE],null,"nodebarh3");
         
         var compSelect = document.createElement('select');
         this.tagSelect=compSelect;
-        this.populateTagSelect(p.competencies,this.wf.getTagDepth());
+        this.populateTagSelect(p.workflows["outcome"],this.wf.getTagDepth());
         
         var addButton = document.createElement('button');
         addButton.innerHTML = LANGUAGE_TEXT.workflowview.assignoutcome[USER_LANGUAGE];
@@ -510,8 +487,8 @@ class Workflowview{
         }
         
         
-        this.toolbarDiv.appendChild(compSelect);
-        this.toolbarDiv.appendChild(addButton);
+        this.tagBarDiv.parentElement.appendChild(compSelect);
+        this.tagBarDiv.parentElement.appendChild(addButton);
         
         this.populateTagBar();
     }
@@ -617,6 +594,8 @@ class Workflowview{
         }
     }
     
+    
+    
     generateColumnFloat(){
         var colFloatContainer = document.createElement('div');
         var colFloat = document.createElement('div');
@@ -651,9 +630,9 @@ class Workflowview{
     }
     
     tagSetRemoved(tag){
-        this.removeAllHighlights(tag);
+        if(tag.view)this.removeAllHighlights(tag);
         this.populateTagBar();
-        this.populateTagSelect(this.wf.project.competencies,this.wf.getTagDepth());
+        this.populateTagSelect(this.wf.project.workflows["outcome"],this.wf.getTagDepth());
     }
     
     removeAllHighlights(tag){
@@ -731,7 +710,7 @@ class Workflowview{
         compSelect.add(opt);
         for(var i=0;i<allTags.length;i++){
             opt = document.createElement('option');
-            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getType()[0]+" - "+allTags[i].name;
+            opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getNameType()[0]+" - "+allTags[i].name;
             opt.value = allTags[i].id;
             compSelect.add(opt);
         }
@@ -766,9 +745,12 @@ class Workflowview{
         
 
         var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
-        var style = getComputedStyle(document.getElementById("graphWrapper"));
-        draggable.leftPos = int(style.left);
-        draggable.topPos = int(style.top)
+        var styleC = getComputedStyle(document.getElementById("graphContainer"));
+        var styleW = getComputedStyle(document.getElementById("graphWrapper"));
+        var styleB = getComputedStyle($(".bodywrapper")[0]);
+        draggable.leftPos = int(styleB.left)+int(styleC.marginLeft);
+        if(int(styleB.width)>int(styleW.width))draggable.leftPos+=int(styleB.width)/2-int(styleW.width)/2;
+        draggable.topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
             var cell = this.getDropTarget(graph,evt.pageX-this.leftPos-graph.view.getTranslate().x,evt.pageY-this.topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,evt);
@@ -802,7 +784,8 @@ class Workflowview{
     
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
-        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX,0,this.wf.weeks[0].view.vertex.w()+600,1,invisibleStyle);
+        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',2*cellSpacing + this.weekWidth,100,250,1,invisibleStyle);
+        console.log(this.spanner);
         
     }
     
@@ -820,8 +803,13 @@ class Workflowview{
             else if(cell.isBracket)comparent=cell.bracket;
             else if(cell.isHead)comparent=cell.column;
             else if(cell.isWeek)comparent=cell.week;
-            var style = getComputedStyle(document.getElementById("graphWrapper"));
-            var com = new WFComment(wf,evt.pageX-int(style.left)-graph.view.getTranslate().x,evt.pageY-int(style.top)+int(document.body.scrollTop)-graph.view.getTranslate().y,comparent);
+            var styleC = getComputedStyle(document.getElementById("graphContainer"));
+            var styleW = getComputedStyle(document.getElementById("graphWrapper"));
+            var styleB = getComputedStyle($(".bodywrapper")[0]);
+            var leftPos = int(styleB.left)+int(styleC.marginLeft);
+            if(int(styleB.width)>int(styleW.width))leftPos+=int(styleB.width)/2-int(styleW.width)/2;
+            var topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
+            var com = new WFComment(wf,evt.pageX-leftPos-graph.view.getTranslate().x,evt.pageY-topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,comparent);
             com.view = new Commentview(graph,com);
             com.view.createVertex();
             wf.addComment(com);
@@ -869,6 +857,8 @@ class Workflowview{
         menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],'resources/images/text24.png',function(){
             graph.startEditingAtCell(wfv.authorNode);
         });
+        
+        this.wf.populateMenu(menu);
     }
     
     expandAllNodes(expand=true){

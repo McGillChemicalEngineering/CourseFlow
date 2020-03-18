@@ -142,7 +142,7 @@ const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;f
 const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=black;fontSize=40;align=left;strokeWidth=2;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
-const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=1;"
+const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=0;"
 const bracketTriangleStyle = "shape=triangle;editable=0;movable=0;resizable=0;fillColor=#ed4528;strokeColor=none;rotation=180;constituent=1;";
 const bracketSquareStyle = "shape=label;editable=0;movable=0;resizable=0;imageAlign=right;fillColor=#ed4528;strokeColor=#ed4528;constituent=1;";
 const bracketCircleStyle = "shape=ellipse;fillColor=white;strokeColor=#ed4528;editable=0;movable=0;resizable=0;constituent=1;";
@@ -225,7 +225,10 @@ const LANGUAGE_TEXT = {
         saveproject:{en:'Save Project',fr:'Savegarder le projet'},
         openproject:{en:'Open Project',fr:'Ouvrir un projet'},
         exportwf:{en:'Export Current Workflow',fr:'Exporter le plan de travail courant'},
-        importwf:{en:'Import a Workflow',fr:'Importer un plan de travail'},
+        exportoutcome:{en:'Export Current Outcome',fr:'Exporter le résultat courant'},
+        exportcsv:{en:'Export As CSV',fr:'Exporter en CSV'},
+        importwf:{en:'Import a CFlow file',fr:'Importer un fichier CFlow'},
+        importcsv:{en:'Import Outcomes CSV',fr:'Importer un CSV de Résultats'},
         readonly:{en:'Save Read Only',fr:'Copie Lecture Seule'},
         undo: {en:'Undo',fr:'Annuler'},
         redo: {en:'Redo',fr:' Rétablir'},
@@ -242,20 +245,32 @@ const LANGUAGE_TEXT = {
         layouthelp:{en:'About the Layout',fr:"À propos de la mise en page"},
         privacypolicy:{en:'Privacy Policy',fr:"Politique de Confidentialité"}
     },
+    project:{
+        projectoverview:{en:"Project Overview",fr:"Aperçu du Projet"}
+    },
     layoutnav:{
+        returntooverview:{en:"Return to Overview",fr:"Retourez à l'aperçu"},
+        navigator:{en:'Project Navigation',fr:'Navigateur'},
         project:{en:'Project',fr:"Projet"},
         projectreanmetitle:{en:"Rename Project",fr:"Renommer Le Projet"},
         projectrename:{en:'Enter a name for your project',fr:"Entrez un nom pour votre projet"},
         layout:{en:"Layout",fr:"Mise en page"},
         cancel:{en:'Cancel',fr:'Annuler'},
         addwf:{en:'Add Workflow',fr:"Adjouter un plan de travail"},
-        outcomes:{en:'Outcomes',fr:'Les Résultats'},
+        outcomes:{en:'Outcome Sets',fr:'Les Résultats'},
         createnew:{en:'Create New',fr:'Créer Un Nouveau'}
     },
     workflow:{
         activity:{en:"Activity",fr:"Activité"},
         course:{en:"Course",fr:"Cours"},
         program:{en:"Program",fr:"Programme"},
+        outcome:{en:"Outcome",fr:"Résultat"},
+        plurals:{
+            activity:{en:"Activities",fr:"Activités"},
+            course:{en:"Courses",fr:"Cours"},
+            program:{en:"Programs",fr:"Programmes"},
+            outcome:{en:"Outcomes",fr:"Résultats"},
+        },
         newactivity:{en:"New Activity",fr:"Nouvelle Activité"},
         newcourse:{en:"New Course",fr:"Nouveau Cours"},
         newprogram:{en:"New Program",fr:"Noveau Programme"},
@@ -284,7 +299,7 @@ const LANGUAGE_TEXT = {
         nodeheader:{en:"Nodes",fr:"Noeuds"},
         jumpto:{en:"Jump To",fr:"Raccourcis"},
         strategiesheader:{en:"Strategies",fr:"Stratégies"},
-        outcomesheader:{en:"Outcomes",fr:"Résultats"},
+        outcomesheader:{en:"Assigned Outcomes",fr:"Résultats Attribués"},
         assignoutcome:{en:"Assign Outcome",fr:"Attribuer le résultat"},
         nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun résultat n'a été ajouté! Utilisez les boutons ci-dessous pour en ajouter un."},
         selectset:{en:"Select set to add",fr:'Choisissez-en un à ajouter'},
@@ -465,7 +480,8 @@ const LANGUAGE_TEXT = {
         undo:{en:"Oops! Something went wrong with the undo function.",fr:"Oups! Il y a eu un problème lors de l'annulation de l'action."},
         redo:{en:"Oops! Something went wrong with the redo function.",fr:"Oups! Il y a eu un problème lors du rétablissement de l'action."},
         wfopen:{en:"Oops! The workflow could not be opened.",fr:"Oups! Impossible d'ouvrir le plan de travail."},
-        printchrome:{en:"Warning: based on your browser, you may need to change your paper size (to A4) from the default when printing. Failing to do so can result in a blank page.",fr:"Avertissement lié à votre navigateur: vous devez sélectionner le format A4 lors de l'impression. Si vous ne le faites pas, vous imprimerez une page blanche."}
+        printchrome:{en:"Warning: based on your browser, you may need to change your paper size (to A4) from the default when printing. Failing to do so can result in a blank page.",fr:"Avertissement lié à votre navigateur: vous devez sélectionner le format A4 lors de l'impression. Si vous ne le faites pas, vous imprimerez une page blanche."},
+        loadcsv:{en:"An error occurred parsing your csv file. Please ensure it is in the correct format.",fr:"Une erreur s'est produite lors de l'analyse de votre fichier csv. Veuillez vous assurer que le format est correct."}
         
     }
 }
@@ -640,4 +656,42 @@ function gaError(source,err){
     if(err.fileName)errormessage+=" file "+err.fileName;
     if(err.lineNumber)errormessage+=" line "+err.lineNumber;
     gtag('event',source,{'event_category':'Error','event_label':errormessage});
+}
+
+
+
+function parseCSV(str) {
+    var arr = [];
+    var quote = false;  // true means we're inside a quoted field
+
+    // iterate over each character, keep track of current row and column (of the returned array)
+    for (var row = 0, col = 0, c = 0; c < str.length; c++) {
+        var cc = str[c], nc = str[c+1];        // current character, next character
+        arr[row] = arr[row] || [];             // create a new row if necessary
+        arr[row][col] = arr[row][col] || '';   // create a new column (start with empty string) if necessary
+
+        // If the current character is a quotation mark, and we're inside a
+        // quoted field, and the next character is also a quotation mark,
+        // add a quotation mark to the current column and skip the next character
+        if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }  
+
+        // If it's just one quotation mark, begin/end quoted field
+        if (cc == '"') { quote = !quote; continue; }
+
+        // If it's a comma and we're not in a quoted field, move on to the next column
+        if (cc == ',' && !quote) { ++col; continue; }
+
+        // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
+        // and move on to the next row and move to column 0 of that new row
+        if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+
+        // If it's a newline (LF or CR) and we're not in a quoted field,
+        // move on to the next row and move to column 0 of that new row
+        if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+        if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+
+        // Otherwise, append the current character to the current column
+        arr[row][col] += cc;
+    }
+    return arr;
 }

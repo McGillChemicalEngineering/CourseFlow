@@ -51,6 +51,8 @@ class Tag {
             this.view.makeActive();
             $("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
+            $("#exportcsv").removeClass("disabled");
+            $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportoutcome[USER_LANGUAGE];
         }catch(err){
             alert(LANGUAGE_TEXT.errors.openoutcome[USER_LANGUAGE]);
             gaError("Outcome",err);
@@ -63,6 +65,8 @@ class Tag {
         } 
         $("#duplicatewf").addClass("disabled");
         $("#export").addClass("disabled");
+        $("#exportcsv").addClass("disabled");
+        $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
         this.view.makeInactive();
         this.view = null;
     }
@@ -80,7 +84,7 @@ class Tag {
     }
     
     getDefaultName(term){
-        return LANGUAGE_TEXT.tag.new[USER_LANGUAGE]+" "+this.getType(term);
+        return LANGUAGE_TEXT.tag.new[USER_LANGUAGE]+" "+this.getNameType(term);
     }
     
     getDepth(){
@@ -109,6 +113,7 @@ class Tag {
         if(recurse)for(var i=0;i<this.children.length;i++){
             this.children[i].addButton(button.childdiv);
         }
+        return button;
     }
     
     removeButton(button){
@@ -124,8 +129,8 @@ class Tag {
         var children = this.children;
         for(var i=0;i<children.length;i++){
             var wfc = children[i];
-            if(des[wfc.getType()]==null)des[wfc.getType()]=1;
-            else des[wfc.getType()]=des[wfc.getType()]+1;
+            if(des[wfc.getNameType()]==null)des[wfc.getNameType()]=1;
+            else des[wfc.getNameType()]=des[wfc.getNameType()]+1;
             des = wfc.getNumberOfDescendants(des);
             
         }
@@ -141,13 +146,16 @@ class Tag {
     }
     
     deleteSelf(button){
-        if(this.depth==0)this.project.deleteComp(this);
+        if(this.depth==0)this.project.deleteWF(this);
         else{
             this.parentTag.removeChild(this);
             if(button!=null)button.removeSelf();
-            for(var i=0;i<this.project.workflows.length;i++){
-                this.project.workflows[i].purgeTag(this);
+            for(var prop in this.project.workflows){
+                for(var i=0;i<this.project.workflows[prop].length;i++){
+                    if(this.project.workflows[prop][i].purgeTag)this.project.workflows[prop][i].purgeTag(this);
+                }
             }
+            
         }
     }
     
@@ -174,7 +182,11 @@ class Tag {
         this.project.changeActive(this,false);
     }
     
-    getType(term){
+    getType(){
+        return "outcome";
+    }
+    
+    getNameType(term){
         if(!term)term = this.project.terminologySet;
         var depth = this.depth;
         if(depth>3)depth=3;
@@ -304,10 +316,27 @@ class Tag {
     toCSV(){
         var csv = "";
         csv += "\""+this.name+"\"";
-        for(var i=0;i<this.children.length;i++){
-            if(i>0)csv += (",").repeat(this.children[i].depth);
-            csv += this.children[i].toCSV();
+        if(this.children.length==0)csv+="\n";
+        else for(var i=0;i<this.children.length;i++){
+            if(i>0)csv += (",").repeat(this.depth);
+            csv += ","+this.children[i].toCSV();
         }
+        return csv;
+    }
+    
+    fromCSV(array,row=0,col=0){
+        this.setName(array[row][col]);
+        var currentrow = row;
+        if(array[row].length-1>col){
+            while(currentrow<array.length){
+                var childTag = new Tag(this.project,this);
+                this.children.push(childTag);
+                currentrow = childTag.fromCSV(array,currentrow,col+1);
+                if(currentrow+1<array.length&&array[currentrow+1][col]!=""&&array[currentrow+1][col]!=null)break;
+                currentrow++;
+            }
+        }
+        return currentrow;
     }
     
     
