@@ -81,7 +81,8 @@ class EditBar{
         quill2.on('text-change', function(delta, oldDelta, source) {
           if (source == 'user') {
             if(eb.node!=null){
-                eb.node.setText(quillDiv2.childNodes[0].innerHTML);
+                eb.node.setText(quillDiv2.childNodes[0].innerHTML.replace(/\<p\>\<br\>\<\/p\>\<ul\>/g,"\<ul\>"));
+                console.log(quillDiv2.childNodes[0].innerHTML);
                 eb.node.wf.makeUndo("Text Change",eb.node);
             }
           }
@@ -150,6 +151,7 @@ class EditBar{
         else this.nameField.setText("");
         if(node.text!=null)this.textField.clipboard.dangerouslyPasteHTML(node.text,"silent");
         else this.textField.clipboard.dangerouslyPasteHTML("","silent");
+        console.log(node.text);
         //if(node.text!=null)this.textField.innerHTML=node.text;
         //else this.textField.innerHTML="Insert a description here.";
         var iconList = node.getLeftIconList();

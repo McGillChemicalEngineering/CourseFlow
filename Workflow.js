@@ -303,7 +303,7 @@ class Workflow{
     }
     
     makeActive(container){
-        //try{
+        try{
             this.isActive=true;
             for(var i=0;i<this.buttons.length;i++){
                 this.buttons[i].makeActive();
@@ -340,10 +340,10 @@ class Workflow{
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
             this.undoEnabled=true;
-        //}catch(err){
-        //    alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
-        //    gaError("Workflow",err);
-        //}
+        }catch(err){
+            alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
+            gaError("Workflow",err);
+        }
     }
     
     
