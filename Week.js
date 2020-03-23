@@ -162,7 +162,6 @@ class Week {
     duplicateWeek(){
         var newWeek = this.wf.createWeek();
         this.wf.weeks.splice(this.index+1,0,newWeek);
-        console.log(this.wf.weeks);
         newWeek.fromXML((new DOMParser).parseFromString(this.wf.project.assignNewIDsToXML(this.toXML()),"text/xml"));
         for(var i=0;i<newWeek.nodes.length;i++){
             if(newWeek.nodes[i].linkedWF!=null)newWeek.nodes[i].linkedWF=null;

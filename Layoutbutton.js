@@ -171,7 +171,6 @@ class Layoutbutton {
         }
         document.addEventListener('keydown',enterfunc);
         bl.namediv.firstElementChild.addEventListener("focusout",function(){
-            console.log("focus out");
             b.onclick=tempfunc;
             if(bl.namediv.firstElementChild.value=="")bl.namediv.innerHTML=layout.name;
             else {
@@ -231,6 +230,7 @@ class Layoutbutton {
         up.src = "resources/images/movehandle24.png";
         up.draggable=false;
         movehandle.onmousedown=function(evt){
+            if(evt.buttons>1)return;
             bdiv.draggable=true;
             bdiv.classList.add("dragging");
         }
@@ -243,10 +243,8 @@ class Layoutbutton {
     }
     
     attemptToDrop(target){
-        console.log("In drop function");
         var parent = this.getParent();
         if(parent==target||target.getParent()==this)return;
-        console.log("here");
         //For workflows, we shouldn't be able to move them out of their parent. For tags, this might be desirable (ex moving a depth 2 tag from one depth 1 to another).
         //For both: If you're dragging a root level, then find the highest ancestor of the target and just rearrange in whatever way is appropriate
         if(parent==null){
@@ -260,17 +258,12 @@ class Layoutbutton {
             var myDepth = this.layout.getDepth();
             var targetDepth = target.layout.getDepth();
             var moveInto = false;
-            console.log(myDepth);
-            console.log(targetDepth);
-            console.log(this.layout instanceof Tag);
             if(targetDepth==myDepth-1&&this.layout instanceof Tag){
                 moveInto = true;
             }else target = target.getAncestorWithDepth(this.layout.getDepth());
             if(target==null)return;
-        console.log("here");
             if(this.layout instanceof Workflow && target.getParent()!=parent)return;
             if(this.layout instanceof Tag && this.getMostDistantAncestor() != target.getMostDistantAncestor())return;
-        console.log("here");
             if(moveInto)this.moveInto(target);
             else this.moveTo(target);
         }
@@ -351,7 +344,6 @@ class Layoutbutton {
     }
     
     moveTo(target){
-        console.log("Attempting a drop");
         //figure out of we are moving up or down
         var parent = this.getParent();
         var targetParent = target.getParent();
@@ -360,8 +352,6 @@ class Layoutbutton {
         var targetindex = Array.prototype.indexOf.call(this.container.children,target.bdiv);
         if(targetindex>myindex)isAfter=true;
         var container = target.container;
-        console.log(target.bdiv);
-        console.log(container.children);
         if(isAfter)container.insertBefore(this.bdiv,target.bdiv.nextElementSibling);
         else container.insertBefore(this.bdiv,target.bdiv);
         this.container = container;

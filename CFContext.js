@@ -33,7 +33,6 @@ class CFContext{
 
     populate(){
         if(this.target.dummyObject)return;
-        console.log(this.target);
         this.target.populateMenu(this);
     }
 
@@ -68,17 +67,12 @@ class CFContext{
             this.x = int(computedParent.width);
             this.y = parent.row.offsetTop;
             winwidth=int(winwidth)-int(computedParent.left);
-            console.log(computedParent.left);
-            console.log(parent.row);
             winheight=int(winheight)-int(computedParent.top);
         }
-        console.log(this.x);
-        console.log(width);
-        console.log(winwidth);
-        if(this.x+int(width)<=winwidth)this.div.style.left=this.x+"px";
-        else this.div.style.right=0;
-        if(this.y+int(height)<=winheight)this.div.style.top=this.y+"px";
-        else this.div.style.bottom=0;
+        if(this.x+int(width)<=winwidth+window.scrollX)this.div.style.left=this.x+"px";
+        else this.div.style.left = (int(winwidth)+window.scrollX - int(width))+"px";
+        if(this.y+int(height)<=winheight+window.scrollY)this.div.style.top=this.y+"px";
+        else this.div.style.top = (int(winheight)+window.scrollY - int(height))+"px";
         var menu = this;
         document.addEventListener("click",function(){menu.close();},true);
         document.addEventListener("contextmenu",function(){menu.close();},true);

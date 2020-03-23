@@ -409,7 +409,6 @@ class Workflowview{
     
     scrollToVertex(vertex){
         var newy = vertex.y();
-        console.log(newy);
         $("HTML")[0].scrollTo(0,newy);
     }
     
@@ -785,7 +784,6 @@ class Workflowview{
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
         this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',2*cellSpacing + this.weekWidth,100,250,1,invisibleStyle);
-        console.log(this.spanner);
         
     }
     
@@ -1340,7 +1338,7 @@ class Workflowview{
         
         initializeConnectionPointForGraph(graph);
         
-        //make the non-default connections through our own functions, so that we can keep track of what is linked to what. The prototype is saved in mxConstants, so that we don't keep overwriting it.
+        //make the non-default connections through our own functions, so that we can keep track of what is linked to what. The prototype is saved in Constants, so that we don't keep overwriting it.
         mxConnectionHandler.prototype.insertEdge = function(parent,id,value,source,target,style){
             var edge = insertEdgePrototype.apply(this,arguments);
             if(source.isNode && target.isNode){

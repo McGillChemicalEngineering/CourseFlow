@@ -39,6 +39,7 @@ function main(container)
         
         //Create the popup menu
         document.addEventListener('contextmenu',function(evt){
+            
             if(evt.ctrlKey)return evt;
             evt.preventDefault();
             var target = evt.target;

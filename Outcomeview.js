@@ -385,7 +385,6 @@ class Outcomeview{
     
     
     nodeAdded(node){
-        console.log("adding node");
         if(!this.isValidNode(node))return;
         for(var i=0;i<this.categoryViews.length;i++){
             var cv = this.categoryViews[i];
@@ -644,7 +643,6 @@ class Outcomeview{
     }
     
     weekAdded(week){
-        console.log(this.wf.weeks);
         if(this.sortType=="week"){
             var name = week.name;
             if(!name)name=week.getDefaultName();
@@ -744,7 +742,6 @@ class Outcomeview{
         var rows = [];
         //Find all the rows
         for(var i=0;i<items.length;i++){
-            console.log(items.item(i));
             if(items.item(i).nodeName=="TBODY"){
                 var bodyitems = items.item(i).childNodes;
                 for(var j=0;j<bodyitems.length;j++){
@@ -842,6 +839,7 @@ class OutcomeCategoryview{
             moveimg.draggable=false;
             movehandle.className="movehandle";
             movehandle.onmousedown = function(evt){
+                if(evt.buttons>1)return;
                 catHead.draggable=true;
                 catHead.classList.add("dragging");
             }
@@ -890,9 +888,7 @@ class OutcomeCategoryview{
     }
     
     nameChanged(){
-        console.log("name changed");
         if(this.wf.view.sortType=='week'){
-            console.log(this.value.index);
             var name = this.value.name;
             if(!name)name=this.value.getDefaultName();
             this.headerwrap.value = name.replace(/\//g,"\/<wbr>");
@@ -962,7 +958,7 @@ class OutcomeCategoryview{
             this.nodeViews[i].vertex.classList.remove("hidden");
             this.nodeViews[i].textdiv.classList.remove("hidden");
         }
-        this.expandIcon.src="resources/images/minus16.png";
+        this.expandIcon.src="resources/images/arrowdown16.png";
     }
     
     collapse(){
@@ -971,7 +967,7 @@ class OutcomeCategoryview{
             this.nodeViews[i].vertex.classList.add("hidden");
             this.nodeViews[i].textdiv.classList.add("hidden");
         }
-        this.expandIcon.src="resources/images/plus16.png";
+        this.expandIcon.src="resources/images/arrowright16.png";
     }
     
     populateMenu(menu){
@@ -996,7 +992,6 @@ class OutcomeCategoryview{
     }
     
     attemptToDrop(target){
-        console.log("In drop function");
         
         this.moveTo(target);
         
@@ -1031,15 +1026,12 @@ class OutcomeCategoryview{
             else newtableindex=newtableindex+cvs[i].nodeViews.length;
         }
         var cutlength = this.nodeViews.length;
-        console.log(tableindex);
-        console.log(newtableindex);
         //if(tableindex<newtableindex)newtableindex-=cutlength;
         
         var tableCells = this.wf.view.tableCells;
         for(var i=0;i<tableCells.length;i++){
             
             var cut = tableCells[i].splice(tableindex,cutlength);
-            console.log(newtableindex);
             var nextCell = tableCells[i][newtableindex];
             for(var j=0;j<cut.length;j++){
                 tableCells[i].splice(newtableindex+j,0,cut[j]);
@@ -1054,7 +1046,6 @@ class OutcomeCategoryview{
         else return;
         var myitem = this.getItem();
         var targetitem = target.getItem();
-        console.log(targetitem);
         sortarray.splice(sortarray.indexOf(myitem),1);
         if(targetitem=="grandtotal")sortarray.push(myitem);
         else sortarray.splice(sortarray.indexOf(targetitem)+isAfter,0,myitem);
@@ -1110,6 +1101,8 @@ class OutcomeNodeview{
         parent.insertBefore(this.vertex,createBefore);
     }
     
+    timeUpdated(){}
+    
     
     createTableHead(parent,createBefore=null){
         var nv = this;
@@ -1134,13 +1127,15 @@ class OutcomeNodeview{
             var expandDiv = document.createElement('div');
             expandDiv.className="expanddiv";
             if(cv.nodeViews.length>2)cv.expandIcon.classList.add('haschildren');
-            cv.expandIcon.src="resources/images/minus16.png";
+            cv.expandIcon.src="resources/images/arrowdown16.png";
             cv.expandIcon.style.width='16px';
-            cv.expandIcon.onclick=function(){
+            cv.expandIcon.onclick=function(evt){
                 if(catVertex.classList.contains("expanded")){cv.collapse();}
                 else {cv.expand();}
+                evt.stopPropagation();
             }
             expandDiv.appendChild(cv.expandIcon);
+            this.textdiv.onclick = function(){cv.expandIcon.click();}
             this.textdiv.appendChild(expandDiv);
 
         }
@@ -1152,19 +1147,23 @@ class OutcomeNodeview{
             var deleteIcon = document.createElement('img');
             deleteIcon.src = "resources/images/delrect16.png";
             deleteIcon.style.width='16px';
-            deleteIcon.onclick = function(){
+            deleteIcon.onclick = function(evt){
                 nv.deleteClick();
+                evt.stopPropagation();
             }
             renameDiv.append(deleteIcon);
             this.textdiv.appendChild(renameDiv);
             this.textdiv.contextItem = this;
+            this.textdiv.node = this.nodes[0];
             
             this.namediv.draggable="true";
             
             this.namediv.style.cursor="move";
             
             this.namediv.ondragstart = function(evt){
-                evt.dataTransfer.setData("text",nv.nodes[0].id);
+                var id = 'nodedrag-'+Date.now();
+                nv.textdiv.id = id;
+                evt.dataTransfer.setData("text",id);
             }
             
             
@@ -1177,8 +1176,9 @@ class OutcomeNodeview{
         
         if(this.cv.value!="grandtotal"&&(this.isTotal||this.nodes.length>0))this.textdiv.ondragover = function(evt){
             var node;
-            if(evt.dataTransfer.getData("text").substr(0,3)=="NEW"){
-                var source = document.getElementById(evt.dataTransfer.getData("text"));
+            var data = evt.dataTransfer.getData("text");
+            if(data.substr(0,3)=="NEW"){
+                var source = document.getElementById(data);
                 if(source.nodeBeingDropped){
                     node = source.nodeBeingDropped;
                     if(nv.cv.wf.view.sortType=="column"&&nv.cv.value!=node.column)return;
@@ -1189,10 +1189,23 @@ class OutcomeNodeview{
                     return;
                 }
             }
-            else node = nv.cv.wf.findNodeById(evt.dataTransfer.getData("text"));
+            else {
+                var source = document.getElementById(data);
+                node = source.node;
+            }
             if(node==null)return;
             evt.preventDefault();
-            if(node.view)node.view.attemptToDrop(nv);
+            if(node.view){
+                var snv = node.view;
+                var target = nv;
+                //throttle the function. We want it to be droppable with another node in 300 ms, and droppable with the same node in 0.5s.
+                var currentTime = Date.now();
+                if(snv.lastDragged!=null&&(snv.nextNewDrop>currentTime||(snv.lastDragged==target&&snv.nextSameDrop>currentTime)))return;
+                snv.lastDragged=target;
+                snv.nextNewDrop = currentTime+300;
+                snv.nextSameDrop = currentTime+500;
+                node.view.attemptToDrop(nv);
+            }
         }
         this.textdiv.ondrop = function(evt){
             evt.preventDefault();
@@ -1398,6 +1411,7 @@ class OutcomeNodeview{
         var placement = this.getOverallIndex();
         if(placement>-1)this.cv.nodeRemoved(node,placement);
         grandTotal.nodes.splice(grandTotal.nodes.indexOf(node),1);
+        this.cv.wf.view.editbar.disable();
         node.wf.view.updateTable();
         
     }
@@ -1441,7 +1455,6 @@ class OutcomeNodeview{
         else nv.createTableHead(headParent,headInsertBefore);
         
         var index = nv.getOverallIndex();
-        console.log(index);
         var tableCells = this.cv.wf.view.tableCells;
         var tagViews = this.cv.wf.view.tagViews;
         for(var j=0;j<tableCells.length;j++){
@@ -1511,7 +1524,7 @@ class OutcomeTagview{
         
         var expandDiv = document.createElement('div');
         expandDiv.className="expanddiv";
-        this.expandIcon.src="resources/images/minus16.png";
+        this.expandIcon.src="resources/images/arrowdown16.png";
         this.expandIcon.style.width='16px';
         this.expandIcon.onclick=function(){
             if(vertex.classList.contains("expanded")){tv.collapse();}
@@ -1592,10 +1605,11 @@ class OutcomeTagview{
             var up = document.createElement('img');
             up.src = "resources/images/movehandle24.png";
             up.draggable=false;
-            up.onmousedown=function(){
+            up.onmousedown=function(evt){
+                if(evt.buttons>1)return;
                 vertex.draggable=true;
             }
-            movehandle.onmouseup = function(){
+            up.onmouseup = function(){
                 vertex.draggable=false;
             }
             movehandle.appendChild(up);
@@ -1607,7 +1621,6 @@ class OutcomeTagview{
     
     attemptToDrop(target){
         var wf = this.wf;
-        console.log("attempting to drop");
         while(wf.tagSets.indexOf(target.tag)<0){
             var targetTag = target.tag.parentTag;
             if(targetTag==null)return;
@@ -1653,7 +1666,7 @@ class OutcomeTagview{
         if(this.tag==null)return;
         this.vertex.classList.add("expanded");
         this.showTag();
-        this.expandIcon.src="resources/images/minus16.png";
+        this.expandIcon.src="resources/images/arrowdown16.png";
     }
     
     showTag(){
@@ -1684,7 +1697,7 @@ class OutcomeTagview{
         for(var i=0;i<this.tag.children.length;i++){
             if(this.tag.children[i].view)this.tag.children[i].view.hideTag();
         }
-        this.expandIcon.src="resources/images/plus16.png";
+        this.expandIcon.src="resources/images/arrowright16.png";
     }
     
     updateName(){

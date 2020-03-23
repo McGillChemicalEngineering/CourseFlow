@@ -34,6 +34,7 @@ class CFNode {
         this.brackets=[];
         this.tags=[];
         this.view;
+        this.time={value:null,unit:"min"};
     }
     
     makeAutoLinks(){return false;}
@@ -55,6 +56,10 @@ class CFNode {
         xml+=makeXML(this.text,"textHTML",true);
         xml+=makeXML(this.linkedWF,"linkedwf");
         xml+=makeXML(this.textHeight,"textheight");
+        if(this.time.value!=null){
+            xml+=makeXML(this.time.value,"timevalue");
+            xml+=makeXML(this.time.unit,"timeunit");
+        }
         if(this.isDropped)xml+=makeXML("true","isdropped");
         if(this.autoLinkOut==null){xml+=makeXML("true","noautolink");}
         for(var i=0;i<this.fixedLinksOut.length;i++){
@@ -94,6 +99,11 @@ class CFNode {
         if(isDropped)this.isDropped=true;
         var noAutoLink = getXMLVal(xml,"noautolink");
         if(noAutoLink){this.autoLinkOut=null;}
+        var timeval = getXMLVal(xml,"timevalue");
+        if(timeval!=null)this.time.value=timeval;
+        var timeunit = getXMLVal(xml,"timeunit");
+        if(timeunit!=null)this.time.unit=timeunit;
+        
         //Old linking style (deprecated)
         var linksOut = getXMLVal(xml,"fixedlinkARRAY");
         var linkOutPorts = getXMLVal(xml,"linkportARRAY");
@@ -152,6 +162,22 @@ class CFNode {
         this.text=text;
         if(this.view&&text!=null)this.view.textUpdated();
         
+    }
+    
+    setTime(value){
+        if(value!=""&&value!=null)this.time.value=""+value;
+        else this.time.value=null;
+        if(this.view)this.view.timeUpdated();
+    }
+    
+    setTimeUnits(value){
+        this.time.unit = value;
+        if(this.view)this.view.timeUpdated();
+    }
+    
+    getTimeString(){
+        if(this.time.value==null)return '';
+        return '<img class="clockimage" src="resources/images/time16.png"></img>'+this.time.value+" "+LANGUAGE_TEXT.timeunits[this.time.unit][USER_LANGUAGE];
     }
     
     setLinkedWF(value){

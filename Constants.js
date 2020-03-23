@@ -139,7 +139,8 @@ const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=bl
 const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;align=left;";
 const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;align=left;verticalAlign=top;";
 const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
-const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=black;fontSize=40;align=left;strokeWidth=2;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;";
+const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=black;fontSize=40;align=left;strokeWidth=2;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;fontColor=black;";
+const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
 const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=0;"
@@ -287,6 +288,7 @@ const LANGUAGE_TEXT = {
         description:{en:'Description',fr:'Description'},
         righticon:{en:'Right Icon',fr:'Icône de Droite'},
         lefticon:{en:'Left Icon',fr:'Icône Gauche'},
+        time:{en:'Time',fr:'Temps'},
         linkedwf:{en:'Linked Workflow',fr:'Plan de travail en lien'},
         tags:{en:'Outcomes',fr:'Résultats'},
         none:{en:'None',fr:'Aucun'},
@@ -483,6 +485,15 @@ const LANGUAGE_TEXT = {
         printchrome:{en:"Warning: based on your browser, you may need to change your paper size (to A4) from the default when printing. Failing to do so can result in a blank page.",fr:"Avertissement lié à votre navigateur: vous devez sélectionner le format A4 lors de l'impression. Si vous ne le faites pas, vous imprimerez une page blanche."},
         loadcsv:{en:"An error occurred parsing your csv file. Please ensure it is in the correct format.",fr:"Une erreur s'est produite lors de l'analyse de votre fichier csv. Veuillez vous assurer que le format est correct."}
         
+    },
+    timeunits:{
+        s:{en:"s",fr:"s"},
+        min:{en:"min",fr:"min"},
+        hr:{en:"hr",fr:"hr"},
+        day:{en:"d",fr:"j"},
+        week:{en:"wk",fr:"sem"},
+        month:{en:"mon",fr:"mois"},
+        yr:{en:"yr",fr:"a"}
     }
 }
 

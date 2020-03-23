@@ -104,7 +104,6 @@ class WFToolbar{
         if(appendafter!=null){
             blockdiv.appendChild(appendafter);
             appendafter.addEventListener("click",function(){
-                console.log("click!");
                 if(div.style.display=="none")header.click(); 
             });
         }

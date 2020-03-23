@@ -160,7 +160,6 @@ class Workflow{
     }
     
     addButton(container,recurse=true){
-        console.log("making a button");
         var button = new Layoutbutton(this,container);
         button.makeEditable(true,true,false);
         button.makeMovable();
@@ -461,7 +460,6 @@ class Workflow{
     
     getTagByID(id){
         var tag;
-        console.log(this.tagSets);
         for(var i=0;i<this.tagSets.length;i++){
             tag = this.tagSets[i].getTagByID(id);
             if(tag!=null)return tag;
@@ -562,7 +560,6 @@ class Workflow{
     }
     
     removeTagSet(tag,purge=true,purgechildren=true){
-        console.log(tag);
         if(this.tagSets.indexOf(tag)>=0){
             this.tagSets.splice(this.tagSets.indexOf(tag),1);
         }else if(tag.parentTag!=null){

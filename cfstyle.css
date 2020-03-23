@@ -1513,6 +1513,17 @@ div.highlighted{
     height:36px;
 }
 
+.clockimage{
+    margin-top:3px;
+    margin-bottom:-2px;
+    
+}
+
+.nodebarwrapper > div{
+    margin-bottom:20px;
+    margin-top:-10px;
+}
+
 
 
     

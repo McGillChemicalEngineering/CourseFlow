@@ -606,7 +606,6 @@ class Project{
     
     moveLayout(layout1,layout2,isAfter){
         var array = this.workflows[layout1.getType()];
-        if(array.indexOf(layout1)<0||array.indexOf(layout2)<0)console.log("OH NO!");
         array.splice(array.indexOf(layout1),1);
         array.splice(array.indexOf(layout2)+isAfter,0,layout1);
     }
@@ -714,14 +713,12 @@ class Project{
     }
     
     addButton(container,recurse=true){
-        console.log("making a button");
         var button = new Layoutbutton(this,container);
         button.makeEditable(true,false,false);
         this.buttons.push(button);
         if(recurse)for(var i=0;i<this.children.length;i++){
             this.children[i].addButton(button.childdiv);
         }
-        console.log(button);
         return button;
     }
     
@@ -743,8 +740,6 @@ class Project{
         floatbar.classList.add("floatbar");
         this.sidenav.container.appendChild(floatbar);
         floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.layoutnav.returntooverview[USER_LANGUAGE],"returnimg","returndiv"));
-        console.log(floatbar);
-        console.log($("#returndiv"));
         $("#returndiv")[0].onclick = function(){p.changeActive(p)};
         /*floatbar.appendChild(this.createFloatBarButton("","expand","expandfloatbar"));
         $("#expandfloatbar")[0].onclick = function(){$("#expand")[0].click();}
@@ -925,9 +920,7 @@ class Project{
         var array = parseCSV(csv);
         var currentdepth=0;
         var tag = this.addCompetency();
-        console.log(array);
         tag.fromCSV(array,0,0);
-        console.log(tag);
     }
     
     populateMenu(menu){

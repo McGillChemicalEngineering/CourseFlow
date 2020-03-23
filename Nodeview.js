@@ -67,6 +67,9 @@ class Nodeview{
         this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
+        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString(),this.dropNode.x(),this.dropNode.y(),this.dropNode.w(),this.dropNode.h(),defaultTimeStyle);
+        this.timeNode.isDrop=true;
+        this.timeNode.node = this.node;
         this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
         this.graph.toggleCells(false,[this.tagBox]);
         this.vertex.cellOverlays=[];
@@ -355,6 +358,10 @@ class Nodeview{
     
     startTitleEdit(){
         this.graph.startEditingAtCell(this.namenode);
+    }
+    
+    timeUpdated(){
+        this.graph.cellLabelChanged(this.timeNode,this.node.getTimeString());
     }
     
     

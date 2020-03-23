@@ -82,7 +82,6 @@ class EditBar{
           if (source == 'user') {
             if(eb.node!=null){
                 eb.node.setText(quillDiv2.childNodes[0].innerHTML.replace(/\<p\>\<br\>\<\/p\>\<ul\>/g,"\<ul\>"));
-                console.log(quillDiv2.childNodes[0].innerHTML);
                 eb.node.wf.makeUndo("Text Change",eb.node);
             }
           }
@@ -103,6 +102,31 @@ class EditBar{
         //this.textField=quillDiv2.childNodes[0];
         this.textField = quill2;
         container.appendChild(descriptionDiv);
+        
+        //Time
+        var timeDiv = document.createElement('div');
+        timeDiv.innerHTML='<h4>'+LANGUAGE_TEXT.editbar.time[USER_LANGUAGE]+':</h4>';
+        var timeSelect = document.createElement('input');
+        timeSelect.type="number";
+        var unitSelect = document.createElement('select');
+        for(var prop in LANGUAGE_TEXT.timeunits){
+            var opt = document.createElement('option');
+            opt.text=LANGUAGE_TEXT.timeunits[prop][USER_LANGUAGE];
+            opt.value=prop;
+            unitSelect.appendChild(opt);
+        }
+        timeDiv.appendChild(timeSelect);
+        timeSelect.style.width="50%";
+        timeSelect.style.height="30px";
+        unitSelect.style.width="50%";
+        unitSelect.style.height="30px";
+        timeSelect.style.boxSizing = "border-box";
+        timeDiv.appendChild(unitSelect);
+        timeSelect.oninput = function(){if(eb.node)eb.node.setTime(this.value);}
+        unitSelect.onchange = function(){if(eb.node)eb.node.setTimeUnits(unitSelect.value);}
+        this.timeSelect = timeSelect;
+        this.unitSelect = unitSelect;
+        container.appendChild(timeDiv);
         
         //linked wf
         var wfDiv = document.createElement('div');
@@ -151,7 +175,6 @@ class EditBar{
         else this.nameField.setText("");
         if(node.text!=null)this.textField.clipboard.dangerouslyPasteHTML(node.text,"silent");
         else this.textField.clipboard.dangerouslyPasteHTML("","silent");
-        console.log(node.text);
         //if(node.text!=null)this.textField.innerHTML=node.text;
         //else this.textField.innerHTML="Insert a description here.";
         var iconList = node.getLeftIconList();
@@ -174,6 +197,9 @@ class EditBar{
                 node.wf.makeUndo("Icon Change",node);
             }
         }else this.hideParent(this.rightIcon);
+        this.timeSelect.value=int(node.time.value);
+        this.unitSelect.value=node.time.unit;
+        
         var linkedWFList = node.getLinkedWFList();
         if(linkedWFList!=null){
             this.showParent(this.linkedWF);
@@ -231,7 +257,7 @@ class EditBar{
     }
     showParent(element){
         var parent = element.parentElement;
-        parent.style.display="inline";
+        parent.style.display="block";
     }
     
     disable(){
