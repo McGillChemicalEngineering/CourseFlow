@@ -625,7 +625,7 @@ class Workflow{
             }
     }
     
-    getTagDepth(){return -1;}
+    getTagDepth(){return 2;}
     
     refreshAllTags(){
         for(var i=0;i<this.weeks.length;i++){

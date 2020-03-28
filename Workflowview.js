@@ -670,7 +670,7 @@ class Workflowview{
                 graph.stopEditing(false);
                 while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
                 if(cell!=null && cell.isNode){
-                    cell.node.addTag(thistag,cell,true,true);
+                    cell.node.addTag(thistag,cell,true,cell.node.wf instanceof Programflow);
                     wf.makeUndo("Add Tag",cell.node);
                 }
                 this.lastCell=null;

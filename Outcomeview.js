@@ -1757,7 +1757,7 @@ class OutcomeTableCell{
             this.checkbox = checkbox;
             checkbox.onclick=function(){
                 if(checkbox.checked){
-                    node.addTag(tag,false,true);
+                    node.addTag(tag,false,node.wf instanceof Programflow);
                     node.wf.makeUndo("Add Tag",node);
                 }else{
                     node.removeTag(tag,true);

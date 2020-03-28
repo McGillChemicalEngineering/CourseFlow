@@ -216,7 +216,7 @@ class EditBar{
         }else this.hideParent(this.tagButtonsDiv);
         this.tagSelect.onchange = function(){
             if(this.value=="")return;
-            node.addTag(node.wf.getTagByID(this.value),true,true);
+            node.addTag(node.wf.getTagByID(this.value),true,node.wf instanceof Programflow);
             eb.populateTags();
             node.wf.makeUndo("Add Tag",node);
         }

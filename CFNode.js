@@ -201,7 +201,7 @@ class CFNode {
                 this.wf.addChild(wfc);
                 if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
                 var addTags=false;
-                if(this.tags.length>0&&oldvalue==null)addTags = mxUtils.confirm(LANGUAGE_TEXT.confirm.linkwf[USER_LANGUAGE]);
+                if(this.tags.length>0&&oldvalue==null&&this.wf instanceof Programflow)addTags = mxUtils.confirm(LANGUAGE_TEXT.confirm.linkwf[USER_LANGUAGE]);
                 if(this.view)this.view.linkedWFUpdated(value,oldvalue);
                 this.refreshLinkedTags(addTags);
                 
@@ -409,7 +409,7 @@ class CFNode {
         if(this.linkedWF!=null){
             var wf = this.wf.project.getWFByID(this.linkedWF);
             //Remove/add tags that aren't assigned to the linked workflow
-            for(var i=0;i<this.tags.length;i++){
+            if(addToLinked)for(var i=0;i<this.tags.length;i++){
                 if(wf.tagSets.indexOf(this.tags[i])<0){
                     if(addToLinked){wf.addTagSet(this.tags[i]);}
                     else{this.removeTag(this.tags[i],false);i--;}
