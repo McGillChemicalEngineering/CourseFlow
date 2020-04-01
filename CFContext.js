@@ -74,8 +74,8 @@ class CFContext{
         if(this.y+int(height)<=winheight+window.scrollY)this.div.style.top=this.y+"px";
         else this.div.style.top = (int(winheight)+window.scrollY - int(height))+"px";
         var menu = this;
-        document.addEventListener("click",function(){menu.close();},true);
-        document.addEventListener("contextmenu",function(){menu.close();},true);
+        document.addEventListener("click",function(){menu.close();},{once:true});
+        document.addEventListener("contextmenu",function(){menu.close();},{once:true});
     }
 
     close(){if(this.div.parentElement)this.div.parentElement.removeChild(this.div);}

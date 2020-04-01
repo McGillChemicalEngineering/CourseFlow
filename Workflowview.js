@@ -763,7 +763,7 @@ class Workflowview{
                     if(g.firstChild!=null){
                         g.firstChild.classList.add("validdrop");
                         var hlRemove = function(){g.firstChild.classList.remove("validdrop");}
-                        document.addEventListener("mouseup",hlRemove,true);
+                        document.addEventListener("mouseup",hlRemove,{once:true});
                         draggable.lastCell = cell;
                     }
                 }else{
@@ -783,7 +783,7 @@ class Workflowview{
     
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
-        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',2*cellSpacing + this.weekWidth,100,250,1,invisibleStyle);
+        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',2*cellSpacing + this.weekWidth,100,250,1,invisibleStyle+"constituent=0;");
         
     }
     
@@ -1141,7 +1141,9 @@ class Workflowview{
         mxGraphHandler.prototype.getInitialCellForEvent = function(me){
             var cell = graphHandlerGetInitialCellForEvent.apply(this, arguments);
             while (this.graph.isPart(cell)){
-                cell = this.graph.getModel().getParent(cell)
+                cell = this.graph.getModel().getParent(cell);
+                console.log(cell);
+                console.log(cell.style);
             }
             return cell;
         };

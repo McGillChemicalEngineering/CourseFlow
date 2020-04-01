@@ -201,6 +201,10 @@ class Outcomeview{
             this.tableCells.push(cellRow);
         }
         
+        for(var i=0;i<this.categoryViews.length;i++){
+            if(this.sortType=="week"&&this.categoryViews[i].value.collapsed)this.categoryViews[i].collapse();
+        }
+        
         
         this.updateTable();
         
@@ -932,6 +936,7 @@ class OutcomeCategoryview{
         this.expandIcon.classList.add("haschildren");
         
         nv.insertSelf(lastnv);
+        console.log("expanding");
         this.expand();
     }
     
@@ -953,6 +958,7 @@ class OutcomeCategoryview{
     }
     
     expand(){
+        if(this.wf.view.sortType=="week")this.value.collapsed=false;
         this.vertex.classList.add("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
             this.nodeViews[i].vertex.classList.remove("hidden");
@@ -962,6 +968,7 @@ class OutcomeCategoryview{
     }
     
     collapse(){
+        if(this.wf.view.sortType=="week")this.value.collapsed=true;
         this.vertex.classList.remove("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
             this.nodeViews[i].vertex.classList.add("hidden");
@@ -1324,7 +1331,7 @@ class OutcomeNodeview{
                 node.setName(nv.namediv.firstElementChild.value);
             }
             document.removeEventListener('keydown',enterfunc);
-        },true);
+        },{once:true});
     }
     
     

@@ -148,7 +148,6 @@ class Layoutbutton {
     }
     
     renameClick(){
-        
         var p;
         if(this.layout instanceof Project)p=this.layout;
         else p = this.layout.project;
@@ -161,23 +160,28 @@ class Layoutbutton {
         bl.namediv.firstElementChild.focus();
         bl.namediv.firstElementChild.select();
         b.onclick=null;
-        p.container.addEventListener('click',function(evt){
+        p.container.addEventListener('mouseup',function(evt){
+            console.log("outside click");
+            console.log(evt);
             if(bl.namediv.firstElementChild!=null&&!bl.namediv.contains(evt.target))bl.namediv.firstElementChild.blur();
-        },true);
+        },{once:true});
         var enterfunc =function(evt){
             if(evt.key!=null&&evt.key=="Enter"){
+                
+                console.log("enter");
                 if(bl.namediv.firstElementChild!=null)bl.namediv.firstElementChild.blur();
             }
         }
         document.addEventListener('keydown',enterfunc);
         bl.namediv.firstElementChild.addEventListener("focusout",function(){
+            console.log("focusedout");
             b.onclick=tempfunc;
             if(bl.namediv.firstElementChild.value=="")bl.namediv.innerHTML=layout.name;
             else {
                 layout.setName(bl.namediv.firstElementChild.value);
             }
             document.removeEventListener('keydown',enterfunc);
-        },true);
+        },{once:true});
     }
     
     makeCreateChild(createfunction){
