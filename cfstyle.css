@@ -48,7 +48,7 @@ h4{
 }
 
 body, html{
-    overflow:auto;
+    overflow:hidden;
     margin:0px;
 }
 
@@ -218,7 +218,7 @@ button:hover{
 .topnav{
     width:100%;
     position: fixed;
-    z-index: 4;
+    z-index: 6;
     top: 0;
     left: 0;
     color: #1976bc;
@@ -283,7 +283,7 @@ button:hover{
     position: fixed;
     float: left;
     overflow-y:hidden;
-    z-index: 2;
+    z-index: 4;
     top: 102px;
     left: 0;
     box-shadow: 1px 0px 3px -1px;
@@ -312,7 +312,7 @@ button:hover{
     right : 8px;
     top : 102px;
     float:right;
-    z-index:2;
+    z-index:4;
     box-shadow: -1px 0px 3px -1px;
     width : 240px;
     bottom : 0px;
@@ -736,6 +736,8 @@ div.highlighted{
     text-align:center;
     top:100px;
     width:100%;
+    height:calc(100% - 100px);
+    overflow:auto;
     position:absolute;
 }
 
@@ -748,7 +750,7 @@ div.highlighted{
 
 .graphcontainer{
     display:inline-block;
-    overflow:hidden;
+    overflow:visible;
     cursor:default;
     margin:40px;
     margin-right:400px;
@@ -769,7 +771,7 @@ div.highlighted{
     top:140px;
     height:400px;
     width:600px;
-    z-index:4;
+    z-index:6;
     display:none;
     padding:10px;
     cursor:move;
@@ -891,7 +893,6 @@ div.highlighted{
     width: 32px;
     min-width:32px;
     vertical-align:middle;
-    padding:4px;
     
 }
 
@@ -901,14 +902,24 @@ div.highlighted{
 
 
 .outcometable th.nodetitle{
-    position:relative;
+    position:sticky;
     height:160px;
+    top:-10px;
+    z-index:2;
+    background:white;
 }
 
 .outcometable th{
     padding:0px;
     position:relative;
     text-align:left;
+}
+
+.outcometable .tagcell{
+    position:sticky;
+    left:0px;
+    z-index:1;
+    background:inherit;
 }
 
 .outcometable .categoryhead{
@@ -983,7 +994,6 @@ div.highlighted{
 }
 
 .outcometable tr td:first-child{
-    position:relative;
     max-width:300px;
     min-width:300px;
     max-height:36px;
@@ -998,6 +1008,7 @@ div.highlighted{
 .outcometable .tagcell .tagtext{
     white-space:normal;
     max-height:36px;
+    width: calc(100% - 30px);
     overflow:hidden;
     vertical-align:middle;
     display:inline-block;
@@ -1027,9 +1038,6 @@ div.highlighted{
     position:absolute;
 }
 
-.outcometable tr td:first-child{
-    position:relative;
-}
 
 .outcometable tr.depth0 td:first-child{
     font-size:16px;
@@ -1052,11 +1060,19 @@ div.highlighted{
     border-left:0px;
 }
 
+.outcometable tbody tr{
+    background-color:white;
+}
+
 .outcometable tbody tr:nth-child(2n+3){
     background-color:lightgray;
 }
 
 .outcometable tbody tr:hover{
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
+}
+
+.outcometable tbody tr:hover .tagcell{
     box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
 }
 
@@ -1086,6 +1102,19 @@ div.highlighted{
     top:0px;
     width:100%;
     height:100%;
+}
+
+.outcometable .tagcell+td{
+    width:82px;
+    min-width:82px;
+}
+
+.outcometable tr th:first-child{
+    background:white;
+    position:sticky;
+    top:-10px;
+    left:0px;
+    z-index:3;
 }
 
 .outcometable td:hover .outcomecheckbox{
@@ -1238,7 +1267,7 @@ div.highlighted{
     width:100%;
     position:fixed;
     height:calc(100% - 100px);
-    z-index:3;
+    z-index:5;
     transition: opacity 0.2s;
 }
 
@@ -1301,13 +1330,13 @@ div.highlighted{
     background:white;
     position:absolute;
     height:30px;
-    top:200px;
+    top:194px;
 }
 
 .columnfloatcontainer{
     pointer-events:none;
     position:sticky;
-    top:-100px;
+    top:-194px;
     height:0px;
     width:calc(100% - 500px);
     margin-left:100px;
@@ -1323,7 +1352,7 @@ div.highlighted{
     overflow-x:hidden;
     text-decoration:underline;
     font-weight:600;
-    bottom:13px;
+    bottom:4px;
     text-align:center;
 }
 
@@ -1335,6 +1364,10 @@ div.highlighted{
     z-index:10;
     cursor:pointer;
     background:#FFFFFF !important;
+}
+
+.readonly .mxPopupMenu{
+    display:none;
 }
 
 .mxPopupMenu{
@@ -1417,7 +1450,7 @@ div.highlighted{
     height:calc(100% - 100px);
     overflow-y:visible;
     overflow-x:visible;
-    z-index:2;
+    z-index:4;
     top:100px;
     box-shadow:0px 0px 3px 0px;
     background:white;
@@ -1524,6 +1557,8 @@ div.highlighted{
     margin-top:-10px;
 }
 
+
+.readonly .movehandle{display:none !important;}
 
 
     

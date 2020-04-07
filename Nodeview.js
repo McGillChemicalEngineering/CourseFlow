@@ -24,6 +24,7 @@ class Nodeview{
         this.namenode;
         this.textnode;
         this.dropNode;
+        this.timeNode;
         this.graph=graph;
         if(this.node.autoLinkOut)this.node.autoLinkOut.view = new WFAutolinkview(graph,this.node.autoLinkOut);
         this.tagPreviews=[];
@@ -67,7 +68,7 @@ class Nodeview{
         this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
-        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString(),this.dropNode.x(),this.dropNode.y(),this.dropNode.w(),this.dropNode.h(),defaultTimeStyle);
+        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString()+"&nbsp;".repeat(3),this.dropNode.x(),this.dropNode.y(),this.dropNode.w(),this.dropNode.h(),defaultTimeStyle);
         this.timeNode.isDrop=true;
         this.timeNode.node = this.node;
         this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
@@ -174,6 +175,7 @@ class Nodeview{
     vertexResized(dy){
         this.resizeChild(this.textnode,dy);
         this.graph.moveCells([this.dropNode],0,dy);
+        this.graph.moveCells([this.timeNode],0,dy);
         this.node.week.view.nodeResized(this.node,dy);
         for(var i=0;i<this.node.brackets.length;i++){this.node.brackets[i].view.updateVertical();}
         

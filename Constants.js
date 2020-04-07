@@ -175,7 +175,6 @@ const iconsList={
           {text:{en:'Problem Solve',fr:"Résolution de Problèmes"},value:'problem'},
           {text:{en:'Analyze',fr:"Analyser"},value:'analyze'},
           {text:{en:'Assess/Review Peers',fr:"Examiner Ses Pairs"},value:'peerreview'},
-          {text:{en:'Evaluate Peers',fr:"Évaluer Ses Pairs"},value:'evaluate'},
           {text:{en:'Debate',fr:"Débat"},value:'debate'},
           {text:{en:'Game/Roleplay',fr:"Jeu/Jeu de rôle"},value:'play'},
           {text:{en:'Create/Design',fr:"Créer/Concevoir"},value:'create'},
@@ -186,7 +185,6 @@ const iconsList={
           {text:{en:'Experiment/Inquiry',fr:"Expérience/Enquête"},value:'experiment'},
           {text:{en:'Quiz/Test',fr:"Quiz/Test"},value:'quiz'},
           {text:{en:'Instructor Resource Curation',fr:"Préparation Des Ressources (Instructeur)"},value:'curation'},
-          {text:{en:'Instructor Decision',fr:"Décision (Instructeur)"},value:'decision'},
           {text:{en:'Instructor Orchestration',fr:"Orchestration (Instructeur)"},value:'orchestration'},
           {text:{en:'Instructor Evaluation',fr:"Évaluation (Instructeur)"},value:'instrevaluate'},
           {text:{en:'Other',fr:"Autre"},value:'other'}

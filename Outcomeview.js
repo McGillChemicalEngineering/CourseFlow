@@ -96,7 +96,7 @@ class Outcomeview{
         
         var ebContainer = document.getElementById('ebWrapper');
         if(ebContainer.nextElementSibling==null||!ebContainer.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(ebContainer.parentElement,"left");
-        ebContainer.parentElement.style.zIndex='3';
+        ebContainer.parentElement.style.zIndex='5';
         ebContainer.parentElement.style.width = '400px';
         var editbar = new EditBar(ebContainer,this.wf);
         this.editbar = editbar;
@@ -958,7 +958,7 @@ class OutcomeCategoryview{
     }
     
     expand(){
-        if(this.wf.view.sortType=="week")this.value.collapsed=false;
+        if(this.wf.view.sortType=="week"&&this.value!="grandtotal")this.value.collapsed=false;
         this.vertex.classList.add("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
             this.nodeViews[i].vertex.classList.remove("hidden");
@@ -968,7 +968,7 @@ class OutcomeCategoryview{
     }
     
     collapse(){
-        if(this.wf.view.sortType=="week")this.value.collapsed=true;
+        if(this.wf.view.sortType=="week"&&this.value!="grandtotal")this.value.collapsed=true;
         this.vertex.classList.remove("expanded");
         for(var i=1;i<this.nodeViews.length-1;i++){
             this.nodeViews[i].vertex.classList.add("hidden");
@@ -1163,7 +1163,7 @@ class OutcomeNodeview{
             this.textdiv.contextItem = this;
             this.textdiv.node = this.nodes[0];
             
-            this.namediv.draggable="true";
+            if(!this.cv.wf.project.readOnly)this.namediv.draggable="true";
             
             this.namediv.style.cursor="move";
             
@@ -1771,6 +1771,7 @@ class OutcomeTableCell{
                     node.wf.makeUndo("Remove Tag",node);
                 }
             }
+            if(tag&&tag.project.readOnly)checkbox.disabled=true;
             
             var validationImg = document.createElement('img');
             validationImg.classList.add("outcomecellicon");

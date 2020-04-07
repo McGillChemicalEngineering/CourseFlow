@@ -94,6 +94,7 @@ class CFMenuItem{
     }
     
     makeLine(text,icon,clickfunc){
+        var menu = this.menu;
         var row = this.row;
         var iconcell = document.createElement('td');
         iconcell.className = 'mxPopupMenuIcon';
@@ -108,7 +109,7 @@ class CFMenuItem{
         row.appendChild(iconcell);
         row.appendChild(textcell);
         row.appendChild(this.subcell);
-        row.onclick = function(evt){evt.stopPropagation();clickfunc();};
+        row.onclick = function(evt){evt.stopPropagation();clickfunc();menu.close();};
         var sub = this;
         row.addEventListener('mouseenter',function(){
             if(sub.submenu.items.length>0)sub.submenu.open(sub);

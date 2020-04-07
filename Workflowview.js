@@ -94,7 +94,7 @@ class Workflowview{
         var wfview = this;
         // Installs a popupmenu handler.
         if(!this.wf.project.readOnly)graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){
-            if(evt.ctrlKey)return;
+            if(evt.shiftKey)return;
             return wfview.createPopupMenu(menu, cell, evt);
         };
         this.container.contextItem={dummyObject:true};
@@ -752,7 +752,7 @@ class Workflowview{
         draggable.topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
-            var cell = this.getDropTarget(graph,evt.pageX-this.leftPos-graph.view.getTranslate().x,evt.pageY-this.topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,evt);
+            var cell = this.getDropTarget(graph,evt.pageX-this.leftPos+int($('.bodywrapper')[0].scrollLeft)-graph.view.getTranslate().x,evt.pageY-this.topPos+int($('.bodywrapper')[0].scrollTop)-graph.view.getTranslate().y,evt);
             while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
             if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
             
@@ -797,6 +797,7 @@ class Workflowview{
         }
         menu.addItem(LANGUAGE_TEXT.workflowview.addcomment[USER_LANGUAGE],'resources/images/comment24.png',function(){
             var comparent =null;
+            console.log(evt);
             if(cell)if(cell.isNode)comparent=cell.node;
             else if(cell.isBracket)comparent=cell.bracket;
             else if(cell.isHead)comparent=cell.column;
@@ -807,7 +808,7 @@ class Workflowview{
             var leftPos = int(styleB.left)+int(styleC.marginLeft);
             if(int(styleB.width)>int(styleW.width))leftPos+=int(styleB.width)/2-int(styleW.width)/2;
             var topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
-            var com = new WFComment(wf,evt.pageX-leftPos-graph.view.getTranslate().x,evt.pageY-topPos+int(document.body.scrollTop)-graph.view.getTranslate().y,comparent);
+            var com = new WFComment(wf,evt.pageX-leftPos+int($('.bodywrapper')[0].scrollLeft)-graph.view.getTranslate().x,evt.pageY-topPos+int($('.bodywrapper')[0].scrollTop)-graph.view.getTranslate().y,comparent);
             com.view = new Commentview(graph,com);
             com.view.createVertex();
             wf.addComment(com);
@@ -904,7 +905,7 @@ class Workflowview{
         var ebContainer = document.getElementById('ebWrapper');
         if(ebContainer.nextElementSibling==null||!ebContainer.nextElementSibling.classList.contains("panelresizehandle"))makeResizable(ebContainer.parentElement,"left");
         //ebContainer.style.top = int(minimap.style.top)+int(minimap.style.height)+6+"px";
-        ebContainer.parentElement.style.zIndex='3';
+        ebContainer.parentElement.style.zIndex='5';
         ebContainer.parentElement.style.width = '400px';
         
         var editbar = new EditBar(ebContainer,this.wf);

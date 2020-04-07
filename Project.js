@@ -27,7 +27,6 @@ class Project{
         this.sidenav = new WFToolbar(this,document.getElementById("sidenav"),"left","layoutnav36");
         this.navigatorDivs = {};
         this.newWFDiv = document.getElementById("newWFDiv");
-        this.newWFButton;
         this.nameDiv = this.sidenav.addBlock(LANGUAGE_TEXT.layoutnav.navigator[USER_LANGUAGE],null,null,'3');
         this.buttons=[];
         this.addButton(this.nameDiv,false);
@@ -98,6 +97,7 @@ class Project{
         
         var duplicateWF = document.getElementById('duplicatewf');
         duplicateWF.onclick = function(){
+            if(p.readOnly)return;
             p.duplicateActiveWF();
         }
         
@@ -416,7 +416,7 @@ class Project{
         if(wf instanceof Workflow) children= this.getDependencies(wf);
         var exported=[];
         var xml = "";
-        xml+=makeXML(wf.name,"prname");
+        xml+=makeXML(wf.name,"prname",true);
         xml+=makeXML(this.idNum,"idnum");
         xml+=makeXML(this.terminologySet,"terminologyset");
         xml+=wf.toXML();
@@ -473,9 +473,17 @@ class Project{
         var p = this;
         if(p.readOnly==readOnly)return;
         p.readOnly=readOnly;
-        p.newWFButton.disabled=readOnly;
-        if(readOnly)document.body.classList.add("readonly");
-        else document.body.classList.remove("readonly");
+        if(readOnly){
+            document.body.classList.add("readonly");
+            $('#import').addClass("disabled");
+            $('#importcsv').addClass("disabled");
+            $('#save').addClass("disabled");
+        }else {
+            document.body.classList.remove("readonly");
+            $('#import').removeClass("disabled");
+            $('#importcsv').removeClass("disabled");
+            $('#save').removeClass("disabled");
+        }
     }
     
     duplicateActiveWF(){
@@ -512,7 +520,7 @@ class Project{
     toXML(readOnly=false){
         var xml = "";
         var serializer = new XMLSerializer();
-        xml+=makeXML(this.name,"prname");
+        xml+=makeXML(this.name,"prname",true);
         xml+=makeXML(this.idNum,"idnum");
         xml+=makeXML(this.terminologySet,"terminologyset");
         if(readOnly)xml+=makeXML("true","readonly");
@@ -534,7 +542,8 @@ class Project{
         $("#terminologystandard").addClass("disabled");
         for(var i=0;i<this.buttons.length;i++)this.buttons[i].updateButton();
         this.idNum="0";
-        
+        if(this.readOnly)this.makeReadOnly(false);
+        this.changeActive(this);
     }
     
     //Import a project from xml. isAppend will create new workflows, otherwise we clear the project first.
@@ -544,7 +553,7 @@ class Project{
         var xmlDoc = parser.parseFromString(purgeInvalidCharacters(xmlData),"text/xml");
         if(!isAppend){
             this.clearProject();
-            this.setName(getXMLVal(xmlDoc,"prname"));
+            this.setName(getXMLVal(xmlDoc,"prname",true));
             this.idNum = int(getXMLVal(xmlDoc,"idnum"));
             var terminology = getXMLVal(xmlDoc,"terminologyset");
             if(terminology)this.setTerminology(terminology);

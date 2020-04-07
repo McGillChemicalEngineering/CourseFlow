@@ -107,7 +107,6 @@ class EditBar{
         var timeDiv = document.createElement('div');
         timeDiv.innerHTML='<h4>'+LANGUAGE_TEXT.editbar.time[USER_LANGUAGE]+':</h4>';
         var timeSelect = document.createElement('input');
-        timeSelect.type="number";
         var unitSelect = document.createElement('select');
         for(var prop in LANGUAGE_TEXT.timeunits){
             var opt = document.createElement('option');
@@ -154,6 +153,8 @@ class EditBar{
             this.tagSelect.disabled=true;
             this.leftIcon.disabled=true;
             this.rightIcon.disabled=true;
+            timeSelect.disabled=true;
+            unitSelect.disabled=true;
         }
     }
     
@@ -197,7 +198,7 @@ class EditBar{
                 node.wf.makeUndo("Icon Change",node);
             }
         }else this.hideParent(this.rightIcon);
-        this.timeSelect.value=int(node.time.value);
+        this.timeSelect.value=node.time.value;
         this.unitSelect.value=node.time.unit;
         
         var linkedWFList = node.getLinkedWFList();

@@ -333,7 +333,7 @@ class Workflow{
             }
             
             $("#outcomeview").removeClass("disabled");
-            $("#duplicatewf").removeClass("disabled");
+            if(!this.project.readOnly)$("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
             if(this.currentUndo>0)$("#undo").removeClass("disabled");

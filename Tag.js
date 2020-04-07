@@ -49,7 +49,7 @@ class Tag {
                 this.buttons[i].makeActive();
             }
             this.view.makeActive();
-            $("#duplicatewf").removeClass("disabled");
+            if(!this.project.readOnly)$("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
             $("#exportcsv").removeClass("disabled");
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportoutcome[USER_LANGUAGE];
