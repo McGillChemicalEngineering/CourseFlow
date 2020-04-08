@@ -36,12 +36,27 @@ function main(container)
         $("#english").get()[0].onclick = function(){USER_LANGUAGE='en';setMenuLanguage();};
         $("#french").get()[0].onclick = function(){USER_LANGUAGE='fr';setMenuLanguage();};
         
+        makeSplashpage(container);
         var toOpen = requestQueryString("filename");
         if(toOpen!=""){
-            var opened = loadServerXML("resources/ALA_files/"+toOpen+".CFlow")
-            console.log(opened);
+            //try to open file based on url
+            var filename = "resources/ALA_files/"+toOpen+".CFlow";
+            var opened = loadServerXML(filename);
+            if(opened==null)toOpen="";
+            else{
+                try{
+                    var project = new Project(container);
+                    project.fromXML(opened,false);
+                    var splash = document.getElementById("splashpage");
+                    var renamebarrier = document.getElementById("renamebarrier");
+                    splash.style.display="none";
+                    renamebarrier.style.display="none";
+                }catch(err){
+                    alert("Failed to open the file you linked in the URL. Opening a blank project instead.");
+                    toOpen="";
+                }
+            }
         }
-        else makeSplashpage(container);
         
         //Create the popup menu
         document.addEventListener('contextmenu',function(evt){
