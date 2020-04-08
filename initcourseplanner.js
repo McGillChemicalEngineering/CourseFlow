@@ -38,7 +38,7 @@ function main(container)
         
         var toOpen = requestQueryString("filename");
         if(toOpen!=""){
-            var opened = loadServerXML("resources/ALA_files/"+toOpen+".xml")
+            var opened = loadServerXML("resources/ALA_files/"+toOpen+".CFlow")
             console.log(opened);
         }
         else makeSplashpage(container);
