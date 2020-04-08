@@ -35,7 +35,13 @@ function main(container)
         setMenuLanguage();
         $("#english").get()[0].onclick = function(){USER_LANGUAGE='en';setMenuLanguage();};
         $("#french").get()[0].onclick = function(){USER_LANGUAGE='fr';setMenuLanguage();};
-        makeSplashpage(container);
+        
+        var toOpen = requestQueryString("filename");
+        if(toOpen!=""){
+            var opened = loadServerXML("resources/ALA_files/"+toOpen+".xml")
+            console.log(opened);
+        }
+        else makeSplashpage(container);
         
         //Create the popup menu
         document.addEventListener('contextmenu',function(evt){
@@ -74,6 +80,30 @@ function makeSplashpage(container){
     $('#new')[0].onclick = function(){newfile.click();}
     $('#open')[0].onclick = function(){openfile.click();}
 
+}
+
+function requestQueryString(name)
+{
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( window.location.href );
+    if( results == null ) {
+        return "";
+    } else {
+        return results[1];
+    }
+}
+
+function loadServerXML(filepath){
+    var result =null;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET",filepath,false);
+    xmlhttp.send();
+    if(xmlhttp.status == 200){
+        result = xmlhttp.responseText;
+    }
+    return result;
 }
 
 
