@@ -37,24 +37,32 @@ function main(container)
         $("#french").get()[0].onclick = function(){USER_LANGUAGE='fr';setMenuLanguage();};
         
         makeSplashpage(container);
-        var toOpen = requestQueryString("filename");
+        var toOpen = decodeURIComponent(requestQueryString("filename"));
+        var filetype = decodeURIComponent(requestQueryString("filetype"));
         if(toOpen!=""){
             //try to open file based on url
-            var filename = "resources/ALA_files/"+toOpen+".CFlow";
-            var opened = loadServerXML(filename);
-            if(opened==null)toOpen="";
-            else{
-                try{
+            try{
+                var filename;
+                if(filetype=="ALA")filename = "https://jchoquette.github.io/ALA_Files/"+toOpen+".CFlow";
+                var opened = loadServerXML(filename);
+                if(opened==null)toOpen="";
+                else{
                     var project = new Project(container);
                     project.fromXML(opened,false);
                     var splash = document.getElementById("splashpage");
                     var renamebarrier = document.getElementById("renamebarrier");
                     splash.style.display="none";
                     renamebarrier.style.display="none";
-                }catch(err){
-                    alert("Failed to open the file you linked in the URL. Opening a blank project instead.");
-                    toOpen="";
+                    for(var prop in project.workflows){
+                        if(project.workflows[prop].length>0){
+                            project.changeActive(project.workflows[prop][0]);
+                            break;
+                        }
+                    }
                 }
+            }catch(err){
+                alert("Failed to open the file you linked in the URL. Opening a blank project instead.");
+                toOpen="";
             }
         }
         
