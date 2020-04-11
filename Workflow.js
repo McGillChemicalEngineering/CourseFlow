@@ -60,7 +60,7 @@ class Workflow{
         for(i=0;i<this.tagSets.length;i++){tagSets.push(this.tagSets[i].id);}
         xml+=makeXML(tagSets.join(","),"tagsetARRAY");
         if(this.isActive)this.saveXMLData();
-        xml+=(new XMLSerializer()).serializeToString(this.xmlData);
+        if(this.xmlData!=null)xml+=(new XMLSerializer()).serializeToString(this.xmlData);
         var xmlData = makeXML(xml,"workflow");
         return xmlData;
     }
@@ -146,6 +146,7 @@ class Workflow{
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
         this.xmlData = xmlData.getElementsByTagName("wfdata")[0];
         if(this.xmlData==null){
+            if(xmlData.getElementsByTagName("week").length==0)return;
             console.log("The savefile is an older version. Attempting to repair...");
             //This is an old savefile, and doesn't have a wfdata tag.
             this.xmlData = (new DOMParser()).parseFromString("<wfdata></wfdata>","text/xml");
@@ -309,7 +310,7 @@ class Workflow{
                 //uncommenting this line will allow all parents of the activated workflow to automatically expand
                 //this.activateParents(this.buttons[i],true);
             }
-
+            console.log(this.xmlData);
             if(this.xmlData!=null){
                 this.openXMLData();
             }else{
