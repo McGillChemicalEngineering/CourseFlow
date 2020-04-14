@@ -27,7 +27,7 @@ class Nodeview{
         this.timeNode;
         this.graph=graph;
         if(this.node.autoLinkOut)this.node.autoLinkOut.view = new WFAutolinkview(graph,this.node.autoLinkOut);
-        this.tagPreviews=[];
+        this.tagPreview;
         this.tagVertices=[];
         
     }
@@ -72,7 +72,10 @@ class Nodeview{
         this.timeNode.isDrop=true;
         this.timeNode.node = this.node;
         this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
+        this.tagPreview = this.graph.insertVertex(this.vertex,null,'',tagBoxPadding+this.vertex.w(),0,tagHeight,tagHeight,defaultTagPreviewStyle+this.node.getColumnStyle());
+        this.graph.orderCells(true,[this.tagPreview]);
         this.graph.toggleCells(false,[this.tagBox]);
+        if(this.node.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
         this.vertex.cellOverlays=[];
         this.addPlusOverlay();
         this.addDelOverlay();
@@ -159,7 +162,7 @@ class Nodeview{
     styleForColumn(){
         var colstyle = this.node.getColumnStyle();
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
-        this.graph.setCellStyles("strokeColor",colstyle,this.tagVertices.concat(this.tagPreviews));
+        this.graph.setCellStyles("strokeColor",colstyle,this.tagVertices.concat([this.tagPreview]));
     }
     
     makeFlushWithAbove(index,column=null){
@@ -289,45 +292,44 @@ class Nodeview{
     
     
     tagAdded(tag,show){
-        var vertices = tag.view.addNode(this.node);
-        this.tagVertices.push(vertices.label);
-        this.tagPreviews.push(vertices.preview);
+        this.graph.toggleCells(true,[this.tagPreview]);
+        var vertex = tag.view.addNode(this.node);
+        this.tagVertices.push(vertex);
+        this.graph.cellLabelChanged(this.tagPreview,""+this.node.tags.length);
         this.toggleTags(show);
     }
     
     tagRemoved(tag){
-        var index = this.node.tags.indexOf(tag); 
-        this.graph.removeCells([this.tagVertices.splice(index,1)[0],this.tagPreviews.splice(index,1)[0]]);
+        var index=0;
+        for(index=0;index<this.tagVertices.length;index++)if(tag.view.vertices.indexOf(this.tagVertices[index])>=0)break;
+        this.graph.removeCells([this.tagVertices.splice(index,1)[0]]);
         if(tag.view)tag.view.removeNode(this.node);
-        
-        for(var i=0;i<this.tagVertices.length;i++){
-            this.graph.moveCells([this.tagVertices[i]],0,(tagHeight+tagBoxPadding)*i-this.tagVertices[i].y());
-        }
-        for(var i=0;i<this.tagPreviews.length;i++){
-            this.graph.moveCells([this.tagPreviews[i]],0,tagHeight/2-2+(tagBoxPadding+tagHeight)*i-this.tagPreviews[i].y());
-        }
+        if(this.node.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
+        this.updateTagPosition();
+        this.graph.cellLabelChanged(this.tagPreview,this.node.tags.length);
     }
     
     toggleTags(show){
         if(show){
-            for(var i=0;i<this.tagVertices.length;i++){
-                this.graph.moveCells([this.tagVertices[i]],0,(tagHeight+tagBoxPadding)*i-this.tagVertices[i].y());
-            }
-            for(var i=0;i<this.tagPreviews.length;i++){
-                this.graph.moveCells([this.tagPreviews[i]],0,tagHeight/2-2+(tagBoxPadding+tagHeight)*i-this.tagPreviews[i].y());
-            }
-            var bounds = this.tagBox.getGeometry();
-            bounds.height = this.tagVertices.length*(tagHeight+tagBoxPadding);
-
-            this.graph.resizeCells([this.tagBox],bounds);
-            this.graph.orderCells(false,[this.vertex]);
-            this.node.wf.view.bringCommentsToFront();
+            this.updateTagPosition();
         }else{
             for(var i=0;i<this.tagVertices.length;i++){
                 this.graph.removeCellOverlays(this.tagVertices[i]);
             }
         }
         this.graph.toggleCells(show,[this.tagBox]);
+    }
+    
+    updateTagPosition(){
+        for(var i=0;i<this.tagVertices.length;i++){
+            this.graph.moveCells([this.tagVertices[i]],0,(tagHeight+tagBoxPadding)*i-this.tagVertices[i].y());
+        }
+        var bounds = this.tagBox.getGeometry();
+        bounds.height = this.tagVertices.length*(tagHeight+tagBoxPadding);
+
+        this.graph.resizeCells([this.tagBox],bounds);
+        this.graph.orderCells(false,[this.vertex]);
+        this.node.wf.view.bringCommentsToFront();
     }
     
     highlight(on){

@@ -28,6 +28,7 @@ class Tag {
         this.depth;
         this.isActive=false;
         this.view;
+        this.collapsed=true;
     }
     
     setName(name){
@@ -221,6 +222,7 @@ class Tag {
         var xml = "";
         xml+=makeXML(this.name,"tagname",true);
         xml+=makeXML(this.id,"tagid");
+        xml+=makeXML(""+this.collapsed,"iscollapsed");
         for(var i=0;i<this.children.length;i++){
             xml+=this.children[i].toXML();
         }
@@ -230,6 +232,10 @@ class Tag {
     fromXML(xml){
         this.setName(getXMLVal(xml,"tagname",true));
         this.id=getXMLVal(xml,"tagid");
+        var isCollapsed = getXMLVal(xml,"iscollapsed");
+        console.log(isCollapsed);
+        if(isCollapsed=="true")this.collapsed=true;
+        else this.collapsed=false;
         for(var i = 0;i<xml.childNodes.length;i++){
             if(xml.childNodes[i].nodeName=="tag"){
                 var newtag = new Tag(this.project,this);

@@ -94,6 +94,7 @@ class Tagbuilder{
         }
         if(tag.depth<2)button.makeCreateChild(createchildfunction);
         this.button = button;
+        if(!this.tag.collapsed)this.button.expand();
         
         return button.childdiv;
     }

@@ -431,6 +431,8 @@ class Layoutbutton {
 class CompetencyEditButton extends Layoutbutton{
     makeB(){return document.createElement('li');}
     makeChildDiv(){return document.createElement('ol');}
+    collapse(){this.layout.collapsed=true;super.collapse();}
+    expand(){this.layout.collapsed=false;super.expand();}
 }
 
 class EditBarTagButton extends Layoutbutton{
@@ -441,6 +443,7 @@ class EditBarTagButton extends Layoutbutton{
         unassignicon.src="resources/images/unassign16.png";
         unassignicon.style.width='16px';
         unassignicon.onclick=function(){
+            unassignicon.classList.add("detached");
             layout.unassignFrom(parent);
         }
         return unassignicon;

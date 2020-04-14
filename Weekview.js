@@ -447,10 +447,13 @@ class Termview extends Weekview{
     
     //Gets the largest column. Includes a modifier to be used when, for example, we want to know what the biggest column will be after removing a node.
     getLargestColumn(col,mod){
+        console.log(col);
+        console.log(mod);
         var height=0;
         for(var prop in this.week.nodesByColumn){
             var b = this.getHeightOfCol(prop);
-            if(col==prop)b+=mod;
+            console.log("Column "+prop+ " has height "+b);
+            if(col==prop){b+=mod;console.log("adding a modifier of "+mod);}
             if(b>height){
                 height=b;
             }
@@ -555,11 +558,13 @@ class Termview extends Weekview{
     
     
     nodeResized(node,dy){
-        var prevlargest = this.getLargestColumn(node.column,-dy);
-        var newlargest = this.getLargestColumn();
-        if(!this.week.collapsed&&newlargest!=prevlargest)this.resizeWeek(newlargest-prevlargest,0);
         var index = this.week.nodesByColumn[node.column].indexOf(node);
         if(index<this.week.nodesByColumn[node.column].length-1)this.pushNodesFast(index+1,-1,dy,node.column);
+        var prevlargest = this.getLargestColumn(node.column,-dy);
+        console.log("Before the resize, the largest column size was: " + prevlargest);
+        var newlargest = this.getLargestColumn();
+        console.log("Now it is: " + prevlargest);
+        if(!this.week.collapsed&&newlargest!=prevlargest)this.resizeWeek(newlargest-prevlargest,0);
         
     }
     

@@ -76,6 +76,19 @@ class ProjectOverview{
         }
     }
     
+    workflowRemoved(wf){
+        for(var i=0;i<this.contentdivs.length;i++){
+            if(this.contentdivs[i].type==wf.getType()){
+                for(var j=0;j<this.contentdivs[i].buttons.length;j++){
+                    if(this.contentdivs[i].buttons[j].layout==wf){
+                        this.contentdivs[i].buttons.splice(j,1);
+                        j--;
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 class ProjectOverviewCategory{

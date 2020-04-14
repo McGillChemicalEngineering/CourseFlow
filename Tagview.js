@@ -20,7 +20,6 @@ class Tagview{
         this.graph=graph;
         this.nodes=[];
         this.vertices=[];
-        this.tagPreviews=[];
         this.drops=[];
         this.tag=tag;
         this.isComplete=false;
@@ -73,12 +72,9 @@ class Tagview{
             node.wf.makeUndo("Remove Tag",node);
         });
         tagLabel.cellOverlays = [overlay];
-        var tagPreview = this.graph.insertVertex(node.view.vertex,null,'',tagBoxPadding+node.view.vertex.w(),tagHeight/2-2+(tagBoxPadding+tagHeight)*node.view.tagPreviews.length,4,4,style);
-        graph.orderCells(true,[tagPreview]);
         this.vertices.push(tagLabel);
-        this.tagPreviews.push(tagPreview);
         
-        return {label:tagLabel,preview:tagPreview};
+        return tagLabel;
     }
     
     addDrop(button){
@@ -138,7 +134,6 @@ class Tagview{
         var index = this.nodes.indexOf(node);
         this.nodes.splice(index,1);
         this.vertices.splice(index,1);
-        this.tagPreviews.splice(index,1);
         this.updateDrops();
         this.updateDescendantDrops();
         this.updateAncestorDrops();

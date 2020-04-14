@@ -201,6 +201,10 @@ class Outcomeview{
             this.tableCells.push(cellRow);
         }
         
+        for(var i=0;i<this.tagViews.length;i++){
+            if(this.tagViews[i].tag&&this.tagViews[i].tag.collapsed)this.tagViews[i].collapse();
+        }
+        
         for(var i=0;i<this.categoryViews.length;i++){
             if(this.sortType=="week"&&this.categoryViews[i].value.collapsed)this.categoryViews[i].collapse();
         }
@@ -1671,6 +1675,7 @@ class OutcomeTagview{
     
     expand(){
         if(this.tag==null)return;
+        this.tag.collapsed=false;
         this.vertex.classList.add("expanded");
         this.showTag();
         this.expandIcon.src="resources/images/arrowdown16.png";
@@ -1700,6 +1705,7 @@ class OutcomeTagview{
     
     collapse(){
         if(this.tag==null)return;
+        this.tag.collapsed=true;
         this.vertex.classList.remove("expanded");
         for(var i=0;i<this.tag.children.length;i++){
             if(this.tag.children[i].view)this.tag.children[i].view.hideTag();

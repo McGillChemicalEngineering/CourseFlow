@@ -142,12 +142,12 @@ class Project{
             reader.readAsText(p.csvLoader.files[0]);
             reader.onload = function(evt){
                 var readData = evt.target.result;
-                try{
+                //try{
                     p.loadCSV(readData);
-                    gaEvent('Save/Open','ImportCSV',p.name);
-                }catch(err){
-                    alert(LANGUAGE_TEXT.errors.loadcsv[USER_LANGUAGE]);
-                }
+                //    gaEvent('Save/Open','ImportCSV',p.name);
+                //}catch(err){
+                //    alert(LANGUAGE_TEXT.errors.loadcsv[USER_LANGUAGE]);
+                //}
             }
         }
         
@@ -351,6 +351,7 @@ class Project{
             if(p.activeLayout instanceof Workflow&&!p.container.contains(evt.target)){
                 var wf = p.activeLayout;
                 if(wf.view==null||wf.view.graph==null)return;
+                if(evt.target.classList.contains("detached"))return;
                 if(!wf.view.editbar.container.parentElement.contains(evt.target))wf.view.graph.clearSelection();
             }
         });
@@ -652,6 +653,7 @@ class Project{
             wf.removeButton(wf.buttons[0]);
         }
         if(this.activeLayout==wf){this.changeActive(this);}
+        else if(this.activeLayout==this)this.view.workflowRemoved(wf);
         this.workflows[wf.getType()].splice(this.workflows[wf.getType()].indexOf(wf),1);
         
         if(wf instanceof Tag && this.activeLayout instanceof Workflow&&this.activeLayout.view&&this.activeLayout.view.tagSelect!=null){
@@ -928,7 +930,7 @@ class Project{
     loadCSV(csv){
         var array = parseCSV(csv);
         var currentdepth=0;
-        var tag = this.addCompetency();
+        var tag = this.addWorkflow("outcome");
         tag.fromCSV(array,0,0);
     }
     
