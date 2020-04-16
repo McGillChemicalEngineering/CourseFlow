@@ -142,12 +142,12 @@ class Project{
             reader.readAsText(p.csvLoader.files[0]);
             reader.onload = function(evt){
                 var readData = evt.target.result;
-                //try{
+                try{
                     p.loadCSV(readData);
-                //    gaEvent('Save/Open','ImportCSV',p.name);
-                //}catch(err){
-                //    alert(LANGUAGE_TEXT.errors.loadcsv[USER_LANGUAGE]);
-                //}
+                    gaEvent('Save/Open','ImportCSV',p.name);
+                }catch(err){
+                    alert(LANGUAGE_TEXT.errors.loadcsv[USER_LANGUAGE]);
+                }
             }
         }
         

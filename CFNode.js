@@ -309,6 +309,7 @@ class CFNode {
             node.view.columnUpdated();
             if(node.view.fillTags)node.view.fillTags();
         }
+        while(node.fixedLinksOut.length>0)node.fixedLinksOut[0].deleteSelf();
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
         this.wf.makeUndo("Add Node",node);
         if(node.view.categoryChanged)node.view.categoryChanged();
