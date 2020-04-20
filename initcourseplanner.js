@@ -48,6 +48,7 @@ function main(container)
                 if(filetype=="ALA")filename = "https://jchoquette.github.io/ALA_Files/"+toOpen+".CFlow";
                 else if(fileurl!=null)filename = fileurl;
                 var opened = loadServerXML(filename);
+                console.log(filename);
                 if(opened==null)toOpen="";
                 else{
                     var project = new Project(container);
