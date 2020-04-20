@@ -15,6 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
+
 //A few logistical functions to more quickly grab the dimensions and sides of a cell
 mxCell.prototype.x = function(){return this.getGeometry().x;}
 mxCell.prototype.y = function(){return this.getGeometry().y;}
@@ -276,6 +277,8 @@ const LANGUAGE_TEXT = {
         newprogram:{en:"New Program",fr:"Noveau Programme"},
         inserttitle:{en:"Insert Title Here",fr:'Placez Le Titre Ici'},
         insertauthor:{en:"Insert Author Here",fr:"Placez Le Nom de L'Auteur Ici"},
+        insertdescription:{en:"Insert Description Here",fr:"Placez La Description Ici"},
+        description:{en:'Description',fr:'Description'},
         rename:{en:"Rename",fr:"Renommer"},
         delete:{en:"Delete",fr:"Supprimer"},
         unassign:{en:"Unassign",fr:"Annuler L'attribution"},
@@ -307,6 +310,7 @@ const LANGUAGE_TEXT = {
         addcomment:{en:"Add Comment",fr:"Ajouter un commentaire"},
         edittitle:{en:"Edit Title",fr:"Modifier le titre"},
         editauthor:{en:"Edit Author",fr:"Modifier l'auteur"},
+        editdescription:{en:"Edit Description",fr:"Modifier la description"},
         whatsthis:{en:"What's This?",fr:"Aide"},
         draganddrop:{en:"\A Drag and drop to add",fr:"\A Glisser-déplacer pour ajouter"}
     },
@@ -705,3 +709,191 @@ function parseCSV(str) {
     }
     return arr;
 }
+
+
+
+//Overwriting the functions that set bold text to use font-weight 600 instead
+/**
+ * Function: getAlternateContent
+ * 
+ * Returns the alternate content for the given foreignObject.
+ */
+mxSvgCanvas2D.prototype.createAlternateContent = function(fo, x, y, w, h, str, align, valign, wrap, format, overflow, clip, rotation)
+{
+	if (this.foAltText != null)
+	{
+		var s = this.state;
+		var alt = this.createElement('text');
+		alt.setAttribute('x', Math.round(w / 2));
+		alt.setAttribute('y', Math.round((h + s.fontSize) / 2));
+		alt.setAttribute('fill', s.fontColor || 'black');
+		alt.setAttribute('text-anchor', 'middle');
+		alt.setAttribute('font-size', s.fontSize + 'px');
+		alt.setAttribute('font-family', s.fontFamily);
+		
+		if ((s.fontStyle & mxConstants.FONT_BOLD) == mxConstants.FONT_BOLD)
+		{
+			alt.setAttribute('font-weight', '600');
+		}
+		
+		if ((s.fontStyle & mxConstants.FONT_ITALIC) == mxConstants.FONT_ITALIC)
+		{
+			alt.setAttribute('font-style', 'italic');
+		}
+		
+		if ((s.fontStyle & mxConstants.FONT_UNDERLINE) == mxConstants.FONT_UNDERLINE)
+		{
+			alt.setAttribute('text-decoration', 'underline');
+		}
+		
+		mxUtils.write(alt, this.foAltText);
+		
+		return alt;
+	}
+	else
+	{
+		return null;
+	}
+};
+
+/**
+ * Function: createDiv
+ * 
+ * Private helper function to create SVG elements
+ */
+mxSvgCanvas2D.prototype.createDiv = function(str, align, valign, style, overflow)
+{
+	var s = this.state;
+
+	// Inline block for rendering HTML background over SVG in Safari
+	var lh = (mxConstants.ABSOLUTE_LINE_HEIGHT) ? (s.fontSize * mxConstants.LINE_HEIGHT) + 'px' :
+		(mxConstants.LINE_HEIGHT * this.lineHeightCorrection);
+	
+	style = 'display:inline-block;font-size:' + s.fontSize + 'px;font-family:' + s.fontFamily +
+		';color:' + s.fontColor + ';line-height:' + lh + ';' + style;
+
+	if ((s.fontStyle & mxConstants.FONT_BOLD) == mxConstants.FONT_BOLD)
+	{
+		style += 'font-weight:600;';
+	}
+
+	if ((s.fontStyle & mxConstants.FONT_ITALIC) == mxConstants.FONT_ITALIC)
+	{
+		style += 'font-style:italic;';
+	}
+	
+	if ((s.fontStyle & mxConstants.FONT_UNDERLINE) == mxConstants.FONT_UNDERLINE)
+	{
+		style += 'text-decoration:underline;';
+	}
+	
+	if (align == mxConstants.ALIGN_CENTER)
+	{
+		style += 'text-align:center;';
+	}
+	else if (align == mxConstants.ALIGN_RIGHT)
+	{
+		style += 'text-align:right;';
+	}
+
+	var css = '';
+	
+	if (s.fontBackgroundColor != null)
+	{
+		css += 'background-color:' + s.fontBackgroundColor + ';';
+	}
+	
+	if (s.fontBorderColor != null)
+	{
+		css += 'border:1px solid ' + s.fontBorderColor + ';';
+	}
+	
+	var val = str;
+	
+	if (!mxUtils.isNode(val))
+	{
+		val = this.convertHtml(val);
+		
+		if (overflow != 'fill' && overflow != 'width')
+		{
+			// Inner div always needed to measure wrapped text
+			val = '<div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;' + css + '">' + val + '</div>';
+		}
+		else
+		{
+			style += css;
+		}
+	}
+
+	// Uses DOM API where available. This cannot be used in IE to avoid
+	// an opening and two (!) closing TBODY tags being added to tables.
+	if (!mxClient.IS_IE && document.createElementNS)
+	{
+		var div = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+		div.setAttribute('style', style);
+		
+		if (mxUtils.isNode(val))
+		{
+			// Creates a copy for export
+			if (this.root.ownerDocument != document)
+			{
+				div.appendChild(val.cloneNode(true));
+			}
+			else
+			{
+				div.appendChild(val);
+			}
+		}
+		else
+		{
+			div.innerHTML = val;
+		}
+		
+		return div;
+	}
+	else
+	{
+		// Serializes for export
+		if (mxUtils.isNode(val) && this.root.ownerDocument != document)
+		{
+			val = val.outerHTML;
+		}
+
+		// NOTE: FF 3.6 crashes if content CSS contains "height:100%"
+		return mxUtils.parseXml('<div xmlns="http://www.w3.org/1999/xhtml" style="' + style + 
+			'">' + val + '</div>').documentElement;
+	}
+};
+
+/**
+ * Function: updateFont
+ * 
+ * Updates the text properties for the given node. (NOTE: For this to work in
+ * IE, the given node must be a text or tspan element.)
+ */
+mxSvgCanvas2D.prototype.updateFont = function(node)
+{
+	var s = this.state;
+
+	node.setAttribute('fill', s.fontColor);
+	
+	if (!this.styleEnabled || s.fontFamily != mxConstants.DEFAULT_FONTFAMILY)
+	{
+		node.setAttribute('font-family', s.fontFamily);
+	}
+
+	if ((s.fontStyle & mxConstants.FONT_BOLD) == mxConstants.FONT_BOLD)
+	{
+		node.setAttribute('font-weight', '600');
+	}
+
+	if ((s.fontStyle & mxConstants.FONT_ITALIC) == mxConstants.FONT_ITALIC)
+	{
+		node.setAttribute('font-style', 'italic');
+	}
+	
+	if ((s.fontStyle & mxConstants.FONT_UNDERLINE) == mxConstants.FONT_UNDERLINE)
+	{
+		node.setAttribute('text-decoration', 'underline');
+	}
+};

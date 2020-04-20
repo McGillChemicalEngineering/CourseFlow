@@ -33,7 +33,7 @@ class Columnview{
     
     createVertex(){
         var col = this.column;
-        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(), null,col.text,this.pos,4*cellSpacing, colIconSize, colIconSize,defaultHeadStyle+'image=resources/data/'+col.image+'.png;');
+        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(), null,col.text,this.pos,wfStartY+240, colIconSize, colIconSize,defaultHeadStyle+'image=resources/data/'+col.image+'.png;');
         this.vertex.isHead=true;
         this.vertex.column=col;
         this.vertex.valueChanged = function(value){

@@ -30,6 +30,7 @@ class Workflowview{
         this.editbar;
         this.titleNode;
         this.authorNode;
+        this.descriptionNode;
         this.weekWidth=0;
         this.colFloat
     }
@@ -40,6 +41,10 @@ class Workflowview{
     
     authorUpdated(){
         this.graph.getModel().setValue(this.authorNode,this.wf.author);
+    }
+    
+    descriptionUpdated(){
+        this.graph.getModel().setValue(this.descriptionNode,this.wf.description);
     }
     
     makeConnectionsFromIds(){
@@ -77,9 +82,10 @@ class Workflowview{
             //Create the title boxes
             this.createTitleNode();
             this.createLegend();
+            this.createAuthorNode();
+            this.createDescriptionNode();
             this.createSpanner();
             this.drawGraph();
-            this.createAuthorNode();
             this.createLegendVertex();
         }
         finally{
@@ -173,7 +179,7 @@ class Workflowview{
         var wf = this.wf;
         var title = "["+LANGUAGE_TEXT.workflow.inserttitle[USER_LANGUAGE]+"]";
         if(wf.name&&wf.name!=wf.getDefaultName())title = wf.name;
-        this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,wfStartY,300,50,defaultTitleStyle);
+        this.titleNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,wfStartY,400,24,defaultTitleStyle);
         this.titleNode.isTitle=true;
         this.titleNode.wf=wf;
         this.titleNode.valueChanged = function(value){
@@ -189,12 +195,28 @@ class Workflowview{
         var wf = this.wf;
         var title = "["+LANGUAGE_TEXT.workflow.insertauthor[USER_LANGUAGE]+"]";
         if(wf.author)title = wf.author;
-        this.authorNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,cellSpacing+this.weekWidth-300,wfStartY+cellSpacing,300,50,defaultTitleStyle+"align=right;fontSize=16;");
+        this.authorNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX,wfStartY+40,400,20,defaultTitleStyle+"fontSize=14;fontStyle=3;");
         this.authorNode.isTitle=true;
         this.authorNode.wf=wf;
         this.authorNode.valueChanged = function(value){
             var value1 = wf.setAuthorSilent(value);
             if(value1!=value)wf.view.graph.getModel().setValue(wf.view.authorNode,value1);
+            else mxCell.prototype.valueChanged.apply(this,arguments);
+            
+        }
+    }
+    
+    createDescriptionNode(){
+        var wf = this.wf;
+        var title = "["+LANGUAGE_TEXT.workflow.insertdescription[USER_LANGUAGE]+"]";
+        if(wf.description)title = wf.description;
+        this.descriptionHeaderNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,LANGUAGE_TEXT.workflow.description[USER_LANGUAGE]+":",wfStartX,wfStartY+90,800,16,defaultTitleStyle+"fontSize=14;verticalAlign=top;editable=false;");
+        this.descriptionNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX+cellSpacing,wfStartY+120,800,80,defaultTitleStyle+"fontSize=14;verticalAlign=top;fontStyle=0;whiteSpace=wrap;");
+        this.descriptionNode.isTitle=true;
+        this.descriptionNode.wf=wf;
+        this.descriptionNode.valueChanged = function(value){
+            var value1 = wf.setDescriptionSilent(value);
+            if(value1!=value)wf.view.graph.getModel().setValue(wf.view.descriptionNode,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
             
         }
@@ -301,11 +323,12 @@ class Workflowview{
         for(var i = 0;i<weeks.length;i++){
             if(weeks[i].view)weeks[i].view.vertex.resize(this.graph,this.weekWidth-oldWidth,0);
         }
-        if(weeks[0].view)this.graph.moveCells([this.authorNode],weeks[0].view.vertex.r()-this.authorNode.r());
+        //if(weeks[0].view)this.graph.moveCells([this.authorNode],weeks[0].view.vertex.r()-this.authorNode.r());
         for(var i=0;i<this.wf.brackets.length;i++){
             if(this.wf.brackets[i].view)this.wf.brackets[i].view.updateHorizontal();
         }
-        this.graph.moveCells([this.spanner],2*cellSpacing+this.weekWidth-this.spanner.x(),0);
+        this.spanner.resize(this.graph,this.weekWidth-oldWidth,0);
+        //this.graph.moveCells([this.spanner],2*cellSpacing+this.weekWidth-this.spanner.x(),0);
     }
     
     weekIndexUpdated(week){ 
@@ -783,7 +806,7 @@ class Workflowview{
     
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
-        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',2*cellSpacing + this.weekWidth,100,250,1,invisibleStyle+"constituent=0;");
+        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX+cellSpacing,this.descriptionNode.b()+10,this.weekWidth+200,1,invisibleStyle+"strokeColor=#DDDDDD;");
         
     }
     
@@ -855,6 +878,9 @@ class Workflowview{
         });
         menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],'resources/images/text24.png',function(){
             graph.startEditingAtCell(wfv.authorNode);
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.editdescription[USER_LANGUAGE],'resources/images/text24.png',function(){
+            graph.startEditingAtCell(wfv.descriptionNode);
         });
         
         this.wf.populateMenu(menu);
@@ -1125,6 +1151,7 @@ class Workflowview{
         }
         graph.clearSelection = function(){
             this.stopEditing(false);
+            if(editbar.node&&editbar.node.view)editbar.node.view.deselected();
             editbar.disable();
             wfv.showColFloat(true);
             $("body>.mxPopupMenu").remove();
@@ -1185,7 +1212,9 @@ class Workflowview{
                                 while (graph.isPart(cell)){cell = graph.getModel().getParent(cell);}
                                 //check if this was a click, rather than a drag
                                 if(cell.isNode){
+                                    if(editbar.node&&editbar.node.view)editbar.node.view.deselected();
                                     editbar.enable(cell.node);
+                                    cell.node.view.selected();
                                 }
                             }
                         }
@@ -1200,6 +1229,8 @@ class Workflowview{
                             //check if you are in bounds, if so create overlays. Because of a weird offset between the graph view and the graph itself, we have to use the cell's view state instead of its own bounds
                             var mouserect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
                             if(mxUtils.intersects(mouserect,graph.view.getState(cell))){
+                                //Add link highlighting
+                                if(cell.isNode&&cell.node.view)cell.node.view.mouseIn();
                                 //Add the overlays
                                 if(!p.readOnly)for(var i=0;i<cell.cellOverlays.length;i++){
                                     graph.addCellOverlay(cell,cell.cellOverlays[i]);
@@ -1219,6 +1250,8 @@ class Workflowview{
                                                 
                                                 return;
                                             }
+                                            //remove link highlighting
+                                            if(cell.isNode&&cell.node.view)cell.node.view.mouseOut();
                                             graph.removeCellOverlay(cell);
                                             if(cell.isNode){cell.node.view.toggleTags(false);clearTimeout(timeoutvar);}
                                             graph.removeMouseListener(this);

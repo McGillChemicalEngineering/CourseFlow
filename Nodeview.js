@@ -340,7 +340,33 @@ class Nodeview{
         }
     }
     
+    mouseIn(){
+        var node = this.node;
+        for(var i=0;i<node.fixedLinksOut.length;i++){
+            node.fixedLinksOut[i].view.highlight(true);
+        }
+    }
     
+    mouseOut(){
+        var node = this.node;
+        for(var i=0;i<node.fixedLinksOut.length;i++){
+            node.fixedLinksOut[i].view.highlight(false);
+        }
+    }
+    
+    selected(){
+        var node = this.node;
+        for(var i=0;i<node.fixedLinksOut.length;i++){
+            node.fixedLinksOut[i].view.select(true);
+        }
+    }
+    
+    deselected(){
+        var node = this.node;
+        for(var i=0;i<node.fixedLinksOut.length;i++){
+            node.fixedLinksOut[i].view.select(false);
+        }
+    }
     
     populateMenu(menu){
         var node=this.node;
@@ -465,6 +491,28 @@ class WFLinkview{
     
     deleted(){
         this.graph.removeCells([this.vertex]);
+    }
+    
+    highlight(on){
+        var g = this.graph.view.getState(this.vertex).shape.node;
+        console.log(g);
+        if(g.firstChild!=null){
+            for(var i=0;i<g.childNodes.length;i++){
+                if(on)g.childNodes[i].classList.add("highlighted");
+                else g.childNodes[i].classList.remove("highlighted");
+            }
+        }
+    }
+    
+    select(on){
+        var g = this.graph.view.getState(this.vertex).shape.node;
+        console.log(g);
+        if(g.firstChild!=null){
+            for(var i=0;i<g.childNodes.length;i++){
+                if(on)g.childNodes[i].classList.add("selected");
+                else g.childNodes[i].classList.remove("selected");
+            }
+        }
     }
     
     

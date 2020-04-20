@@ -723,6 +723,10 @@ rect.highlighted{
     outline:5px solid yellow;
 }
 
+path.highlighted, path.selected{
+    stroke:#00FF00;
+    stroke-width:3px;
+}
 
 .validdrop{
     outline:5px solid lightgreen;
@@ -1185,9 +1189,34 @@ div.highlighted{
 }
 
 .outcometableauthor{
-    font-size:16px;
+    font-size:14px;
+    font-style:italic;
+    margin-top:10px;
     height:20px;
-    margin-left:600px;
+    margin-left:20px;
+}
+
+.outcometabledescriptionhead{
+    font-size:14px;
+    margin-top:30px;
+    height:20px;
+    margin-left:20px;
+}
+
+.outcometabledescription{
+    font-size:14px;
+    height:80px;
+    margin-top:10px;
+    margin-left:40px;
+    width:800px;
+    font-weight:normal;
+    resize:none;
+}
+
+.graphcontainer hr{
+    margin-right:20px;
+    margin-left:20px;
+    border:1px solid #DDDDDD;
 }
 
 .outcometable .outcomelegend{
@@ -1330,13 +1359,13 @@ div.highlighted{
     background:white;
     position:absolute;
     height:30px;
-    top:194px;
+    top:374px;
 }
 
 .columnfloatcontainer{
     pointer-events:none;
     position:sticky;
-    top:-194px;
+    top:-374px;
     height:0px;
     width:calc(100% - 500px);
     margin-left:100px;

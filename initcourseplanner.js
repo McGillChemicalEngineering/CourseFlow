@@ -27,6 +27,7 @@ function main(container)
     }
     else
     {
+        
         if(window.navigator.language.substr(0,2)=='fr')USER_LANGUAGE='fr';
         var nav = LANGUAGE_TEXT.confirm.navigate[USER_LANGUAGE]
         window.onbeforeunload = function() {
@@ -39,11 +40,13 @@ function main(container)
         makeSplashpage(container);
         var toOpen = decodeURIComponent(requestQueryString("filename"));
         var filetype = decodeURIComponent(requestQueryString("filetype"));
-        if(toOpen!=""){
+        var fileurl = decodeURIComponent(requestQueryString("fileurl"));
+        if(toOpen!=""||fileurl!=""){
             //try to open file based on url
             try{
                 var filename;
                 if(filetype=="ALA")filename = "https://jchoquette.github.io/ALA_Files/"+toOpen+".CFlow";
+                else if(fileurl!=null)filename = fileurl;
                 var opened = loadServerXML(filename);
                 if(opened==null)toOpen="";
                 else{
@@ -91,13 +94,14 @@ function makeSplashpage(container){
     splashpage.firstElementChild.style.top='calc(50% - 160px)';
     var newfile = document.getElementById('splashnewfile');
     var openfile = document.getElementById('splashopenfile');
+    var project;
     newfile.onclick = function(){
-        var project = new Project(container);
+        if(project==null)project = new Project(container);
         project.requestName(LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE]);
         setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
     }
     openfile.onclick = function(){
-        var project = new Project(container);
+        if(project==null)project = new Project(container);
         document.getElementById('open').click();
     }
     $('#new')[0].onclick = function(){newfile.click();}

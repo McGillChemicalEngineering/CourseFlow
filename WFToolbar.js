@@ -33,11 +33,6 @@ class WFToolbar{
         this.showhide = document.createElement('div');
         this.showhide.className = "showhide";
         var wft = this;
-        this.showhide.onclick = function(){
-            wft.toggleShow();
-            if(wft.toggled&&!wft.shown)wft.show(0);
-            else if(!wft.toggled&&wft.shown)wft.hide(0);
-        }
         //Add on-hover opening and closing;
         /*container.addEventListener("mouseenter",function(evt){
             this.mousein=true;
@@ -51,7 +46,7 @@ class WFToolbar{
         container.appendChild(this.contentWrapper);
         container.appendChild(this.showhide);
         if(direction=="right"){
-            this.showhide.style.left="-48px";
+            this.showhide.style.left="-60px";
             makeResizable(this.container,"left");
         }else if(direction=="left"){
             this.showhide.style.right="-48px";
@@ -61,6 +56,11 @@ class WFToolbar{
         var showicon = document.createElement('img');
         showicon.src="resources/images/"+icon+".png";
         this.showhide.appendChild(showicon);
+        showicon.onclick = function(){
+            wft.toggleShow();
+            if(wft.toggled&&!wft.shown)wft.show(0);
+            else if(!wft.toggled&&wft.shown)wft.hide(0);
+        }
     }
     
     toggleShow(){
@@ -149,6 +149,17 @@ class WFToolbar{
                 },100);
             },10);
         },delaytime);
+    }
+    
+    addCollapseExpand(){
+        
+    }
+    
+    addOutcomeToggle(){
+        var outcome = document.createElement('img');
+        outcome.src="resources/images/toggle.png";
+        this.showhide.appendChild(outcome);
+        outcome.onclick = function(){$("#outcomeview")[0].click;}
     }
     
 

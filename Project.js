@@ -107,6 +107,14 @@ class Project{
             reader.readAsText(p.fileLoader.files[0]);
             reader.onload = function(evt){
                 var readData = evt.target.result;
+                var path = p.fileLoader.value;
+                console.log(path);
+                console.log(path.lastIndexOf("\\"));
+                var filename="";
+                if(path.indexOf("\\")>=0)filename = path.substr(path.lastIndexOf("\\")+1);
+                else if(path.indexOf("\/")>=0)filename = path.substr(path.lastIndexOf("\\")+1);
+                if(filename.indexOf(".CFlow")>0)filename=filename.substr(0,filename.indexOf(".CFlow"));
+                else filename=null;
                 try{
                     p.fromXML(readData,p.loadAppend);
                     gaEvent('Save/Open','Open',p.name);
@@ -122,6 +130,7 @@ class Project{
                         renamebarrier.firstElementChild.style.top="-100%";
                         setTimeout(function(){renamebarrier.style.display="none";},500)
                     }
+                    p.filename = filename;
                 }catch(err){
                     alert(LANGUAGE_TEXT.errors.fileopen[USER_LANGUAGE]);
                     gaError("Open",err);
@@ -365,7 +374,9 @@ class Project{
     
     saveProject(readOnly=false){
         this.toXML(readOnly);
-        var filename = this.name.replace(/[&,\[\]<>:\*\\/?|"']/g,"");
+        var filename;
+        if(this.filename)filename=this.filename;
+        else filename = this.name.replace(/[&,\[\]<>:\*\\/?|"']/g,"");
         if(readOnly)filename+="_ReadOnly";
         filename+='.CFlow';
         this.saveXML(this.xmlData,filename);
@@ -376,8 +387,8 @@ class Project{
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
-            var a = document.createElement("a"),
-                    url = URL.createObjectURL(file);
+            var url = URL.createObjectURL(file);
+            var a = document.createElement("a");
             a.href = url;
             a.download = filename;
             a.target="save as";
@@ -756,7 +767,9 @@ class Project{
         $("#expandfloatbar")[0].onclick = function(){$("#expand")[0].click();}
         floatbar.appendChild(this.createFloatBarButton("","collapse","collapsefloatbar"));
         $("#collapsefloatbar")[0].onclick = function(){$("#collapse")[0].click();}
-        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE],"outcomeview","outcomeviewfloatbar"));*/
+        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE],"outcomeview","outcomeviewfloatbar"));
+        $("#outcomeviewfloatbar")[0].onclick = function(){$("#outcomeview")[0].click();}
+        */
         
     }
     

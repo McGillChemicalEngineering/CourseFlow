@@ -76,6 +76,29 @@ class Outcomeview{
         
     }
     
+    createDescriptionNode(){
+        var wf = this.wf;
+        var title = "["+LANGUAGE_TEXT.workflow.insertdescription[USER_LANGUAGE]+"]";
+        if(wf.description)title = wf.description;
+        var descriptionheadDiv = document.createElement('div');
+        descriptionheadDiv.innerHTML = LANGUAGE_TEXT.workflow.description[USER_LANGUAGE]+":";
+        this.container.appendChild(descriptionheadDiv);
+        descriptionheadDiv.className = "outcometabletitleinput outcometabledescriptionhead";
+        var descriptionDiv = document.createElement('div');
+        this.container.appendChild(descriptionDiv);
+        var descriptionInput = document.createElement('textarea');
+        descriptionInput.value=title;
+        descriptionInput.onchange=function(){wf.setDescriptionSilent(descriptionInput.value)};
+        descriptionInput.className = "outcometabledescription outcometabletitleinput";
+        this.descriptionInput = descriptionInput;
+        descriptionDiv.appendChild(descriptionInput);
+        descriptionInput.readOnly=true;
+        descriptionInput.ondblclick = function(){descriptionInput.readOnly=false;descriptionInput.select();}
+        descriptionInput.addEventListener("focusout",function(){descriptionInput.readOnly=true;});
+        this.container.appendChild(document.createElement('hr'));
+        
+    }
+    
     makeActive(){
         this.container.style.width="";
         this.container.style.height="";
@@ -84,6 +107,7 @@ class Outcomeview{
         
         this.createTitleNode();
         this.createAuthorNode();
+        this.createDescriptionNode();
         
         this.table = document.createElement('table');
         this.table.classList.add("outcometable");
@@ -737,6 +761,10 @@ class Outcomeview{
         menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],'resources/images/text24.png',function(){
             ocv.authorInput.readOnly=false;
             ocv.authorInput.select();
+        });
+        menu.addItem(LANGUAGE_TEXT.workflowview.editdescription[USER_LANGUAGE],'resources/images/text24.png',function(){
+            ocv.descriptionInput.readOnly=false;
+            ocv.descriptionInput.select();
         });
         var layout = this.wf;
         

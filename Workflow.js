@@ -29,6 +29,7 @@ class Workflow{
         this.name = this.getDefaultName();
         this.depth = this.getDepth();
         this.author;
+        this.description;
         this.id = this.project.genID();
         this.tagSets=[];
         this.isActive=false;
@@ -49,6 +50,7 @@ class Workflow{
         var xml = "";
         xml+=makeXML(this.name,"wfname",true);
         xml+=makeXML(this.author,"wfauthor",true);
+        xml+=makeXML(this.description,"wfdescription",true);
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
         
@@ -141,6 +143,8 @@ class Workflow{
     fromXML(xmlData){
         this.setName(getXMLVal(xmlData,"wfname",true));
         this.setAuthor(getXMLVal(xmlData,"wfauthor",true));
+        var description = getXMLVal(xmlData,"wfdescription",true);
+        if(description)this.setDescription(description);
         this.id = getXMLVal(xmlData,"wfid");
         this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
@@ -298,6 +302,25 @@ class Workflow{
             return name;
         }else{
             return this.author;
+        }
+        
+    }
+    
+    setDescription(name){
+        name = this.setDescriptionSilent(name);
+        //if active, we have to change the name tag label to this
+        if(this.view)this.view.descriptionUpdated();
+                
+    }
+    
+    //sets the name without changing the label
+    setDescriptionSilent(name){
+        if(name!=null && name!=""){
+            //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
+            this.description=name;
+            return name;
+        }else{
+            return this.description;
         }
         
     }
