@@ -1,0 +1,2808 @@
+<project><prname>PJ NYB 2020 V5</prname>
+<idnum>12207</idnum>
+<terminologyset>standard</terminologyset>
+<workflow><wfname>2-Stage Review Quiz</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>747</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOC</columnname>
+<columntext>Out of Class</columntext>
+<columnnodetext>Out of Class</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnimage>noinstructor</columnimage>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>748</weekid>
+<node><name>Preparation</name>
+<id>749</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Prior to class, instructor prepares a 3 question, largely conceptual, multiple-choice review quiz based on the concepts from the previous class.  &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Bring to class&lt;/p&gt;&lt;p&gt;a) quiz x class set&lt;/p&gt;&lt;p&gt;b) answer sheets x class set&lt;/p&gt;&lt;p&gt;c) IF-AT cards x # of groups (in my case, 10).&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Individual assessment</name>
+<id>750</id>
+<lefticon>solo</lefticon>
+<righticon>quiz</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Individually, students complete the assessment. They are already sitting in their groups. When entire group is finished, students submit entire group's individual answer sheets. Can hand to teacher or bring to front. They will remain at the front, sorted by group.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Group discussion</name>
+<id>752</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;As groups, students discuss their answers to work together to answer the same questions. &lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<isdropped>true</isdropped>
+<tagARRAY/>
+</node>
+<node><name>Circulation</name>
+<id>787</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher circulates, answering questions and gently guiding groups if needed.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Group assessment</name>
+<id>753</id>
+<lefticon>group</lefticon>
+<righticon>quiz</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Group uses IF-AT scratch cards to respond. When finished, one group member takes card to front and staples to their group's individual answer sheets. Group begins working on the day's Learning Guid.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Lecture if needed</name>
+<id>788</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher explains any concepts that were not well understood during the quiz. Q &amp;amp; A.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Evaluation</name>
+<id>754</id>
+<lefticon>undefined</lefticon>
+<righticon>evaluate</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Instructor evaluates both, for a total score out of 12.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;If the individual score is higher than group score, student earns double their individual score.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;For each individual question:&lt;/p&gt;&lt;p&gt;2 marks = right&lt;/p&gt;&lt;p&gt;0 marks = wrong.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Total = /6&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;For each GROUP question:&lt;/p&gt;&lt;p&gt;2 marks = right on first try&lt;/p&gt;&lt;p&gt;1 mark = right on second try&lt;/p&gt;&lt;p&gt;0.5 marks = right on third try&lt;/p&gt;&lt;p&gt;0 marks = right on 4th or 5th try&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Total = /6&lt;/strong&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<bracket><id>755</id>
+<icon>two-stage-exam</icon>
+<topnode>749</topnode>
+<bottomnode>754</bottomnode>
+</bracket>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Cut  and  Paste</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>919</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOC</columnname>
+<columntext>Out of Class</columntext>
+<columnnodetext>Out of Class</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnimage>noinstructor</columnimage>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>920</weekid>
+<node><name>Teacher prep</name>
+<id>923</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Provide class set of scissors and glue. Have recycling bin on hand.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>First draft</name>
+<id>924</id>
+<lefticon>solo</lefticon>
+<righticon>analyze</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Students cut out the pieces and place them in the appropriate spot within the Learning Guide. Don't Glue yet.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Comparing / Consensus</name>
+<id>927</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Groups work together to figure out the best placement. If disagreement or confusion, they can call on the instructor or ask other groups.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Circulate and assess</name>
+<id>925</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher circulates, answering questions and checking on the progress of each group. When needed, guide students/groups towards a better understanding of the concepts being explored - ultimately all groups should have a result that makes physical sense.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Gluing</name>
+<id>928</id>
+<lefticon>solo</lefticon>
+<righticon>other</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;When students/groups are confident in their placements, they glue them in place.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Class Review if needed</name>
+<id>929</id>
+<lefticon>class</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Hands on Group Demo</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>930</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOC</columnname>
+<columntext>Out of Class</columntext>
+<columnnodetext>Out of Class</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnnodetext>In Class (Instructor)</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnimage>noinstructor</columnimage>
+<columnnodetext>In Class (Students)</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>931</weekid>
+<node><name>Teacher prep</name>
+<id>933</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Bring equipment to class, make sure instructions in learning guide are clear. Show class location of equipment at the start of the class and go over any safety instructions.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Hands on</name>
+<id>934</id>
+<lefticon>group</lefticon>
+<righticon>experiment</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Group's follow instructions in learning guide to use the equipment.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Interpret results</name>
+<id>935</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;The group answers questions in learning guide together, continuing to use equipment as needed. When finished, they return to working on rest of learning guide, making equipment available to other groups as needed.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Check-in</name>
+<id>937</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Visit each group to ensure their understanding of the demo is conceptually sound. Discuss any questions / confusion. Refer them to other groups as needed.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>In-Class Learning Guide</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>938</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY>416,419,420,421</tagsetARRAY>
+<wfdata><column><columnname>OOC</columnname>
+<columntext>Out of Class</columntext>
+<columnnodetext>Out of Class</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnnodetext>In Class (Instructor)</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnimage>noinstructor</columnimage>
+<columnnodetext>In Class (Students)</columnnodetext>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>939</weekid>
+<node><name>Work on Guides</name>
+<id>940</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Groups work on the day's Learning Guide. Uses whiteboard when required, and whenever else is desired. May involve other activities such as hands-on demos, team competitions, cut and paste etc.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>944</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<link><targetid>945</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<link><targetid>946</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<link><targetid>943</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Circulate</name>
+<id>942</id>
+<lefticon>group</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher circulates. Answering questions when called on by groups, otherwise checking-in and guiding groups as needed. Always paying attention to concepts that are confusion for many groups.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Lecture as needed</name>
+<id>944</id>
+<lefticon>class</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher interrupts class to give short lecture on any concepts that need more explanation. This may happen a few times in the class.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Model Problem Solving</name>
+<id>945</id>
+<lefticon>class</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;At least once every class the teacher will interrupt group work to solve a problem in front of the class. This should be a little interactive with plenty of Q&amp;amp;A (in both directions) but is intended to model the problem solving.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Wrapping up</name>
+<id>946</id>
+<lefticon>class</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher tells class what needs to be completed at home. Takes any last questions.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Finish guides at home.</name>
+<id>943</id>
+<lefticon>group</lefticon>
+<righticon>undefined</righticon>
+<column>OOC</column>
+<textHTML>&lt;p&gt;Groups continue to follow the guide, asking for help as needed.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Team Competition</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>1334</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOC</columnname>
+<columnimage>home</columnimage>
+<columntext>Out of Class</columntext>
+<columnnodetext>Home</columnnodetext>
+</column>
+<column><columnname>ICI</columnname>
+<columnimage>instruct</columnimage>
+<columntext>In Class (Instructor)</columntext>
+<columnnodetext>Instructor</columnnodetext>
+</column>
+<column><columnname>ICS</columnname>
+<columnimage>noinstructor</columnimage>
+<columntext>In Class (Students)</columntext>
+<columnnodetext>Students</columnnodetext>
+</column>
+<week><weekid>1335</weekid>
+<node><name>Teacher prep</name>
+<id>1336</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Give students questions / task handout (probably in Learning Guide already). Give them instructions and tell them how much time they have to work in teams, set timer on phone.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;To bring:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Any hand outs /equipment needed&lt;/p&gt;&lt;p&gt;Prize (e.g. candy)&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+<tagARRAY/>
+</node>
+<node><name>Teamwork</name>
+<id>1337</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;Students complete task(s) in teams within the time given. Submit final results to teacher at the end.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+<tagARRAY/>
+</node>
+<node><name>Circulate</name>
+<id>1339</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher circulates, offering guidance as needed. Pays attention to difficult areas, in case a whole-class explanation is needed at the end.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+<tagARRAY/>
+</node>
+<node><name>Assess and Award</name>
+<id>1338</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher assesses results and awards prizes to winning teams. Re-explains any concepts as needed.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<fixedlinkARRAY/>
+<linkportARRAY/>
+<tagARRAY/>
+</node>
+</week>
+</wfdata></workflow>
+<workflow><wfname>First online lesson</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>7022</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY>7034,429</tagsetARRAY>
+<wfdata><column><columnname>OOCI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>OOC</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>7021</weekid>
+<node><name>Reading/questions done, Learning Guide #11 printed
+</name>
+<id>7017</id>
+<lefticon>solo</lefticon>
+<righticon>reading</righticon>
+<column>OOC</column>
+<textHTML>&lt;p&gt;These should be already finished so students are prepared for the lesson. They will have their Learning Guide #11 with them.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Intro to online environment (30 min)</name>
+<id>7018</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EWKAg3aQDItEiRYE8jvK8WoBSZdoO4fBT2CCVFTQc9a21Q?e=sKsJ9m" target="_blank"&gt;Link to Full Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Learning Goal: Participate in an online class in a manner that supports a positive learning environment.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Outline:&lt;/p&gt;&lt;p&gt;1.&amp;nbsp;Ensure all students are able to hear/see me and solve any last minute tech problems. Model how to open the meeting chat and have every student write “Present and I can hear you.” This will count towards attendance and will be repeated later in class. (15 mins)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2.Introduce online class etiquette (5 mins)&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Pin teacher’s video to frame&lt;/li&gt;&lt;li&gt;Stay muted unless you are speaking to the class.&lt;/li&gt;&lt;li&gt;Keep video on, seeing each other keeps up the class morale and allows me to keep an eye on participation.&lt;/li&gt;&lt;li&gt;Raise hand before speaking by typing “Speak please” in meeting chat.&lt;/li&gt;&lt;li&gt;Refrain from chatter on meeting chat, including emojis and gifs. Only use meeting chat to ask and respond to relevant questions, and to raise hand.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;3.&amp;nbsp;Reminder of upcoming due dates and to keep checking Moodle. (2 mins)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;4.Briefly introduce today's topic: Using Kirchhoff's rules to analyze circuits that can't be reduced to one equivalent resistor. Explain when this is useful, let them know that there are very specific steps in the process, and if followed, this is actually one of the easier lessons because we are not learning any new concepts, it's just applying what we've already learned to a very specific situation. Once you have practiced the process a few times it becomes rote. (2 mins)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;5.&amp;nbsp;Send students into their groups (screenshare to show the ones who haven’t done it before). Remind them that myself and the TA’s will be dropping in unannounced from time to time, but if they have a question they should post to the Question Queue (screenshare)… they can type the question or just call us to come and visit. (6 mins)&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Learning Guide #11 pp1-3 (30 min)</name>
+<id>7019</id>
+<lefticon>group</lefticon>
+<righticon>undefined</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EWKAg3aQDItEiRYE8jvK8WoBSZdoO4fBT2CCVFTQc9a21Q?e=sKsJ9m" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQdWo2rMOwVDp1VPnKXYDaQB40Gqtoh6iIQvb1z-6IX1EA?e=NuwOgV" target="_blank"&gt;Link to Learning Guide #11&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EaJ9k_RmCJ5KpofI8joVH4IBWV-CRPPM-f1UBMsX-2djCA?e=ZM5TOd" target="_blank"&gt;Link to Learning Guide #11 Completed&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Learning goal: Solve irreducible resistor circuits by applying the Branch Current Method (BCM)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Outline:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;In groups using Teams video chat, students complete pp1-3 in Learning Guide #11&lt;/li&gt;&lt;li&gt;TA’s and teacher “circulate” by dropping into each group, giving priority to questions in the queue.&lt;/li&gt;&lt;li&gt;Groups should continue onto page 4 if they have the time, but all groups should aim to have at least up to page 3 done within 30 minutes.&lt;/li&gt;&lt;li&gt;Call back together after 28 minutes. Check in on as many groups as possible to ensure they got the message.&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Model problem solving &amp; wrap-up (20 min)</name>
+<id>7020</id>
+<lefticon>class</lefticon>
+<righticon>problem</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EWKAg3aQDItEiRYE8jvK8WoBSZdoO4fBT2CCVFTQc9a21Q?e=sKsJ9m" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Learning goal: Solve irreducible resistor circuits by applying the Branch Current Method (BCM)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Outline:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Work through Problem #4 in Learning Guide #11 using whiteboard (manual), calling on students for input and answering questions. If time permits, give tips for solving the system of equations (e.g., look for the current that appears in both loop rules and isolate the other in each loop rule, then sub into the Junction Rule). If out of time, don’t bother solving the systems.&lt;/li&gt;&lt;li&gt;Emphasize the meaning of a negative result and the idea that current doesn’t matter&lt;/li&gt;&lt;li&gt;To be completed by next class for review quiz: LG#11, pp1-6, including solving the systems of equations on problem #4 if we didn’t do it together.&lt;/li&gt;&lt;li&gt;Remind again of due dates and inform of purpose of lab session tomorrow (TBD).&lt;/li&gt;&lt;li&gt;Have students post “Goodbye” to check in at final attendance.&lt;/li&gt;&lt;/ol&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Second online class</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>7085</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY>7095,7096,7097,430,427,428</tagsetARRAY>
+<wfdata><column><columnname>OOCI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>OOC</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>7084</weekid>
+<node><name>Reading/Q's done
+LG #12 printed</name>
+<id>7077</id>
+<lefticon>solo</lefticon>
+<righticon>reading</righticon>
+<column>OOC</column>
+<textHTML>&lt;p&gt;These should be already finished so students are prepared for the lesson. They will have their Learning Guide #12 with them.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>2-Stage Review Quiz (25 mins)</name>
+<id>7078</id>
+<lefticon>group</lefticon>
+<righticon>quiz</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EWgFFCePBg5FqY_TeojJzjwBAaYunTDrXE3o8uz8muRT8g?e=tx6y9R" target="_blank"&gt;Link to Full Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Learning Goal: Participate in an online class in a manner that supports a positive learning environment.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Outline:&lt;/p&gt;&lt;p&gt;1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Whole-class: Explain how the quiz will work and get them all signed into lon-capa. Tell them to stay in this meeting with mic &amp;amp; video on for the individual portion of the quiz. (5 minutes)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Individual stage (10 mins)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;3.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Group stage. Before getting into groups, remind them that:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;as soon as their group finishes they are to start working on learning Guide #12. 0 mins). &lt;/li&gt;&lt;li&gt;&amp;nbsp;the TA’s and I will be dropping in unannounced from time to time. &lt;/li&gt;&lt;li&gt;if they have a question they should post to the Question Queue: they can type the question or just call us to visit. &lt;/li&gt;&lt;li&gt;they should keep an eye on their notifications because I will be calling us back together in 10 minutes&lt;/li&gt;&lt;li&gt;No need to hang up on their group meeting, just restart the class meeting and their group meeting will be put on hold. (12 minutes or less… many groups will be done early)&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;4.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;No need to go over any part of the quiz because this one is very easy (more of a trial run for this new online system).&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Intro to lesson 
+(2 mins)</name>
+<id>7079</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Reminder of upcoming due dates and to keep checking Moodle. (1 min)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Tell students that:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;we are learning about capacitors, which they have already read and answered questions about, and also explored during yesterday’s lab activities.&lt;/li&gt;&lt;li&gt;in teams they need to complete up to the end of page 1, but further is even better.&lt;/li&gt;&lt;li&gt;we will be coming back together as a class in 15 minutes to go over some of the essential concepts, but they must have tried it first – use pencil! (1 mins)&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;3.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Send students into their groups.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Learning Guide #12 pp1-2 (15 min)</name>
+<id>7080</id>
+<lefticon>group</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQC4fChMO4RCiol-_cNXFdkBz-7JTcFP6qsupw9XNdnqNQ?e=fBOlGO" target="_blank"&gt;Link to Learning Guide #12&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to Learning Guide #12 Completed&lt;/a&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;In groups students complete pp1-2 (or further) in Learning Guide #12. Many of them will get stuck on #5, that is ok. Tell them to finish to end of page 2 but don’t expect that will happen for most groups within 15 minutes.&lt;/li&gt;&lt;li&gt;TA’s and teacher “circulate” by dropping into each group, giving priority to questions in the queue.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<noautolink>true</noautolink>
+<link><targetid>7081</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Lecture with  Q&amp;A 
+(20 mins)</name>
+<id>7081</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Work through Problem #1 then #5 in Learning Guide #12 using whiteboard (manual), calling on students for input and answering questions. Students will have many questions so keep an eye on the chat.&lt;/p&gt;&lt;p&gt;2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Emphasize what happens to the supplied energy that the capacitor does not store?&lt;/p&gt;&lt;p&gt;3.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Send students back to group to complete up to the end of page 4 (bare minimum).&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Learning Guide #12 pp3-4 (15 min)</name>
+<id>7082</id>
+<lefticon>undefined</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQC4fChMO4RCiol-_cNXFdkBz-7JTcFP6qsupw9XNdnqNQ?e=fBOlGO" target="_blank"&gt;Link to Learning Guide #12&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to Learning Guide #12 Completed&lt;/a&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;In groups students complete up to at least the end of page 4 in Learning Guide #12.&lt;/li&gt;&lt;li&gt;TA’s and teacher “circulate” by dropping into each group, giving priority to questions in the queue.&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<noautolink>true</noautolink>
+<link><targetid>7081</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<link><targetid>7083</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>Wrap-up 
+(3 mins)</name>
+<id>7083</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to entire Lesson Plan&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;To be completed by next class for review quiz: LG#12, pp1-4. Review quiz next class.&lt;/p&gt;&lt;p&gt;2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Remind again of due dates.&lt;/p&gt;&lt;p&gt;3.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Have students post “Goodbye” to check in at final attendance.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>Generic Live Online Class</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>8882</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOCI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>OOC</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>8883</weekid>
+<node><name>Reading and ?'s done, Learning Guide printed
+</name>
+<id>8884</id>
+<lefticon>solo</lefticon>
+<righticon>reading</righticon>
+<column>OOC</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Intro to day's lesson (2-15 minutes)</name>
+<id>8886</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Most classes begin with a 20 minute 2-stage review quiz. In these cases, some groups will already have started working on the Learning Guide before the whole class reconvenes for this Introduction.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Teacher-led Intro:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Discuss any quiz questions if relevant&lt;/li&gt;&lt;li&gt;Have students post a greeting in chat for attendance&lt;/li&gt;&lt;li&gt;Remind of upcoming due dates&lt;/li&gt;&lt;li&gt;Get them started on learning guide - sometimes there is something to discuss as a class immediately, usually teams should be able to start working without needing immediate help.&lt;/li&gt;&lt;/ol&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>5</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY/>
+</node>
+<node><name>Guided Teamwork</name>
+<id>8887</id>
+<lefticon>group</lefticon>
+<righticon>discuss</righticon>
+<column>ICS</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>15</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY/>
+</node>
+<node><name>Model problem solving / Explain challenging concepts</name>
+<id>8888</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;Teacher helps class solve a problem, modeling the process on the whiteboard and using plenty of Q&amp;amp;A&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;And/Or&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Teacher lectures on a particularly challenging concept but only AFTER most teams have had time to try it in the Learning Guide - again with plenty of Q&amp;amp;A.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>15</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY/>
+</node>
+<node><name>Guided Teamwork</name>
+<id>8889</id>
+<lefticon>group</lefticon>
+<righticon>problem</righticon>
+<column>ICS</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY/>
+</node>
+<node><name>Wrap up</name>
+<id>8890</id>
+<lefticon>class</lefticon>
+<righticon>present</righticon>
+<column>ICI</column>
+<textHTML>&lt;p&gt;If the lesson was challenging, it is worth getting class back together in a whole-class meeting to answer any last questions and announce up how much of the Learning Guide should be completed before next class.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;If lesson went more smoothly, can simply post message to entire class in general chat, wrapping up class and announcing how much fo the Learning Guide should be completed before next class.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;In either case, have students post to confirm attendance at the end.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>5</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY/>
+</node>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>New Activity</wfname>
+<wfauthor>undefined</wfauthor>
+<wfid>10423</wfid>
+<wftype>activity</wftype>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY></tagsetARRAY>
+<wfdata><column><columnname>OOCI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>OOC</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICI</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>ICS</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>10424</weekid>
+</week>
+<wflegendx>1180</wflegendx>
+<wflegendy>220</wflegendy>
+</wfdata></workflow>
+<workflow><wfname>NYB Winter 2020</wfname>
+<wfauthor>Phoebe Jackson</wfauthor>
+<wfid>1</wfid>
+<wftype>course</wftype>
+<usedwfARRAY>938,938,938,938,938,938,938,938,7022,7085,747,747,747,747,747,747,747,747,747,747,747,747,747,747,747,747,747,747,8882,8882,8882,8882,8882,8882,8882,8882,8882</usedwfARRAY>
+<tagsetARRAY>415</tagsetARRAY>
+<wfdata><column><columnname>HW</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<column><columnname>AC</columnname>
+<columntext>Activities</columntext>
+<columnnodetext>Activities</columnnodetext>
+<columnoutcomevisibility>true</columnoutcomevisibility>
+</column>
+<column><columnname>SA</columnname>
+<columnoutcomevisibility>false</columnoutcomevisibility>
+</column>
+<column><columnname>FA</columnname>
+<columnoutcomevisibility>undefined</columnoutcomevisibility>
+</column>
+<week><weekid>2</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Reading</name>
+<id>3</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EY5YgsI-E-ZLukjXU9XjEbABVMXqgpK40vS8EN72h0mjGA?e=yb416c" target="_blank"&gt;SWBATs&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Optional annotations on Perusall.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;REQUIRED: Uni 5.1-5.2, College 18.3. John Travoltage PHET: &lt;a href="https://phet.colorado.edu/sims/html/john-travoltage/latest/john-travoltage_en.html" target="_blank"&gt;https://phet.colorado.edu/‌sims/html/john-travoltage/latest/john-travoltage_en.html&lt;/a&gt;n here.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>4</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>417,418</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>4</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions (#1-3)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_A1_W20/" target="_blank"&gt;https://mydalite.org/en/assignment/NYB_A1_W20/&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>6</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>417,418</tagARRAY>
+</node>
+<node><name>Class 1: Vectors  and  Electric charge</name>
+<id>6</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Course Outline&lt;/li&gt;&lt;li&gt;Make groups (bedtime lineup / handhold)&lt;/li&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/ESZ2-5rT_ExLnN8cdxC1SbgBKMjHccmuV20DsxyAaQ021w?e=5YAHkw" target="_blank"&gt;Learning Guide 1&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Complete up to page 8&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;learning Guide 1 x 5&lt;/li&gt;&lt;li&gt;Glue &amp;amp; scissors x class set&lt;/li&gt;&lt;li&gt;Recycling bin&lt;/li&gt;&lt;li&gt;Diagram sheet x class set&lt;/li&gt;&lt;li&gt;Electroscopes x 10&lt;/li&gt;&lt;li&gt;Rods &amp;amp; wool x 10&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Vector intro&lt;/li&gt;&lt;li&gt;Electric charge&lt;/li&gt;&lt;li&gt;Conductor vs insulator&lt;/li&gt;&lt;li&gt;Charging by induction/conduction/friction&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>80</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>12</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>5</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>335</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 1</name>
+<id>335</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EdQA-QQcgHVEnJqmRwz3jH0B7qU_oYGEYJBe3DsR_LMHJA?e=5Yhbxt" target="_blank"&gt;Vectors &amp;amp; Charge: Learning Guide 1 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>417</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>5</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 1:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Introduce yourself to your reading group (the other students who can see your posts... there are about 15 per group). For example, why are you enrolled in the JAC science program?&lt;/li&gt;&lt;li&gt;Take a picture or video of an object that has no net charge (is neutral) but becomes polarized. This must be real, not from the internet! Discuss the physics of what must be occurring at the atomic scale&amp;nbsp;as well as at the macro scale (e.g., what you can see with your eyes).&lt;/li&gt;&lt;li&gt;After doing all the reading and the MyDALITE questions, what are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2. Before the response deadline (see Moodle), respond to at least 2 posts written by another group members as well as to comments on your own original post. Make your responses insightful, don't just say something meaningless, like "yeah, I agree" or "thanks, you helped me understand that concept." Push each other to think more deeply. Put the concept in your own words, explain, ask questions. Get the conversations started!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>585</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>417</tagARRAY>
+</node>
+<node><name>Lab #1a :Intro to Electrostatics</name>
+<id>1387</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lab #1a : Intro to Electrostatics&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>1389</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<link><targetid>12</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>417</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz A</name>
+<id>12</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>417</tagARRAY>
+</node>
+<node><name>Class 2: Coulomb's Law</name>
+<id>13</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EfV3VRfxKF5Ngwrr1-PSC78BIM1aD73yVv7yHE9JS6STwA?e=XTmcTu" target="_blank"&gt;Learning Guide 2&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Complete up to page 5&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Learning Guide #2 x 3&lt;/li&gt;&lt;li&gt;Electroscopes x 10&lt;/li&gt;&lt;li&gt;Rods &amp;amp; wool x 10&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Coulombs Law in 2D, use z-axis, &amp;gt;2 charges&lt;/li&gt;&lt;li&gt;One fixed charged, one free to move – qualitatively look at when they will collide. &lt;/li&gt;&lt;li&gt;Refer to energy which comes later.&lt;/li&gt;&lt;li&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>38</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>412</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 2</name>
+<id>412</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQPeJvM8dqBDlajd04vm2RQBaL2EcvjALh_Vgezk21dlag?e=3c2XlW" target="_blank"&gt;Electric Force: Learning Guide 2 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,418</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>585</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>417,418</tagARRAY>
+</node>
+</week>
+<week><weekid>29</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Reading</name>
+<id>23</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/ERgqtTydohtEpnCtrPsim0sBQKJTYzFAnGr4paIe5vvWuA?e=HelFV4" target="_blank"&gt;SWBATs&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Optional annotations on Perusall.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;REQUIRED: College 18.4, 18.5 (pp707-709), Uni 5.6 (pp218/9), College 18.7&lt;/p&gt;&lt;p&gt;USEFUL: College 18.8 &amp;amp; 21.4&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>24</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>421,419</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>24</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions (#4-6)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_Week2_W20" target="_blank"&gt;https://mydalite.org/en/assignment/NYB_Week2_W20&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>25</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>421,419</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz B</name>
+<id>38</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>418</tagARRAY>
+</node>
+<node><name>Class 3: Electric Field part 1</name>
+<id>25</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EfnmiHzrmghCimQVcDpOSsMBGB5eroV8HbtGlBPz8QQ6cg?e=1SwO15" target="_blank"&gt;Learning Guide 3&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Complete up to page 8&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;learning Guide 3 x 3&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Electric field: strength, density, direction, drawing!&lt;/li&gt;&lt;li&gt;Superposition&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>26</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>27</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>590</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 3</name>
+<id>590</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EbZQ0zoLi_5MpNckao4s3UoBpkYvmoNrOZ6ipSFHSh6bLA?e=xM6993" target="_blank"&gt;Electric Field Part 1: Learning Guide 3 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,418,421</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>26</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 2:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Fields are our way of understanding forces that act at a distance. Two other common types of forces that act a distance are the gravitational force and magnetic force. A gravitational field represents the force a mass would experience if it was placed in the field.&amp;nbsp;An electric field represents the force a charge would experience if it was placed in the field. In this way, &lt;u&gt;gravitational fields&lt;/u&gt; are to &lt;u&gt;masses &lt;/u&gt;what &lt;strong&gt;electric fields&lt;/strong&gt; are to &lt;strong&gt;charges&lt;/strong&gt;. But there are some important differences between the two types of field. Discuss!&lt;/li&gt;&lt;li&gt;Use the properties of a conductor in electrostatic equilibrium to explain how EITHER a lightning rod OR the body of your car can protect you in a lightning storm. Be sure you actually refer to at least one or more of the properties of a conductor in electrostatic equilibrium.&amp;nbsp;&lt;/li&gt;&lt;li&gt;After doing all the reading and the MyDALITE questions, what are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2. Before the response deadline (see Moodle), respond to at least 2 posts written by another group members as well as to comments on your own original post. Make your responses insightful, don't just say something meaningless, like "yeah, I agree" or "thanks, you helped me understand that concept." Push each other to think more deeply. Put the concept in your own words, explain, ask questions. Get the conversations started!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>587</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>421,419</tagARRAY>
+</node>
+<node><name>Lab Report: Lab #1a, Intro to electrostatics</name>
+<id>1389</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>417</tagARRAY>
+</node>
+<node><name>Lab #2: Combination of Resistors</name>
+<id>1388</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lab #2: Combination of Resistors&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>1391</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<tagARRAY>426,429</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz C</name>
+<id>27</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>419,421,420</tagARRAY>
+</node>
+<node><name>Class 4: Electric Fields Part 2</name>
+<id>28</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ec3EpKEhE65PnSkanjAhGvABPj45i2UHW9nUSilZYmyERg?e=cwgbc8" target="_blank"&gt;Learning Guide 4&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Electric Field enactment. Whole class activity.&lt;/li&gt;&lt;li&gt;Complete up to page 3&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Learning Guide #4 x 3&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Electric field superposition questions (where is it zero?)&lt;/li&gt;&lt;li&gt;Field from a line of charge and other shapes&lt;/li&gt;&lt;li&gt;Force on charge in field&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>593</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 4 (pp1-3)</name>
+<id>593</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EWgzD23vkWtFlhxp4jDlg5MBKTbGtT5VH6-gGAMLH8VhFw?e=iKPGB7" target="_blank"&gt;Electric Field Part 2: Learning Guide 4 Completed up to page 3&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,421,419</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>587</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>421,419</tagARRAY>
+</node>
+</week>
+<week><weekid>95</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Reading</name>
+<id>88</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EVvdOiBnzDtEm32Bx4sRotwBeq3jjAkEwiZIafnQp-xk-w?e=vwhBXX" target="_blank"&gt;SWBATs&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Optional annotations on Perusall.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;REQUIRED : Uni 5.7, College 19.1&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>89</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>419,420,421</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>89</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions (#7-9)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_Week3_W20V2/" target="_blank"&gt;https://mydalite.org/en/assignment/NYB_Week3_W20V2/&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>91</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>420,421,419</tagARRAY>
+</node>
+<node><name>Class 5: Torque on Dipoles</name>
+<id>91</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Whiteboard work on pp4-5 in Learning Guide 4&lt;/li&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Eeb_vVKxJ4ZHiPbYdjhq_V4B5bv3ookHMOZQ4On-GptOPw?e=L4nPG9" target="_blank"&gt;Learning Guide 5&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Complete entire package&lt;/li&gt;&lt;li&gt;Class enactment of dipoles in e-field.&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;li&gt;Electric Field Hockey??&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;learning Guide 5 x 3&lt;/li&gt;&lt;li&gt;Giant Dipole with removable p-vector.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;charge kinematics and static equilibrium&lt;/li&gt;&lt;li&gt;torque on a dipole&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>80</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>92</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>93</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>681</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<link><targetid>678</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 4 (all of it)</name>
+<id>678</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/ESWPquYA0eZOqk8kjpAA0GUBDNYuc8PHAGCTuQdnk5LI6Q?e=dFcZZP" target="_blank"&gt;Electric Field Part 2: Learning Guide 4 Completed up to page 3&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>419,420,421</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>92</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 3:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;The Joule is the standard unit of energy but there are others that we use regularly as well. The electron volt (eV) is a unit of energy that is very small. What is a unit of energy that is commonly used for huge quantities of electric energy? Take a look at an energy bill (from Hydro Quebec) for your house - how much energy did you use in the last couple months? How many Joules would this be? If you don't have an electricity bill for your own place, ask your parents / relatives / friends / landlord to have a look at theirs.&lt;/li&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;What is the difference between an induced dipole and a permanent dipole? List at least 2 common molecules that are permanently dipolar. Does their dipolarity give them any special properties?&lt;/li&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;After doing all the reading and the MyDALITE questions, what are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2. Before the response deadline (see Moodle), respond to at least 2 posts written by another group members as well as to comments on your own original post. Make your responses insightful, don't just say something meaningless, like "yeah, I agree" or "thanks, you helped me understand that concept." Push each other to think more deeply. Put the concept in your own words, explain, ask questions. Get the conversations started!&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>725</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>420,419,430,428</tagARRAY>
+</node>
+<node><name>Lab Report: Lab #2: Combination of resistors</name>
+<id>1391</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>417</tagARRAY>
+</node>
+<node><name>Lab #3: Electric Field mapping</name>
+<id>1393</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lab #3: Electric Field mapping&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>1396</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<tagARRAY>421,419</tagARRAY>
+</node>
+<node><name>Learning Guide 5</name>
+<id>681</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EWlpbT4Mjr5BvvA9XNb85nUB3-nuovU7Jxw_BSr9Ycs9Jw?e=lS3J3h" target="_blank"&gt;Torque on Dipole: Learning Guide 5 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,421,419</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz E</name>
+<id>93</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>420,419,421</tagARRAY>
+</node>
+<node><name>Class 6: Electric Potential Energy</name>
+<id>94</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ec3EpKEhE65PnSkanjAhGvABPj45i2UHW9nUSilZYmyERg?e=cwgbc8" target="_blank"&gt;Learning Guide 6&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Lecture component: page 1.&lt;/li&gt;&lt;li&gt;Model problem solving Problem #6&lt;/li&gt;&lt;li&gt;Complete up to page 5 (6 for interest).&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Learning Guide #6 x 3&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Review work and conservative forces&lt;/li&gt;&lt;li&gt;Potential energy of 2 point charges &amp;amp; finding U=0 questions&lt;/li&gt;&lt;li&gt;Negative potential energy&lt;/li&gt;&lt;li&gt;System of charges&lt;/li&gt;&lt;li&gt;Calculating speed of charge in E-field.&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>120</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>727</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 6</name>
+<id>727</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EY4nl8eCBhhNhEfzx4YDs_gBOqqDUUs79IhwSQzWn-dhGQ?e=VVBPYR" target="_blank"&gt;Electric Potential Energy: Learning Guide 6 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,421,419</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>725</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,419,430,428</tagARRAY>
+</node>
+</week>
+<week><weekid>111</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Reading</name>
+<id>105</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EaJwCl6axt5GlXaX7fWYoaAB36VrIgsUTemYU3-8AecvvQ?e=XkgQEW" target="_blank"&gt;SWBATs&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Optional annotations on Perusall.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;REQUIRED: College Openstax 19.2-19.4&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>106</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>106</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank"&gt;https://mydalite.org/en/assignment/&lt;/a&gt;&lt;a style="color: rgb(0, 102, 204);" href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank"&gt;NYB_Week4_W20&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>107</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz F</name>
+<id>120</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>Class 7: Electric Potential</name>
+<id>107</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Whiteboard work on pp4-5 in Learning Guide 4&lt;/li&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Eeb_vVKxJ4ZHiPbYdjhq_V4B5bv3ookHMOZQ4On-GptOPw?e=L4nPG9" target="_blank"&gt;Learning Guide 7&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Complete entire package&lt;/li&gt;&lt;li&gt;Class enactment of dipoles in e-field.&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;li&gt;Electric Field Hockey??&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;learning Guide 5 x 3&lt;/li&gt;&lt;li&gt;Giant Dipole with removable p-vector.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;charge kinematics and static equilibrium&lt;/li&gt;&lt;li&gt;torque on a dipole&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>108</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>109</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>733</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 7 (pp 1-5)</name>
+<id>733</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EY4nl8eCBhhNhEfzx4YDs_gBOqqDUUs79IhwSQzWn-dhGQ?e=VVBPYR" target="_blank"&gt;Electric Potential Energy: Learning Guide 6 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>108</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 4:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;What is the relationship between electric potential energy and electric potential? Compare this to the relationship between electric force and electric field.&amp;nbsp;&lt;/li&gt;&lt;li&gt;Look at some of the appliances in your house. Which ones have a plug with 3 prongs instead of 2? Explain the purpose of this 3rd prong, with reference to this week's reading&lt;/li&gt;&lt;li&gt;What are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;3. Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>742</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>420,421,430</tagARRAY>
+</node>
+<node><name>Lab report: Lab 3: Electric field mapping</name>
+<id>1396</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>421,419</tagARRAY>
+</node>
+<node><name>Lab 4: Electrostatic acceleration  and  deflection of electrons</name>
+<id>1394</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lab #4: Electrostatic acceleration &amp;amp; deflection of electrons&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>1395</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<tagARRAY>417,420,419,421</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz G</name>
+<id>109</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>110</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>Class 8: Electric Potential</name>
+<id>110</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ec3EpKEhE65PnSkanjAhGvABPj45i2UHW9nUSilZYmyERg?e=cwgbc8" target="_blank"&gt;Learning Guide 6&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Lecture component: page 1.&lt;/li&gt;&lt;li&gt;Model problem solving Problem #6&lt;/li&gt;&lt;li&gt;Complete up to page 5 (6 for interest).&lt;/li&gt;&lt;li&gt;Reminder of upcoming due dates&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Materials:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Learning Guide #6 x 3&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Review work and conservative forces&lt;/li&gt;&lt;li&gt;Potential energy of 2 point charges &amp;amp; finding U=0 questions&lt;/li&gt;&lt;li&gt;Negative potential energy&lt;/li&gt;&lt;li&gt;System of charges&lt;/li&gt;&lt;li&gt;Calculating speed of charge in E-field.&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>938</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>126</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>739</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416,419,420,421</tagARRAY>
+</node>
+<node><name>Learning Guide 7 (all of it)</name>
+<id>739</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EdMTvliCHLJKgwNdiELv9T0BGSuaGsuDqQ-O-ayLEd0vLg?e=bAJjce" target="_blank"&gt;Electric Potential: Learning Guide 7 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>742</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>420,421,430</tagARRAY>
+</node>
+</week>
+<week><weekid>122</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Lab Report: Lab 4, Electrostatic acceleration  and  deflection of electrons</name>
+<id>1395</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>421,419,417,420</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz H</name>
+<id>126</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>420,421</tagARRAY>
+</node>
+<node><name>Class 9: Review</name>
+<id>123</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>416</tagARRAY>
+</node>
+<node><name>Problem Session</name>
+<id>1397</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Problem Session&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>124</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>416</tagARRAY>
+</node>
+<node><name>Unit 1 Test</name>
+<id>124</id>
+<lefticon>test</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>416</tagARRAY>
+</node>
+</week>
+<week><weekid>2079</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Reading</name>
+<id>2067</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EaJwCl6axt5GlXaX7fWYoaAB36VrIgsUTemYU3-8AecvvQ?e=XkgQEW" target="_blank"&gt;SWBATs&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;REQUIRED: Uni 9.1, 9.2 (pp395/6), 9.4-9.5&lt;/p&gt;&lt;p&gt;(bits of both)&lt;/p&gt;&lt;p&gt;USEFUL: Uni 9.2 (all), 9.3 (all), 9.4 (all),&lt;/p&gt;&lt;p&gt;College 20.3,&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2068</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>426,427,428,429</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2068</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank"&gt;https://mydalite.org/en/assignment/&lt;/a&gt;&lt;a style="color: rgb(0, 102, 204);" href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank"&gt;NYB_Week4_W20&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2070</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>426,427,428,429</tagARRAY>
+</node>
+<node><name>Class 10: Current</name>
+<id>2070</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Pop quiz: what do we think we know?&lt;/li&gt;&lt;li&gt;Circuit definitions and conventions&lt;/li&gt;&lt;li&gt;Current and drift velocity&lt;/li&gt;&lt;li&gt;Resistivity and resistance&lt;/li&gt;&lt;li&gt;Ohm’s Law&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>80</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2071</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2072</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2075</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>426,427</tagARRAY>
+</node>
+<node><name>Learning Guide 8 (pp 1-7 &amp; 10)</name>
+<id>2072</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EY4nl8eCBhhNhEfzx4YDs_gBOqqDUUs79IhwSQzWn-dhGQ?e=VVBPYR" target="_blank"&gt;Electric Potential Energy: Learning Guide 6 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>426,427</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2071</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 4:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;What is the relationship between electric potential energy and electric potential? Compare this to the relationship between electric force and electric field.&amp;nbsp;&lt;/li&gt;&lt;li&gt;Look at some of the appliances in your house. Which ones have a plug with 3 prongs instead of 2? Explain the purpose of this 3rd prong, with reference to this week's reading&lt;/li&gt;&lt;li&gt;What are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;3. Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2077</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>426,427,428,429</tagARRAY>
+</node>
+<node><name>Lab 5: EMF, Internal Resistance &amp; Power</name>
+<id>2074</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2100</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>2-stage Review Quiz I</name>
+<id>2075</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>426,427</tagARRAY>
+</node>
+<node><name>Class 11: Equivalent Resistance</name>
+<id>2076</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Equivalent resistance in combination circuits, very simple.&lt;/li&gt;&lt;li&gt;EMF&lt;/li&gt;&lt;li&gt;Series &amp;amp; parallel with Kirchhoff’s Rules&lt;/li&gt;&lt;li&gt;Simple combination circuit&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2078</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2096</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Learning Guide 8 (pp 8-9) and Learning Guide 9 (pp 1-4)</name>
+<id>2078</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EdMTvliCHLJKgwNdiELv9T0BGSuaGsuDqQ-O-ayLEd0vLg?e=bAJjce" target="_blank"&gt;Electric Potential: Learning Guide 7 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2077</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>429,428,427,426</tagARRAY>
+</node>
+</week>
+<week><weekid>2106</weekid>
+<weekcollapsed>true</weekcollapsed>
+<node><name>Reading</name>
+<id>2094</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EaJwCl6axt5GlXaX7fWYoaAB36VrIgsUTemYU3-8AecvvQ?e=XkgQEW" target="_blank"&gt;SWBATs&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Optional annotations on Perusall.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;REQUIRED: Uni 10.1 (some parts), 10.2.&lt;/p&gt;&lt;p&gt;USEFUL: Uni 10.1 (all), College 21.5.&lt;/p&gt;&lt;p&gt;VERY USEFUL: Uni 10.3&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2095</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429,428</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2095</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank"&gt;https://mydalite.org/en/assignment/&lt;/a&gt;&lt;a style="color: rgb(0, 102, 204);" href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank"&gt;NYB_Week4_W20&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2097</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz J</name>
+<id>2096</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt; &lt;/p&gt;</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Class 12: Combination Circuits</name>
+<id>2097</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Combination circuits&lt;/li&gt;&lt;li&gt;Power&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2098</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2099</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<link><targetid>2102</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Learning Guide 9 (pp5)</name>
+<id>2099</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EY4nl8eCBhhNhEfzx4YDs_gBOqqDUUs79IhwSQzWn-dhGQ?e=VVBPYR" target="_blank"&gt;Electric Potential Energy: Learning Guide 6 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2098</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 4:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;What is the relationship between electric potential energy and electric potential? Compare this to the relationship between electric force and electric field.&amp;nbsp;&lt;/li&gt;&lt;li&gt;Look at some of the appliances in your house. Which ones have a plug with 3 prongs instead of 2? Explain the purpose of this 3rd prong, with reference to this week's reading&lt;/li&gt;&lt;li&gt;What are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;3. Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2104</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Lab report: Lab 5: EMF, Internal Resistance &amp; Power</name>
+<id>2100</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Lab 6: Kirchhoff's Laws</name>
+<id>2101</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lab #4: Electrostatic acceleration &amp;amp; deflection of electrons&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2209</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<link><targetid>2206</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INn;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>2-stage Review Quiz K</name>
+<id>2102</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Class 13: Internal Resistance and Brightness</name>
+<id>2103</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Lightbulb brightness questions&lt;/li&gt;&lt;li&gt;Internal resistance &amp;amp; non-ideal batteries&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2105</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2206</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Learning Guide 10 (start)</name>
+<id>2105</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2104</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>428,429</tagARRAY>
+</node>
+</week>
+<week><weekid>2215</weekid>
+<node><name>Reading</name>
+<id>2203</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;REQUIRED: College 19.5&lt;/p&gt;&lt;p&gt; VERY USEFUL: Uni 10.3 &lt;/p&gt;&lt;p&gt;USEFUL: Uni 8.2&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2204</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429,430,426</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2204</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2207</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429,426</tagARRAY>
+</node>
+<node><name>Class 14: Branch Current Method</name>
+<id>2206</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Kirchhoff's Laws with Branch analysis&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>7022</linkedwf>
+<textheight>100</textheight>
+<timevalue>80</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2208</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2205</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2210</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429</tagARRAY>
+</node>
+<node><name>Learning Guide 11 (start)</name>
+<id>2208</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>429</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2207</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2213</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<link><targetid>2233</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>429,430</tagARRAY>
+</node>
+<node><name>Lab report: Lab 6: Kirchhoff's Laws</name>
+<id>2209</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Lab Activities and Practice</name>
+<id>2210</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Complete Learning Guide #11 in teams, at least problems #5 &amp;amp; #6.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Explore capacitor PHET, with guidance from teacher. This will prepare students for tomorrow's class.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2214</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>428,429</tagARRAY>
+</node>
+<node><name>Learning Guide 11 (finish)</name>
+<id>2214</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>429</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz L</name>
+<id>2205</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>25</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2233</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429</tagARRAY>
+</node>
+<node><name>Class 15: Capacitors</name>
+<id>2233</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Capacitance&lt;/li&gt;&lt;li&gt;Short movie on building capacitors&lt;/li&gt;&lt;li&gt;Dielectrics/Breakdown&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>7085</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2235</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>430,427,428</tagARRAY>
+</node>
+<node><name>Learning Guide 12 (pp 1-4)</name>
+<id>2235</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2238</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>430,428,427</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2213</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>429,430</tagARRAY>
+</node>
+</week>
+<week><weekid>2242</weekid>
+<node><name>Reading</name>
+<id>2230</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;REQUIRED: Uni 8.3-8.4, College 21.6. &lt;/p&gt;&lt;p&gt;USEFUL: Uni 10.5/6.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2231</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429,430,428</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2231</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2239</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>428,429,430</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz M</name>
+<id>2238</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;2-stage review quiz on Capacitor basics.&lt;/p&gt;</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2239</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+<tagARRAY>427,428,426,431</tagARRAY>
+</node>
+<node><name>Class 16: Series vs Parallel Capacitors</name>
+<id>2239</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Series vs Parallel capacitors&lt;/li&gt;&lt;li&gt;Equivalent capacitance&lt;/li&gt;&lt;li&gt;Energy of capacitors&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2241</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2234</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2237</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>429,428</tagARRAY>
+</node>
+<node><name>Learning Guide 12 (pp 5-9)</name>
+<id>2241</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQC4fChMO4RCiol-_cNXFdkBz-7JTcFP6qsupw9XNdnqNQ?e=fBOlGO" target="_blank"&gt;Link to Learning Guide #12&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to Learning Guide #12 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>429,428</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2234</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2240</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>428,429,430</tagARRAY>
+</node>
+<node><name>Capacitor Lab Activities</name>
+<id>2237</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Students construct virtual capacitor circuits that meet specific requirements.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>120</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>10576</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>2-stage Review Quiz N</name>
+<id>10576</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;2-stage review quiz on Capacitor basics.&lt;/p&gt;</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>7015</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>427,428,426</tagARRAY>
+</node>
+<node><name>Class 17: Capacitors &amp; Unit Review</name>
+<id>7015</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Finish anything remaining in learning Guide 12 (Capacitors)&lt;/li&gt;&lt;li&gt;Review entire unit&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>7016</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>4222</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>429,428</tagARRAY>
+</node>
+<node><name>Learning Guide 12 Completed</name>
+<id>7016</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQC4fChMO4RCiol-_cNXFdkBz-7JTcFP6qsupw9XNdnqNQ?e=fBOlGO" target="_blank"&gt;Link to Learning Guide #12&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ed0fTrIMomtKqEtR0Wk8NU0BpLWZ_qM7kcoPGcPm4p8vcQ?e=hgfm9v" target="_blank"&gt;Link to Learning Guide #12 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2240</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>428,429,430</tagARRAY>
+</node>
+</week>
+<week><weekid>2269</weekid>
+<node><name>Unit 2 Take-Home Test</name>
+<id>4222</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Will not count for marks.&lt;/p&gt;&lt;p&gt;Students will have 48 hours to complete and submit pics of their completed test via LEA dropbox.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>48</timevalue>
+<timeunit>hr</timeunit>
+<link><targetid>9654</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>422</tagARRAY>
+</node>
+<node><name>Unit 2 Interviews</name>
+<id>9654</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Not for marks (trialing to see if it is viable for future assessments).&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Students will each meet with me at scheduled 5 minute intervals. They will be spread over 2 days. I can fit 16 students during one class period (which is all I have free), the rest will be organized through a online sign up sheet.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;5 minutes each is 210 minutes in total. However, for students that did not obviously pass, a second interview will be arranged to give them a fair chance. I estimate this will be another hour of meetings, but we will see.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>4.5</timevalue>
+<timeunit>hr</timeunit>
+<tagARRAY/>
+</node>
+</week>
+<week><weekid>2296</weekid>
+<node><name>Reading</name>
+<id>2284</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;REQUIRED: College 22.1-22.3, Uni 11.2 (pp 500-502). &lt;/p&gt;&lt;p&gt;VERY USEFUL: Understanding the Cross Product by Joseph Breen &lt;/p&gt;&lt;p&gt;USEFUL: Uni 11.2 (all), College 22.5&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2285</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2285</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2287</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Class 18: Magnetic Fields</name>
+<id>2287</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Cross product&lt;/li&gt;&lt;li&gt;What causes magnetism?&lt;/li&gt;&lt;li&gt;Drawing magnetic field lines&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>80</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2289</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2288</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2291</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431</tagARRAY>
+</node>
+<node><name>Learning Guide 14</name>
+<id>2289</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EbCEM8bNmwFMoOmYmcXH9vYBktGP289f_rIbqVr2hrxh_w?e=XIwsEW" target="_blank"&gt;Link to Learning Guide #14&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/Ee8PlE1wrWtMiJ5QTOK_qhYBGoC7wJKGpuKEhInBKcVffw?e=YXsecG" target="_blank"&gt;Link to Learning Guide #14 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2288</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2294</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Start Lab Project</name>
+<id>2291</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Project in which students take on role of being a "scanner" of bubble chamber photos. In this project they will complete activities designed to teach them about the paths of sub atomic particles in magnetic fields. They will then analyze a series of real photos taken from CERN, and report on the findings / process.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>120</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2322</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<link><targetid>2292</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>2-stage Review Quiz P</name>
+<id>2292</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2293</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,427,428,426</tagARRAY>
+</node>
+<node><name>Class 19: Magnetic Force on Charges</name>
+<id>2293</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Magnetic force on moving charges&lt;/li&gt;&lt;li&gt;Circular motion in B, R, RHR&lt;/li&gt;&lt;li&gt;Velocity selectors and e/m&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2295</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2319</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2294</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431</tagARRAY>
+</node>
+<node><name>Learning Guide 15</name>
+<id>2295</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EcQdQEMjIwFDh9UB4Cy1cTMBIMHnXUHBviCJN7l-YA2lHQ?e=B05oH3" target="_blank"&gt;Link to Learning Guide #15&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EcQdQEMjIwFDh9UB4Cy1cTMBIMHnXUHBviCJN7l-YA2lHQ?e=B05oH3" target="_blank"&gt;Link to Learning Guide #15 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431,432</tagARRAY>
+</node>
+</week>
+<week><weekid>2323</weekid>
+<node><name>Reading</name>
+<id>2311</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;REQUIRED: Uni 11.4 up to and including example#11.5. College 22.8 (parts of it) &lt;/p&gt;&lt;p&gt;USEFUL: Uni 11.4 (all), 22.8 (all)&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2312</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2312</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2320</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz Q</name>
+<id>2319</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2320</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Class 21: Magnetic force on wires</name>
+<id>2320</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Magnetic force on current carrying wire&lt;/li&gt;&lt;li&gt;Force on loops of wire&lt;/li&gt;&lt;li&gt;Magnetic torque on a current loop&lt;/li&gt;&lt;li&gt;Magnetic dipole moment&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2322</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2315</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,433</tagARRAY>
+</node>
+<node><name>Learning Guide 16</name>
+<id>2322</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EfHSN66rcPdFg3kW8e-WEAQBQYoxqycD0org6HeWYeZ1hw?e=kjqhcl" target="_blank"&gt;Link to Learning Guide #16&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EQ_QBmAuBUBFpXi8sXQU668BYf6uNjCbNwYUBWM_ND9vwg?e=d2xKSw" target="_blank"&gt;Link to Learning Guide #16 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431,433</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2315</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2321</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>Lab Report: Lab 8: Magnetic Field of a Solenoid</name>
+<id>6018</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Lab Project Continued</name>
+<id>2318</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2345</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>2-stage Review Quiz R</name>
+<id>2340</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>Class 22: Biot-Savart Law</name>
+<id>2341</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Biot-Savart law - B for a long straight wire&lt;/li&gt;&lt;li&gt;Forces on parallel wires&lt;/li&gt;&lt;li&gt;B created by single moving charges&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2343</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2346</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Learning Guide 17 (start)</name>
+<id>2343</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/EUQpRT6RQi5FimCKec6uVbYBQdJF_IKIHOcvQ76YoFDFRQ?e=JqI6hJ" target="_blank"&gt;Link to Learning Guide #17&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://johnabbott-my.sharepoint.com/:b:/g/personal/phoebejackson_johnabbott_qc_ca/ERzEpSUuaDNKk9mk6i-0jioBV1DTYf-UydslK5piiYXHgw?e=uiGLwT" target="_blank"&gt;Link to Learning Guide #17 Completed&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2321</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>423</tagARRAY>
+</node>
+</week>
+<week><weekid>2350</weekid>
+<node><name>Reading</name>
+<id>2338</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;REQUIRED: Uni 12.1 (pp 536-7), 12.2 (pp 541-3), College 22.9 &lt;/p&gt;&lt;p&gt;VERY USEFUL: Uni 12.3 USEFUL: Uni 12.1-12.3 (all)&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2339</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2339</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://mydalite.org/en/assignment/NYB_Week4_W20" target="_blank" style="color: rgb(0, 102, 204);"&gt;20&lt;/a&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2347</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>2-stage Review Quiz S</name>
+<id>2346</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>Class 23: Coils and Solenoids</name>
+<id>2347</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Continuing fields and forces of wires, now including coils and solenoids&lt;/li&gt;&lt;li&gt;Force on charge near current carrying wires and other chapes&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2349</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2367</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2342</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Learning Guide 17 (Continue)</name>
+<id>2349</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Reflection</name>
+<id>2342</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;Visual Classroom Week 4:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;1. Write an original post about the reading, using the prompts below as a guide:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;What is the relationship between electric potential energy and electric potential? Compare this to the relationship between electric force and electric field.&amp;nbsp;&lt;/li&gt;&lt;li&gt;Look at some of the appliances in your house. Which ones have a plug with 3 prongs instead of 2? Explain the purpose of this 3rd prong, with reference to this week's reading&lt;/li&gt;&lt;li&gt;What are you still confused about? Be as specific as possible. Even if you feel that you now fully understand everything from the reading, share what you found the most difficult concepts to understand&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;3. Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2348</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<tagARRAY>431,432</tagARRAY>
+</node>
+<node><name>Lab Project Continued</name>
+<id>2345</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>9672</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY/>
+</node>
+<node><name>2-stage Review Quiz T</name>
+<id>2367</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>747</linkedwf>
+<textheight>100</textheight>
+<timevalue>20</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>423</tagARRAY>
+</node>
+<node><name>Class 24: Practicing Forces and Fields</name>
+<id>2368</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Practicing fields and forces generated by straight wires, coils, and solenoids&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>60</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2370</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>2365</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,432,434</tagARRAY>
+</node>
+<node><name>Learning Guide 17 (finish)</name>
+<id>2370</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431,434,432</tagARRAY>
+</node>
+<node><name>Responding to Reflections</name>
+<id>2348</id>
+<lefticon>exercise</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;Respond to at least 2 posts written by another group members as well as to comments on your own original post.&amp;nbsp;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>423</tagARRAY>
+</node>
+</week>
+<week><weekid>2377</weekid>
+<node><name>Reading</name>
+<id>2365</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;REQUIRED: College 23.3. If interested in a more calculus based approach, read Uni 13.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2366</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,435</tagARRAY>
+</node>
+<node><name>Questions</name>
+<id>2366</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>HW</column>
+<textHTML>&lt;p&gt;3 MyDALITE Questions&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<link><targetid>2374</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,435</tagARRAY>
+</node>
+<node><name>Submitted Lab Project</name>
+<id>9672</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>undefined</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY/>
+</node>
+<node><name>Class 25: Qualitative Induction</name>
+<id>2374</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>AC</column>
+<textHTML>&lt;p&gt;Lesson:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Different kind of lesson today. No Review Quiz. Students will work in teams on Learning Guide 18 as usual, but they will definitely need a lot of teacher guidance for Lenz' law, so there will be more lecture and we will stop early to play the Lenz' Law game.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Concepts:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Magnetic Flux (qualitative)&lt;/li&gt;&lt;li&gt;Faraday's Law (qualitative)&lt;/li&gt;&lt;li&gt;Lenz' Law (qualitative, and game)&lt;/li&gt;&lt;/ul&gt;</textHTML>
+<linkedwf>8882</linkedwf>
+<textheight>100</textheight>
+<timevalue>80</timevalue>
+<timeunit>min</timeunit>
+<link><targetid>2376</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>4763</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<tagARRAY>431,435</tagARRAY>
+</node>
+<node><name>Learning Guide 18</name>
+<id>2376</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>FA</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<tagARRAY>431,435</tagARRAY>
+</node>
+<node><name>Unit 3 Summative Assessment??</name>
+<id>4763</id>
+<lefticon>test</lefticon>
+<righticon>undefined</righticon>
+<column>SA</column>
+<textHTML>&lt;p&gt;TBD.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>120</timevalue>
+<timeunit>min</timeunit>
+<tagARRAY>431,435</tagARRAY>
+</node>
+</week>
+<wflegendx>1130</wflegendx>
+<wflegendy>210</wflegendy>
+<wfoutcomesorttype>week</wfoutcomesorttype>
+</wfdata></workflow>
+<tag><tagname>To analyse various situations and phenomena in physics using the fundamental laws of electricity and magnetism (00US).</tagname>
+<tagid>415</tagid>
+<tag><tagname>To analyse situations in physics associated with static electrical charge.</tagname>
+<tagid>416</tagid>
+<tag><tagname>Use of terminology and concepts associated with static electrical charge.</tagname>
+<tagid>417</tagid>
+</tag>
+<tag><tagname>Definition and application of Coulomb’s Law.</tagname>
+<tagid>418</tagid>
+</tag>
+<tag><tagname>Appropriate use of the concept of electric forces and electric fields.</tagname>
+<tagid>419</tagid>
+</tag>
+<tag><tagname>Use of vector techniques to solve problems involving Coulomb’s Law.</tagname>
+<tagid>420</tagid>
+</tag>
+<tag><tagname>Interpretation of the limits of models; be able to explain field concepts.</tagname>
+<tagid>421</tagid>
+</tag>
+</tag>
+<tag><tagname>To analyse situations in physics associated with electric current.</tagname>
+<tagid>422</tagid>
+<tag><tagname>Use of concepts to describe electric current and motion of electric charges.</tagname>
+<tagid>426</tagid>
+</tag>
+<tag><tagname>Application of Ohm’s Law in direct current circuits</tagname>
+<tagid>427</tagid>
+</tag>
+<tag><tagname>Use of the concept of energy in electric circuits, EMF’s and batteries.</tagname>
+<tagid>428</tagid>
+</tag>
+<tag><tagname>Analysis of series and parallel circuits.</tagname>
+<tagid>429</tagid>
+</tag>
+<tag><tagname>Applications of circuits to explain everyday phenomena.</tagname>
+<tagid>430</tagid>
+</tag>
+</tag>
+<tag><tagname>To analyse situations in physics associated with magnetism and magnetic induction.</tagname>
+<tagid>423</tagid>
+<tag><tagname>Use of concepts associated with magnetism and magnetic induction.</tagname>
+<tagid>431</tagid>
+</tag>
+<tag><tagname>Use of vectors and algebraic equations to solve problems involving electric charges and magnetic fields.</tagname>
+<tagid>432</tagid>
+</tag>
+<tag><tagname>Application of specific laws of magnetism and magnetic induction.</tagname>
+<tagid>433</tagid>
+</tag>
+</tag>
+<tag><tagname>To apply the laws of electricity and magnetism.</tagname>
+<tagid>424</tagid>
+<tag><tagname>Application of the laws of electricity and magnetism.</tagname>
+<tagid>434</tagid>
+</tag>
+<tag><tagname>Application of the laws of magnetic induction.</tagname>
+<tagid>435</tagid>
+</tag>
+</tag>
+<tag><tagname>To verify experimentally a number of laws of electricity and magnetism.</tagname>
+<tagid>425</tagid>
+<tag><tagname>Meticulous experimentation</tagname>
+<tagid>436</tagid>
+</tag>
+<tag><tagname>Appropriate use of measuring instruments</tagname>
+<tagid>437</tagid>
+</tag>
+<tag><tagname>Critical analysis of results and justification of the steps in the analysis of data.</tagname>
+<tagid>438</tagid>
+</tag>
+<tag><tagname>Laboratory report in line with established standards</tagname>
+<tagid>439</tagid>
+</tag>
+<tag><tagname>Experimental verification of specific laws of electricity and magnetism</tagname>
+<tagid>440</tagid>
+</tag>
+</tag>
+</tag>
+<tag><tagname>To analyse various situations and phenomena in physics using the fundamental laws of electricity and magnetism (00US).</tagname>
+<tagid>7023</tagid>
+<tag><tagname>To analyse situations in physics associated with static electrical charge.</tagname>
+<tagid>7024</tagid>
+<tag><tagname>Use of terminology and concepts associated with static electrical charge.</tagname>
+<tagid>7025</tagid>
+</tag>
+<tag><tagname>Definition and application of Coulomb’s Law.</tagname>
+<tagid>7026</tagid>
+</tag>
+<tag><tagname>Appropriate use of the concept of electric forces and electric fields.</tagname>
+<tagid>7027</tagid>
+</tag>
+<tag><tagname>Use of vector techniques to solve problems involving Coulomb’s Law.</tagname>
+<tagid>7028</tagid>
+</tag>
+<tag><tagname>Interpretation of the limits of models; be able to explain field concepts.</tagname>
+<tagid>7029</tagid>
+</tag>
+</tag>
+<tag><tagname>To analyse situations in physics associated with electric current.</tagname>
+<tagid>7030</tagid>
+<tag><tagname>Use of concepts to describe electric current and motion of electric charges.</tagname>
+<tagid>7031</tagid>
+</tag>
+<tag><tagname>Application of Ohm’s Law in direct current circuits</tagname>
+<tagid>7032</tagid>
+</tag>
+<tag><tagname>Use of the concept of energy in electric circuits, EMF’s and batteries.</tagname>
+<tagid>7033</tagid>
+</tag>
+<tag><tagname>Analysis of series and parallel circuits.</tagname>
+<tagid>7034</tagid>
+</tag>
+<tag><tagname>Applications of circuits to explain everyday phenomena.</tagname>
+<tagid>7035</tagid>
+</tag>
+</tag>
+<tag><tagname>To analyse situations in physics associated with magnetism and magnetic induction.</tagname>
+<tagid>7036</tagid>
+<tag><tagname>Use of concepts associated with magnetism and magnetic induction.</tagname>
+<tagid>7037</tagid>
+</tag>
+<tag><tagname>Use of vectors and algebraic equations to solve problems involving electric charges and magnetic fields.</tagname>
+<tagid>7038</tagid>
+</tag>
+<tag><tagname>Application of specific laws of magnetism and magnetic induction.</tagname>
+<tagid>7039</tagid>
+</tag>
+</tag>
+<tag><tagname>To apply the laws of electricity and magnetism.</tagname>
+<tagid>7040</tagid>
+<tag><tagname>Application of the laws of electricity and magnetism.</tagname>
+<tagid>7041</tagid>
+</tag>
+<tag><tagname>Application of the laws of magnetic induction.</tagname>
+<tagid>7042</tagid>
+</tag>
+</tag>
+<tag><tagname>To verify experimentally a number of laws of electricity and magnetism.</tagname>
+<tagid>7043</tagid>
+<tag><tagname>Meticulous experimentation</tagname>
+<tagid>7044</tagid>
+</tag>
+<tag><tagname>Appropriate use of measuring instruments</tagname>
+<tagid>7045</tagid>
+</tag>
+<tag><tagname>Critical analysis of results and justification of the steps in the analysis of data.</tagname>
+<tagid>7046</tagid>
+</tag>
+<tag><tagname>Laboratory report in line with established standards</tagname>
+<tagid>7047</tagid>
+</tag>
+<tag><tagname>Experimental verification of specific laws of electricity and magnetism</tagname>
+<tagid>7048</tagid>
+</tag>
+</tag>
+</tag>
+<tag><tagname>To analyse various situations and phenomena in physics using the fundamental laws of electricity and magnetism (00US).</tagname>
+<tagid>7086</tagid>
+<tag><tagname>To analyse situations in physics associated with static electrical charge.</tagname>
+<tagid>7087</tagid>
+<tag><tagname>Use of terminology and concepts associated with static electrical charge.</tagname>
+<tagid>7088</tagid>
+</tag>
+<tag><tagname>Definition and application of Coulomb’s Law.</tagname>
+<tagid>7089</tagid>
+</tag>
+<tag><tagname>Appropriate use of the concept of electric forces and electric fields.</tagname>
+<tagid>7090</tagid>
+</tag>
+<tag><tagname>Use of vector techniques to solve problems involving Coulomb’s Law.</tagname>
+<tagid>7091</tagid>
+</tag>
+<tag><tagname>Interpretation of the limits of models; be able to explain field concepts.</tagname>
+<tagid>7092</tagid>
+</tag>
+</tag>
+<tag><tagname>To analyse situations in physics associated with electric current.</tagname>
+<tagid>7093</tagid>
+<tag><tagname>Use of concepts to describe electric current and motion of electric charges.</tagname>
+<tagid>7094</tagid>
+</tag>
+<tag><tagname>Application of Ohm’s Law in direct current circuits</tagname>
+<tagid>7095</tagid>
+</tag>
+<tag><tagname>Use of the concept of energy in electric circuits, EMF’s and batteries.</tagname>
+<tagid>7096</tagid>
+</tag>
+<tag><tagname>Analysis of series and parallel circuits.</tagname>
+<tagid>7097</tagid>
+</tag>
+<tag><tagname>Applications of circuits to explain everyday phenomena.</tagname>
+<tagid>7098</tagid>
+</tag>
+</tag>
+<tag><tagname>To analyse situations in physics associated with magnetism and magnetic induction.</tagname>
+<tagid>7099</tagid>
+<tag><tagname>Use of concepts associated with magnetism and magnetic induction.</tagname>
+<tagid>7100</tagid>
+</tag>
+<tag><tagname>Use of vectors and algebraic equations to solve problems involving electric charges and magnetic fields.</tagname>
+<tagid>7101</tagid>
+</tag>
+<tag><tagname>Application of specific laws of magnetism and magnetic induction.</tagname>
+<tagid>7102</tagid>
+</tag>
+</tag>
+<tag><tagname>To apply the laws of electricity and magnetism.</tagname>
+<tagid>7103</tagid>
+<tag><tagname>Application of the laws of electricity and magnetism.</tagname>
+<tagid>7104</tagid>
+</tag>
+<tag><tagname>Application of the laws of magnetic induction.</tagname>
+<tagid>7105</tagid>
+</tag>
+</tag>
+<tag><tagname>To verify experimentally a number of laws of electricity and magnetism.</tagname>
+<tagid>7106</tagid>
+<tag><tagname>Meticulous experimentation</tagname>
+<tagid>7107</tagid>
+</tag>
+<tag><tagname>Appropriate use of measuring instruments</tagname>
+<tagid>7108</tagid>
+</tag>
+<tag><tagname>Critical analysis of results and justification of the steps in the analysis of data.</tagname>
+<tagid>7109</tagid>
+</tag>
+<tag><tagname>Laboratory report in line with established standards</tagname>
+<tagid>7110</tagid>
+</tag>
+<tag><tagname>Experimental verification of specific laws of electricity and magnetism</tagname>
+<tagid>7111</tagid>
+</tag>
+</tag>
+</tag>
+</project>
