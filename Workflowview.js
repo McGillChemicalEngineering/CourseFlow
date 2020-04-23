@@ -806,7 +806,7 @@ class Workflowview{
     
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
-        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX+cellSpacing,this.descriptionNode.b()+10,this.weekWidth+200,1,invisibleStyle+"strokeColor=#DDDDDD;");
+        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX+cellSpacing,this.descriptionNode.b()+10,this.weekWidth+250,1,invisibleStyle+"strokeColor=#DDDDDD;");
         
     }
     

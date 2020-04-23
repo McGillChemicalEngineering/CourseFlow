@@ -86,6 +86,8 @@ function main(container)
 
         },false);
         
+        
+        
     }
 } //End of main
 
@@ -107,6 +109,19 @@ function makeSplashpage(container){
     }
     $('#new')[0].onclick = function(){newfile.click();}
     $('#open')[0].onclick = function(){openfile.click();}
+    
+    //postmessage listening
+    window.addEventListener("message",function(evt){
+        console.log("Message Received!");
+        if(evt.origin!="null")return;
+        if(project==null)project = new Project(container);
+        console.log(evt.data);
+        project.fromXML(evt.data);
+        setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
+    });
+    
+    window.parent.postMessage("ready","*");
+    console.log("frame is ready");
 
 }
 
