@@ -228,6 +228,7 @@ const LANGUAGE_TEXT = {
         exportwf:{en:'Export Current Workflow',fr:'Exporter le plan de travail courant'},
         exportoutcome:{en:'Export Current Outcome',fr:'Exporter le résultat courant'},
         exportcsv:{en:'Export As CSV',fr:'Exporter en CSV'},
+        exporthtml:{en:'Export Embeddable HTML',fr:'Exporter en HTML'},
         importwf:{en:'Import a CFlow file',fr:'Importer un fichier CFlow'},
         importcsv:{en:'Import Outcomes CSV',fr:'Importer un CSV de Résultats'},
         readonly:{en:'Save Read Only',fr:'Copie Lecture Seule'},
@@ -520,6 +521,8 @@ function setMenuLanguage(){
     $("#open").children().first().html(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE]);
     $("#save").children().first().html(LANGUAGE_TEXT.menus.saveproject[USER_LANGUAGE]);
     $("#export").children().first().html(LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE]);
+    $("#exportcsv").children().first().html(LANGUAGE_TEXT.menus.exportcsv[USER_LANGUAGE]);
+    $("#exporthtml").children().first().html(LANGUAGE_TEXT.menus.exporthtml[USER_LANGUAGE]);
     $("#import").children().first().html(LANGUAGE_TEXT.menus.importwf[USER_LANGUAGE]);
     $("#savereadonly").children().first().html(LANGUAGE_TEXT.menus.readonly[USER_LANGUAGE]);
     $("#edit").html(LANGUAGE_TEXT.menus.edit[USER_LANGUAGE]);
