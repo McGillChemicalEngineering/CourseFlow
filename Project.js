@@ -471,7 +471,7 @@ class Project{
         var str = '<iframe style="margin:0px;width:1200px;height:1200px;border:0px;" src="https://wfm.saltise.ca/CourseFlow/courseplanner.html" id="actualpage"></iframe>\n';
         str = str+ '<script>\n';
         str = str+ 'var xmlstr = "';
-        str = str+this.xmlData.replace(/\n/g,'').replace(/"/g,'\\"');
+        str = str+this.xmlData.replace(/\n/g,'').replace(/"/g,'\\"').replace(/link/g,'"+"link"+"');
         str = str+'";\n';
         str = str+'var page = document.getElementById("actualpage");\n';
         str = str+'window.addEventListener("message", function(evt) {\n';
