@@ -1213,6 +1213,32 @@ div.highlighted{
     resize:none;
 }
 
+.descriptionnode{
+    width:800px;
+    height:80px;
+    font-size:14px;
+    font-weight:normal;
+}
+
+.descriptionnode .ql-toolbar{
+    visibility:hidden;
+    background:white;
+}
+
+
+.descriptionnode .ql-container{
+    border:0px !important;
+}
+
+.descriptionnode.active .ql-toolbar{
+    visibility:visible;
+}
+
+
+.descriptionnode.active .ql-container div:first-child{
+    outline:1px dashed #00FF00;
+}
+
 .graphcontainer hr{
     margin-right:20px;
     margin-left:20px;
@@ -1586,6 +1612,25 @@ div.highlighted{
     margin-top:-10px;
 }
 
+.messagediv{
+    position:fixed !important;
+    left:240px;
+    top:140px;
+    height:400px;
+    width:600px;
+    z-index:6;
+    background:white;
+    display:inline-block;
+    border:2px solid black;
+    text-align:center;
+    padding:10px;
+}
+
+.messagediv textarea{
+    width:560px;
+    height:300px;
+    white-space:normal;
+}
 
 .readonly .movehandle{display:none !important;}
 

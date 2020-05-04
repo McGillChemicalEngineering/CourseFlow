@@ -68,7 +68,9 @@ class Nodeview{
         this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
-        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString()+"&nbsp;".repeat(3),this.dropNode.x(),this.dropNode.y(),this.dropNode.w(),this.dropNode.h(),defaultTimeStyle);
+        var timeadj = 0;
+        if(window.navigator.userAgent.match("Chrome"))timeadj=-2;
+        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString()+"&nbsp;".repeat(3),this.dropNode.x(),this.dropNode.y()+timeadj,this.dropNode.w(),this.dropNode.h(),defaultTimeStyle);
         this.timeNode.isDrop=true;
         this.timeNode.node = this.node;
         this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
@@ -463,6 +465,14 @@ class WFLinkview{
         }
         style += link.getPortStyle();
         this.vertex = this.graph.insertEdge(this.graph.getDefaultParent(),null,link.text,link.node.view.vertex,link.targetNode.view.vertex,style);
+        console.log(link.labelx);
+        if(link.labelx!=null){
+            this.vertex.geometry.y=0;
+            this.vertex.geometry.x=link.labelx;
+            this.vertex.valueChanged(link.text);
+        }
+        
+        
         this.addValuesToVertex();
     }
     

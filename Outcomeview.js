@@ -76,7 +76,7 @@ class Outcomeview{
         
     }
     
-    createDescriptionNode(){
+    /*createDescriptionNode(){
         var wf = this.wf;
         var title = "["+LANGUAGE_TEXT.workflow.insertdescription[USER_LANGUAGE]+"]";
         if(wf.description)title = wf.description;
@@ -97,7 +97,97 @@ class Outcomeview{
         descriptionInput.addEventListener("focusout",function(){descriptionInput.readOnly=true;});
         this.container.appendChild(document.createElement('hr'));
         
-    }
+    }*/
+    
+    createDescriptionNode(){
+        var wf = this.wf;
+        var title = "["+LANGUAGE_TEXT.workflow.insertdescription[USER_LANGUAGE]+"]";
+        if(wf.description)title = wf.description;
+        var descriptionheadDiv = document.createElement('div');
+        descriptionheadDiv.innerHTML = LANGUAGE_TEXT.workflow.description[USER_LANGUAGE]+":";
+        this.container.appendChild(descriptionheadDiv);
+        descriptionheadDiv.className = "outcometabletitleinput outcometabledescriptionhead";
+        this.descriptionNode = document.createElement('div');
+        var descriptionNode = this.descriptionNode;
+        var quilldiv = document.createElement('div');
+        this.descriptionNode.appendChild(quilldiv);
+        this.descriptionNode.style.width = "800px";
+        this.descriptionNode.style.height = "80px";
+        this.descriptionNode.style.position = "absolute";
+        this.descriptionNode.className = "descriptionnode";
+        this.descriptionNode.style.marginTop = -40+"px";
+        this.descriptionNode.style.marginLeft = 40+"px";
+        this.descriptionNode.style.marginBottom = 75+"px";
+        this.container.appendChild(this.descriptionNode);
+        var toolbarOptions = [['bold','italic','underline'],[{'script':'sub'},{'script':'super'}],[{'list':'bullet'},{'list':'ordered'}],['link'],['formula']];
+        var quill = new Quill(quilldiv,{
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            },
+            placeholder:LANGUAGE_TEXT.editbar.insertdescription[USER_LANGUAGE]
+        });
+        quill.on('text-change', function(delta, oldDelta, source) {
+          if (source == 'user') {
+            if(wf){
+                wf.setDescriptionSilent(quilldiv.childNodes[0].innerHTML.replace(/\<p\>\<br\>\<\/p\>\<ul\>/g,"\<ul\>"));
+            }
+          }
+        });
+        var allowedattrs = ['link','bold','italic','underline','script','list'];
+        quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+            console.log(delta);
+            for(var i=0;i<delta.ops.length;i++){
+                var op = delta.ops[i];
+                if(op.attributes){
+                    for(var attr in op.attributes){
+                        console.log("attr");
+                        if(allowedattrs.indexOf(attr)<0)op.attributes[attr]=null;
+                    }
+                }
+            }
+            return delta;
+        });
+        var readOnly = wf.project.readOnly;
+        var toolbar = quill.getModule('toolbar');
+        toolbar.defaultLinkFunction=toolbar.handlers['link'];
+        toolbar.addHandler("link",function customLinkFunction(value){
+            console.log(value);
+            console.log(this);
+            var select = quill.getSelection();
+            if(value&&select['length']==0&&!readOnly){
+                quill.insertText(select['index'],'link');
+                quill.setSelection(select['index'],4);
+            }
+           
+            this.defaultLinkFunction(value);
+        });
+        this.descriptionNode.edit = function(){quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
+        if(wf.description!=null)quill.clipboard.dangerouslyPasteHTML(wf.description,"silent");
+        else quill.clipboard.dangerouslyPasteHTML("","silent");
+        
+        quilldiv.firstElementChild.contentEditable=false;
+        quilldiv.firstElementChild.ondblclick = function(){quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
+        descriptionNode.firstElementChild.onmousedown = function(evt){evt.preventDefault();}
+        quilldiv.addEventListener("focusout",function(evt){
+            console.log(evt);
+            //check if related target is within the quillified div
+            var target = evt.relatedTarget;
+            if(target == null)target = evt.explicitOriginalTarget;
+            while(target!=null){
+                if(target.parentElement==quilldiv)return;
+                else(target = target.parentElement);
+            }
+            quilldiv.firstElementChild.contentEditable=false;
+            descriptionNode.classList.remove('active');
+        });
+        quilldiv.firstElementChild.blur();
+        
+        var hr = document.createElement('hr');
+        this.container.appendChild(hr);
+        hr.style.marginTop = "120px";
+        
+}
     
     makeActive(){
         this.container.style.width="";
@@ -763,8 +853,7 @@ class Outcomeview{
             ocv.authorInput.select();
         });
         menu.addItem(LANGUAGE_TEXT.workflowview.editdescription[USER_LANGUAGE],'resources/images/text24.png',function(){
-            ocv.descriptionInput.readOnly=false;
-            ocv.descriptionInput.select();
+            ocv.descriptionNode.edit();
         });
         var layout = this.wf;
         

@@ -650,6 +650,7 @@ class WFLink{
         this.text;
         this.style;
         this.view;
+        this.labelx;
     }
     
     toXML(){
@@ -658,6 +659,7 @@ class WFLink{
         xml+=makeXML(this.getPortStyle(),"portstyle");
         if(this.text)xml+=makeXML(this.text,"linktext",true);
         if(this.style)xml+=makeXML(this.style,"linkstyle");
+        if(this.labelx!=null)xml+=makeXML(this.labelx,"linklabelx");
         return makeXML(xml,"link");
     }
     
@@ -666,11 +668,13 @@ class WFLink{
         var portStyle = getXMLVal(xml,"portstyle");
         var text = getXMLVal(xml,"linktext",true);
         var style = getXMLVal(xml,"linkstyle");
+        var labelx = getXMLVal(xml,"linklabelx");
         this.id = targetid;
         this.targetNode = null;
         if(text)this.text = text;
         if(portStyle)this.portStyle=portStyle;
         if(style)this.style=style;
+        if(labelx!=null)this.labelx=parseFloat(labelx);
     }
     
     setTextSilent(value){

@@ -142,7 +142,7 @@ const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=
 const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
 const defaultTagPreviewStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=center;verticalAlign=top;rounded=1;arcSize=50;";
 const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=black;fontSize=40;align=left;strokeWidth=2;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;fontColor=black;";
-const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;";
+const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;verticalAlign=middle;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
 const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=1;"
@@ -900,3 +900,102 @@ mxSvgCanvas2D.prototype.updateFont = function(node)
 		node.setAttribute('text-decoration', 'underline');
 	}
 };
+
+var mxMoveEdgeLabelPrototype = mxEdgeHandler.prototype.moveLabel;
+mxEdgeHandler.prototype.moveLabel = function(edge, x, y){
+    console.log("moving label");
+    var pt = this.graph.getView().getClosestPoint(edge,x,y);
+    x = pt.x;
+    y = pt.y;
+    
+    
+    mxMoveEdgeLabelPrototype.apply(this,arguments);
+    console.log(edge.cell.x());
+    if(edge.cell.isLink)edge.cell.link.labelx = edge.cell.x();
+}
+
+
+/**
+ * Function: getRelativePoint
+ *
+ * Gets the relative point that describes the given, absolute label
+ * position for the given edge state.
+ * 
+ * Parameters:
+ * 
+ * state - <mxCellState> that represents the state of the parent edge.
+ * x - Specifies the x-coordinate of the absolute label location.
+ * y - Specifies the y-coordinate of the absolute label location.
+ */
+mxGraphView.prototype.getClosestPoint = function(edgeState, x, y)
+{
+	var model = this.graph.getModel();
+	var geometry = model.getGeometry(edgeState.cell);
+	
+	if (geometry != null)
+	{
+		var pointCount = edgeState.absolutePoints.length;
+		
+		if (geometry.relative && pointCount > 1)
+		{
+			var totalLength = edgeState.length;
+			var segments = edgeState.segments;
+
+			// Works which line segment the point of the label is closest to
+			var p0 = edgeState.absolutePoints[0];
+			var pe = edgeState.absolutePoints[1];
+			var minDist = mxUtils.ptSegDistSq(p0.x, p0.y, pe.x, pe.y, x, y);
+            console.log(minDist);
+
+			var index = 0;
+			var tmp = 0;
+			var length = 0;
+			
+			for (var i = 2; i < pointCount; i++)
+			{
+				tmp += segments[i - 2];
+				pe = edgeState.absolutePoints[i];
+				var dist = mxUtils.ptSegDistSq(p0.x, p0.y, pe.x, pe.y, x, y);
+				if (dist <= minDist)
+				{
+					minDist = dist;
+					index = i - 1;
+					length = tmp;
+				}
+				
+				p0 = pe;
+			}
+			
+			var seg = segments[index];
+			p0 = edgeState.absolutePoints[index];
+			pe = edgeState.absolutePoints[index + 1];
+			
+            
+			var x2 = x-p0.x;
+			var y2 = y-p0.y;
+			
+			var x1 = pe.x-p0.x;
+			var y1 = pe.y-p0.y;
+            
+			var norm1sqr = x1**2+y1**2;
+            var x;
+            var y;
+            if(x2>Math.max(x1,0)){x=Math.max(x1,0);console.log("MAXX");}
+            else if(x2<Math.min(x1,0)){x=Math.min(x1,0);console.log("MINX");}
+            else x = x1*x2*x1/norm1sqr;
+            if(y2>Math.max(y1,0)){y=Math.max(y1,0);console.log("MAXY");}
+            else if(y2<Math.min(y1,0)){y=Math.min(y1,0);console.log("MINY");}
+            else y = y1*y2*y1/norm1sqr;
+            
+            
+            
+
+			// Constructs the relative point for the label
+			return new mxPoint((x+p0.x)/this.scale,
+						(y+p0.y)/this.scale);
+		}
+	}
+	
+	return new mxPoint();
+};
+

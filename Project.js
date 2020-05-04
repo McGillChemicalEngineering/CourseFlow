@@ -111,11 +111,14 @@ class Project{
                 var path = p.fileLoader.value;
                 console.log(path);
                 console.log(path.lastIndexOf("\\"));
-                var filename="";
-                if(path.indexOf("\\")>=0)filename = path.substr(path.lastIndexOf("\\")+1);
-                else if(path.indexOf("\/")>=0)filename = path.substr(path.lastIndexOf("\\")+1);
-                if(filename.indexOf(".CFlow")>0)filename=filename.substr(0,filename.indexOf(".CFlow"));
-                else filename=null;
+                var filename=null;
+                if(!p.loadAppend){
+                    filename="";
+                    if(path.indexOf("\\")>=0)filename = path.substr(path.lastIndexOf("\\")+1);
+                    else if(path.indexOf("\/")>=0)filename = path.substr(path.lastIndexOf("\\")+1);
+                    if(filename.indexOf(".CFlow")>0)filename=filename.substr(0,filename.indexOf(".CFlow"));
+                    else filename=null;
+                }
                 try{
                     p.fromXML(readData,p.loadAppend);
                     gaEvent('Save/Open','Open',p.name);
@@ -435,7 +438,7 @@ class Project{
         if(wf instanceof Workflow) children= this.getDependencies(wf);
         var exported=[];
         var xml = "";
-        xml+=makeXML(wf.name,"prname",true);
+        xml+=makeXML(wf.name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]"),"prname",true);
         xml+=makeXML(this.idNum,"idnum");
         xml+=makeXML(this.terminologySet,"terminologyset");
         xml+=wf.toXML();
@@ -445,7 +448,7 @@ class Project{
             xml+=children[i].toXML();
         }
         xml = makeXML(xml,"project");
-        var filename = wf.name+".CFlow";
+        var filename = wf.name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]")+".CFlow";
         this.saveXML(xml,filename);
     }
     
@@ -477,7 +480,24 @@ class Project{
         str = str+'}\n';
         str = str+'});\n';
         str = str+'</script>';
-        alert(str);
+        this.createMessage(str);
+    }
+    
+    createMessage(str){
+        var div = document.createElement('div');
+        div.className = 'messagediv';
+        var head = document.createElement('h4');
+        head.innerHTML = "Copy/Paste This Text:";
+        div.appendChild(head);
+        var textarea = document.createElement('textarea');
+        var button = document.createElement('button');
+        div.appendChild(textarea);
+        div.appendChild(button);
+        textarea.value=str;
+        button.innerHTML = "OK";
+        button.onclick=function(){document.body.removeChild(div)};
+        document.body.appendChild(div);
+        
     }
     
     getDependencies(wf){

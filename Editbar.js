@@ -46,6 +46,14 @@ class EditBar{
             }
           }
         });
+        quill1.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+          delta.ops = delta.ops.map(op => {
+            return {
+              insert: op.insert
+            }
+          })
+          return delta
+        });
         //quillDiv1.firstChild.onfocus = function(){quill1.setSelection(0,quill1.getLength());};
         this.nameField=quill1;
         container.appendChild(nameDiv);
@@ -86,13 +94,28 @@ class EditBar{
             }
           }
         });
+        var allowedattrs = ['link','bold','italic','underline','script','list'];
+        quill2.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+            console.log(delta);
+            for(var i=0;i<delta.ops.length;i++){
+                var op = delta.ops[i];
+                console.log(op);
+                if(op.attributes){
+                    for(var attr in op.attributes){
+                        console.log("attr");
+                        if(allowedattrs.indexOf(attr)<0)op.attributes[attr]=null;
+                    }
+                }
+            }
+            return delta;
+        });
         //quillDiv2.firstChild.onfocus = function(){quill2.setSelection(0,quill2.getLength());};
         //Making some changes to the way link creation works. By default if the user has nothing selected, the link button simply does nothing; this is undesirable behaviour.
         var toolbar = quill2.getModule('toolbar');
         toolbar.defaultLinkFunction=toolbar.handlers['link'];
         toolbar.addHandler("link",function customLinkFunction(value){
             var select = quill2.getSelection();
-            if(select['length']==0&&!readOnly){
+            if(value&&select['length']==0&&!readOnly){
                 quill2.insertText(select['index'],'link');
                 quill2.setSelection(select['index'],4);
             }

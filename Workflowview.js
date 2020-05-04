@@ -157,6 +157,7 @@ class Workflowview{
     
     makeInactive(){
         this.toolbar.container.style.display="none";
+        this.descriptionNode.parentElement.removeChild(this.descriptionNode);
         this.graph.stopEditing(false);
         $(".mxPopupMenu").remove();
         this.graph.clearSelection();
@@ -210,15 +211,88 @@ class Workflowview{
         var wf = this.wf;
         var title = "["+LANGUAGE_TEXT.workflow.insertdescription[USER_LANGUAGE]+"]";
         if(wf.description)title = wf.description;
-        this.descriptionHeaderNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,LANGUAGE_TEXT.workflow.description[USER_LANGUAGE]+":",wfStartX,wfStartY+90,800,16,defaultTitleStyle+"fontSize=14;verticalAlign=top;editable=false;");
-        this.descriptionNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,title,wfStartX+cellSpacing,wfStartY+120,800,80,defaultTitleStyle+"fontSize=14;verticalAlign=top;fontStyle=0;whiteSpace=wrap;");
-        this.descriptionNode.isTitle=true;
-        this.descriptionNode.wf=wf;
-        this.descriptionNode.valueChanged = function(value){
-            var value1 = wf.setDescriptionSilent(value);
-            if(value1!=value)wf.view.graph.getModel().setValue(wf.view.descriptionNode,value1);
-            else mxCell.prototype.valueChanged.apply(this,arguments);
+        this.descriptionHeaderNode = this.graph.insertVertex(this.graph.getDefaultParent(),null,LANGUAGE_TEXT.workflow.description[USER_LANGUAGE]+":",wfStartX,wfStartY+90,800,16,defaultTitleStyle+"fontSize=14;verticalAlign=top;editable=0;selectable=0;");
+        this.descriptionHeaderNode.noSelect=true;
+        this.descriptionNode = document.createElement('div');
+        var descriptionNode = this.descriptionNode;
+        var quilldiv = document.createElement('div');
+        this.descriptionNode.appendChild(quilldiv);
+        this.descriptionNode.style.width = "800px";
+        this.descriptionNode.style.height = "80px";
+        this.descriptionNode.className = "descriptionnode";
+        this.descriptionNode.style.left = (wfStartX+cellSpacing+100)+"px";
+        this.descriptionNode.style.top = (wfStartY+70+40)+"px";
+        this.descriptionNode.style.position="absolute";
+        this.container.parentElement.appendChild(this.descriptionNode);
+        var toolbarOptions = [['bold','italic','underline'],[{'script':'sub'},{'script':'super'}],[{'list':'bullet'},{'list':'ordered'}],['link'],['formula']];
+        var quill = new Quill(quilldiv,{
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            },
+            placeholder:LANGUAGE_TEXT.editbar.insertdescription[USER_LANGUAGE]
+        });
+        quill.on('text-change', function(delta, oldDelta, source) {
+          if (source == 'user') {
+            if(wf){
+                wf.setDescriptionSilent(quilldiv.childNodes[0].innerHTML.replace(/\<p\>\<br\>\<\/p\>\<ul\>/g,"\<ul\>"));
+            }
+          }
+        });
+        var allowedattrs = ['link','bold','italic','underline','script','list'];
+        quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+            console.log(delta);
+            for(var i=0;i<delta.ops.length;i++){
+                var op = delta.ops[i];
+                if(op.attributes){
+                    for(var attr in op.attributes){
+                        console.log("attr");
+                        if(allowedattrs.indexOf(attr)<0)op.attributes[attr]=null;
+                    }
+                }
+            }
+            return delta;
+        });
+        var readOnly = wf.project.readOnly;
+        var toolbar = quill.getModule('toolbar');
+        toolbar.defaultLinkFunction=toolbar.handlers['link'];
+        toolbar.addHandler("link",function customLinkFunction(value){
+            var select = quill.getSelection();
+            if(value&&select['length']==0&&!readOnly){
+                quill.insertText(select['index'],'link');
+                quill.setSelection(select['index'],4);
+            }
+           
+            this.defaultLinkFunction(value);
+        });
+        this.descriptionNode.edit = function(){quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
+        if(wf.description!=null)quill.clipboard.dangerouslyPasteHTML(wf.description,"silent");
+        else quill.clipboard.dangerouslyPasteHTML("","silent");
+        
+        quilldiv.firstElementChild.contentEditable=false;
+        quilldiv.firstElementChild.ondblclick = function(){quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
+        descriptionNode.firstElementChild.onmousedown = function(evt){evt.preventDefault();}
+        quilldiv.addEventListener("focusout",function(evt){
+            console.log(evt);
+            //check if related target is within the quillified div
+            var target = evt.relatedTarget;
+            if(target == null)target = evt.explicitOriginalTarget;
+            while(target!=null){
+                if(target.parentElement==quilldiv)return;
+                else(target = target.parentElement);
+            }
+            quilldiv.firstElementChild.contentEditable=false;
+            descriptionNode.classList.remove('active');
+        });
+        quilldiv.firstElementChild.blur();
+        var wfv = this;
+        descriptionNode.oncontextmenu = function(evt){
+            mxEvent.redirectMouseEvents(descriptionNode,wfv.graph,null)
             
+            evt.preventDefault();
+            evt.stopPropagation();
+            /*var evt2 = new evt.constructor(evt.type,evt);
+            wfv.container.firstElementChild.firstElementChild.dispatchEvent(evt);*/
         }
     }
     
@@ -806,7 +880,8 @@ class Workflowview{
     
     //This creates an invisible box that spans the width of our workflow. It's useful to have the graph area automatically resize in the y direction, but we want to maintain a minimum width in the x direction so that the user can always see the right hand side even when the editbar is up, and so they can click the seemingly empty space to the right of the graph to deselect items, and this is sort of cheesy way around that.
     createSpanner(){
-        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX+cellSpacing,this.descriptionNode.b()+10,this.weekWidth+250,1,invisibleStyle+"strokeColor=#DDDDDD;");
+        this.spanner = this.graph.insertVertex(this.graph.getDefaultParent(),null,'',wfStartX+cellSpacing,this.descriptionHeaderNode.b()+120,this.weekWidth+250,1,invisibleStyle+"strokeColor=#DDDDDD;editable=0;constituent=0;");
+        this.spanner.noSelect=true;
         
     }
     
@@ -880,7 +955,7 @@ class Workflowview{
             graph.startEditingAtCell(wfv.authorNode);
         });
         menu.addItem(LANGUAGE_TEXT.workflowview.editdescription[USER_LANGUAGE],'resources/images/text24.png',function(){
-            graph.startEditingAtCell(wfv.descriptionNode);
+            wfv.descriptionNode.edit();
         });
         
         this.wf.populateMenu(menu);
@@ -972,6 +1047,7 @@ class Workflowview{
         
         //Disable cell movement associated with user events
         graph.moveCells = function (cells, dx,dy,clone,target,evt,mapping){
+            console.log("movecells");
             if(cells.length==1&&(cells[0].isComment||cells[0].isLegend)){
                 var comment = cells[0].comment;
                 if(comment==null)comment=cells[0].legend;
@@ -998,6 +1074,7 @@ class Workflowview{
         //This overwrites the preview functionality when moving nodes so that nodes are automatically
         //snapped into place and moved while the preview is active.
         graph.graphHandler.updatePreviewShape = function(){
+            console.log("updatepreviewshape");
             if(this.shape!=null&&!graph.ffL){
                 graph.ffL=true;
                 //creates a new variable for the initial bounds,
@@ -1081,6 +1158,7 @@ class Workflowview{
         
         //Alters the way the drawPreview function is handled on resize, so that the brackets can snap as they are resized. Also disables horizontal resizing.
         mxVertexHandler.prototype.drawPreview = function(){
+            console.log("drawpreview");
             var cell = this.state.cell;
             if(this.selectionBorder.offsetx==null){this.selectionBorder.offsetx=this.bounds.x-cell.x();this.selectionBorder.offsety=this.bounds.y-cell.y();}
             if(cell.isNode||cell.isBracket){
@@ -1145,6 +1223,8 @@ class Workflowview{
         
         //handle the changing of the toolbar upon selection
         graph.selectCellForEvent = function(cell,evt){
+            console.log(cell);
+            if(cell.noSelect){graph.clearSelection();console.log("returning");return;}
             if(cell.isWeek){graph.clearSelection();return;}
             if(cell.isHead){wfv.showColFloat(false);}
             mxGraph.prototype.selectCellForEvent.apply(this,arguments);
