@@ -504,7 +504,13 @@ class WFLinkview{
     }
     
     highlight(on){
-        var g = this.graph.view.getState(this.vertex).shape.node;
+        console.log(this.vertex);
+        console.log(this.graph.view);
+        console.log(this.graph.view.getState);
+        console.log(this.graph.view.getState(this.vertex));
+        var gstate = this.graph.view.getState(this.vertex);
+        if(gstate==null)return;
+        var g = gstate.shape.node;
         console.log(g);
         if(g.firstChild!=null){
             for(var i=0;i<g.childNodes.length;i++){
@@ -515,7 +521,9 @@ class WFLinkview{
     }
     
     select(on){
-        var g = this.graph.view.getState(this.vertex).shape.node;
+        var gstate = this.graph.view.getState(this.vertex);
+        if(gstate==null)return;
+        var g = gstate.shape.node;
         console.log(g);
         if(g.firstChild!=null){
             for(var i=0;i<g.childNodes.length;i++){
