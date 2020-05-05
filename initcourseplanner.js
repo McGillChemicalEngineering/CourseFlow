@@ -29,10 +29,6 @@ function main(container)
     {
         
         if(window.navigator.language.substr(0,2)=='fr')USER_LANGUAGE='fr';
-        var nav = LANGUAGE_TEXT.confirm.navigate[USER_LANGUAGE]
-        window.onbeforeunload = function() {
-          return nav;
-        }
         setMenuLanguage();
         $("#english").get()[0].onclick = function(){USER_LANGUAGE='en';setMenuLanguage();};
         $("#french").get()[0].onclick = function(){USER_LANGUAGE='fr';setMenuLanguage();};

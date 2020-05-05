@@ -51,6 +51,12 @@ class Project{
         $("#topnav").get()[0].contextItem=p;
         
         
+        var nav = LANGUAGE_TEXT.confirm.navigate[USER_LANGUAGE]
+        window.onbeforeunload = function() {
+            if(p.readOnly)return null
+            else return nav;
+        }
+        
         
         //Add the ability to edit the name of the project
         /*var nameIcon = document.createElement('img');
@@ -185,7 +191,7 @@ class Project{
         var exportHTML = document.getElementById('exporthtml');
         exportHTML.onclick = function(){
             gaEvent('Save/Open','ExportHTML',p.name);
-            p.exportHTML();
+            p.showHTMLOptions();
         }
         
         var exportCSV = document.getElementById('exportcsv');
@@ -466,28 +472,70 @@ class Project{
         
     }
     
-    exportHTML(){
-        this.toXML();
-        var str = '<iframe style="margin:0px;width:1200px;height:1200px;border:0px;" src="https://wfm.saltise.ca/CourseFlow/courseplanner.html" id="actualpage"></iframe>\n';
+    exportHTML(readonly,hidecomments){
+        console.log(readonly);
+        console.log(hidecomments);
+        this.toXML(readonly);
+        var suffix = this.name.replace(/[^a-zA-Z0-9]/g,'');
+        var xmlData = this.xmlData.replace(/\n/g,'').replace(/"/g,'\\"').replace(/link/g,'"+"link"+"');
+        if(hidecomments){
+            xmlData = xmlData.replace(/<comment>/g,'<hiddencomment>').replace(/<\/comment>/g,'</hiddencomment>');
+        }
+        var str = '<iframe style="margin:0px;width:100%;height:1200px;border:0px;" src="https://wfm.saltise.ca/CourseFlow/courseplanner.html" id="actualpage'+suffix+'"></iframe>\n';
         str = str+ '<script>\n';
-        str = str+ 'var xmlstr = "';
-        str = str+this.xmlData.replace(/\n/g,'').replace(/"/g,'\\"').replace(/link/g,'"+"link"+"');
+        str = str+ 'var xmlstr'+suffix+' = "';
+        str = str+xmlData;
         str = str+'";\n';
-        str = str+'var page = document.getElementById("actualpage");\n';
+        str = str+'var page'+suffix+' = document.getElementById("actualpage'+suffix+'");\n';
         str = str+'window.addEventListener("message", function(evt) {\n';
         str = str+'if (evt.data == "ready") {\n';
-        str = str+'page.contentWindow.postMessage(xmlstr, "*");\n';
+        str = str+'page'+suffix+'.contentWindow.postMessage(xmlstr'+suffix+', "*");\n';
         str = str+'}\n';
         str = str+'});\n';
         str = str+'</script>';
         this.createMessage(str);
     }
     
+    showHTMLOptions(){
+        var p = this;
+        var div = document.createElement('div');
+        div.className = 'messagediv';
+        var head = document.createElement('h4');
+        head.innerHTML = LANGUAGE_TEXT.project.selectoptions[USER_LANGUAGE]+":";
+        div.appendChild(head);
+        
+        var readonly = this.createCheckboxOption("Read Only");
+        div.appendChild(readonly.parentElement);
+        var hidecomments = this.createCheckboxOption("Hide Comments");
+        div.appendChild(hidecomments.parentElement);
+        
+        
+        var button = document.createElement('button');
+        div.appendChild(button);
+        button.innerHTML = "OK";
+        button.onclick=function(){document.body.removeChild(div);p.exportHTML(readonly.checked,hidecomments.checked);};
+        document.body.appendChild(div);
+    }
+    
+    createCheckboxOption(string,value){
+        var div = document.createElement('div');
+        var checkbox = document.createElement('input');
+        checkbox.type="checkbox";
+        checkbox.value=value;
+        checkbox.style.display = "inline-block";
+        var label = document.createElement('div');
+        label.innerHTML = string;
+        label.style.display = "inline-block";
+        div.appendChild(checkbox);
+        div.appendChild(label);
+        return checkbox;
+    }
+    
     createMessage(str){
         var div = document.createElement('div');
         div.className = 'messagediv';
         var head = document.createElement('h4');
-        head.innerHTML = "Copy/Paste This Text:";
+        head.innerHTML = LANGUAGE_TEXT.project.copypaste[USER_LANGUAGE]+":";
         div.appendChild(head);
         var textarea = document.createElement('textarea');
         var button = document.createElement('button');

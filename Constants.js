@@ -248,7 +248,9 @@ const LANGUAGE_TEXT = {
         privacypolicy:{en:'Privacy Policy',fr:"Politique de Confidentialité"}
     },
     project:{
-        projectoverview:{en:"Project Overview",fr:"Aperçu du Projet"}
+        projectoverview:{en:"Project Overview",fr:"Aperçu du Projet"},
+        copypaste:{en:"Copy/Paste This Text",fr:"Copiez ce texte"},
+        selectoptions:{en:"Select Options",fr:"Sélectionnez les options"}
     },
     layoutnav:{
         returntooverview:{en:"Return to Overview",fr:"Retourez à l'aperçu"},

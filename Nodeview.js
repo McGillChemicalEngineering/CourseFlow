@@ -504,10 +504,6 @@ class WFLinkview{
     }
     
     highlight(on){
-        console.log(this.vertex);
-        console.log(this.graph.view);
-        console.log(this.graph.view.getState);
-        console.log(this.graph.view.getState(this.vertex));
         var gstate = this.graph.view.getState(this.vertex);
         if(gstate==null)return;
         var g = gstate.shape.node;
