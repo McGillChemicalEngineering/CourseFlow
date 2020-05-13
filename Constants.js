@@ -168,15 +168,15 @@ const iconsList={
         {text:{en:'Peer Assessment',fr:"Évaluation par les pairs"},value:'peer-assessment'}
     ],
     context:[
-        {text:{en:'Individual Work',fr:"Travail Individuel"},value:'solo'},
-        {text:{en:'Work in Groups',fr:"Travail en Groupe"},value:'group'},
+        {text:{en:'Individual Work',fr:"Travail individuel"},value:'solo'},
+        {text:{en:'Work in Groups',fr:"Travail en groupe"},value:'group'},
         {text:{en:'Whole Class',fr:"Classe"},value:'class'}
     ],
-    task:[{text:{en:'Gather Information',fr:"Collecter Des Informations"},value:'research'},
+    task:[{text:{en:'Gather Information',fr:"Collecter des informations"},value:'research'},
           {text:{en:'Discuss',fr:"Discuter"},value:'discuss'},
-          {text:{en:'Problem Solve',fr:"Résolution de Problèmes"},value:'problem'},
+          {text:{en:'Problem Solve',fr:"Résolution de problèmes"},value:'problem'},
           {text:{en:'Analyze',fr:"Analyser"},value:'analyze'},
-          {text:{en:'Assess/Review Peers',fr:"Examiner Ses Pairs"},value:'peerreview'},
+          {text:{en:'Assess/Review Peers',fr:"Examiner ses pairs"},value:'peerreview'},
           {text:{en:'Debate',fr:"Débat"},value:'debate'},
           {text:{en:'Game/Roleplay',fr:"Jeu/Jeu de rôle"},value:'play'},
           {text:{en:'Create/Design',fr:"Créer/Concevoir"},value:'create'},
@@ -186,9 +186,9 @@ const iconsList={
           {text:{en:'Present',fr:"Présentation"},value:'present'},
           {text:{en:'Experiment/Inquiry',fr:"Expérience/Enquête"},value:'experiment'},
           {text:{en:'Quiz/Test',fr:"Quiz/Test"},value:'quiz'},
-          {text:{en:'Instructor Resource Curation',fr:"Préparation Des Ressources (Instructeur)"},value:'curation'},
-          {text:{en:'Instructor Orchestration',fr:"Orchestration (Instructeur)"},value:'orchestration'},
-          {text:{en:'Instructor Evaluation',fr:"Évaluation (Instructeur)"},value:'instrevaluate'},
+          {text:{en:'Instructor Resource Curation',fr:"Préparation des ressources (instructeur)"},value:'curation'},
+          {text:{en:'Instructor Orchestration',fr:"Orchestration (instructeur)"},value:'orchestration'},
+          {text:{en:'Instructor Evaluation',fr:"Évaluation (instructeur)"},value:'instrevaluate'},
           {text:{en:'Other',fr:"Autre"},value:'other'}
          ],
     assessment:[
@@ -197,7 +197,7 @@ const iconsList={
         {text:{en:'Comprehensive',fr:"Exhaustif"},value:'exam'}
     ],
     column:[
-        {text:{en:'Home',fr:"Hors Classe"},value:'home'},
+        {text:{en:'Home',fr:"Hors classe"},value:'home'},
         {text:{en:'Instructor',fr:"Instructeur"},value:'instructor'},
         {text:{en:'Students',fr:"Étudiants"},value:'students'},
         {text:{en:'Activity',fr:"Activité"},value:'lesson'},
@@ -231,38 +231,40 @@ const LANGUAGE_TEXT = {
         exporthtml:{en:'Export Embeddable HTML',fr:'Exporter en HTML'},
         importwf:{en:'Import a CFlow file',fr:'Importer un fichier CFlow'},
         importcsv:{en:'Import Outcomes CSV',fr:'Importer un CSV de Résultats'},
-        readonly:{en:'Save Read Only',fr:'Copie Lecture Seule'},
+        readonly:{en:'Save Read Only',fr:'Copie lecture seule'},
         undo: {en:'Undo',fr:'Annuler'},
         redo: {en:'Redo',fr:' Rétablir'},
         duplicate:{en:'Duplicate Current Workflow',fr:"Dupliquer le plan de travail courant"},
-        expand:{en:'Expand All',fr:"Afficher Tout"},
+        expand:{en:'Expand All',fr:"Afficher tout"},
         collapse:{en:'Collapse All',fr:"Cacher tout"},
-        printerfriendly:{en:'Printer Friendly Version',fr:"Version Imprimante"},
-        legend:{en:'Show/Hide Legend',fr:"Afficher/Masquer La Légende"},
-        toggleoutcome:{en:'Toggle Outcome View',fr:"Basculer L’affichage Résultats"},
+        printerfriendly:{en:'Printer Friendly Version',fr:"Version imprimante"},
+        legend:{en:'Show/Hide Legend',fr:"Afficher/Masquer la légende"},
+        toggleoutcome:{en:'Toggle Outcome View',fr:"Basculer L’affichage résultats"},
+        toggleoutcomeswitch:{en:'Outcome View:',fr:"Affichage résultats:"},
         terminology:{en:'Terminology',fr:"Terminologie"},
         terminologystandard:{en:'Standard',fr:"Standard"},
         terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
-        genhelp:{en:'General Help',fr:"Aide Generale"},
+        genhelp:{en:'General Help',fr:"Aide generale"},
         layouthelp:{en:'About the Layout',fr:"À propos de la mise en page"},
-        privacypolicy:{en:'Privacy Policy',fr:"Politique de Confidentialité"}
+        privacypolicy:{en:'Privacy Policy',fr:"Politique de confidentialité"}
     },
     project:{
-        projectoverview:{en:"Project Overview",fr:"Aperçu du Projet"},
+        projectoverview:{en:"Project Overview",fr:"Aperçu du projet"},
         copypaste:{en:"Copy/Paste This Text",fr:"Copiez ce texte"},
         selectoptions:{en:"Select Options",fr:"Sélectionnez les options"}
     },
     layoutnav:{
         returntooverview:{en:"Return to Overview",fr:"Retourez à l'aperçu"},
+        goback:{en:"Back",fr:"Réaccéder"},
         navigator:{en:'Project Navigation',fr:'Navigateur'},
         project:{en:'Project',fr:"Projet"},
-        projectreanmetitle:{en:"Rename Project",fr:"Renommer Le Projet"},
+        projectreanmetitle:{en:"Rename Project",fr:"Renommer le projet"},
         projectrename:{en:'Enter a name for your project',fr:"Entrez un nom pour votre projet"},
         layout:{en:"Layout",fr:"Mise en page"},
         cancel:{en:'Cancel',fr:'Annuler'},
         addwf:{en:'Add Workflow',fr:"Adjouter un plan de travail"},
-        outcomes:{en:'Outcome Sets',fr:'Les Résultats'},
-        createnew:{en:'Create New',fr:'Créer Un Nouveau'}
+        outcomes:{en:'Outcome Sets',fr:'Les tésultats'},
+        createnew:{en:'Create New',fr:'Créer un nouveau'}
     },
     workflow:{
         activity:{en:"Activity",fr:"Activité"},
@@ -275,24 +277,24 @@ const LANGUAGE_TEXT = {
             program:{en:"Programs",fr:"Programmes"},
             outcome:{en:"Outcomes",fr:"Résultats"},
         },
-        newactivity:{en:"New Activity",fr:"Nouvelle Activité"},
-        newcourse:{en:"New Course",fr:"Nouveau Cours"},
-        newprogram:{en:"New Program",fr:"Noveau Programme"},
-        inserttitle:{en:"Insert Title Here",fr:'Placez Le Titre Ici'},
-        insertauthor:{en:"Insert Author Here",fr:"Placez Le Nom de L'Auteur Ici"},
-        insertdescription:{en:"Insert Description Here",fr:"Placez La Description Ici"},
+        newactivity:{en:"New Activity",fr:"Nouvelle activité"},
+        newcourse:{en:"New Course",fr:"Nouveau cours"},
+        newprogram:{en:"New Program",fr:"Noveau programme"},
+        inserttitle:{en:"Insert Title Here",fr:'Placer le titre ici'},
+        insertauthor:{en:"Insert Author Here",fr:"Placer le nom de l'auteur ici"},
+        insertdescription:{en:"Insert Description Here",fr:"Placer la description ici"},
         description:{en:'Description',fr:'Description'},
         rename:{en:"Rename",fr:"Renommer"},
         delete:{en:"Delete",fr:"Supprimer"},
-        unassign:{en:"Unassign",fr:"Annuler L'attribution"},
+        unassign:{en:"Unassign",fr:"Annuler l'attribution"},
         createchild:{en:"Create Child",fr:"Ajouter un enfant"}
     },
     editbar:{
-        editnode:{en:'Edit Node',fr:'Modifier Le Noeud'},
+        editnode:{en:'Edit Node',fr:'Modifier le noeud'},
         title:{en:'Title',fr:'Titre'},
         description:{en:'Description',fr:'Description'},
-        righticon:{en:'Right Icon',fr:'Icône de Droite'},
-        lefticon:{en:'Left Icon',fr:'Icône Gauche'},
+        righticon:{en:'Task Icon',fr:'Icône de tâche'},
+        lefticon:{en:'Context Icon',fr:'Icône de contexte'},
         time:{en:'Time',fr:'Temps'},
         linkedwf:{en:'Linked Workflow',fr:'Plan de travail en lien'},
         tags:{en:'Outcomes',fr:'Résultats'},
@@ -306,7 +308,7 @@ const LANGUAGE_TEXT = {
         nodeheader:{en:"Nodes",fr:"Noeuds"},
         jumpto:{en:"Jump To",fr:"Raccourcis"},
         strategiesheader:{en:"Strategies",fr:"Stratégies"},
-        outcomesheader:{en:"Assigned Outcomes",fr:"Résultats Attribués"},
+        outcomesheader:{en:"Assigned Outcomes",fr:"Résultats attribués"},
         assignoutcome:{en:"Assign Outcome",fr:"Attribuer le résultat"},
         nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun résultat n'a été ajouté! Utilisez les boutons ci-dessous pour en ajouter un."},
         selectset:{en:"Select set to add",fr:'Choisissez-en un à ajouter'},
@@ -319,14 +321,14 @@ const LANGUAGE_TEXT = {
     },
     outcomeview:{
         total:{en:"Total",fr:"Totale"},
-        grandtotal:{en:"Grand Total",fr:"Somme Finale"},
-        uncategorized:{en:"Uncategorized",fr:"Non-Classé"},
+        grandtotal:{en:"Grand Total",fr:"Somme finale"},
+        uncategorized:{en:"Uncategorized",fr:"Non-classé"},
         complete:{en:"Complete",fr:"Complet"},
         incomplete:{en:"Incomplete",fr:"Incomplet"},
         partial:{en:"Partial",fr:"Partiel"},
         addnode:{en:"Add Node",fr:"Adjouter un noeud"},
         displayheader:{en:"Display",fr:"Affichage"},
-        sortbyheader:{en:"Sort By",fr:"Trier Par"},
+        sortbyheader:{en:"Sort By",fr:"Trier par"},
         sortradio:{
             week:{en:"Week",fr:"Semaine"},
             icon:{en:"Icon",fr:"Icône"},
@@ -337,9 +339,9 @@ const LANGUAGE_TEXT = {
         deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce Résulat? Attention: cela supprimera tous les contenus et les supprimera de tous les plans de travails!"},
         unassigntext:{en:"Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.",fr:"Annuler l'attribution de ce Résultat? Attention: cela ne supprimera PAS le Résultat, mais supprimera toutes les références à celui-ci du plan de travail."},
         standard:{
-            depth0:{en:"Program Outcome",fr:"Résultat de Programme"},
-            depth1:{en:"Course Outcome",fr:"Résultat de Cours"},
-            depth2:{en:"Activity Outcome",fr:"Résultat d'Activité"},
+            depth0:{en:"Program Outcome",fr:"Résultat de programme"},
+            depth1:{en:"Course Outcome",fr:"Résultat de cours"},
+            depth2:{en:"Activity Outcome",fr:"Résultat d'activité"},
             depth3:{en:"Tag",fr:"Tag"}
         },
         cegep:{
@@ -371,19 +373,19 @@ const LANGUAGE_TEXT = {
             nodetext:{en:'Artifact',fr:'Artefact'}
         },
         OOC:{
-            text:{en:'Out of Class (Students)',fr:'Hors Classe (Étudiants)'},
-            nodetext:{en:'Home (Students)',fr:'Hors Classe (Étudiants)'}
+            text:{en:'Out of Class (Students)',fr:'Hors classe (étudiants)'},
+            nodetext:{en:'Home (Students)',fr:'Hors classe (étudiants)'}
         },
         ICI:{
-            text:{en:'In Class (Instructor)',fr:'En Classe (Instructeur)'},
+            text:{en:'In Class (Instructor)',fr:'En classe (instructeur)'},
             nodetext:{en:'Instructor',fr:'Instructeur'}
         },
         OOCI:{
-            text:{en:'Out of Class (Instructor)',fr:'Hors Classe (Instructeur)'},
-            nodetext:{en:'Home (Instructor)',fr:'Hors Classe (Instructeur)'}
+            text:{en:'Out of Class (Instructor)',fr:'Hors classe (instructeur)'},
+            nodetext:{en:'Home (Instructor)',fr:'Hors classe (instructeur)'}
         },
         ICS:{
-            text:{en:'In Class (Students)',fr:'En Classe (Étudiants)'},
+            text:{en:'In Class (Students)',fr:'En classe (étudiants)'},
             nodetext:{en:'Students',fr:'Étudiants'}
         },
         CO:{
@@ -391,12 +393,12 @@ const LANGUAGE_TEXT = {
             nodetext:{en:'Course',fr:'Cour'}
         },
         CUS:{
-            text:{en:'Custom Column',fr:'Colonne Personnalisée'},
-            nodetext:{en:'New Custom',fr:'Nouvelle Colonne'}
+            text:{en:'Custom Column',fr:'Colonne personnalisée'},
+            nodetext:{en:'New Custom',fr:'Nouvelle colonne'}
         },
         CUSP:{
-            text:{en:'Course Category',fr:'Catégorie de Cours'},
-            nodetext:{en:'New Category',fr:'Nouvelle Catégorie'}
+            text:{en:'Course Category',fr:'Catégorie de cours'},
+            nodetext:{en:'New Category',fr:'Nouvelle catégorie'}
         },
         modifytext:{en:'Edit label',fr:"Modifier l'étiquette"},
         colourpicker:{en:'Colour',fr:"Couleur"},
@@ -436,17 +438,17 @@ const LANGUAGE_TEXT = {
         },
         options:{en:"Style",fr:"Style"},
         simple:{en:"Simple",fr:"Simple"},
-        parts:{en:"Parts",fr:"En Parties"}
+        parts:{en:"Parts",fr:"En parties"}
     },
     node:{
         defaulttext:{en:"Click to edit",fr:"Cliquez pour modifier"},
         delete:{en:"Delete Node",fr:"Supprimer ce noeud"},
         duplicate:{en:"Duplicate Node",fr:"Dupliquer ce noeud"},
         createbelow:{en:'Insert node below',fr:"Insérer un noeud"},
-        righticon:{en:'Right Icon',fr:'Icône de Droite'},
-        lefticon:{en:'Left Icon',fr:'Icône Gauche'},
+        righticon:{en:'Task Icon',fr:'Icône de tâche'},
+        lefticon:{en:'Context Icon',fr:'Icône de contexte'},
         modifytext:{en:'Edit label',fr:"Modifier l'étiquette"},
-        showhide:{en:"Show/Hide Description",fr:"Afficher/masquer la description"},
+        showhide:{en:"Show/Hide Description",fr:"Afficher/Masquer la description"},
         setlinkedwf:{en:"Set Linked WF",fr:"Spécifier le plan de travail lié"}
     },
     bracket:{
@@ -475,11 +477,11 @@ const LANGUAGE_TEXT = {
     },
     legend:{
         legend:{en:"Legend",fr:"Légende"},
-        task:{en:"Task Icons",fr:"Icônes de Tâche"},
-        context:{en:"Context Icons",fr:"Icônes de Contexte"},
-        strategy:{en:"Strategy Icons",fr:"Icônes de Stratégie"},
-        assessment:{en:"Assessment Icons",fr:"Icônes d'Évaluation"},
-        column:{en:"Column Icons",fr:"Icônes de Colonne"}
+        task:{en:"Task Icons",fr:"Icônes de tâche"},
+        context:{en:"Context Icons",fr:"Icônes de contexte"},
+        strategy:{en:"Strategy Icons",fr:"Icônes de stratégie"},
+        assessment:{en:"Assessment Icons",fr:"Icônes d'évaluation"},
+        column:{en:"Column Icons",fr:"Icônes de colonne"}
     },
     errors:{
         openoutcome:{en:"Oops! The outcome could not be opened.",fr:"Oups! Le résultat n'a pas pu être ouvert."},
@@ -526,6 +528,7 @@ function setMenuLanguage(){
     $("#exportcsv").children().first().html(LANGUAGE_TEXT.menus.exportcsv[USER_LANGUAGE]);
     $("#exporthtml").children().first().html(LANGUAGE_TEXT.menus.exporthtml[USER_LANGUAGE]);
     $("#import").children().first().html(LANGUAGE_TEXT.menus.importwf[USER_LANGUAGE]);
+    $("#importcsv").children().first().html(LANGUAGE_TEXT.menus.importcsv[USER_LANGUAGE]);
     $("#savereadonly").children().first().html(LANGUAGE_TEXT.menus.readonly[USER_LANGUAGE]);
     $("#edit").html(LANGUAGE_TEXT.menus.edit[USER_LANGUAGE]);
     $("#undo").children().first().html(LANGUAGE_TEXT.menus.undo[USER_LANGUAGE]);
@@ -537,6 +540,11 @@ function setMenuLanguage(){
     $("#print").children().first().html(LANGUAGE_TEXT.menus.printerfriendly[USER_LANGUAGE]);
     $("#showlegend").children().first().html(LANGUAGE_TEXT.menus.legend[USER_LANGUAGE]);
     $("#outcomeview").children().first().html(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE]);
+    $(".outcomeviewtext").html(LANGUAGE_TEXT.menus.toggleoutcomeswitch[USER_LANGUAGE]);
+    $("#gobackdivtext").html(LANGUAGE_TEXT.layoutnav.goback[USER_LANGUAGE]);
+    $("#returndivtext").html(LANGUAGE_TEXT.layoutnav.returntooverview[USER_LANGUAGE]);
+    $("#expandviewbar").attr("title",LANGUAGE_TEXT.menus.expand[USER_LANGUAGE]);
+    $("#collapseviewbar").attr("title",LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE]);
     $("#terminology").children().first().html(LANGUAGE_TEXT.menus.terminology[USER_LANGUAGE]);
     $("#terminologystandard").children().first().html(LANGUAGE_TEXT.menus.terminologystandard[USER_LANGUAGE]);
     $("#terminologycegep").children().first().html(LANGUAGE_TEXT.menus.terminologycegep[USER_LANGUAGE]);
@@ -905,14 +913,12 @@ mxSvgCanvas2D.prototype.updateFont = function(node)
 
 var mxMoveEdgeLabelPrototype = mxEdgeHandler.prototype.moveLabel;
 mxEdgeHandler.prototype.moveLabel = function(edge, x, y){
-    console.log("moving label");
     var pt = this.graph.getView().getClosestPoint(edge,x,y);
     x = pt.x;
     y = pt.y;
     
     
     mxMoveEdgeLabelPrototype.apply(this,arguments);
-    console.log(edge.cell.x());
     if(edge.cell.isLink)edge.cell.link.labelx = edge.cell.x();
 }
 
@@ -947,7 +953,6 @@ mxGraphView.prototype.getClosestPoint = function(edgeState, x, y)
 			var p0 = edgeState.absolutePoints[0];
 			var pe = edgeState.absolutePoints[1];
 			var minDist = mxUtils.ptSegDistSq(p0.x, p0.y, pe.x, pe.y, x, y);
-            console.log(minDist);
 
 			var index = 0;
 			var tmp = 0;
@@ -982,11 +987,11 @@ mxGraphView.prototype.getClosestPoint = function(edgeState, x, y)
 			var norm1sqr = x1**2+y1**2;
             var x;
             var y;
-            if(x2>Math.max(x1,0)){x=Math.max(x1,0);console.log("MAXX");}
-            else if(x2<Math.min(x1,0)){x=Math.min(x1,0);console.log("MINX");}
+            if(x2>Math.max(x1,0)){x=Math.max(x1,0);}
+            else if(x2<Math.min(x1,0)){x=Math.min(x1,0);}
             else x = x1*x2*x1/norm1sqr;
-            if(y2>Math.max(y1,0)){y=Math.max(y1,0);console.log("MAXY");}
-            else if(y2<Math.min(y1,0)){y=Math.min(y1,0);console.log("MINY");}
+            if(y2>Math.max(y1,0)){y=Math.max(y1,0);}
+            else if(y2<Math.min(y1,0)){y=Math.min(y1,0);}
             else y = y1*y2*y1/norm1sqr;
             
             

@@ -465,7 +465,6 @@ class WFLinkview{
         }
         style += link.getPortStyle();
         this.vertex = this.graph.insertEdge(this.graph.getDefaultParent(),null,link.text,link.node.view.vertex,link.targetNode.view.vertex,style);
-        console.log(link.labelx);
         if(link.labelx!=null){
             this.vertex.geometry.y=0;
             this.vertex.geometry.x=link.labelx;
@@ -507,7 +506,6 @@ class WFLinkview{
         var gstate = this.graph.view.getState(this.vertex);
         if(gstate==null)return;
         var g = gstate.shape.node;
-        console.log(g);
         if(g.firstChild!=null){
             for(var i=0;i<g.childNodes.length;i++){
                 if(on)g.childNodes[i].classList.add("highlighted");
@@ -520,7 +518,6 @@ class WFLinkview{
         var gstate = this.graph.view.getState(this.vertex);
         if(gstate==null)return;
         var g = gstate.shape.node;
-        console.log(g);
         if(g.firstChild!=null){
             for(var i=0;i<g.childNodes.length;i++){
                 if(on)g.childNodes[i].classList.add("selected");

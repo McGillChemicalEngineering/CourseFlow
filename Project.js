@@ -32,10 +32,11 @@ class Project{
         this.addButton(this.nameDiv,false);
         var p = this;
         this.idNum=0;
+        this.backList = [];
         this.loadAppend=false;
         this.name = LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE];
         this.readOnly=false;
-        this.floatbar = document.createElement('div');
+        this.floatbar = $("#floatbar")[0];
         
         $("#save").removeClass("disabled");
         $("#exporthtml").removeClass("disabled");
@@ -78,6 +79,7 @@ class Project{
         */
         this.createNavigators();
         this.createFloatBar();
+        this.createViewBar();
         
         
         
@@ -115,8 +117,6 @@ class Project{
             reader.onload = function(evt){
                 var readData = evt.target.result;
                 var path = p.fileLoader.value;
-                console.log(path);
-                console.log(path.lastIndexOf("\\"));
                 var filename=null;
                 if(!p.loadAppend){
                     filename="";
@@ -270,6 +270,8 @@ class Project{
                 gaEvent('View','Outcomes Toggled',wf.getType(),wf.tagSets.length);
                 wf.makeInactive();
                 p.outcomesview=(!p.outcomesview);
+                var ocvcheck = $('#outcomeviewbar .switch input')[0];
+                if(ocvcheck && ocvcheck.checked!=p.outcomesview)ocvcheck.checked=p.outcomesview;
                 wf.makeActive(p.container);
                 
             }
@@ -473,8 +475,6 @@ class Project{
     }
     
     exportHTML(readonly,hidecomments){
-        console.log(readonly);
-        console.log(hidecomments);
         this.toXML(readonly);
         var suffix = this.name.replace(/[^a-zA-Z0-9]/g,'');
         var xmlData = this.xmlData.replace(/\n/g,'').replace(/"/g,'\\"').replace(/link/g,'"+"link"+"');
@@ -739,6 +739,9 @@ class Project{
     
     //Causes the workflow to delete itself and all its contents
     deleteWF(wf){
+        console.log(this.backList);
+        while(this.backList.indexOf(wf)>=0)this.backList.splice(this.backList.indexOf(wf),1);
+        console.log(this.backList);
         if(wf instanceof Workflow)for(var i=wf.children.length-1;i>=0;i--){
             wf.removeChild(wf.children[i]);
         }
@@ -755,7 +758,7 @@ class Project{
         while(wf.buttons.length>0){
             wf.removeButton(wf.buttons[0]);
         }
-        if(this.activeLayout==wf){this.changeActive(this);}
+        if(this.activeLayout==wf){this.changeActive(this,true);}
         else if(this.activeLayout==this)this.view.workflowRemoved(wf);
         this.workflows[wf.getType()].splice(this.workflows[wf.getType()].indexOf(wf),1);
         
@@ -784,17 +787,42 @@ class Project{
         return null;
     }
     
-    changeActive(layout){
+    changeActive(layout,back=false){
+        console.log("Making a layout active");
         var p = this;
         makeLoad(function(){
             if(layout==p)$("#returndiv").css("display","none");
             else $("#returndiv").css("display","inline-block");
             if(p.activeLayout!=null)p.activeLayout.makeInactive();
+            console.log(p.activeLayout);
+            console.log(back);
+            if(p.activeLayout&&!back){
+                console.log("adding an active layout");
+                p.backList.push(p.activeLayout);if(p.backList.length>20)p.backList.shift();
+                $("#gobackdiv").css("display","inline-block");
+            }
             p.activeLayout = layout;
             if(layout instanceof Workflow)layout.makeActive(p.container);
             else if (layout instanceof Tag)layout.makeActive(new Tagbuilder(p.container,layout));
             else if (layout instanceof Project)layout.makeActive(p.container);
+            p.cleanBackList();
         });
+    }
+    
+    goBack(){
+        if(this.backList.length>0)this.changeActive(this.backList.pop(),true);
+        if(this.backList.length==0)$("#gobackdiv").css("display","none");
+    }
+    
+    cleanBackList(){
+        for(var i=1;i<this.backList.length;i++){
+            if(this.backList[i]==this.backList[i-1]){
+                this.backList.splice(i,1);
+                i--;
+            }
+        }
+        if(this.backList[this.backList.length-1]==this.activeLayout)this.backList.pop();
+        if(this.backList.length==0)$("#gobackdiv").css("display","none");
     }
     
     makeActive(container){
@@ -851,16 +879,13 @@ class Project{
     createFloatBar(){
         var p = this;
         var floatbar = this.floatbar;
-        floatbar.classList.add("floatbar");
-        this.sidenav.container.appendChild(floatbar);
-        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.layoutnav.returntooverview[USER_LANGUAGE],"returnimg","returndiv"));
+        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.layoutnav.goback[USER_LANGUAGE],"returnimg","gobackdiv"));
+        $("#gobackdiv")[0].onclick = function(){p.goBack();}
+        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.layoutnav.returntooverview[USER_LANGUAGE],"goback","returndiv"));
         $("#returndiv")[0].onclick = function(){p.changeActive(p)};
-        /*floatbar.appendChild(this.createFloatBarButton("","expand","expandfloatbar"));
-        $("#expandfloatbar")[0].onclick = function(){$("#expand")[0].click();}
-        floatbar.appendChild(this.createFloatBarButton("","collapse","collapsefloatbar"));
-        $("#collapsefloatbar")[0].onclick = function(){$("#collapse")[0].click();}
-        floatbar.appendChild(this.createFloatBarButton(LANGUAGE_TEXT.menus.toggleoutcome[USER_LANGUAGE],"outcomeview","outcomeviewfloatbar"));
-        $("#outcomeviewfloatbar")[0].onclick = function(){$("#outcomeview")[0].click();}
+        
+       
+        /*
         */
         
     }
@@ -873,10 +898,60 @@ class Project{
         div.classList.add("floatbardiv")
         div.appendChild(img);
         div.appendChild(textdiv);
+        textdiv.id = id+"text";
         img.src="resources/images/"+imgname+"24.png";
         textdiv.innerHTML = text;
         return div;
     }
+
+    createViewBar(){
+        var p = this;
+        var vb = $("#viewbar")[0];
+        vb.appendChild(this.createOutcomeSwitch(LANGUAGE_TEXT.menus.toggleoutcomeswitch[USER_LANGUAGE],"outcomeviewbar"));
+        vb.appendChild(this.createViewBarButton("","expand","expandviewbar"));
+        $("#expandviewbar")[0].onclick = function(){$("#expand")[0].click();}
+        $("#expandviewbar").attr("title",LANGUAGE_TEXT.menus.expand[USER_LANGUAGE]);
+        vb.appendChild(this.createViewBarButton("","collapse","collapseviewbar"));
+        $("#collapseviewbar")[0].onclick = function(){$("#collapse")[0].click();}
+        $("#collapseviewbar").attr("title",LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE]);
+        
+    }
+    
+    createViewBarButton(text,imgname,id){
+        var div = document.createElement('div');
+        var img = document.createElement("img");
+        var textdiv = document.createElement('div');
+        div.id = id;
+        div.classList.add("topdropwrapper")
+        div.appendChild(img);
+        div.appendChild(textdiv);
+        img.src="resources/images/"+imgname+"36.png";
+        textdiv.innerHTML = text;
+        div.classList.add("disabled");
+        return div;
+    }
+    
+    createOutcomeSwitch(text,id){
+        var div = document.createElement('div');
+        var label = document.createElement('label');
+        var input = document.createElement('input');
+        var slider = document.createElement('span');
+        var textdiv = document.createElement('div');
+        textdiv.innerHTML = text;
+        textdiv.className = "outcomeviewtext";
+        input.onclick = function(){$("#outcomeview")[0].click();}
+        label.appendChild(input);
+        label.appendChild(slider);
+        input.type="checkbox";
+        slider.className="slider round";
+        label.className="switch";
+        div.id = id;
+        div.appendChild(textdiv);
+        div.appendChild(label);
+        div.classList.add("disabled");
+        return div;
+    }
+    
     
     showHelp(url){
         gaEvent('View','Help',url);
@@ -1023,8 +1098,6 @@ class Project{
             p.nameDiv.headertext.innerHTML = LANGUAGE_TEXT.layoutnav.navigator[lang]+":";
             for(var prop in p.navigatorDivs){p.navigatorDivs[prop].headertext.innerHTML=LANGUAGE_TEXT.workflow.plurals[prop][lang];}
             $("#sidenav .createlayoutdiv").html("+"+LANGUAGE_TEXT.layoutnav.createnew[lang]);
-            p.floatbar.innerHTML = "";
-            p.createFloatBar();
             setMenuLanguage();
             if(p.activeLayout instanceof Workflow)p.activeLayout.makeActive(p.container);
             else if(p.activeLayout instanceof Tag)p.activeLayout.makeActive(new Tagbuilder(p.container,p.activeLayout));

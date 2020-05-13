@@ -44,7 +44,6 @@ function main(container)
                 if(filetype=="ALA")filename = "https://jchoquette.github.io/ALA_Files/"+toOpen+".CFlow";
                 else if(fileurl!=null)filename = fileurl;
                 var opened = loadServerXML(filename);
-                console.log(filename);
                 if(opened==null)toOpen="";
                 else{
                     var project = new Project(container);
@@ -110,12 +109,9 @@ function makeSplashpage(container){
     window.addEventListener("message",function(evt){
         console.log("Message Received!");
         if(project==null)project = new Project(container);
-        console.log(evt.data);
         project.fromXML(evt.data);
         setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
     });
-    console.log(window);
-    console.log(window.parent);
     if(window!=window.parent)window.parent.postMessage("ready","*");
     console.log("frame is ready");
 

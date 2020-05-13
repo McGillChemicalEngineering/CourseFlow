@@ -191,7 +191,7 @@ class Workflow{
     }
     
     clickButton(){
-        this.project.changeActive(this,true);
+        this.project.changeActive(this);
     }
     
     getType(){return "other";}
@@ -333,7 +333,6 @@ class Workflow{
                 //uncommenting this line will allow all parents of the activated workflow to automatically expand
                 //this.activateParents(this.buttons[i],true);
             }
-            console.log(this.xmlData);
             if(this.xmlData!=null){
                 this.openXMLData();
             }else{
@@ -357,6 +356,7 @@ class Workflow{
             }
             
             $("#outcomeview").removeClass("disabled");
+            $("#outcomeviewbar").removeClass("disabled");
             if(!this.project.readOnly)$("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
@@ -374,6 +374,7 @@ class Workflow{
     makeInactive(){
         this.undoEnabled=false;
         $("#outcomeview").addClass("disabled");
+        $("#outcomeviewbar").addClass("disabled");
         $("#duplicatewf").addClass("disabled");
         $("#export").addClass("disabled");
         $("#undo").addClass("disabled");

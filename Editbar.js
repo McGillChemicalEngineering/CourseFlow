@@ -96,13 +96,10 @@ class EditBar{
         });
         var allowedattrs = ['link','bold','italic','underline','script','list'];
         quill2.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-            console.log(delta);
             for(var i=0;i<delta.ops.length;i++){
                 var op = delta.ops[i];
-                console.log(op);
                 if(op.attributes){
                     for(var attr in op.attributes){
-                        console.log("attr");
                         if(allowedattrs.indexOf(attr)<0)op.attributes[attr]=null;
                     }
                 }

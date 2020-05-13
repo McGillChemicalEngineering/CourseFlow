@@ -233,7 +233,6 @@ class Tag {
         this.setName(getXMLVal(xml,"tagname",true));
         this.id=getXMLVal(xml,"tagid");
         var isCollapsed = getXMLVal(xml,"iscollapsed");
-        console.log(isCollapsed);
         if(isCollapsed=="true")this.collapsed=true;
         else this.collapsed=false;
         for(var i = 0;i<xml.childNodes.length;i++){

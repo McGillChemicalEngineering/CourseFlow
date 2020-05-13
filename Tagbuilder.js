@@ -43,6 +43,8 @@ class Tagbuilder{
         $("#print").removeClass("disabled");
         $("#expand").removeClass("disabled");
         $("#collapse").removeClass("disabled");
+        $("#expandviewbar").removeClass("disabled");
+        $("#collapseviewbar").removeClass("disabled");
     }
     
     makeInactive(){
@@ -55,6 +57,8 @@ class Tagbuilder{
         $("#print").addClass("disabled");
         $("#expand").addClass("disabled");
         $("#collapse").addClass("disabled");
+        $("#expandviewbar").addClass("disabled");
+        $("#collapseviewbar").addClass("disabled");
     }
     
     nameUpdated(){

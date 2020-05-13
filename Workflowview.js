@@ -108,6 +108,8 @@ class Workflowview{
         
         $("#expand").removeClass("disabled");
         $("#collapse").removeClass("disabled");
+        $("#expandviewbar").removeClass("disabled");
+        $("#collapseviewbar").removeClass("disabled");
         $("#print").removeClass("disabled");
         $("#showlegend").removeClass("disabled");
         
@@ -172,6 +174,8 @@ class Workflowview{
         
         $("#expand").addClass("disabled");
         $("#collapse").addClass("disabled");
+        $("#expandviewbar").addClass("disabled");
+        $("#collapseviewbar").addClass("disabled");
         $("#print").addClass("disabled");
         $("#showlegend").addClass("disabled");
     }
@@ -241,12 +245,10 @@ class Workflowview{
         });
         var allowedattrs = ['link','bold','italic','underline','script','list'];
         quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-            console.log(delta);
             for(var i=0;i<delta.ops.length;i++){
                 var op = delta.ops[i];
                 if(op.attributes){
                     for(var attr in op.attributes){
-                        console.log("attr");
                         if(allowedattrs.indexOf(attr)<0)op.attributes[attr]=null;
                     }
                 }
@@ -270,10 +272,9 @@ class Workflowview{
         else quill.clipboard.dangerouslyPasteHTML("","silent");
         
         quilldiv.firstElementChild.contentEditable=false;
-        quilldiv.firstElementChild.ondblclick = function(){quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
+        quilldiv.firstElementChild.ondblclick = function(){if(readOnly)return;quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
         descriptionNode.firstElementChild.onmousedown = function(evt){evt.preventDefault();}
         quilldiv.addEventListener("focusout",function(evt){
-            console.log(evt);
             //check if related target is within the quillified div
             var target = evt.relatedTarget;
             if(target == null)target = evt.explicitOriginalTarget;
@@ -506,7 +507,7 @@ class Workflowview{
     
     scrollToVertex(vertex){
         var newy = vertex.y();
-        $("HTML")[0].scrollTo(0,newy);
+        $(".bodywrapper")[0].scrollTo(0,newy);
     }
     
     
@@ -895,7 +896,6 @@ class Workflowview{
         }
         menu.addItem(LANGUAGE_TEXT.workflowview.addcomment[USER_LANGUAGE],'resources/images/comment24.png',function(){
             var comparent =null;
-            console.log(evt);
             if(cell)if(cell.isNode)comparent=cell.node;
             else if(cell.isBracket)comparent=cell.bracket;
             else if(cell.isHead)comparent=cell.column;
@@ -962,15 +962,25 @@ class Workflowview{
     }
     
     expandAllNodes(expand=true){
+        this.makeInactive();
         var wf = this.wf;
         for(var i=0;i<wf.weeks.length;i++){
+            var week = wf.weeks[i];
+            if(week.collapsed && expand) week.collapsed = false;
+            for(var j=0;j<week.nodes.length;j++){
+                var node = week.nodes[j];
+                node.isDropped=expand;
+            }
+        }
+        /*for(var i=0;i<wf.weeks.length;i++){
             var week=wf.weeks[i];
             if(expand&&week.collapsed==expand)week.toggleCollapse();
             for(var j=0;j<week.nodes.length;j++){
                 var node = week.nodes[j];
                 if(node.isDropped!=expand)node.toggleDropDown();
             }
-        }
+        }*/
+        this.makeActive();
     }
     
     
@@ -1047,7 +1057,6 @@ class Workflowview{
         
         //Disable cell movement associated with user events
         graph.moveCells = function (cells, dx,dy,clone,target,evt,mapping){
-            console.log("movecells");
             if(cells.length==1&&(cells[0].isComment||cells[0].isLegend)){
                 var comment = cells[0].comment;
                 if(comment==null)comment=cells[0].legend;
@@ -1074,7 +1083,6 @@ class Workflowview{
         //This overwrites the preview functionality when moving nodes so that nodes are automatically
         //snapped into place and moved while the preview is active.
         graph.graphHandler.updatePreviewShape = function(){
-            console.log("updatepreviewshape");
             if(this.shape!=null&&!graph.ffL){
                 graph.ffL=true;
                 //creates a new variable for the initial bounds,
@@ -1158,7 +1166,6 @@ class Workflowview{
         
         //Alters the way the drawPreview function is handled on resize, so that the brackets can snap as they are resized. Also disables horizontal resizing.
         mxVertexHandler.prototype.drawPreview = function(){
-            console.log("drawpreview");
             var cell = this.state.cell;
             if(this.selectionBorder.offsetx==null){this.selectionBorder.offsetx=this.bounds.x-cell.x();this.selectionBorder.offsety=this.bounds.y-cell.y();}
             if(cell.isNode||cell.isBracket){
@@ -1223,8 +1230,7 @@ class Workflowview{
         
         //handle the changing of the toolbar upon selection
         graph.selectCellForEvent = function(cell,evt){
-            console.log(cell);
-            if(cell.noSelect){graph.clearSelection();console.log("returning");return;}
+            if(cell.noSelect){graph.clearSelection();return;}
             if(cell.isWeek){graph.clearSelection();return;}
             if(cell.isHead){wfv.showColFloat(false);}
             mxGraph.prototype.selectCellForEvent.apply(this,arguments);
@@ -1250,8 +1256,6 @@ class Workflowview{
             var cell = graphHandlerGetInitialCellForEvent.apply(this, arguments);
             while (this.graph.isPart(cell)){
                 cell = this.graph.getModel().getParent(cell);
-                console.log(cell);
-                console.log(cell.style);
             }
             return cell;
         };

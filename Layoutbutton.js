@@ -161,20 +161,16 @@ class Layoutbutton {
         bl.namediv.firstElementChild.select();
         b.onclick=null;
         p.container.addEventListener('mouseup',function(evt){
-            console.log("outside click");
-            console.log(evt);
             if(bl.namediv.firstElementChild!=null&&!bl.namediv.contains(evt.target))bl.namediv.firstElementChild.blur();
         },{once:true});
         var enterfunc =function(evt){
             if(evt.key!=null&&evt.key=="Enter"){
                 
-                console.log("enter");
                 if(bl.namediv.firstElementChild!=null)bl.namediv.firstElementChild.blur();
             }
         }
         document.addEventListener('keydown',enterfunc);
         bl.namediv.firstElementChild.addEventListener("focusout",function(){
-            console.log("focusedout");
             b.onclick=tempfunc;
             if(bl.namediv.firstElementChild.value=="")bl.namediv.innerHTML=layout.name;
             else {

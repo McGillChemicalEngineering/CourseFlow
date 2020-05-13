@@ -112,62 +112,71 @@
             </div>
         </div>
         <div class="menubar">
-            <div class="topnavimage"><a href="www.saltise.ca"><img src="resources/images/logo.svg" href="www.saltise.ca"></a>
-            </div>
-            <div class="topdropwrapper">
-                <button class = "topdropbutton" id = "file">File</button>
-                <div class="topdropdiv">
-                    <a id="new"><div>New Project</div></a>
-                    <a id="save" class="disabled"><div>Save Project</div><div class="shortcut">Ctrl+S</div></a>
-                    <a id="open"><div>Open Project</div><div class="shortcut">Ctrl+O</div></a>
-                    <a id="savereadonly" class="disabled"><div>Save Read Only</div></a>
-                    <hr>
-                    <a id="export" class="disabled"><div>Export Current Workflow</div></a>
-                    <a id="exportcsv" class="disabled"><div>Export As CSV</div></a>
-                    <a id="exporthtml" class="disabled"><div>Export Embeddable HTML</div></a>
-                    <hr>
-                    <a id="import" class="disabled"><div>Import a CFlow file</div></a>
-                    <a id="importcsv" class="disabled"><div>Import Outcomes CSV</div></a>
-                    
+            <div class="mainmenu">
+                <div class="topnavimage"><a href="www.saltise.ca"><img src="resources/images/logo.svg" href="www.saltise.ca"></a>
+                </div>
+                <div class="topdropwrapper">
+                    <button class = "topdropbutton" id = "file">File</button>
+                    <div class="topdropdiv">
+                        <a id="new"><div>New Project</div></a>
+                        <a id="save" class="disabled"><div>Save Project</div><div class="shortcut">Ctrl+S</div></a>
+                        <a id="open"><div>Open Project</div><div class="shortcut">Ctrl+O</div></a>
+                        <a id="savereadonly" class="disabled"><div>Save Read Only</div></a>
+                        <hr>
+                        <a id="export" class="disabled"><div>Export Current Workflow</div></a>
+                        <a id="exportcsv" class="disabled"><div>Export As CSV</div></a>
+                        <a id="exporthtml" class="disabled"><div>Export Embeddable HTML</div></a>
+                        <hr>
+                        <a id="import" class="disabled"><div>Import a CFlow file</div></a>
+                        <a id="importcsv" class="disabled"><div>Import Outcomes CSV</div></a>
+
+                    </div>
+                </div>
+                <div class="topdropwrapper">
+                    <button class="topdropbutton" id = "edit">Edit</button>
+                    <div class="topdropdiv">
+                        <a id="undo" class="disabled"><div>Undo</div><div class="shortcut">Ctrl+Z</div></a>
+                        <a id="redo" class="disabled"><div>Redo</div><div class="shortcut">Ctrl+Shift+Z</div></a>
+                        <a id="duplicatewf" class="disabled"><div>Duplicate Current Workflow</div></a>
+                    </div>
+                </div>
+                <div class="topdropwrapper">
+                    <button class="topdropbutton" id = "view">View</button>
+                    <div class="topdropdiv">
+                        <a id="expand" class="disabled"><div>Expand All</div></a>
+                        <a id="collapse" class="disabled"><div>Collapse All</div></a>
+                        <a id="print" class="disabled"><div>Printer Friendly Version</div></a>
+                        <a id="showlegend" class="disabled"><div>Show/Hide Legend</div></a>
+                        <a id="outcomeview" class="disabled"><div>Toggle Outcome View</div></a>
+                        <hr>
+                        <a id="terminology" class = " disabled topdroptitle"><div>Terminology:</div></a>
+                        <a id="terminologystandard" class = "disabled topdropindent"><div>Standard</div></a>
+                        <a id="terminologycegep" class = "disabled topdropindent"><div>CEGEP</div></a>
+                    </div>
+                </div>
+                <div class="topdropwrapper">
+                    <button class="topdropbutton" id = "language">Language</button>
+                    <div class="topdropdiv">
+                        <a id="french"><div>Français</div></a>
+                        <a id="english"><div>English</div></a>
+                    </div>
+                </div>
+                <div class="topdropwrapper">
+                    <button class="topdropbutton" id = "help">Help</button>
+                    <div class="topdropdiv">
+                        <a id="genhelp" class="disabled"><div>General Help</div></a>
+                        <a id="layouthelp" class="disabled"><div>About the Layout</div></a>
+                        <a id="privacy" href="privacy.html" target="_blank"><div>Privacy Policy</div></a>
+                    </div>
                 </div>
             </div>
-            <div class="topdropwrapper">
-                <button class="topdropbutton" id = "edit">Edit</button>
-                <div class="topdropdiv">
-                    <a id="undo" class="disabled"><div>Undo</div><div class="shortcut">Ctrl+Z</div></a>
-                    <a id="redo" class="disabled"><div>Redo</div><div class="shortcut">Ctrl+Shift+Z</div></a>
-                    <a id="duplicatewf" class="disabled"><div>Duplicate Current Workflow</div></a>
-                </div>
+            <div id="floatbar" class="floatbar">
+            <div></div>
             </div>
-            <div class="topdropwrapper">
-                <button class="topdropbutton" id = "view">View</button>
-                <div class="topdropdiv">
-                    <a id="expand" class="disabled"><div>Expand All</div></a>
-                    <a id="collapse" class="disabled"><div>Collapse All</div></a>
-                    <a id="print" class="disabled"><div>Printer Friendly Version</div></a>
-                    <a id="showlegend" class="disabled"><div>Show/Hide Legend</div></a>
-                    <a id="outcomeview" class="disabled"><div>Toggle Outcome View</div></a>
-                    <hr>
-                    <a id="terminology" class = " disabled topdroptitle"><div>Terminology:</div></a>
-                    <a id="terminologystandard" class = "disabled topdropindent"><div>Standard</div></a>
-                    <a id="terminologycegep" class = "disabled topdropindent"><div>CEGEP</div></a>
-                </div>
+            <div id="viewbar" class="viewbar">
+            
             </div>
-            <div class="topdropwrapper">
-                <button class="topdropbutton" id = "language">Language</button>
-                <div class="topdropdiv">
-                    <a id="french"><div>Français</div></a>
-                    <a id="english"><div>English</div></a>
-                </div>
-            </div>
-            <div class="topdropwrapper">
-                <button class="topdropbutton" id = "help">Help</button>
-                <div class="topdropdiv">
-                    <a id="genhelp" class="disabled"><div>General Help</div></a>
-                    <a id="layouthelp" class="disabled"><div>About the Layout</div></a>
-                    <a id="privacy" href="privacy.html" target="_blank"><div>Privacy Policy</div></a>
-                </div>
-            </div>
+            
         </div>
         
     </div>

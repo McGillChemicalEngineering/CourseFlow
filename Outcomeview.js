@@ -40,6 +40,7 @@ class Outcomeview{
     
     createTitleNode(){
         var wf = this.wf;
+        var readOnly = wf.project.readOnly;
         var title = "["+LANGUAGE_TEXT.workflow.inserttitle[USER_LANGUAGE]+"]";
         if(wf.name&&wf.name!=wf.getDefaultName())title=wf.name;
         var titleDiv = document.createElement('div');
@@ -52,13 +53,14 @@ class Outcomeview{
         this.titleInput = titleInput;
         titleDiv.appendChild(titleInput);
         titleInput.readOnly=true;
-        titleInput.ondblclick = function(){titleInput.readOnly=false;titleInput.select();}
+        titleInput.ondblclick = function(){if(readOnly)return;titleInput.readOnly=false;titleInput.select();}
         titleInput.addEventListener("focusout",function(){titleInput.readOnly=true;});
         
     }
     
     createAuthorNode(){
         var wf = this.wf;
+        var readOnly = wf.project.readOnly;
         var title = "["+LANGUAGE_TEXT.workflow.insertauthor[USER_LANGUAGE]+"]";
         if(wf.author)title = wf.author;
         var authorDiv = document.createElement('div');
@@ -71,7 +73,7 @@ class Outcomeview{
         this.authorInput = authorInput;
         authorDiv.appendChild(authorInput);
         authorInput.readOnly=true;
-        authorInput.ondblclick = function(){authorInput.readOnly=false;authorInput.select();}
+        authorInput.ondblclick = function(){if(readOnly)return;authorInput.readOnly=false;authorInput.select();}
         authorInput.addEventListener("focusout",function(){authorInput.readOnly=true;});
         
     }
@@ -136,12 +138,10 @@ class Outcomeview{
         });
         var allowedattrs = ['link','bold','italic','underline','script','list'];
         quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-            console.log(delta);
             for(var i=0;i<delta.ops.length;i++){
                 var op = delta.ops[i];
                 if(op.attributes){
                     for(var attr in op.attributes){
-                        console.log("attr");
                         if(allowedattrs.indexOf(attr)<0)op.attributes[attr]=null;
                     }
                 }
@@ -152,8 +152,6 @@ class Outcomeview{
         var toolbar = quill.getModule('toolbar');
         toolbar.defaultLinkFunction=toolbar.handlers['link'];
         toolbar.addHandler("link",function customLinkFunction(value){
-            console.log(value);
-            console.log(this);
             var select = quill.getSelection();
             if(value&&select['length']==0&&!readOnly){
                 quill.insertText(select['index'],'link');
@@ -167,10 +165,9 @@ class Outcomeview{
         else quill.clipboard.dangerouslyPasteHTML("","silent");
         
         quilldiv.firstElementChild.contentEditable=false;
-        quilldiv.firstElementChild.ondblclick = function(){quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
+        quilldiv.firstElementChild.ondblclick = function(){if(readOnly)return;quilldiv.firstElementChild.contentEditable=true;quilldiv.firstElementChild.focus();descriptionNode.classList.add('active');}
         descriptionNode.firstElementChild.onmousedown = function(evt){evt.preventDefault();}
         quilldiv.addEventListener("focusout",function(evt){
-            console.log(evt);
             //check if related target is within the quillified div
             var target = evt.relatedTarget;
             if(target == null)target = evt.explicitOriginalTarget;
@@ -221,7 +218,9 @@ class Outcomeview{
         $("#print").removeClass("disabled");
         $("#exportcsv").removeClass("disabled");
         $("#expand").removeClass("disabled");
+        $("#expandviewbar").removeClass("disabled");
         $("#collapse").removeClass("disabled");
+        $("#collapseviewbar").removeClass("disabled");
         $("#showlegend").removeClass("disabled");
         
     }
@@ -248,7 +247,9 @@ class Outcomeview{
         $("#print").addClass("disabled");
         $("#exportcsv").addClass("disabled");
         $("#expand").addClass("disabled");
+        $("#expandviewbar").addClass("disabled");
         $("#collapse").addClass("disabled");
+        $("#collapseviewbar").addClass("disabled");
         $("#showlegend").addClass("disabled");
     }
     
@@ -1057,7 +1058,6 @@ class OutcomeCategoryview{
         this.expandIcon.classList.add("haschildren");
         
         nv.insertSelf(lastnv);
-        console.log("expanding");
         this.expand();
     }
     
