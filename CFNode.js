@@ -354,6 +354,8 @@ class CFNode {
     }
     
     addTag(tag,show=true,addToLinked=false){
+        console.log("adding to node");
+        console.log(addToLinked);
         if(this.tags.indexOf(tag)>=0)return;
         var n = this;
         //Remove any children of the tag we are adding
@@ -369,6 +371,7 @@ class CFNode {
         if(this.view)this.view.tagAdded(tag,show);
         if(addToLinked&this.linkedWF!=null){
             this.wf.project.getWFByID(this.linkedWF).addTagSet(tag,true);
+            console.log("adding to linked");
             //this.refreshLinkedTags();
         }
         //Check to see if we have all children of the parent, if the parent exists
