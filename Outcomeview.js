@@ -1890,7 +1890,7 @@ class OutcomeTableCell{
                     node.addTag(tag,false,node.wf instanceof Programflow);
                     node.wf.makeUndo("Add Tag",node);
                 }else{
-                    node.removeTag(tag,true);
+                    node.removeTag(tag,node.wf instanceof Programflow);
                     node.wf.makeUndo("Remove Tag",node);
                 }
             }

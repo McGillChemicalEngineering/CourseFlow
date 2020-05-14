@@ -68,7 +68,7 @@ class Tagview{
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
-            node.removeTag(tag,true);
+            node.removeTag(tag,node.wf instanceof Programflow);
             node.wf.makeUndo("Remove Tag",node);
         });
         tagLabel.cellOverlays = [overlay];

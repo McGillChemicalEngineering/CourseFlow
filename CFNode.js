@@ -403,6 +403,7 @@ class CFNode {
              this.wf.project.getWFByID(this.linkedWF).removeTagSet(tag);
         }
         if(this.view)this.view.tagRemoved(tag);
+        console.log(this.tags);
     }
     
     

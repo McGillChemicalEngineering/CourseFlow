@@ -166,7 +166,7 @@ class Tag {
             parent.makeUndo("Tagset Removed",parent);
             
         }else if(parent instanceof CFNode){
-            parent.removeTag(this,true);
+            parent.removeTag(this,parent.wf instanceof Programflow);
             parent.wf.makeUndo("Tag Removed",parent);
             if(parent.wf.view){
                 var eb = parent.wf.view.editbar;
