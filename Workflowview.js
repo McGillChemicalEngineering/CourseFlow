@@ -1342,7 +1342,7 @@ class Workflowview{
                                             //remove link highlighting
                                             if(cell.isNode&&cell.node.view)cell.node.view.mouseOut();
                                             graph.removeCellOverlay(cell);
-                                            if(cell.isTagPreview){cell.node.view.toggleTags(false);clearTimeout(timeoutvar);}
+                                            if(cell.isTagPreview||cell.isNode){cell.node.view.toggleTags(false);clearTimeout(timeoutvar);}
                                             graph.removeMouseListener(this);
                                         }
                                     }
