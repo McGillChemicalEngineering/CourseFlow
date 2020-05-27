@@ -18,8 +18,7 @@
 class Tagview{
     constructor(graph,tag,wf){
         this.graph=graph;
-        this.nodes=[];
-        this.vertices=[];
+        this.nodeTags=[];
         this.drops=[];
         this.tag=tag;
         this.isComplete=false;
@@ -32,8 +31,8 @@ class Tagview{
         for(var i=0;i<this.drops.length;i++){
             this.drops[i].updateButton();
         }
-        for(var i=0;i<this.vertices.length;i++){
-            this.graph.getModel().setValue(this.vertices[i],this.tag.name);
+        for(var i=0;i<this.nodeTags.length;i++){
+            if(this.nodeTags[i].view)this.nodeTags[i].view.updateVertex();
         }
     }
     
@@ -51,7 +50,7 @@ class Tagview{
         this.tag.view = null;
     }
     
-    addVertex(node){
+    /*addVertex(node){
         var tag = this.tag;
         var style = defaultTagStyle;
         style+="strokeColor="+this.graph.getCellStyle(node.view.vertex)['fillColor'];
@@ -72,9 +71,45 @@ class Tagview{
             node.wf.makeUndo("Remove Tag",node);
         });
         tagLabel.cellOverlays = [overlay];
-        this.vertices.push(tagLabel);
         
         return tagLabel;
+    }*/
+    
+    addNodeButton(node,tagBoxDiv){
+        var button = new NodeTagButton(this.tag,tagBoxDiv);
+        button.makeEditable(false, false, true, node);
+        button.makeExpandable();
+        for(var i=0;i<this.tag.children.length;i++){
+            if(this.tag.children[i].view){
+                this.tag.children[i].view.addNodeButton(node,button.childdiv);
+            }
+        }
+        var tagview = this;
+        var tag = this.tag;
+        button.b.addEventListener("mouseover",function(evt){tagview.highlight(true)});
+        button.b.addEventListener("mouseleave",function(evt){if(!button.b.isToggled)tagview.highlight(false)});
+        button.b.hasListener=true;
+        button.b.isToggled=false;
+        button.b.onclick= null;
+        if(node.wf.advancedOutcomes){
+            var checkbox = document.createElement('input');
+            checkbox.type="number";
+            checkbox.readOnly=true;
+            checkbox.classList.add("outcomecheckbox");
+            checkbox.value=1;
+            button.b.appendChild(checkbox);
+            checkbox.onclick=function(){
+                checkbox.value=(checkbox.value<<1)%16;
+                if(checkbox.value==0)checkbox.value=1;
+                
+                node.removeTag(tag,node.wf instanceof Programflow);
+                node.addTag(tag,true,node.wf instanceof Programflow,checkbox.value);
+                node.wf.makeUndo("Add Tag",node);
+            }
+            button.outcomecheckbox=checkbox;
+        }
+        return button;
+        
     }
     
     addDrop(button){
@@ -96,8 +131,8 @@ class Tagview{
             }
         }
         on = this.highlighted;
-        for(var i=0;i<this.nodes.length;i++){
-            this.nodes[i].view.highlight(on);
+        for(var i=0;i<this.nodeTags.length;i++){
+            this.nodeTags[i].node.view.highlight(on);
         }
         if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);
     }
@@ -121,19 +156,19 @@ class Tagview{
     
     
     
-    addNode(node){
-        this.nodes.push(node);
+    addNode(nodeTag,container){
+        this.nodeTags.push(nodeTag);
         this.updateDrops();
         this.updateDescendantDrops();
         this.updateAncestorDrops();
-        return this.addVertex(node);
+        
+        if(nodeTag.view)return this.addNodeButton(nodeTag.node,container);
         
     }
     
-    removeNode(node){
-        var index = this.nodes.indexOf(node);
-        this.nodes.splice(index,1);
-        this.vertices.splice(index,1);
+    removeNode(nodeTag){
+        var index = this.nodeTags.indexOf(nodeTag);
+        this.nodeTags.splice(index,1);
         this.updateDrops();
         this.updateDescendantDrops();
         this.updateAncestorDrops();
@@ -162,9 +197,9 @@ class Tagview{
     }
     
     validateTag(tag,col){
-        var nodes = tag.view.nodes;
-        for(var i=0;i<nodes.length;i++){
-            if(nodes[i].column==col)return 1.0;
+        var nodeTags = tag.view.nodeTags;
+        for(var i=0;i<nodeTags.length;i++){
+            if(nodeTags[i].node.column==col)return 1.0;
         }
         var completeness = 0.0;
         for(var i=0;i<tag.children.length;i++){
@@ -176,8 +211,8 @@ class Tagview{
     validateParents(tag,col){
         if(tag.parentTag&&tag.parentTag.view){
             var tv = tag.parentTag.view;
-            for(var i=0;i<tv.nodes.length;i++){
-                if(tv.nodes[i].column==col)return 1.0;
+            for(var i=0;i<tv.nodeTags.length;i++){
+                if(tv.nodeTags[i].node.column==col)return 1.0;
             }
             return this.validateParents(tag.parentTag,col);
         }

@@ -124,7 +124,7 @@ button:hover{
 
 .layoutdiv button{
     padding:4px;
-    min-height:40px;
+    min-height:24px;
     text-align:left;
     white-space:nowrap;
     display:inline-block;
@@ -1105,7 +1105,7 @@ div.highlighted{
     position:relative;
 }
 
-.outcometable .outcomecheckbox{
+.outcomecheckbox{
     position:absolute;
     opacity:0;
     margin:0px;
@@ -1113,6 +1113,35 @@ div.highlighted{
     top:0px;
     width:100%;
     height:100%;
+}
+
+
+
+
+input.outcomecheckbox::-webkit-outer-spin-button,.outcometable input.outcomecheckbox::-webkit-inner-spin-button,{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input.outcomecheckbox[type=number]{
+    -moz-appearance:textfield;
+}
+
+.outcometable .outcomecellicon div{
+    font-weight: 600;
+    font-family:serif;
+    display:inline-block;
+}
+
+
+.outcometable .outcomecellicon .firstoutcomelevel{
+    color:#11ca11;
+}
+.outcometable .outcomecellicon .secondoutcomelevel{
+    color:#2ca02c;
+}
+.outcometable .outcomecellicon .thirdoutcomelevel{
+    color:#165016;
 }
 
 .outcometable .tagcell+td{
@@ -1128,7 +1157,7 @@ div.highlighted{
     z-index:3;
 }
 
-.outcometable td:hover .outcomecheckbox{
+.outcometable td:hover .outcomecheckbox[type=checkbox]{
     opacity: 100%;
 }
 
@@ -1255,8 +1284,8 @@ div.highlighted{
 .outcometable .outcomelegend{
     width:200px;
     margin-left:30px;
-    border:5px solid #1976bc;
-    padding:5px;
+    border:3px solid #1976bc;
+    padding:2px;
     display:none;
 }
 
@@ -1268,7 +1297,13 @@ div.highlighted{
 .outcometable .legendline{
     text-align:left;
     margin-left:10px;
-    padding:4px;
+    font-size:16px;
+    font-weight:normal;
+}
+
+.outcometable .outcomelegend h4{
+    margin-top:5px;
+    margin-left:16px;
 }
 
 .outcometable .legendline img{
@@ -1732,6 +1767,81 @@ input:checked + .slider:before {
 .viewbar .disabled{
     display:none;
 }
+
+.tagboxdiv{
+    display:none;
+    position:absolute;
+    border-radius:10px;
+    background:white;
+    padding:10px;
+    padding-left:24px;
+}
+
+.tagboxdiv .layoutactivity{
+    border:0px;
+    color:black;
+    max-width:300px;
+    font-size:12px;
+    padding:0px;
+}
+
+.nodetagbuttonicon{
+    width:24px;
+    text-align:center;
+}
+.nodetagbuttonicon img{
+    width:16px;
+}
+
+.firstoutcomelevel{
+    color:#11ca11;
+}
+.secondoutcomelevel{
+    color:#2ca02c;
+}
+.thirdoutcomelevel{
+    color:#165016;
+}
+
+.legendline > div:first-child{
+    padding:4px;
+    width:16px;
+    margin-right:20px;
+    text-align:center;
+    font-family:serif;
+    font-weight:600;
+}
+
+.nodetagbuttonicon div{
+    font-weight: 600;
+    font-family:serif;
+    display:inline-block;
+    padding:none;
+}
+
+.nodetagbuttonicon{
+    padding:0;
+}
+
+.tagboxdiv .outcomecheckbox{
+    width:24px;
+    height:24px;
+    font-size:14px;
+    
+}
+
+.layoutactivity:hover .outcomecheckbox{
+    
+}
+
+.outcomecheckbox[type=number]{
+    cursor:pointer;
+}
+
+.tagboxdiv .expanddiv img{
+    padding-top:4px;
+}
+
 
 
 

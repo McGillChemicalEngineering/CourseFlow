@@ -52,6 +52,7 @@ class Project{
         $("#topnav").get()[0].contextItem=p;
         
         
+        
         var nav = LANGUAGE_TEXT.confirm.navigate[USER_LANGUAGE]
         window.onbeforeunload = function() {
             if(p.readOnly)return null
@@ -250,6 +251,11 @@ class Project{
             }
         }
         
+        
+        var settingsButton = document.getElementById("settings");
+        settingsButton.onclick = function(){
+            if(!p.settingsDisplayed)p.showSettings();
+        }
         
         var expand = document.getElementById("expand");
         var collapse = document.getElementById("collapse");
@@ -548,6 +554,10 @@ class Project{
         
     }
     
+    showSettings(){
+        if(this.activeLayout instanceof Workflow)this.activeLayout.showSettings();
+    }
+    
     getDependencies(wf){
         var array = [];
         for(var i=0;i<wf.children.length;i++){
@@ -602,6 +612,8 @@ class Project{
         for(var i=0;i<wfcopy.children.length;i++){
             wfcopy.children[i].addButton(wfcopy.buttons[0].childdiv);
         }
+        if(!this.sidenav.toggled){this.sidenav.toggleShow(0);this.sidenav.show(0);}
+        
         
     }
     
@@ -739,9 +751,7 @@ class Project{
     
     //Causes the workflow to delete itself and all its contents
     deleteWF(wf){
-        console.log(this.backList);
         while(this.backList.indexOf(wf)>=0)this.backList.splice(this.backList.indexOf(wf),1);
-        console.log(this.backList);
         if(wf instanceof Workflow)for(var i=wf.children.length-1;i>=0;i--){
             wf.removeChild(wf.children[i]);
         }
@@ -788,16 +798,12 @@ class Project{
     }
     
     changeActive(layout,back=false){
-        console.log("Making a layout active");
         var p = this;
         makeLoad(function(){
             if(layout==p)$("#returndiv").css("display","none");
             else $("#returndiv").css("display","inline-block");
             if(p.activeLayout!=null)p.activeLayout.makeInactive();
-            console.log(p.activeLayout);
-            console.log(back);
             if(p.activeLayout&&!back){
-                console.log("adding an active layout");
                 p.backList.push(p.activeLayout);if(p.backList.length>20)p.backList.shift();
                 $("#gobackdiv").css("display","inline-block");
             }
@@ -914,6 +920,9 @@ class Project{
         vb.appendChild(this.createViewBarButton("","collapse","collapseviewbar"));
         $("#collapseviewbar")[0].onclick = function(){$("#collapse")[0].click();}
         $("#collapseviewbar").attr("title",LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE]);
+        vb.appendChild(this.createViewBarButton("","settings","settingsviewbar"));
+        $("#settingsviewbar")[0].onclick = function(){$("#settings")[0].click();}
+        $("#settingsviewbar").attr("title",LANGUAGE_TEXT.menus.settings[USER_LANGUAGE]);
         
     }
     
@@ -1005,6 +1014,7 @@ class Project{
             var replaceId=xmlString.substring(startIndex+7,endIndex);
             xmlString=xmlString.substring(0,startIndex)+"<tagtempid>"+id+"</tagtempid>"+xmlString.substring(endIndex+8);
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
+            while(xmlString.indexOf("<nodetagid>"+replaceId+"</nodetagid>")>=0){xmlString = xmlString.replace("<nodetagid>"+replaceId+"</nodetagid>","<nodetagid>temporaryID"+id+"</nodetagid>");}
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"tagsetARRAY",replaceId,""+id);
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"tagARRAY",replaceId,""+id);
             id++;

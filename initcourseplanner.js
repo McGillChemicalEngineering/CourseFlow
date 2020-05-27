@@ -28,6 +28,8 @@ function main(container)
     else
     {
         
+        $(".topdropdiv").click(function(){this.style.display="none";var el=this;setTimeout(function(){el.style.display="";},100)});
+        
         if(window.navigator.language.substr(0,2)=='fr')USER_LANGUAGE='fr';
         setMenuLanguage();
         $("#english").get()[0].onclick = function(){USER_LANGUAGE='en';setMenuLanguage();};

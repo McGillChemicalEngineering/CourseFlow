@@ -169,6 +169,7 @@ class Workflowview{
         if(this.colFloat)this.colFloat.parentElement.parentElement.removeChild(this.colFloat.parentElement);
         if(this.graph!=null)this.graph.destroy();
         this.container.contextItem=null;
+        this.container.innerHTML="";
         document.body.contextItem = this.wf.project;
         
         
@@ -769,8 +770,6 @@ class Workflowview{
                 while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
                 if(cell!=null && cell.isNode){
                     cell.node.addTag(thistag,true,cell.node.wf instanceof Programflow);
-                    console.log("Tag Added");
-                    console.log(cell.node.wf instanceof Programflow);
                     wf.makeUndo("Add Tag",cell.node);
                 }
                 this.lastCell=null;
@@ -983,6 +982,10 @@ class Workflowview{
             }
         }*/
         this.makeActive();
+    }
+    
+    advancedOutcomesToggled(){
+        this.wf.project.changeActive(this.wf);
     }
     
     
@@ -1323,7 +1326,7 @@ class Workflowview{
                                 }
                                 //if it's a node with tags, also show those
                                 var timeoutvar;
-                                if(cell.isNode&&cell.node.tags.length>0)timeoutvar = setTimeout(function(){if(cell.node.wf.view==wfv)cell.node.view.toggleTags(true);},100);
+                                if(cell.isTagPreview&&cell.node.tags.length>0)timeoutvar = setTimeout(function(){if(cell.node.wf.view==wfv)cell.node.view.toggleTags(true);},200);
                                 //add the listener that will remove these once the mouse exits
                                 graph.addMouseListener({
                                     mouseDown: function(sender,me){},
@@ -1332,14 +1335,14 @@ class Workflowview{
                                         if(graph.view.getState(cell)==null){graph.removeMouseListener(this);return;}
                                         var exitrect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
                                         if(!mxUtils.intersects(exitrect,graph.view.getState(cell))){
-                                            if(cell.isNode&&graph.view.getState(cell.node.view.tagBox)!=null&&mxUtils.intersects(exitrect,graph.view.getState(cell.node.view.tagBox))){
+                                            /*if(cell.isNode&&graph.view.getState(cell.node.view.tagBox)!=null&&mxUtils.intersects(exitrect,graph.view.getState(cell.node.view.tagBox))){
                                                 
                                                 return;
-                                            }
+                                            }*/
                                             //remove link highlighting
                                             if(cell.isNode&&cell.node.view)cell.node.view.mouseOut();
                                             graph.removeCellOverlay(cell);
-                                            if(cell.isNode){cell.node.view.toggleTags(false);clearTimeout(timeoutvar);}
+                                            if(cell.isTagPreview){cell.node.view.toggleTags(false);clearTimeout(timeoutvar);}
                                             graph.removeMouseListener(this);
                                         }
                                     }

@@ -28,7 +28,6 @@ class Nodeview{
         this.graph=graph;
         if(this.node.autoLinkOut)this.node.autoLinkOut.view = new WFAutolinkview(graph,this.node.autoLinkOut);
         this.tagPreview;
-        this.tagVertices=[];
         
     }
     
@@ -68,15 +67,22 @@ class Nodeview{
         this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
+        var linkStyle = defaultLinkIconStyle;
+        if(node.linkedWF!=null)linkStyle+="image=resources/images/wflink16.png;";
+        this.linkIcon = this.graph.insertVertex(this.dropNode,null,'',this.dropNode.r()-24,2,16,16,linkStyle);
         var timeadj = 0;
         if(window.navigator.userAgent.match("Chrome"))timeadj=-2;
-        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString()+"&nbsp;".repeat(3),this.dropNode.x(),this.dropNode.y()+timeadj,this.dropNode.w(),this.dropNode.h(),defaultTimeStyle);
+        this.timeNode = this.graph.insertVertex(this.vertex,null,this.node.getTimeString(),this.dropNode.x(),this.dropNode.y()+timeadj,this.dropNode.w()-28,this.dropNode.h(),defaultTimeStyle);
         this.timeNode.isDrop=true;
         this.timeNode.node = this.node;
-        this.tagBox = this.graph.insertVertex(this.vertex,null,'',this.vertex.w(),0,this.vertex.w(),this.vertex.h(),defaultTagBoxStyle);
+        this.tagBoxDiv = document.createElement('div');
+        this.tagBoxDiv.className = "tagboxdiv";
+        this.node.wf.view.container.appendChild(this.tagBoxDiv);
         this.tagPreview = this.graph.insertVertex(this.vertex,null,'',tagBoxPadding+this.vertex.w(),0,tagHeight,tagHeight,defaultTagPreviewStyle+this.node.getColumnStyle());
+        this.tagPreview.cellOverlays=[];
+        this.tagPreview.isTagPreview=true;
+        this.tagPreview.node=this.node;
         this.graph.orderCells(true,[this.tagPreview]);
-        this.graph.toggleCells(false,[this.tagBox]);
         if(this.node.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
         this.vertex.cellOverlays=[];
         this.addPlusOverlay();
@@ -97,13 +103,11 @@ class Nodeview{
     }
     
     addRightIcon(){
-        if(this.node.getIconCategory("right")||this.node.getAcceptedWorkflowType()){
+        if(this.node.getIconCategory("right")){
             var style = defaultIconStyle;
             if(this.node.righticon){
                 style+="image="+iconpath+this.node.righticon+"48.png;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),this.node.righticon,null);
-            }else if(this.node.getRightIconList()==null&&this.node.linkedWF){
-                style+="image="+iconpath+"linked48.png;";
             }
             this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,style);
             return true;
@@ -139,32 +143,31 @@ class Nodeview{
     }
 
     linkedWFUpdated(value,oldvalue){
-        if(this.node.getRightIconList()==null){
-            if(value&&!oldvalue){
-                this.graph.setCellStyles("image",iconpath+"linked48.png",[this.righticonnode]);
-            }
-            else if(oldvalue&&!value){
-                this.graph.setCellStyles("image",null,[this.righticonnode]);
-            }
+        if(value&&!oldvalue){
+            this.graph.setCellStyles("image","resources/images/wflink16.png",[this.linkIcon]);
+        }
+        else if(oldvalue&&!value){
+            this.graph.setCellStyles("image",null,[this.linkIcon]);
         }
     }
     
     moveNode(dx,dy){
         this.graph.moveCells([this.vertex],dx,dy);
         for(var i=0;i<this.node.brackets.length;i++){this.node.brackets[i].view.updateVertical();}
-        //this.redrawLinks();
+        this.tagBoxDiv.style.display="none";
     }
     
     columnUpdated(){
         this.graph.moveCells([this.vertex],this.node.wf.view.getColPos(this.node.column)-this.vertex.w()/2-this.vertex.x(),0);
         this.styleForColumn();
-        for(var i=0;i<this.node.tags.length;i++)this.node.tags[i].view.updateDrops();
+        for(var i=0;i<this.node.tags.length;i++)this.node.tags[i].tag.view.updateDrops();
     }
     
     styleForColumn(){
         var colstyle = this.node.getColumnStyle();
         this.graph.setCellStyles("fillColor",colstyle,[this.vertex]);
-        this.graph.setCellStyles("strokeColor",colstyle,this.tagVertices.concat([this.tagPreview]));
+        this.tagBoxDiv.style.border = "3px solid "+colstyle;
+        this.graph.setCellStyles("strokeColor",colstyle,[this.tagPreview]);
     }
     
     makeFlushWithAbove(index,column=null){
@@ -293,49 +296,64 @@ class Nodeview{
     
     
     
-    tagAdded(tag,show){
+    tagAdded(nodeTag,show){
         this.graph.toggleCells(true,[this.tagPreview]);
-        var vertex = tag.view.addNode(this.node);
-        this.tagVertices.push(vertex);
+        nodeTag.view = new NodeTagView(nodeTag);
+        nodeTag.view.makeVertex(this.tagBoxDiv);
+        if(show)nodeTag.view.positionSelf();
         this.graph.cellLabelChanged(this.tagPreview,""+this.node.tags.length);
         this.toggleTags(show);
     }
     
-    tagRemoved(tag){
-        var index=0;
-        for(index=0;index<this.tagVertices.length;index++)if(tag.view.vertices.indexOf(this.tagVertices[index])>=0)break;
-        this.graph.removeCells([this.tagVertices.splice(index,1)[0]]);
+    tagRemoved(nodeTag){
+        var tag = nodeTag.tag;
+        if(nodeTag.view){nodeTag.view.removed();}
         if(tag.view)tag.view.removeNode(this.node);
         if(this.node.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
-        this.updateTagPosition();
         this.graph.cellLabelChanged(this.tagPreview,this.node.tags.length);
     }
     
     toggleTags(show){
-        if(show){
-            this.updateTagPosition();
-        }else{
-            for(var i=0;i<this.tagVertices.length;i++){
-                this.graph.removeCellOverlays(this.tagVertices[i]);
-            }
-        }
         this.graph.toggleCells(show,[this.tagBox]);
+        if(show){
+            this.tagBoxDiv.style.display = "inline-block";
+            this.tagBoxDiv.style.left = this.vertex.r()-1+tagBoxPadding+"px";
+            this.tagBoxDiv.style.top = this.vertex.y()-1+"px";
+            this.sortTags();
+        }else{
+            this.tagBoxDiv.style.display = "none";
+        }
     }
     
-    updateTagPosition(){
-        for(var i=0;i<this.tagVertices.length;i++){
-            this.graph.moveCells([this.tagVertices[i]],0,(tagHeight+tagBoxPadding)*i-this.tagVertices[i].y());
+    sortTags(){
+        console.log("Sorting");
+        var allTags = [];
+        for(var i=0;i<this.node.wf.tagSets.length;i++)allTags = this.node.wf.tagSets[i].getAllID(allTags);
+        var nodeList = this.tagBoxDiv.childNodes;
+        var arr = [].slice.call(nodeList);
+        arr.sort(function(a,b){
+            try{
+                var tagA = a.button.layout.id;
+                var tagB = b.button.layout.id;
+                return allTags.indexOf(tagA)-allTags.indexOf(tagB);
+                
+            }catch(err){
+                console.log("THERE WAS AN ERROR SORTING TAGS");
+                return 0;
+            }
+            
+        });
+        for(var i=0;i<arr.length;i++){
+            this.tagBoxDiv.appendChild(arr[i]);
         }
-        var bounds = this.tagBox.getGeometry();
-        bounds.height = this.tagVertices.length*(tagHeight+tagBoxPadding);
-
-        this.graph.resizeCells([this.tagBox],bounds);
-        this.graph.orderCells(false,[this.vertex]);
-        this.node.wf.view.bringCommentsToFront();
     }
+    
+    
     
     highlight(on){
-        var g = this.graph.view.getState(this.vertex).shape.node;
+        var gstate = this.graph.view.getState(this.vertex);
+        if(gstate==null)return;
+        var g = gstate.shape.node;
         if(g.firstChild!=null){
             if(on)g.firstChild.classList.add("highlighted");
             else g.firstChild.classList.remove("highlighted");
@@ -567,5 +585,57 @@ class WFAutolinkview extends WFLinkview{
         });
         this.vertex.cellOverlays.push(overlay);
         //n.graph.addCellOverlay(n.vertex, overlay);
+    }
+}
+
+class NodeTagView{
+    constructor(nodeTag,vertex){
+        this.nodeTag=nodeTag;
+    }
+    
+    makeVertex(container){
+        this.vertex = this.nodeTag.tag.view.addNode(this.nodeTag,container);
+        this.updateVertex();
+    }
+    
+    updateVertex(){
+        var completeness = this.nodeTag.degree;
+        var str = "";
+        if(this.nodeTag.node.wf.advancedOutcomes && (completeness & 1) == 0){
+            this.vertex.csvtext="";
+            if(completeness & 2){str+="<div class='firstoutcomelevel'>"+"I"+"</div>";}
+            if(completeness & 4){str+="<div class='secondoutcomelevel'>"+"D"+"</div>";}
+            if(completeness & 8){str+="<div class='thirdoutcomelevel'>"+"A"+"</div>";}
+        }else{
+            str="<img src='resources/images/check16.png'>"
+        }
+        if(this.vertex){
+            this.vertex.updateButton(str,completeness);
+        }
+    }
+    
+    removed(){
+        if(this.vertex)this.vertex.bdiv.parentElement.removeChild(this.vertex.bdiv);
+    }
+    
+    positionSelf(){
+        var buttons = this.vertex.bdiv.parentElement.childNodes;
+        if(buttons.length<2)return;
+        var allTags = [];
+        for(var i=0;i<this.nodeTag.node.wf.tagSets.length;i++){
+            this.nodeTag.node.wf.tagSets[i].getAllID(allTags);
+        }
+        var myIndex = allTags.indexOf(this.nodeTag.tag.id);
+        for(var i=0;i<buttons.length;i++){
+            var button = buttons[i].button;
+            var tagID;
+            if(button)tagID = button.layout.id;
+            var tagIndex = allTags.indexOf(tagID);
+            if(tagIndex>myIndex){
+                this.vertex.bdiv.parentElement.insertBefore(this.vertex.bdiv,button.bdiv);
+                break;
+            }
+            
+        }
     }
 }

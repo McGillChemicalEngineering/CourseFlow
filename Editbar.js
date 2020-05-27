@@ -247,10 +247,10 @@ class EditBar{
     populateTags(){
         var i;
         this.tagButtonsDiv.innerHTML="";
-        var tags = this.node.tags;
-        if(tags.length>0){
-            for(i=0;i<tags.length;i++){
-                tags[i].view.makeEditButton(this.tagButtonsDiv,this.node,this);
+        var nodeTags = this.node.tags;
+        if(nodeTags.length>0){
+            for(i=0;i<nodeTags.length;i++){
+                nodeTags[i].tag.view.makeEditButton(this.tagButtonsDiv,this.node,this);
             }
         }
         while(this.tagSelect.length>0){this.tagSelect.remove(0);}
@@ -263,7 +263,7 @@ class EditBar{
         opt0.value="";
         this.tagSelect.add(opt0);
         for(i=0;i<allTags.length;i++){
-            if(tags.indexOf(allTags[i])>=0)continue;
+            if(this.node.hasTag(allTags[i]))continue;
             var opt = document.createElement('option');
             opt.innerHTML = "&nbsp;".repeat(allTags[i].depth*4)+allTags[i].getType()[0]+" - "+allTags[i].name;
             opt.value = allTags[i].id;

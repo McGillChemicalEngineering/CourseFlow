@@ -307,7 +307,9 @@ class Outcomeview{
             for(var j=0;j<this.categoryViews.length;j++){
                 for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
                     var nv = this.categoryViews[j].nodeViews[k];
-                    var tc = new OutcomeTableCell(this.tagViews[i].tag,nv);
+                    var tc;
+                    if(this.wf.advancedOutcomes)tc = new AdvancedOutcomeTableCell(this.tagViews[i].tag,nv);
+                    else tc = new OutcomeTableCell(this.tagViews[i].tag,nv);
                     tc.createVertex(this.tagViews[i].vertex);
                     cellRow.push(tc);
                 }
@@ -330,20 +332,42 @@ class Outcomeview{
         
     }
     
-    updateTable(){
+    updateTable(node=null,tag=null){
         var wf = this;
         var debouncetime = 100;
-        var prevUpdateCall = this.lastUpdateCall;
-        this.lastUpdateCall = Date.now();
-        if(prevUpdateCall&&this.lastUpdateCall-prevUpdateCall<=debouncetime)clearTimeout(this.lastUpdateTimer);
-        this.lastUpdateTimer = setTimeout(function(){
-            for(var i=0;i<wf.tableCells.length;i++){
-                for(var j=0;j<wf.tableCells[i].length;j++){
-                    var tc = wf.tableCells[i][j];
-                    tc.validateSelf();
+        if(!node&&!tag){
+            var prevUpdateCall = this.lastUpdateCall;
+            this.lastUpdateCall = Date.now();
+            if(prevUpdateCall&&this.lastUpdateCall-prevUpdateCall<=debouncetime)clearTimeout(this.lastUpdateTimer);
+            this.lastUpdateTimer = setTimeout(function(){
+                for(var i=0;i<wf.tableCells.length;i++){
+                    for(var j=0;j<wf.tableCells[i].length;j++){
+                        var tc = wf.tableCells[i][j];
+                        tc.validateSelf();
+                    }
+                }
+            },debouncetime);
+        }else{
+            var tags=[];
+            if(tag){
+                tags = tag.getAllTags(tags);
+                var ptag = tag.parentTag;
+                while(ptag){
+                    tags.splice(0,0,tag.parentTag);
+                    ptag=ptag.parentTag;
                 }
             }
-        },debouncetime);
+            setTimeout(function(){
+                for(var i=0;i<wf.tableCells.length;i++){
+                    for(var j=0;j<wf.tableCells[i].length;j++){
+                        var tc = wf.tableCells[i][j];
+                        if(node==null||tc.nodeview.nodes.indexOf(node)>=0){
+                            if(tags.length==0||tags.indexOf(tc.tag)>=0)tc.validateSelf();
+                        }
+                    }
+                }
+            },debouncetime/2);
+        }
         
     }
     
@@ -354,9 +378,14 @@ class Outcomeview{
         var legHead = document.createElement('h4');
         legHead.innerHTML=LANGUAGE_TEXT.legend.legend[USER_LANGUAGE];
         legendDiv.appendChild(legHead);
-        legendDiv.appendChild(document.createElement('hr'));
+        //legendDiv.appendChild(document.createElement('hr'));
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.complete[USER_LANGUAGE],"check");
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.partial[USER_LANGUAGE],"nocheck");
+        if(this.wf.advancedOutcomes){
+            this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.introduce[USER_LANGUAGE],"I","firstoutcomelevel");
+            this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.develop[USER_LANGUAGE],"D","secondoutcomelevel");
+            this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.advance[USER_LANGUAGE],"A","thirdoutcomelevel");
+        }
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.incomplete[USER_LANGUAGE],"warningcheck");
         this.legendDiv = legendDiv;
     }
@@ -371,6 +400,19 @@ class Outcomeview{
         img.src = "resources/images/"+image+"16.png";
         lineDiv.appendChild(img);
         lineDiv.appendChild(titleDiv);
+    }
+    
+    drawLegendLineText(container,title,text,cssClass){
+        var lineDiv = document.createElement('div');
+        lineDiv.classList="legendline";
+        container.appendChild(lineDiv);
+        var titleDiv = document.createElement('div');
+        titleDiv.innerHTML = title;
+        var img = document.createElement('div');
+        img.innerHTML = text;
+        lineDiv.appendChild(img);
+        lineDiv.appendChild(titleDiv);
+        img.className=cssClass;
     }
     
     showLegend(){
@@ -575,7 +617,9 @@ class Outcomeview{
             for(var j=0;j<this.categoryViews.length;j++){
                 for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
                     var nv = this.categoryViews[j].nodeViews[k];
-                    var tc = new OutcomeTableCell(allTags[i],nv);
+                    var tc;
+                    if(this.wf.advancedOutcomes)tc = new AdvancedOutcomeTableCell(allTags[i],nv);
+                    else tc = new OutcomeTableCell(allTags[i],nv);
                     tc.createVertex(allTags[i].view.vertex);
                     cellRow.push(tc);
                 }
@@ -903,6 +947,10 @@ class Outcomeview{
         
     }
     
+    advancedOutcomesToggled(){
+        this.wf.project.changeActive(this.wf);
+    }
+    
 }
 
 class OutcomeCategoryview{
@@ -1215,12 +1263,16 @@ class OutcomeNodeview{
     
     
     
-    tagRemoved(){
-        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable();
+    tagRemoved(nodeTag){
+        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable(nodeTag.node,nodeTag.tag);
     }
     
-    tagAdded(){
-        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable();
+    tagAdded(nodeTag){
+        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable(nodeTag.node,nodeTag.tag);
+    }
+    
+    degreeChanged(nodeTag){
+        if(this.nodes[0].wf.view)this.nodes[0].wf.view.updateTable(nodeTag.node,nodeTag.tag);
     }
     
     createVertex(parent,createBefore=null){
@@ -1586,7 +1638,9 @@ class OutcomeNodeview{
         var tableCells = this.cv.wf.view.tableCells;
         var tagViews = this.cv.wf.view.tagViews;
         for(var j=0;j<tableCells.length;j++){
-            var newCell = new OutcomeTableCell(tagViews[j].tag,nv);
+            var newCell;
+            if(this.cv.wf.advancedOutcomes)newCell = new AdvancedOutcomeTableCell(tagViews[j].tag,nv);
+            else newCell = new OutcomeTableCell(tagViews[j].tag,nv);
             newCell.createVertex(tagViews[j].vertex,tableCells[j][index-1].vertex);
             tableCells[j].splice(index-1,0,newCell);
         }
@@ -1933,7 +1987,7 @@ class OutcomeTableCell{
     validateParents(tag){
         if(tag.parentTag){
             for(var i=0;i<this.nodeview.nodes.length;i++){
-                if(this.nodeview.nodes[i].tags.indexOf(tag.parentTag)>=0)return 1.0;
+                if(this.nodeview.nodes[i].hasTag(tag.parentTag))return 1.0;
             }
             return this.validateParents(tag.parentTag);
         }
@@ -1942,7 +1996,7 @@ class OutcomeTableCell{
     
     validateTag(tag){
         for(var i=0;i<this.nodeview.nodes.length;i++){
-            if(this.nodeview.nodes[i].tags.indexOf(tag)>=0)return 1.0;
+            if(this.nodeview.nodes[i].hasTag(tag))return 1.0;
         }
         var completeness = 0.0;
         for(var i=0;i<tag.children.length;i++){
@@ -1950,6 +2004,119 @@ class OutcomeTableCell{
         }
         return completeness;
     }
+    
+}
+
+class AdvancedOutcomeTableCell extends OutcomeTableCell{
+    
+    createVertex(parent,createBefore){
+        var tag = this.tag;
+        var node = this.nodeview.nodes[0];
+        this.vertex = document.createElement('td');
+        this.vertex.csvtext="";
+        if(this.nodeview.isTotal)this.vertex.classList.add("totalcell");
+        else if(this.nodeview.nodes.length==0)this.vertex.classList.add("emptycell");
+        parent.insertBefore(this.vertex,createBefore);
+        if(this.nodeview.nodes.length>0||this.nodeview.isTotal){
+            var checkbox = document.createElement('input');
+            checkbox.type="number";
+            checkbox.value=0;
+            if(this.nodeview.isTotal||!this.tag){checkbox.disabled=true;checkbox.classList.add("hidden");}
+            checkbox.classList.add("outcomecheckbox");
+            this.vertex.appendChild(checkbox);
+            this.checkbox = checkbox;
+            checkbox.readOnly=true;
+            checkbox.onclick=function(){
+                if(checkbox.value==0)checkbox.value=1;
+                else checkbox.value=(checkbox.value<<1)%16;
+                if(checkbox.value==0){
+                    node.removeTag(tag,node.wf instanceof Programflow);
+                    node.wf.makeUndo("Remove Tag",node);
+                }else{
+                    node.removeTag(tag,node.wf instanceof Programflow);
+                    node.addTag(tag,false,node.wf instanceof Programflow,checkbox.value);
+                    node.wf.makeUndo("Add Tag",node);
+                }
+            }
+            if(tag&&tag.project.readOnly)checkbox.disabled=true;
+            
+            //var validationImg = document.createElement('img');
+            var validationImg = document.createElement('div');
+            validationImg.classList.add("outcomecellicon");
+            validationImg.style.width='16px';
+            this.vertex.appendChild(validationImg);
+            this.validationImg = validationImg;
+        }
+    }
+    
+    validateSelf(){
+        if(this.nodeview.nodes.length==0||this.tag==null){
+            if(this.validationImg)this.validationImg.src="";
+            return;
+        }
+        var completeness = this.validateParents(this.tag);
+        if(completeness==0)completeness=this.validateTag(this.tag);
+        this.checkbox.value=completeness;
+        if(completeness!=0){
+            if(completeness & 1)this.validationImg.innerHTML="<img src='resources/images/check16.png'>";
+            else{
+                var str = "";
+                this.vertex.csvtext="";
+                if(completeness & 2){str+="<div class='firstoutcomelevel'>"+"I"+"</div>";this.vertex.csvtext+="I";}
+                if(completeness & 4){str+="<div class='secondoutcomelevel'>"+"D"+"</div>";this.vertex.csvtext+="D";}
+                if(completeness & 8){str+="<div class='thirdoutcomelevel'>"+"A"+"</div>";this.vertex.csvtext+="A";}
+                this.validationImg.innerHTML=str;
+            }
+        }else{
+            /*if(this.nodeview.isTotal&&this.nodeview==this.nodeview.cv.wf.view.grandTotal)this.validationImg.innerHTML="<img src='resources/images/warningcheck16.png'>";
+            else*/ if(this.validatePartialTag(this.tag)>0){
+                this.validationImg.innerHTML="<img src='resources/images/nocheck16.png'>";
+                this.vertex.csvtext="(P)";
+            }
+            else {
+                this.validationImg.innerHTML="";
+                this.vertex.csvtext="";
+            }
+            
+        }
+        
+    }
+    
+    validateParents(tag){
+        if(tag.parentTag){
+            for(var i=0;i<this.nodeview.nodes.length;i++){
+                var index = this.nodeview.nodes[i].getTagIndex(tag.parentTag);
+                if(index>=0)return this.nodeview.nodes[i].tags[index].degree;
+            }
+            return this.validateParents(tag.parentTag);
+        }
+        return 0;
+    }
+    
+    validateTag(tag){
+        var completeness = 0;
+        for(var i=0;i<this.nodeview.nodes.length;i++){
+            var index = this.nodeview.nodes[i].getTagIndex(tag);
+            if(index>=0)completeness = completeness | this.nodeview.nodes[i].tags[index].degree;
+        }
+        var completenessChildren=0;
+        if(tag.children.length>0){
+            completenessChildren = 15;
+            for(var i=0;i<tag.children.length;i++){
+                completenessChildren=completenessChildren & this.validateTag(tag.children[i]);
+            }
+        }
+        return completeness||completenessChildren;
+    }
+    
+    validatePartialTag(tag){
+        var completeness = 0;
+        for(var i=0;i<tag.children.length;i++){
+            completeness+=this.validateTag(tag.children[i]);
+        }
+        return completeness;
+    }
+    
     
 }
 

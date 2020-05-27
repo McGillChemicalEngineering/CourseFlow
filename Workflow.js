@@ -33,6 +33,7 @@ class Workflow{
         this.id = this.project.genID();
         this.tagSets=[];
         this.isActive=false;
+        this.advancedOutcomes=false;
         this.undoHistory=[];
         this.currentUndo;
         this.undoEnabled=false;
@@ -53,6 +54,7 @@ class Workflow{
         xml+=makeXML(this.description,"wfdescription",true);
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
+        if(this.advancedOutcomes)xml+=makeXML(this.advancedOutcomes,"advancedoutcomes");
         
         var usedWF = [];
         for(var i=0;i<this.children.length;i++)usedWF.push(this.children[i].id);
@@ -145,6 +147,8 @@ class Workflow{
         this.setAuthor(getXMLVal(xmlData,"wfauthor",true));
         var description = getXMLVal(xmlData,"wfdescription",true);
         if(description)this.setDescription(description);
+        var advancedoutcomes = getXMLVal(xmlData,"advancedoutcomes");
+        if(advancedoutcomes)this.advancedOutcomes=true;
         this.id = getXMLVal(xmlData,"wfid");
         this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
@@ -357,6 +361,8 @@ class Workflow{
             
             $("#outcomeview").removeClass("disabled");
             $("#outcomeviewbar").removeClass("disabled");
+            $("#settingsviewbar").removeClass("disabled");
+            $("#settings").removeClass("disabled");
             if(!this.project.readOnly)$("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
@@ -375,6 +381,8 @@ class Workflow{
         this.undoEnabled=false;
         $("#outcomeview").addClass("disabled");
         $("#outcomeviewbar").addClass("disabled");
+        $("#settingsviewbar").addClass("disabled");
+        $("#settings").addClass("disabled");
         $("#duplicatewf").addClass("disabled");
         $("#export").addClass("disabled");
         $("#undo").addClass("disabled");
@@ -655,7 +663,7 @@ class Workflow{
     refreshAllTags(){
         for(var i=0;i<this.weeks.length;i++){
             for(var j=0;j<this.weeks[i].nodes.length;j++){
-                this.weeks[i].nodes[j].refreshLinkedTags();
+                if(this instanceof Programflow)this.weeks[i].nodes[j].refreshLinkedTags();
             }
         }
     }
@@ -935,6 +943,52 @@ class Workflow{
             else if(layout instanceof Progamflow)layout.project.showHelp('programhelp.html');
             else layout.project.showHelp('help.html');
         });
+    }
+    
+    
+    showSettings(){
+        var wf = this;
+        wf.project.settingsDisplayed=true;
+        var div = document.createElement('div');
+        div.className = 'messagediv';
+        var head = document.createElement('h4');
+        head.innerHTML = LANGUAGE_TEXT.project.selectoptions[USER_LANGUAGE]+":";
+        div.appendChild(head);
+        
+        var advancedoutcomes = this.createCheckboxOption("Advanced Outcomes");
+        advancedoutcomes.checked=this.advancedOutcomes;
+        div.appendChild(advancedoutcomes.parentElement);
+        
+        
+        var button = document.createElement('button');
+        div.appendChild(button);
+        button.innerHTML = "OK";
+        button.onclick=function(){document.body.removeChild(div);wf.changeSettings(advancedoutcomes.checked);wf.project.settingsDisplayed=false;};
+        document.body.appendChild(div);
+    }
+    
+    
+    createCheckboxOption(string,value){
+        var div = document.createElement('div');
+        var checkbox = document.createElement('input');
+        checkbox.type="checkbox";
+        checkbox.value=value;
+        checkbox.style.display = "inline-block";
+        var label = document.createElement('div');
+        label.innerHTML = string;
+        label.style.display = "inline-block";
+        div.appendChild(checkbox);
+        div.appendChild(label);
+        return checkbox;
+    }
+    
+    changeSettings(advancedOutcomes){
+        if(advancedOutcomes!=this.advancedOutcomes)this.setAdvancedOutcomes(advancedOutcomes);
+    }
+
+    setAdvancedOutcomes(toggle){
+        this.advancedOutcomes=toggle;
+        if(this.view)this.view.advancedOutcomesToggled();
     }
 }
 

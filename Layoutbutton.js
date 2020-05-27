@@ -28,7 +28,7 @@ class Layoutbutton {
         this.b.className=layout.getButtonClass();
         this.b.onclick = function(){layout.clickButton();}
         this.namediv = document.createElement('div');
-        this.icon = document.createElement('img');
+        this.icon = this.makeIcon();
         this.icon.draggable=false;
         this.hiddenchildren = document.createElement('div');
         this.hiddenchildren.className = "hiddenchildrendiv";
@@ -45,6 +45,10 @@ class Layoutbutton {
         this.bdiv.contextItem = this;
         if(container.parentElement.button!=null){container.parentElement.button.updateChildren();}
         this.updateButton();
+    }
+    
+    makeIcon(){
+        return document.createElement('img');
     }
     
     makeB(){return document.createElement('button');}
@@ -78,6 +82,7 @@ class Layoutbutton {
         this.namediv.innerHTML = this.layout.name;
         if(this.layout.getIcon())this.icon.src="resources/data/"+this.layout.getIcon()+"24.png";
     }
+    
     
     removeSelf(){
         this.container.removeChild(this.bdiv);
@@ -443,5 +448,25 @@ class EditBarTagButton extends Layoutbutton{
             layout.unassignFrom(parent);
         }
         return unassignicon;
+    }
+}
+
+class NodeTagButton extends EditBarTagButton{
+    updateButton(iconhtml,completeness=1){
+        if(iconhtml)this.icon.innerHTML=iconhtml;
+        this.namediv.innerHTML = this.layout.name;
+        if(this.outcomecheckbox)this.outcomecheckbox.value=completeness;
+        for(var i=0;i<this.childdiv.childNodes.length;i++){
+            var bdiv = this.childdiv.childNodes[i];
+            if(bdiv.button){
+                bdiv.button.updateButton(iconhtml,completeness);
+            }
+        }
+    }
+    
+    makeIcon(){
+        var icon = document.createElement('div');
+        icon.className = "nodetagbuttonicon";
+        return icon;
     }
 }

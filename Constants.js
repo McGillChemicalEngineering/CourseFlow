@@ -98,7 +98,7 @@ const emptyWeekSize=60;
 const colIconSize=100;
 const defaultCellWidth=280;
 const minCellHeight=50;
-const cellDropdownHeight=16;
+const cellDropdownHeight=20;
 const cellDropdownPadding=0;
 const wfStartX=cellSpacing;
 const wfStartY=cellSpacing;
@@ -113,6 +113,7 @@ const defaultCommentSize=36;
 const exitPadding=cellSpacing;
 const tagBoxPadding = 5;
 const tagHeight = 20;
+const tagWidth = 300;
 
 //Colours
 const SALTISEGREEN = '#369934';
@@ -138,11 +139,13 @@ const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=black;strokeWidth=2;editab
 const defaultIconStyle="shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=none;";
 const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
 const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;align=left;";
-const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;align=left;verticalAlign=top;";
+//const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=12;fontColor=black;fillColor=none;overflow=hidden;editable=0;align=left;verticalAlign=top;";
+const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=20;absoluteArcSize=1;spacingLeft=20;";
 const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
 const defaultTagPreviewStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=center;verticalAlign=top;rounded=1;arcSize=50;";
 const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=black;fontSize=40;align=left;strokeWidth=2;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;fontColor=black;";
-const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;verticalAlign=middle;";
+const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;editable=0;strokeColor=none;fontSize=14;fillColor=none;fontColor=black;verticalAlign=middle;";
+const defaultLinkIconStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;verticalAlign=middle;shape=image;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
 const defaultBracketBarStyle="constituent=1;editable=0;fillColor=black;strokeColor=black;resizable=0;";
 const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeColor=none;constituent=1;"
@@ -226,21 +229,22 @@ const LANGUAGE_TEXT = {
         saveproject:{en:'Save Project',fr:'Savegarder le projet'},
         openproject:{en:'Open Project',fr:'Ouvrir un projet'},
         exportwf:{en:'Export Current Workflow',fr:'Exporter le plan de travail courant'},
-        exportoutcome:{en:'Export Current Outcome',fr:'Exporter le résultat courant'},
+        exportoutcome:{en:'Export Current Outcome',fr:"Exporter l'acquis courant"},
         exportcsv:{en:'Export As CSV',fr:'Exporter en CSV'},
         exporthtml:{en:'Export Embeddable HTML',fr:'Exporter en HTML'},
         importwf:{en:'Import a CFlow file',fr:'Importer un fichier CFlow'},
-        importcsv:{en:'Import Outcomes CSV',fr:'Importer un CSV de Résultats'},
+        importcsv:{en:'Import Outcomes CSV',fr:"Importer un CSV d'acquis"},
         readonly:{en:'Save Read Only',fr:'Copie lecture seule'},
         undo: {en:'Undo',fr:'Annuler'},
         redo: {en:'Redo',fr:' Rétablir'},
         duplicate:{en:'Duplicate Current Workflow',fr:"Dupliquer le plan de travail courant"},
+        settings:{en:'Workflow Settings',fr:'Paramètres du plan'},
         expand:{en:'Expand All',fr:"Afficher tout"},
         collapse:{en:'Collapse All',fr:"Cacher tout"},
         printerfriendly:{en:'Printer Friendly Version',fr:"Version imprimante"},
         legend:{en:'Show/Hide Legend',fr:"Afficher/Masquer la légende"},
-        toggleoutcome:{en:'Toggle Outcome View',fr:"Basculer L’affichage résultats"},
-        toggleoutcomeswitch:{en:'Outcome View:',fr:"Affichage résultats:"},
+        toggleoutcome:{en:'Toggle Outcome View',fr:"Basculer L’affichage d'acquis"},
+        toggleoutcomeswitch:{en:'Outcome View:',fr:"Affichage d'acquis:"},
         terminology:{en:'Terminology',fr:"Terminologie"},
         terminologystandard:{en:'Standard',fr:"Standard"},
         terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
@@ -263,19 +267,19 @@ const LANGUAGE_TEXT = {
         layout:{en:"Layout",fr:"Mise en page"},
         cancel:{en:'Cancel',fr:'Annuler'},
         addwf:{en:'Add Workflow',fr:"Adjouter un plan de travail"},
-        outcomes:{en:'Outcome Sets',fr:'Les tésultats'},
+        outcomes:{en:'Outcome Sets',fr:'Les acquis'},
         createnew:{en:'Create New',fr:'Créer un nouveau'}
     },
     workflow:{
         activity:{en:"Activity",fr:"Activité"},
         course:{en:"Course",fr:"Cours"},
         program:{en:"Program",fr:"Programme"},
-        outcome:{en:"Outcome",fr:"Résultat"},
+        outcome:{en:"Outcome",fr:"Acquis"},
         plurals:{
             activity:{en:"Activities",fr:"Activités"},
             course:{en:"Courses",fr:"Cours"},
             program:{en:"Programs",fr:"Programmes"},
-            outcome:{en:"Outcomes",fr:"Résultats"},
+            outcome:{en:"Outcomes",fr:"Acquis"},
         },
         newactivity:{en:"New Activity",fr:"Nouvelle activité"},
         newcourse:{en:"New Course",fr:"Nouveau cours"},
@@ -297,7 +301,7 @@ const LANGUAGE_TEXT = {
         lefticon:{en:'Context Icon',fr:'Icône de contexte'},
         time:{en:'Time',fr:'Temps'},
         linkedwf:{en:'Linked Workflow',fr:'Plan de travail en lien'},
-        tags:{en:'Outcomes',fr:'Résultats'},
+        tags:{en:'Outcomes',fr:'Acquis'},
         none:{en:'None',fr:'Aucun'},
         chooseone:{en:"Select a tag to add",fr:'Choisissez-en un à ajouter'},
         createnew:{en:"Create new ",fr:"Créer nouveau "},
@@ -308,9 +312,9 @@ const LANGUAGE_TEXT = {
         nodeheader:{en:"Nodes",fr:"Noeuds"},
         jumpto:{en:"Jump To",fr:"Raccourcis"},
         strategiesheader:{en:"Strategies",fr:"Stratégies"},
-        outcomesheader:{en:"Assigned Outcomes",fr:"Résultats attribués"},
-        assignoutcome:{en:"Assign Outcome",fr:"Attribuer le résultat"},
-        nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun résultat n'a été ajouté! Utilisez les boutons ci-dessous pour en ajouter un."},
+        outcomesheader:{en:"Assigned Outcomes",fr:"Acquis attribués"},
+        assignoutcome:{en:"Assign Outcome",fr:"Attribuer l'acquis"},
+        nooutcomes:{en:"No outcomes have been added yet! Use the buttons below to add one.",fr:"Aucun acquis n'a été ajouté! Utilisez les boutons ci-dessous pour en ajouter un."},
         selectset:{en:"Select set to add",fr:'Choisissez-en un à ajouter'},
         addcomment:{en:"Add Comment",fr:"Ajouter un commentaire"},
         edittitle:{en:"Edit Title",fr:"Modifier le titre"},
@@ -326,22 +330,25 @@ const LANGUAGE_TEXT = {
         complete:{en:"Complete",fr:"Complet"},
         incomplete:{en:"Incomplete",fr:"Incomplet"},
         partial:{en:"Partial",fr:"Partiel"},
+        introduce:{en:"Introduced",fr:"Introduit"},
+        develop:{en:"Developed",fr:"Développé"},
+        advance:{en:"Advanced",fr:"Avancé"},
         addnode:{en:"Add Node",fr:"Adjouter un noeud"},
         displayheader:{en:"Display",fr:"Affichage"},
         sortbyheader:{en:"Sort By",fr:"Trier par"},
         sortradio:{
             week:{en:"Week",fr:"Semaine"},
-            icon:{en:"Icon",fr:"Icône"},
+            icon:{en:"Context",fr:"Contexte"},
             column:{en:"Column",fr:"Colonne"}
         }
     },
     tag:{
-        deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce Résulat? Attention: cela supprimera tous les contenus et les supprimera de tous les plans de travails!"},
-        unassigntext:{en:"Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.",fr:"Annuler l'attribution de ce Résultat? Attention: cela ne supprimera PAS le Résultat, mais supprimera toutes les références à celui-ci du plan de travail."},
+        deletetext:{en:"Delete this learning outcome? Warning: this will delete all contents and remove them from all workflows!",fr:"Supprimer ce acquis? Attention: cela supprimera tous les contenus et les supprimera de tous les plans de travails!"},
+        unassigntext:{en:"Unassign this learning outcome? Note: this will NOT delete the learning outcome, but WILL remove all references to it from the workflow.",fr:"Annuler l'attribution de ce acquis? Attention: cela ne supprimera PAS l'acquis, mais supprimera toutes les références à celui-ci du plan de travail."},
         standard:{
-            depth0:{en:"Program Outcome",fr:"Résultat de programme"},
-            depth1:{en:"Course Outcome",fr:"Résultat de cours"},
-            depth2:{en:"Activity Outcome",fr:"Résultat d'activité"},
+            depth0:{en:"Program Outcome",fr:"Acquis de programme"},
+            depth1:{en:"Course Outcome",fr:"Acquis de cours"},
+            depth2:{en:"Activity Outcome",fr:"Acquis d'activité"},
             depth3:{en:"Tag",fr:"Tag"}
         },
         cegep:{
@@ -351,7 +358,7 @@ const LANGUAGE_TEXT = {
             depth3:{en:"Tag",fr:"Tag"}
         },
         new:{en:"New",fr:"Nouveau"},
-        tagbuilder:{en:"<h3 class='hideforprint'>Learning Outcomes:</h3><p class='hideforprint'>This page allows you to create outcomes. For an explanation of the outcomes, click here:",fr:"<h3 class='hideforprint'>Objectifs d'apprentissage:</h3><p class='hideforprint'>Cette page vous permet de créer des Résultats. Pour une explication des Résultats, cliquez ici:"}
+        tagbuilder:{en:"<h3 class='hideforprint'>Learning Outcomes:</h3><p class='hideforprint'>This page allows you to create outcomes. For an explanation of the outcomes, click here:",fr:"<h3 class='hideforprint'>Objectifs d'apprentissage:</h3><p class='hideforprint'>Cette page vous permet de créer des acquis. Pour une explication des acquis, cliquez ici:"}
         
     
     },
@@ -470,10 +477,10 @@ const LANGUAGE_TEXT = {
             term:{en:"Delete this term? Warning: this will delete any nodes still inside!",fr:"Supprimer cette session? Attention: cela supprimera tous les noeuds encore à l'intérieur!"},
             part:{en:"Delete this part? Warning: this will delete any nodes still inside!",fr:"Supprimer cette partie? Attention: cela supprimera tous les noeuds encore à l'intérieur!"}
         },
-        linkwf:{en:"This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?",fr:"Ce noeud a déjà des résultats qui lui sont attribuer. Voulez-vous les attribuer au plan de travail nouvellement lié?"},
-        unlinkwf:{en:"You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the node?",fr:"Vous avez dissocié un plan de travail d'un noeud avec des résultats. Voulez-vous effacer les résultats du noeud?"},
+        linkwf:{en:"This node already has outcomes assigned to it. Do you want to assign these to the newly linked workflow?",fr:"Ce noeud a déjà des acquis qui lui sont attribuer. Voulez-vous les attribuer au plan de travail nouvellement lié?"},
+        unlinkwf:{en:"You've unlinked a workflow from a node with outcomes. Do you want to clear the outcomes from the node?",fr:"Vous avez dissocié un plan de travail d'un noeud avec des acquis. Voulez-vous effacer les acquis du noeud?"},
         deletenode:{en:"Delete this node?",fr:"Supprimer ce noeud?"},
-        deletecomment:{en:"Delete this comment?",fr:"Supprimer ce commentaire?"},
+        deletecomment:{en:"Delete this comment?",fr:"Supprimer ce commentaire?"}
     },
     legend:{
         legend:{en:"Legend",fr:"Légende"},
@@ -484,7 +491,7 @@ const LANGUAGE_TEXT = {
         column:{en:"Column Icons",fr:"Icônes de colonne"}
     },
     errors:{
-        openoutcome:{en:"Oops! The outcome could not be opened.",fr:"Oups! Le résultat n'a pas pu être ouvert."},
+        openoutcome:{en:"Oops! The outcome could not be opened.",fr:"Oups! L'acquis n'a pas pu être ouvert."},
         filesave:{en:"Oops! The file could not be saved.",fr:"Oups! Le fichier n'a pas pu être enregistré."},
         fileopen:{en:"Oops! The file could not be opened.",fr:"Oups! Impossible d'ouvrir le fichier."},
         undo:{en:"Oops! Something went wrong with the undo function.",fr:"Oups! Il y a eu un problème lors de l'annulation de l'action."},
@@ -534,6 +541,7 @@ function setMenuLanguage(){
     $("#undo").children().first().html(LANGUAGE_TEXT.menus.undo[USER_LANGUAGE]);
     $("#redo").children().first().html(LANGUAGE_TEXT.menus.redo[USER_LANGUAGE]);
     $("#duplicatewf").children().first().html(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE]);
+    $("#settings").children().first().html(LANGUAGE_TEXT.menus.settings[USER_LANGUAGE]);
     $("#view").html(LANGUAGE_TEXT.menus.view[USER_LANGUAGE]);
     $("#expand").children().first().html(LANGUAGE_TEXT.menus.expand[USER_LANGUAGE]);
     $("#collapse").children().first().html(LANGUAGE_TEXT.menus.collapse[USER_LANGUAGE]);

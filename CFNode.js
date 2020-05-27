@@ -77,11 +77,15 @@ class CFNode {
         }
         xml+=makeXML(linksOut,"fixedlinkARRAY");
         xml+=makeXML(linkOutPorts,"linkportARRAY");*/
-        var tagArray=[];
+        for(var i=0;i<this.tags.length;i++){
+            xml+=this.tags[i].toXML();
+        }
+        
+        /*var tagArray=[];
         for(i=0;i<this.tags.length;i++){
             tagArray.push(this.tags[i].id);
         }
-        xml+=makeXML(tagArray.join(","),"tagARRAY");
+        xml+=makeXML(tagArray.join(","),"tagARRAY");*/
         return makeXML(xml,"node");
     }
     
@@ -123,11 +127,23 @@ class CFNode {
             link.fromXML(xmlLinks[i]);
             this.fixedLinksOut.push(link);
         }
+        //old tag style
         var tagArray = getXMLVal(xml,"tagARRAY");
-        if(tagArray!=null)for(i=0;i<tagArray.length;i++){
-            this.addTag(this.wf.getTagByID(tagArray[i]),false);
+        if(tagArray!=null){
+            console.log("Savefile has older tagging style, attempting to recover...");
+            for(i=0;i<tagArray.length;i++){
+                this.addTag(this.wf.getTagByID(tagArray[i]),false);
+            }
         }
-        this.refreshLinkedTags();
+        else{
+            var xmlTags = xml.getElementsByTagName("nodetag");
+            for(var i=0;i<xmlTags.length;i++){
+                var nodeTag = new NodeTag(null,this);
+                nodeTag.fromXML(xmlTags[i]);
+                this.tags.push(nodeTag);
+            }
+        }
+        if(this instanceof Programflow)this.refreshLinkedTags();
         
         
         
@@ -177,7 +193,7 @@ class CFNode {
     
     getTimeString(){
         if(this.time.value==null)return '';
-        return '<img class="clockimage" src="resources/images/time16.png"></img>'+this.time.value+" "+LANGUAGE_TEXT.timeunits[this.time.unit][USER_LANGUAGE];
+        return this.time.value+" "+LANGUAGE_TEXT.timeunits[this.time.unit][USER_LANGUAGE];
     }
     
     setLinkedWF(value){
@@ -201,16 +217,16 @@ class CFNode {
                 this.wf.addChild(wfc);
                 if(this.name==null||this.name==""||this.name==oldvalue)this.setName(wfc.name);
                 var addTags=false;
-                if(this.tags.length>0&&oldvalue==null&&this.wf instanceof Programflow)addTags = mxUtils.confirm(LANGUAGE_TEXT.confirm.linkwf[USER_LANGUAGE]);
+                if(this.tags.length>0&&oldvalue==null&&/*temporarily disable attribution of tags this.wf instanceof Programflow*/false)addTags = mxUtils.confirm(LANGUAGE_TEXT.confirm.linkwf[USER_LANGUAGE]);
                 if(this.view)this.view.linkedWFUpdated(value,oldvalue);
-                this.refreshLinkedTags(addTags);
+                if(this instanceof Programflow)this.refreshLinkedTags(addTags);
                 
                 
                 if(autoswitch)wfc.project.changeActive(wfc);
             }else{
                 if(this.view)this.view.linkedWFUpdated(value,oldvalue);
                 if(this.tags.length>0){
-                    if(mxUtils.confirm(LANGUAGE_TEXT.confirm.unlinkwf[USER_LANGUAGE]))while(this.tags.length>0)this.removeTag(this.tags[0],false);
+                    if(mxUtils.confirm(LANGUAGE_TEXT.confirm.unlinkwf[USER_LANGUAGE]))while(this.tags.length>0)this.removeTag(this.tags[0].tag,false);
                 }
             }
         }
@@ -279,7 +295,7 @@ class CFNode {
         this.setRightIcon(null);
         for(var i=0;i<this.brackets.length;i++)this.brackets[i].cellRemoved(this);
         for(var i=0;i<this.tags.length;i++){
-            this.removeTag(this.tags[i]);
+            this.removeTag(this.tags[i].tag);
         }
         this.week.removeNode(this);
         if(this.autoLinkOut&&this.autoLinkOut.targetNode!=null)this.autoLinkOut.targetNode.makeAutoLinks();
@@ -353,71 +369,110 @@ class CFNode {
         this.brackets.splice(this.brackets.indexOf(br),1);
     }
     
-    addTag(tag,show=true,addToLinked=false){
-        console.log("adding to node");
-        console.log(addToLinked);
-        if(this.tags.indexOf(tag)>=0)return;
+    hasTag(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return true;
+        }
+        return false;
+    }
+    
+    getTagIndex(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return i;
+        }
+        return -1;
+    }
+    
+    addTag(tag,show=true,addToLinked=false,degree){
+        //temporarily disable the attribution of tags to linked workflow. This has become an issue since the advanced outcome tagging messes with it
+        addToLinked=false;
+        if(this.hasTag(tag))return;
         var n = this;
         //Remove any children of the tag we are adding
         var allTags = tag.getAllTags([]);
         for(var i=0;i<this.tags.length;i++){
-            if(allTags.indexOf(this.tags[i])>=0){
-                this.removeTag(this.tags[i],false);
+            if(allTags.indexOf(this.tags[i].tag)>=0){
+                this.removeTag(this.tags[i].tag,false);
                 i--;
             }
         }
         //Add the tag
-        this.tags.push(tag);
-        if(this.view)this.view.tagAdded(tag,show);
+        var nodeTag = new NodeTag(tag,this,degree);
+        this.tags.push(nodeTag);
+        if(this.view)this.view.tagAdded(nodeTag,show);
         if(addToLinked&this.linkedWF!=null){
             this.wf.project.getWFByID(this.linkedWF).addTagSet(tag,true);
-            console.log("adding to linked");
             //this.refreshLinkedTags();
         }
-        //Check to see if we have all children of the parent, if the parent exists
+        //Check to see if we have all children of the parent, if the parent exists. If advanced outcomes are active, they all have to have the same degree
         var parentTag = tag.parentTag;
         if(parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
-            var addParent=true;
-            for(i=0;i<children.length;i++){
-                if(this.tags.indexOf(children[i])<0){
-                    addParent=false;
-                    break;
+            if(this.wf.advancedOutcomes){
+                var addParent=null;
+                for(i=0;i<children.length;i++){
+                    if(!this.hasTag(children[i])){
+                        addParent=0;
+                        break;
+                    }else{
+                        if(addParent==null)addParent=this.tags[this.getTagIndex(children[i])].degree;
+                        else if(addParent!=this.tags[this.getTagIndex(children[i])].degree){
+                            addParent=0;
+                            break;
+                        }
+                    }
                 }
+                if(addParent)this.addTag(parentTag,false,false,addParent);
+            }else{
+                var addParent=true;
+                for(i=0;i<children.length;i++){
+                    if(!this.hasTag(children[i])){
+                        addParent=false;
+                        break;
+                    }
+                }
+                if(addParent)this.addTag(parentTag);
             }
-            if(addParent)this.addTag(parentTag);
         }
     }
     
     removeTag(tag,removeFromLinked=false){
-        if(this.tags.indexOf(tag)>=0){
-            this.tags.splice(this.tags.indexOf(tag),1);
-        }else if(tag.parentTag!=null){
-            this.removeTag(tag.parentTag,false);
-            for(var i=0;i<tag.parentTag.children.length;i++){
-                if(tag.parentTag.children[i]!=tag)this.addTag(tag.parentTag.children[i],false);
+        //removed from linked temporarily disabled
+        removeFromLinked=false;
+        var removed = null;
+        while(this.hasTag(tag)){
+            removed = this.tags.splice(this.getTagIndex(tag),1)[0];
+        }
+        if(removed==null&&tag.parentTag!=null){
+            var degreeToAdd;
+            if(this.hasTag(tag.parentTag))degreeToAdd = this.tags[this.getTagIndex(tag.parentTag)].degree;
+            if(this.removeTag(tag.parentTag,false))for(var i=0;i<tag.parentTag.children.length;i++){
+                if(tag.parentTag.children[i]!=tag)this.addTag(tag.parentTag.children[i],false,false,degreeToAdd);
             }
         }
-        if(this.linkedWF!=null&&removeFromLinked){
+        if(removed && this.linkedWF!=null&&removeFromLinked){
              this.wf.project.getWFByID(this.linkedWF).removeTagSet(tag);
         }
-        if(this.view)this.view.tagRemoved(tag);
-        console.log(this.tags);
+        if(removed && this.view)this.view.tagRemoved(removed);
+        return removed;
     }
+    
     
     
     
     
     
     refreshLinkedTags(addToLinked=false){
+        //temporarily disabled. 
+        return;
         if(this.linkedWF!=null){
             var wf = this.wf.project.getWFByID(this.linkedWF);
             //Remove/add tags that aren't assigned to the linked workflow
             if(addToLinked)for(var i=0;i<this.tags.length;i++){
-                if(wf.tagSets.indexOf(this.tags[i])<0){
-                    if(addToLinked){wf.addTagSet(this.tags[i]);}
-                    else{this.removeTag(this.tags[i],false);i--;}
+                if(wf.tagSets.indexOf(this.tags[i].tag)<0){
+                    if(addToLinked){wf.addTagSet(this.tags[i].tag);}
+                    else{this.removeTag(this.tags[i].tag,false);i--;}
                 }
                 
             }
@@ -428,7 +483,7 @@ class CFNode {
             }
             //Add tags that are present in the linked workflow but not in this one.
             for(var i=0;i<wf.tagSets.length;i++){
-                if(allID.indexOf(wf.tagSets[i].id)>=0&&this.tags.indexOf(wf.tagSets[i])<0)this.addTag(wf.tagSets[i],false,false);
+                if(allID.indexOf(wf.tagSets[i].id)>=0&&this.getTagIndex(wf.tagSets[i])<0)this.addTag(wf.tagSets[i],false,false);
             }
         }
     }
@@ -506,7 +561,8 @@ class ACNode extends CFNode {
     
     
     getIconCategory(icon){
-        if(icon=="left")if(this.column=='SA')return "assessment"; else return "strategy";
+        if(icon=="left")return "assessment"; 
+        if(icon=="right")return "strategy";
         else return null;
     }
     
@@ -732,4 +788,35 @@ class WFAutolink extends WFLink{
         if(this.view)this.view.deleted();
         this.node.autoLinkOut = null;
     }
+}
+
+//The instance of a tag on a node
+class NodeTag{
+    constructor(tag,node,degree=1){
+        this.tag=tag;
+        this.node = node;
+        this.degree=degree;
+    }
+    
+    
+    toXML(){
+        var xml = "";
+        xml+=makeXML(this.tag.id,"nodetagid");
+        if(this.degree>1)xml+=makeXML(this.degree,"nodetagdegree");
+        return makeXML(xml,"nodetag");
+    }
+    
+    fromXML(xml){
+        var tagid = getXMLVal(xml,"nodetagid");
+        this.tag = this.node.wf.project.getTagByID(tagid);
+        var nodetagdegree = getXMLVal(xml,"nodetagdegree");
+        if(nodetagdegree)this.degree=int(nodetagdegree);
+        
+    }
+    
+    /*setDegree(degree){
+        this.degree=degree;
+        if(this.node.view)this.node.view.degreeChanged();
+    }*/
+    
 }
