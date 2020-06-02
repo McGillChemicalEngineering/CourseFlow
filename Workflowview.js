@@ -771,6 +771,9 @@ class Workflowview{
                 if(cell!=null && cell.isNode){
                     cell.node.addTag(thistag,true,cell.node.wf instanceof Programflow);
                     wf.makeUndo("Add Tag",cell.node);
+                }else if(cell!=null && wf.linkTagging && cell.isLink){
+                    cell.link.addTag(thistag,true,cell.link.wf instanceof Programflow);
+                    wf.makeUndo("Add Tag",cell.link);
                 }
                 this.lastCell=null;
 
@@ -778,7 +781,7 @@ class Workflowview{
             return dropfunction;
         }
         
-        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isNode);});
+        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.linkTagging)));});
         tag.view.addDrop(button);
         if(tag.depth<=this.wf.getTagDepth())button.makeEditable(false,false,true,this.wf);
         button.makeExpandable();
@@ -851,7 +854,7 @@ class Workflowview{
         draggable.topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
-            var cell = this.getDropTarget(graph,evt.pageX-this.leftPos+int($('.bodywrapper')[0].scrollLeft)-graph.view.getTranslate().x,evt.pageY-this.topPos+int($('.bodywrapper')[0].scrollTop)-graph.view.getTranslate().y,evt);
+            var cell = this.getDropTarget(graph,evt.pageX+8-this.leftPos+int($('.bodywrapper')[0].scrollLeft)-graph.view.getTranslate().x,evt.pageY-this.topPos+int($('.bodywrapper')[0].scrollTop)-graph.view.getTranslate().y,evt);
             while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
             if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
             
@@ -984,7 +987,7 @@ class Workflowview{
         this.makeActive();
     }
     
-    advancedOutcomesToggled(){
+    settingsChanged(){
         this.wf.project.changeActive(this.wf);
     }
     
@@ -1320,6 +1323,7 @@ class Workflowview{
                             if(mxUtils.intersects(mouserect,graph.view.getState(cell))){
                                 //Add link highlighting
                                 if(cell.isNode&&cell.node.view)cell.node.view.mouseIn();
+                                if(cell.isLink&&cell.link.view)cell.link.view.mouseIn();
                                 //Add the overlays
                                 if(!p.readOnly)for(var i=0;i<cell.cellOverlays.length;i++){
                                     graph.addCellOverlay(cell,cell.cellOverlays[i]);
@@ -1333,7 +1337,7 @@ class Workflowview{
                                     mouseUp: function(sender,me){},
                                     mouseMove: function(sender,me){
                                         if(graph.view.getState(cell)==null){graph.removeMouseListener(this);return;}
-                                        var exitrect = new mxRectangle(me.getGraphX()-exitPadding/2,me.getGraphY()-exitPadding/2,exitPadding,exitPadding);
+                                        var exitrect = new mxRectangle(me.getGraphX()-exitPadding,me.getGraphY()-exitPadding,exitPadding*2,exitPadding*2);
                                         if(!mxUtils.intersects(exitrect,graph.view.getState(cell))){
                                             /*if(cell.isNode&&graph.view.getState(cell.node.view.tagBox)!=null&&mxUtils.intersects(exitrect,graph.view.getState(cell.node.view.tagBox))){
                                                 
@@ -1341,8 +1345,10 @@ class Workflowview{
                                             }*/
                                             //remove link highlighting
                                             if(cell.isNode&&cell.node.view)cell.node.view.mouseOut();
+                                            if(cell.isLink&&cell.link.view)cell.link.view.mouseOut();
                                             graph.removeCellOverlay(cell);
                                             if(cell.isTagPreview||cell.isNode){cell.node.view.toggleTags(false);clearTimeout(timeoutvar);}
+                                            if(cell.isLink){cell.link.view.toggleTags(false);clearTimeout(timeoutvar);}
                                             graph.removeMouseListener(this);
                                         }
                                     }
@@ -1483,12 +1489,14 @@ class Workflowview{
     print(){
         var graph = this.graph;
         if(graph==null)return;
+        var des = graph.insertVertex(graph.getDefaultParent(),null,this.wf.description,(wfStartX+cellSpacing+20),(wfStartY+70+40),800,80,defaultTextStyle+"strokeColor=none;");
         var x = graph.getGraphBounds().width;
         var x0 = mxConstants.PAGE_FORMAT_A4_PORTRAIT.width;
         var scale = 0.95;
         if(x>x0)scale=scale*x0/x;
         var preview = new mxPrintPreview(graph, scale,mxConstants.PAGE_FORMAT_A4_PORTRAIT);
         preview.open();
+        graph.removeCells([des])
     }
     
     

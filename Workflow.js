@@ -34,6 +34,7 @@ class Workflow{
         this.tagSets=[];
         this.isActive=false;
         this.advancedOutcomes=false;
+        this.linkTagging=false;
         this.undoHistory=[];
         this.currentUndo;
         this.undoEnabled=false;
@@ -55,6 +56,7 @@ class Workflow{
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
         if(this.advancedOutcomes)xml+=makeXML(this.advancedOutcomes,"advancedoutcomes");
+        if(this.linkTagging)xml+=makeXML(this.linkTagging,"linktagging");
         
         var usedWF = [];
         for(var i=0;i<this.children.length;i++)usedWF.push(this.children[i].id);
@@ -149,6 +151,8 @@ class Workflow{
         if(description)this.setDescription(description);
         var advancedoutcomes = getXMLVal(xmlData,"advancedoutcomes");
         if(advancedoutcomes)this.advancedOutcomes=true;
+        var linktagging = getXMLVal(xmlData,"linktagging");
+        if(linktagging)this.linkTagging=true;
         this.id = getXMLVal(xmlData,"wfid");
         this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
@@ -959,11 +963,15 @@ class Workflow{
         advancedoutcomes.checked=this.advancedOutcomes;
         div.appendChild(advancedoutcomes.parentElement);
         
+        var linktagging = this.createCheckboxOption("Link Tagging Enabled");
+        linktagging.checked = this.linkTagging;
+        div.appendChild(linktagging.parentElement);
+        
         
         var button = document.createElement('button');
         div.appendChild(button);
         button.innerHTML = "OK";
-        button.onclick=function(){document.body.removeChild(div);wf.changeSettings(advancedoutcomes.checked);wf.project.settingsDisplayed=false;};
+        button.onclick=function(){document.body.removeChild(div);wf.changeSettings(advancedoutcomes.checked,linktagging.checked);wf.project.settingsDisplayed=false;};
         document.body.appendChild(div);
     }
     
@@ -982,14 +990,19 @@ class Workflow{
         return checkbox;
     }
     
-    changeSettings(advancedOutcomes){
-        if(advancedOutcomes!=this.advancedOutcomes)this.setAdvancedOutcomes(advancedOutcomes);
+    changeSettings(advancedOutcomes,linkTagging){
+       var settingsChanged = false;
+        if(advancedOutcomes!=this.advancedOutcomes){
+            this.advancedOutcomes=advancedOutcomes;
+            settingsChanged = true;
+        }
+        if(linkTagging!=this.linkTagging){
+            this.linkTagging=linkTagging;
+            settingsChanged = true;
+        }
+        if(settingsChanged&&this.view)this.view.settingsChanged();
     }
 
-    setAdvancedOutcomes(toggle){
-        this.advancedOutcomes=toggle;
-        if(this.view)this.view.advancedOutcomesToggled();
-    }
 }
 
 class Courseflow extends Workflow{

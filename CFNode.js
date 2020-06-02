@@ -31,6 +31,7 @@ class CFNode {
         this.autoLinkOut = new WFAutolink(this);
         this.autoLinkOut.portStyle="sourcePort=HIDDENs;targetPort=INn;";
         this.fixedLinksOut=[];
+        this.linksIn=[];
         this.brackets=[];
         this.tags=[];
         this.view;
@@ -376,6 +377,20 @@ class CFNode {
         return false;
     }
     
+    
+    hasTagOrAncestor(tag){
+        var tags = [tag];
+        var pt = tag;
+        while(pt.parentTag){
+            tags.push(pt.parentTag);
+            pt=pt.parentTag;
+        }
+        for(var i=0;i<this.tags.length;i++){
+            if(tags.indexOf(this.tags[i].tag)>=0)return true;
+        }
+        return false;
+    }
+    
     getTagIndex(tag){
         for(var i=0;i<this.tags.length;i++){
             if(this.tags[i].tag==tag)return i;
@@ -383,10 +398,25 @@ class CFNode {
         return -1;
     }
     
+    getTag(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return this.tags[i];
+        }
+        return null;
+    }
+    
+    
+    getTagDegree(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return this.tags[i].degree;
+        }
+        return 0;
+    }
+    
     addTag(tag,show=true,addToLinked=false,degree){
         //temporarily disable the attribution of tags to linked workflow. This has become an issue since the advanced outcome tagging messes with it
         addToLinked=false;
-        if(this.hasTag(tag))return;
+        if(this.hasTagOrAncestor(tag))return;
         var n = this;
         //Remove any children of the tag we are adding
         var allTags = tag.getAllTags([]);
@@ -703,6 +733,7 @@ class CUSNode extends CFNode {
 
 class WFLink{
     constructor(node){
+        this.wf = node.wf;
         this.node=node;
         this.id;
         this.portStyle=null;
@@ -711,6 +742,7 @@ class WFLink{
         this.style;
         this.view;
         this.labelx;
+        this.tags=[];
     }
     
     toXML(){
@@ -720,6 +752,10 @@ class WFLink{
         if(this.text)xml+=makeXML(this.text,"linktext",true);
         if(this.style)xml+=makeXML(this.style,"linkstyle");
         if(this.labelx!=null)xml+=makeXML(this.labelx,"linklabelx");
+        
+        for(var i=0;i<this.tags.length;i++){
+            xml+=this.tags[i].toXML();
+        }
         return makeXML(xml,"link");
     }
     
@@ -735,6 +771,13 @@ class WFLink{
         if(portStyle)this.portStyle=portStyle;
         if(style)this.style=style;
         if(labelx!=null)this.labelx=parseFloat(labelx);
+        
+        var xmlTags = xml.getElementsByTagName("linktag");
+        for(var i=0;i<xmlTags.length;i++){
+            var nodeTag = new NodeTag(null,this);
+            nodeTag.fromXML(xmlTags[i]);
+            this.tags.push(nodeTag);
+        }
     }
     
     setTextSilent(value){
@@ -747,9 +790,10 @@ class WFLink{
     }
     
     setTarget(node){
+        if(this.targetNode!=null&&this.targetNode.linksIn.indexOf(this)>=0)this.targetNode.linksIn.splice(this.targetNode.linksIn.indexOf(this),1);
         this.targetNode = node;
         if(node==null)this.id=null;
-        else this.id = node.id;
+        else {this.id = node.id;node.linksIn.push(this);console.log("linked");}
     }
     
     getPortStyle(){
@@ -760,7 +804,7 @@ class WFLink{
     
     redraw(){
         if(this.id!=null&&this.targetNode==null) {
-            this.targetNode = this.node.wf.findNodeById(this.id);
+            this.setTarget(this.node.wf.findNodeById(this.id));
             //if the node is still null after this the connection is probably garbage (for example a connection to a node that has been destroyed).
             if(this.targetNode==null){this.id=null;return;}
         }
@@ -778,6 +822,136 @@ class WFLink{
     deleteSelf(){
         if(this.view)this.view.deleted();
         this.node.fixedLinksOut.splice(this.node.fixedLinksOut.indexOf(this),1);
+    }
+    
+    
+    hasTag(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return true;
+        }
+        return false;
+    }
+    
+    hasTagOrAncestor(tag){
+        var tags = [tag];
+        var pt = tag;
+        while(pt.parentTag){
+            tags.push(pt.parentTag);
+            pt=pt.parentTag;
+        }
+        for(var i=0;i<this.tags.length;i++){
+            if(tags.indexOf(this.tags[i].tag)>=0)return true;
+        }
+        return false;
+    }
+    
+    getTag(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return this.tags[i];
+        }
+        return null;
+    }
+    
+    
+    getTagDegree(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return this.tags[i].degree;
+        }
+        return 0;
+    }
+    
+    getTagIndex(tag){
+        for(var i=0;i<this.tags.length;i++){
+            if(this.tags[i].tag==tag)return i;
+        }
+        return -1;
+    }
+    
+    addTag(tag,show=true,addToLinked=false,degree){
+        //temporarily disable the attribution of tags to linked workflow. This has become an issue since the advanced outcome tagging messes with it
+        addToLinked=false;
+        if(this.hasTagOrAncestor(tag))return;
+        var n = this;
+        //Remove any children of the tag we are adding
+        var allTags = tag.getAllTags([]);
+        for(var i=0;i<this.tags.length;i++){
+            if(allTags.indexOf(this.tags[i].tag)>=0){
+                this.removeTag(this.tags[i].tag,false);
+                i--;
+            }
+        }
+        //Add the tag
+        var nodeTag = new NodeTag(tag,this,degree);
+        this.tags.push(nodeTag);
+        if(this.view)this.view.tagAdded(nodeTag,show);
+        //Check to see if we have all children of the parent, if the parent exists. If advanced outcomes are active, they all have to have the same degree
+        var parentTag = tag.parentTag;
+        if(parentTag!=null){
+            var children = parentTag.getAllTags([],parentTag.depth+1);
+            children.splice(0,1);
+            if(this.wf.advancedOutcomes){
+                var addParent=null;
+                for(i=0;i<children.length;i++){
+                    if(!this.hasTag(children[i])){
+                        addParent=0;
+                        break;
+                    }else{
+                        if(addParent==null)addParent=this.tags[this.getTagIndex(children[i])].degree;
+                        else if(addParent!=this.tags[this.getTagIndex(children[i])].degree){
+                            addParent=0;
+                            break;
+                        }
+                    }
+                }
+                if(addParent)this.addTag(parentTag,false,false,addParent);
+            }else{
+                var addParent=true;
+                for(i=0;i<children.length;i++){
+                    if(!this.hasTag(children[i])){
+                        addParent=false;
+                        break;
+                    }
+                }
+                if(addParent)this.addTag(parentTag);
+            }
+        }
+    }
+    
+    removeTag(tag,removeFromLinked=false){
+        //removed from linked temporarily disabled
+        removeFromLinked=false;
+        var removed = null;
+        while(this.hasTag(tag)){
+            removed = this.tags.splice(this.getTagIndex(tag),1)[0];
+        }
+        if(removed==null&&tag.parentTag!=null){
+            var degreeToAdd;
+            if(this.hasTag(tag.parentTag))degreeToAdd = this.tags[this.getTagIndex(tag.parentTag)].degree;
+            if(this.removeTag(tag.parentTag,false))for(var i=0;i<tag.parentTag.children.length;i++){
+                if(tag.parentTag.children[i]!=tag)this.addTag(tag.parentTag.children[i],false,false,degreeToAdd);
+            }
+        }
+        if(removed && this.view)this.view.tagRemoved(removed);
+        return removed;
+    }
+    
+    //Check whether the prerequisite path for this tag is okay.
+    validateTag(tag){
+        var searchtags = [];
+        var degree;
+        if(this.wf.advancedOutcomes){
+            var ts = tag;
+            while(this.getTagIndex(ts)<0&&ts.parentTag!=null)ts = ts.parentTag;
+            var index = this.getTagIndex(ts);
+            if(index<0)return;
+            degree = this.tags[index].degree;
+            console.log(degree);
+        }
+        searchtags = tag.getAllTags(searchtags);
+        var path = new WFLinkPath(this,searchtags,null,[],degree);
+        if(!path.found)path.validateSelf(tag);
+        return path;
+        
     }
     
     
@@ -803,7 +977,8 @@ class NodeTag{
         var xml = "";
         xml+=makeXML(this.tag.id,"nodetagid");
         if(this.degree>1)xml+=makeXML(this.degree,"nodetagdegree");
-        return makeXML(xml,"nodetag");
+        if(this.node instanceof WFLink)return makeXML(xml,"linktag");
+        else return makeXML(xml,"nodetag");
     }
     
     fromXML(xml){
@@ -818,5 +993,86 @@ class NodeTag{
         this.degree=degree;
         if(this.node.view)this.node.view.degreeChanged();
     }*/
+    
+}
+
+class WFLinkPath{
+    constructor(startlink,searchtags,parent,linkschecked,degree){
+        this.degree=degree;
+        this.searchtags=searchtags;
+        this.tagParents=[];
+        var tag = this.searchtags[0];
+        while(tag.parentTag !=null){tag=tag.parentTag;this.tagParents.push(tag);}
+        this.parent=parent;
+        this.link=startlink;
+        this.subPaths=[];
+        this.tagsfound = [];
+        this.linkschecked = [];
+        for(var i=0;i<linkschecked.length;i++){
+            this.linkschecked.push(linkschecked[i]);
+        }
+        this.found=false;
+        var node = startlink.node;
+        this.checkNode(node);
+        if(this.found)return;
+        for(var i=0;i<node.linksIn.length;i++){
+            //might want to do this differently. Not just checking for loops, this will also block finding alternate paths
+            if(this.linkschecked.indexOf(node.linksIn[i])>=0)continue;
+            this.linkschecked.push(node.linksIn[i]);
+            this.subPaths.push(new WFLinkPath(node.linksIn[i],searchtags,this,this.linkschecked,this.degree));
+            if(this.subPaths[i].found)this.found=true;
+            else for(var j=0;j<this.subPaths[i].tagsfound.length;j++)this.tagsfound.push(this.subPaths[i].tagsfound[j]);
+        }
+        
+        
+    }
+    
+    checkNode(node){
+        console.log(this.degree);
+        for(var i=0;i<this.tagParents.length;i++){
+            if(node.hasTag(this.tagParents[i])){
+                if(this.degree!=null){
+                    var deg = node.getTagDegree(this.tagParents[i]);
+                    if(deg == 1 || (deg & this.degree) >0){this.found=true;return;}
+                }else {this.found=true;return;}
+            }
+        }
+        if(node.hasTag(this.searchtags[0])){
+            if(this.degree!=null){
+                var deg = node.getTagDegree(this.searchtags[0]);
+                console.log(deg);
+                console.log(this.degree);
+                console.log(deg & this.degree);
+                if(deg == 1 || (deg & this.degree) > 0){this.found=true;return;}
+            }else {this.found=true;return;}
+        }
+        for(var i=0;i<this.searchtags.length;i++){
+            if(node.hasTag(this.searchtags[i])){
+                if(this.degree!=null){
+                    var deg = node.getTagDegree(this.searchtags[i]);
+                    if(deg == 1 || (deg & this.degree) >0){this.tagsfound.push(this.searchtags[i]);}
+                }else {this.tagsfound.push(this.searchtags[i]);}
+            }
+        }
+    }
+    
+    validateSelf(tag){
+        this.valid = this.checkTag(tag);
+        console.log(this.valid);
+    }
+    
+    //To be used when the tag has not been explicitly found, to check all the children    
+    checkTag(tag){
+        console.log(this.tagsfound);
+        if(this.tagsfound.indexOf(tag)>=0)return true;
+        if(tag.children.length==0)return false;
+        for(var i=0;i<tag.children.length;i++){
+            var haschild = this.checkTag(tag.children[i]);
+            if(haschild==false)return false;
+        }
+        return true;
+    }
+    
+    
     
 }

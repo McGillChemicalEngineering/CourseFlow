@@ -1015,6 +1015,7 @@ class Project{
             xmlString=xmlString.substring(0,startIndex)+"<tagtempid>"+id+"</tagtempid>"+xmlString.substring(endIndex+8);
             //cycle through all the links. Linked IDs need to be updated, otherwise they'll link to random things.
             while(xmlString.indexOf("<nodetagid>"+replaceId+"</nodetagid>")>=0){xmlString = xmlString.replace("<nodetagid>"+replaceId+"</nodetagid>","<nodetagid>temporaryID"+id+"</nodetagid>");}
+            while(xmlString.indexOf("<linktagid>"+replaceId+"</linktagid>")>=0){xmlString = xmlString.replace("<linktagid>"+replaceId+"</linktagid>","<linktagid>temporaryID"+id+"</linktagid>");}
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"tagsetARRAY",replaceId,""+id);
             xmlString = this.assignNewIDsToXMLArrays(xmlString,"tagARRAY",replaceId,""+id);
             id++;

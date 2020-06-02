@@ -86,8 +86,8 @@ class Tagview{
         }
         var tagview = this;
         var tag = this.tag;
-        button.b.addEventListener("mouseover",function(evt){tagview.highlight(true)});
-        button.b.addEventListener("mouseleave",function(evt){if(!button.b.isToggled)tagview.highlight(false)});
+        button.b.addEventListener("mouseover",function(evt){if(node instanceof CFNode)tagview.highlight(true);else if(node instanceof WFLink)node.view.pathHighlight(true,tag);});
+        button.b.addEventListener("mouseleave",function(evt){if(node instanceof CFNode && !button.b.isToggled)tagview.highlight(false);else if(node instanceof WFLink)node.view.pathHighlight(false,tag);});
         button.b.hasListener=true;
         button.b.isToggled=false;
         button.b.onclick= null;
@@ -99,11 +99,11 @@ class Tagview{
             checkbox.value=1;
             button.b.appendChild(checkbox);
             checkbox.onclick=function(){
-                checkbox.value=(checkbox.value<<1)%16;
+                checkbox.value=(int(checkbox.value)<<1)%16;
                 if(checkbox.value==0)checkbox.value=1;
                 
                 node.removeTag(tag,node.wf instanceof Programflow);
-                node.addTag(tag,true,node.wf instanceof Programflow,checkbox.value);
+                node.addTag(tag,true,node.wf instanceof Programflow,int(checkbox.value));
                 node.wf.makeUndo("Add Tag",node);
             }
             button.outcomecheckbox=checkbox;
@@ -131,8 +131,13 @@ class Tagview{
             }
         }
         on = this.highlighted;
+        console.log(this.nodeTags);
+        console.log(on);
+        console.log(this.tag);
         for(var i=0;i<this.nodeTags.length;i++){
-            this.nodeTags[i].node.view.highlight(on);
+            console.log("turning highlighting on ("+on+") on node "+this.nodeTags[i].node.id);
+            if(this.nodeTags[i].node instanceof CFNode || this.nodeTags[i].node.wf.linkTagging)this.nodeTags[i].node.view.highlight(on);
+            console.log(this.nodeTags);
         }
         if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);
     }

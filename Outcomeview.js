@@ -947,7 +947,7 @@ class Outcomeview{
         
     }
     
-    advancedOutcomesToggled(){
+    settingsChanged(){
         this.wf.project.changeActive(this.wf);
     }
     

@@ -29,6 +29,7 @@ class Nodeview{
         if(this.node.autoLinkOut)this.node.autoLinkOut.view = new WFAutolinkview(graph,this.node.autoLinkOut);
         this.tagPreview;
         
+        
     }
     
     
@@ -82,7 +83,6 @@ class Nodeview{
         this.tagPreview.cellOverlays=[];
         this.tagPreview.isTagPreview=true;
         this.tagPreview.node=this.node;
-        this.graph.orderCells(true,[this.tagPreview]);
         if(this.node.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
         this.vertex.cellOverlays=[];
         this.addPlusOverlay();
@@ -308,8 +308,8 @@ class Nodeview{
     tagRemoved(nodeTag){
         var tag = nodeTag.tag;
         if(nodeTag.view){nodeTag.view.removed();}
-        if(tag.view)tag.view.removeNode(this.node);
-        if(this.node.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
+        if(tag.view)tag.view.removeNode(nodeTag);
+        if(this.node.tags.length<1){this.graph.toggleCells(false,[this.tagPreview]);this.toggleTags(false);}
         this.graph.cellLabelChanged(this.tagPreview,this.node.tags.length);
     }
     
@@ -362,15 +362,16 @@ class Nodeview{
     
     mouseIn(){
         var node = this.node;
+        this.graph.orderCells(false,[this.vertex]);
         for(var i=0;i<node.fixedLinksOut.length;i++){
-            node.fixedLinksOut[i].view.highlight(true);
+            node.fixedLinksOut[i].view.highlight(true,"yellow");
         }
     }
     
     mouseOut(){
         var node = this.node;
         for(var i=0;i<node.fixedLinksOut.length;i++){
-            node.fixedLinksOut[i].view.highlight(false);
+            node.fixedLinksOut[i].view.highlight(false,"yellow");
         }
     }
     
@@ -425,6 +426,11 @@ class WFLinkview{
         this.link=link;
         this.graph=graph;
         this.vertex;
+        
+        this.tagBoxDiv = document.createElement('div');
+        this.tagBoxDiv.className = "tagboxdiv";
+        this.tagBoxDiv.style.border = "3px solid black";
+        this.link.wf.view.container.appendChild(this.tagBoxDiv);
     }
     
     getPortStyle(){
@@ -469,11 +475,21 @@ class WFLinkview{
             if(value1!=value)link.view.graph.getModel().setValue(link.view.vertex,value1);
             else mxCell.prototype.valueChanged.apply(this,arguments);
         }
+        
+        //Adding the tag preview
+        this.tagPreview = this.graph.insertVertex(this.vertex,null,this.link.tags.length+"",tagBoxPadding+this.vertex.w(),0,tagHeight,tagHeight,defaultTagPreviewStyle+"strokeColor=black;");
+        
+        this.tagPreview.cellOverlays=[];
+        this.tagPreview.isTagPreview=true;
+        this.tagPreview.node=this.link;
+        this.graph.orderCells(true,[this.tagPreview]);
+        if(this.link.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
     }
     
     redraw(){
         var link = this.link;
         if(this.vertex!=null){this.graph.removeCells([this.vertex]);}
+        else(this.fillTags());
         if(link.id==null)return;
         var style = defaultEdgeStyle;
         switch(link.style){
@@ -495,17 +511,28 @@ class WFLinkview{
     
     //Add the overlay to delete the node
     addDelOverlay(){
+        var graph = this.graph;
         if(this.vertex.cellOverlays==null)this.vertex.cellOverlays=[];
         var n = this.link;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
+        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 12, 12), 'Delete this link');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.y = pt.y-bounds.height/2;
-            bounds.x = pt.x-bounds.width/2;
+            var edgestate = graph.view.getState(n.view.vertex)
+            var x = edgestate.absolutePoints[0].x-bounds.width/2;
+            var y = edgestate.absolutePoints[0].y-bounds.height/2;
+            var dirx = edgestate.absolutePoints[1].x - edgestate.absolutePoints[0].x;
+            if(dirx>0)dirx=1;
+            else if(dirx<0)dirx=-1;
+            var diry = edgestate.absolutePoints[1].y - edgestate.absolutePoints[0].y;
+            if(diry>0)diry=1;
+            else if(diry<0)diry=-1;
+            x = x+(bounds.width/2+2)*dirx;
+            y = y+(bounds.height/2+2)*diry;
+            
+            bounds.y = y;
+            bounds.x = x;
             return bounds;
         }
-        var graph = this.graph;
         overlay.cursor = 'pointer';
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
@@ -516,21 +543,123 @@ class WFLinkview{
         //n.graph.addCellOverlay(n.vertex, overlay);
     }
     
+    mouseIn(){
+        if(this.link.wf.linkTagging && this.vertex&&this.tagPreview){
+           // this.graph.orderCells(false,[this.vertex]);
+            
+            var edgestate = this.graph.view.getState(this.vertex);
+            var point = this.findMidpoint(edgestate);
+            point.y -= tagHeight/2
+            var length = this.getLength(edgestate);
+            var xoffset = -tagHeight/2;
+            if(length<=20)xoffset=6;
+            point.x+=xoffset;
+            this.graph.moveCells([this.tagPreview],point.x-this.tagPreview.x(),point.y-this.tagPreview.y());
+            this.tagBoxDiv.style.left=(point.x-1)+"px";
+            this.tagBoxDiv.style.top=(point.y-1)+"px";
+            if(this.link.tags.length>0)this.graph.toggleCells(true,[this.tagPreview]);
+        }
+    }
+    
+    findMidpoint(edgestate){
+        if(edgestate==null)edgestate = this.graph.view.getState(this.vertex);
+        var length = this.getLength(edgestate);
+        var current = 0;
+        var p1=edgestate.absolutePoints[0];
+        for(var i=1;i<edgestate.absolutePoints.length;i++){
+            var p2 = edgestate.absolutePoints[i];
+            var seglength = this.getSegmentLength(p1,p2);
+            if(current+seglength>=length/2){
+                var remainder = (length/2-current)/seglength;
+                var x = p1.x+remainder*(p2.x-p1.x);
+                var y = p1.y+remainder*(p2.y-p1.y);
+                return {x:x,y:y};
+            }
+            current+=seglength;
+            p1=p2;
+        }
+        return {x:0,y:0};
+    }
+    
+    getLength(edgestate){
+        if(edgestate==null)edgestate = this.graph.view.getState(this.vertex);
+        var length=0;
+        for(var i=1;i<edgestate.absolutePoints.length;i++){
+            length += this.getSegmentLength(edgestate.absolutePoints[i-1],edgestate.absolutePoints[i]);
+        }
+        return length;
+    }
+    
+    getSegmentLength(p1,p2){
+        return Math.abs(p1.x-p2.x)+Math.abs(p1.y-p2.y);
+    }
+    
+    mouseOut(){
+        this.graph.toggleCells(false,[this.tagPreview]);
+        this.toggleTags(false);
+        
+    }
+    
     deleted(){
         this.graph.removeCells([this.vertex]);
     }
     
-    highlight(on){
+    highlight(on,style=""){
         var gstate = this.graph.view.getState(this.vertex);
         if(gstate==null)return;
         var g = gstate.shape.node;
         if(g.firstChild!=null){
             for(var i=0;i<g.childNodes.length;i++){
-                if(on)g.childNodes[i].classList.add("highlighted");
-                else g.childNodes[i].classList.remove("highlighted");
+                if(on)g.childNodes[i].classList.add("highlighted"+style);
+                else g.childNodes[i].classList.remove("highlighted"+style);
             }
         }
     }
+    
+    pathHighlight(on,tag){
+        var path = this.link.validateTag(tag);
+        this.highlightPath(path,on);
+    }
+    
+    highlightPath(path,on){
+        console.log("HIGHLIGHTING THIS PATH");
+        if(on){
+            if(path.found){
+                path.link.view.highlight(true,"green");
+                for(var i=0;i<path.subPaths.length;i++){
+                    if(path.subPaths[i].found)this.highlightPath(path.subPaths[i],on)
+                }
+            }else if(path.valid){
+                path.link.view.highlight(true,"greendashed");
+                for(var i=0;i<path.subPaths.length;i++){
+                    if(path.subPaths[i].tagsfound.length>0){
+                        path.subPaths[i].valid=true;
+                        this.highlightPath(path.subPaths[i],on);
+                    }
+                }
+            }else{
+                if(path.tagsfound.length>0){
+                    path.link.view.highlight(true,"yellowdashed");
+                    for(var i=0;i<path.subPaths.length;i++){
+                        if(path.subPaths[i].tagsfound.length>0){
+                            this.highlightPath(path.subPaths[i],on);
+                        }
+                    }
+                }else{
+                    path.link.view.highlight(true,"red");
+                }
+            }
+        }else{
+            path.link.view.highlight(false,"green");
+            path.link.view.highlight(false,"greendashed");
+            path.link.view.highlight(false,"yellowdashed");
+            path.link.view.highlight(false,"red");
+            for(var i=0;i<path.subPaths.length;i++){
+                this.highlightPath(path.subPaths[i],on);
+            }
+        }
+    }
+    
     
     select(on){
         var gstate = this.graph.view.getState(this.vertex);
@@ -541,6 +670,63 @@ class WFLinkview{
                 if(on)g.childNodes[i].classList.add("selected");
                 else g.childNodes[i].classList.remove("selected");
             }
+        }
+    }
+    
+    tagAdded(nodeTag,show){
+        this.graph.toggleCells(true,[this.tagPreview]);
+        nodeTag.view = new NodeTagView(nodeTag);
+        nodeTag.view.makeVertex(this.tagBoxDiv);
+        if(show)nodeTag.view.positionSelf();
+        if(this.tagPreview)this.graph.cellLabelChanged(this.tagPreview,""+this.link.tags.length);
+        this.toggleTags(show);
+    }
+    
+    tagRemoved(nodeTag){
+        var tag = nodeTag.tag;
+        if(nodeTag.view){nodeTag.view.removed();}
+        if(tag.view)tag.view.removeNode(this.link);
+        if(this.link.tags.length<1){this.graph.toggleCells(false,[this.tagPreview]);this.toggleTags(false);}
+        this.graph.cellLabelChanged(this.tagPreview,this.link.tags.length);
+    }
+    
+    toggleTags(show){
+        this.graph.toggleCells(show,[this.tagBox]);
+        if(show&&this.tagPreview.visible){
+            this.tagBoxDiv.style.display = "inline-block";
+            this.sortTags();
+        }else{
+            this.tagBoxDiv.style.display = "none";
+        }
+    }
+    
+    sortTags(){
+        console.log("Sorting");
+        var allTags = [];
+        for(var i=0;i<this.link.wf.tagSets.length;i++)allTags = this.link.wf.tagSets[i].getAllID(allTags);
+        var nodeList = this.tagBoxDiv.childNodes;
+        var arr = [].slice.call(nodeList);
+        arr.sort(function(a,b){
+            try{
+                var tagA = a.button.layout.id;
+                var tagB = b.button.layout.id;
+                return allTags.indexOf(tagA)-allTags.indexOf(tagB);
+                
+            }catch(err){
+                console.log("THERE WAS AN ERROR SORTING TAGS");
+                return 0;
+            }
+            
+        });
+        for(var i=0;i<arr.length;i++){
+            this.tagBoxDiv.appendChild(arr[i]);
+        }
+    }
+    
+    fillTags(){
+        var link = this.link;
+        for(var i=0;i<link.tags.length;i++){
+            link.view.tagAdded(link.tags[i],false);
         }
     }
     
@@ -569,9 +755,20 @@ class WFAutolinkview extends WFLinkview{
         var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-            var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
-            bounds.y = pt.y-bounds.height/2;
-            bounds.x = pt.x-bounds.width/2;
+            var edgestate = graph.view.getState(n.view.vertex)
+            var x = edgestate.absolutePoints[0].x-bounds.width/2;
+            var y = edgestate.absolutePoints[0].y-bounds.height/2;
+            var dirx = edgestate.absolutePoints[1].x - edgestate.absolutePoints[0].x;
+            if(dirx>0)dirx=1;
+            else if(dirx<0)dirx=-1;
+            var diry = edgestate.absolutePoints[1].y - edgestate.absolutePoints[0].y;
+            if(diry>0)diry=1;
+            else if(diry<0)diry=-1;
+            x = x+(bounds.width/2+2)*dirx;
+            y = y+(bounds.height/2+2)*diry;
+            
+            bounds.y = y;
+            bounds.x = x;
             return bounds;
         }
         var graph = this.graph;

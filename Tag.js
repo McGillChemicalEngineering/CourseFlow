@@ -165,7 +165,7 @@ class Tag {
             parent.removeTagSet(this);
             parent.makeUndo("Tagset Removed",parent);
             
-        }else if(parent instanceof CFNode){
+        }else if(parent instanceof CFNode||parent instanceof WFLink){
             parent.removeTag(this,parent.wf instanceof Programflow);
             parent.wf.makeUndo("Tag Removed",parent);
             if(parent.wf.view){
