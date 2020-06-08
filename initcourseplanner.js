@@ -44,7 +44,7 @@ function main(container)
             try{
                 var filename;
                 if(filetype=="ALA")filename = "https://jchoquette.github.io/ALA_Files/"+toOpen+".CFlow";
-                else if(filetype=="post")filename = "/resources/posted_files/"+toOpen+".CFlow";
+                else if(filetype=="post")filename = "resources/posted_files/"+toOpen+".CFlow";
                 else if(fileurl!=null)filename = fileurl;
                 var opened = loadServerXML(filename);
                 if(opened==null)toOpen="";
