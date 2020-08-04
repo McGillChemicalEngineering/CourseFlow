@@ -913,6 +913,11 @@ class Project{
     createViewBar(){
         var p = this;
         var vb = $("#viewbar")[0];
+        vb.appendChild(this.createViewBarButton("","validate","validateviewbar"));
+        $("#validateviewbar").attr("title",LANGUAGE_TEXT.menus.validate[USER_LANGUAGE]);
+        $("#validateviewbar")[0].onclick = function(){
+            if(p.activeLayout instanceof Workflow)p.activeLayout.validate(true);
+        }
         vb.appendChild(this.createOutcomeSwitch(LANGUAGE_TEXT.menus.toggleoutcomeswitch[USER_LANGUAGE],"outcomeviewbar"));
         vb.appendChild(this.createViewBarButton("","expand","expandviewbar"));
         $("#expandviewbar")[0].onclick = function(){$("#expand")[0].click();}

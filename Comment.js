@@ -80,7 +80,7 @@ class WFComment{
         menu.addItem(LANGUAGE_TEXT.comment.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecomment[USER_LANGUAGE])){
                 comment.deleteSelf();
-                comment.wf.makeUndo("Delete Comment",comment);
+                comment.wf.updated("Delete Comment",comment);
             }
         }); menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
             p.showHelp('commenthelp.html');

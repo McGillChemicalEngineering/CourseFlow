@@ -99,7 +99,7 @@ class Bracket {
         var p = this.wf.project;
         menu.addItem(LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
             bracket.deleteSelf();
-            bracket.wf.makeUndo("Delete Bracket",bracket);
+            bracket.wf.updated("Delete Bracket",bracket);
         });
         
         menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){

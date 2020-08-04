@@ -42,7 +42,7 @@ class EditBar{
           if (source == 'user') {
             if(eb.node!=null){
                 eb.node.setName(quill1.getText().slice(0,-1));
-                eb.node.wf.makeUndo("Name Change",eb.node);
+                eb.node.wf.updated("Name Change",eb.node);
             }
           }
         });
@@ -90,7 +90,7 @@ class EditBar{
           if (source == 'user') {
             if(eb.node!=null){
                 eb.node.setText(quillDiv2.childNodes[0].innerHTML.replace(/\<p\>\<br\>\<\/p\>\<ul\>/g,"\<ul\>"));
-                eb.node.wf.makeUndo("Text Change",eb.node);
+                eb.node.wf.updated("Text Change",eb.node);
             }
           }
         });
@@ -205,7 +205,7 @@ class EditBar{
             if(node.lefticon!=null)this.leftIcon.value=node.lefticon;
             this.leftIcon.onchange = function(){
                 node.setLeftIcon(this.value);
-                node.wf.makeUndo("Icon Change",node);
+                node.wf.updated("Icon Change",node);
             }
         }else this.hideParent(this.leftIcon);
         iconList = node.getRightIconList();
@@ -215,7 +215,7 @@ class EditBar{
             if(node.righticon!=null)this.rightIcon.value=node.righticon;
             this.rightIcon.onchange = function(){
                 node.setRightIcon(this.value);
-                node.wf.makeUndo("Icon Change",node);
+                node.wf.updated("Icon Change",node);
             }
         }else this.hideParent(this.rightIcon);
         this.timeSelect.value=node.time.value;
@@ -228,7 +228,7 @@ class EditBar{
             if(node.linkedWF!=null)this.linkedWF.value = node.linkedWF;
             this.linkedWF.onchange = function(){
                 node.setLinkedWF(this.value);
-                node.wf.makeUndo("Linked Workflow Change",node);
+                node.wf.updated("Linked Workflow Change",node);
             }
         }else this.hideParent(this.linkedWF);
         if(node.wf.tagSets.length>0){
@@ -239,7 +239,7 @@ class EditBar{
             if(this.value=="")return;
             node.addTag(node.wf.getTagByID(this.value),true,node.wf instanceof Programflow);
             eb.populateTags();
-            node.wf.makeUndo("Add Tag",node);
+            node.wf.updated("Add Tag",node);
         }
         
     }

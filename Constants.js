@@ -154,6 +154,7 @@ const bracketCircleStyle = "shape=ellipse;fillColor=white;strokeColor=#ed4528;ed
 const bracketIconStyle = "shape=label;fillColor=none;strokeColor=none;editable=0;movable=0;resizable=0;imageAlign=center;imageWidth=48;imageHeight=48;constituent=1;"
 const defaultEdgeStyle = "editable=0;movable=0;resizable=0;bendable=0;edgeStyle=orthogonalEdgeStyle;strokeColor=black;rounded=1;fontColor=black;labelBackgroundColor=white;labelBorderColor=black;labelPadding=2;";
 const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;resizable=0;whiteSpace=wrap;fillColor=#ffff88;strokeColor=black;image=resources/images/comment32.png;";
+const defaultWarningStyle = "shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=white;"
 
 //Icons
 const iconsList={
@@ -249,7 +250,8 @@ const LANGUAGE_TEXT = {
         terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
         genhelp:{en:'General Help',fr:"Aide generale"},
         layouthelp:{en:'About the Layout',fr:"À propos de la mise en page"},
-        privacypolicy:{en:'Privacy Policy',fr:"Politique de confidentialité"}
+        privacypolicy:{en:'Privacy Policy',fr:"Politique de confidentialité"},
+        validate:{en:"Validate",fr:"Valider"}
     },
     project:{
         projectoverview:{en:"Project Overview",fr:"Aperçu du projet"},
@@ -270,6 +272,15 @@ const LANGUAGE_TEXT = {
         createnew:{en:'Create New',fr:'Créer un nouveau'}
     },
     workflow:{
+        settings:{
+            advancedoutcomes:{en:"Advanced Outcomes",fr:""},
+            linktagging:{en:"Link Tagging Enabled",fr:""},
+            validation:{en:"Validation",fr:""},
+            reqtime:{en:"Required Credits",fr:""},
+            mintime:{en:"Minimum Credits/Term",fr:""},
+            maxtime:{en:"Maximum Credits/Term",fr:""},
+            maxterm:{en:"Maximum Terms",fr:""}
+        },
         activity:{en:"Activity",fr:"Activité"},
         course:{en:"Course",fr:"Cours"},
         program:{en:"Program",fr:"Programme"},
@@ -507,7 +518,20 @@ const LANGUAGE_TEXT = {
         day:{en:"d",fr:"j"},
         week:{en:"wk",fr:"sem"},
         month:{en:"mon",fr:"mois"},
-        yr:{en:"yr",fr:"a"}
+        yr:{en:"yr",fr:"a"},
+        cr:{en:"crd",fr:"crd"}
+    },
+    validation:{
+        appearsbeforecoreq:{en:" appears before its corequisite: ",fr:" apparaît avant son co-requis: " },
+        appearsbeforeprereq:{en:" appears before or in the same term as its pre-requisite: ",fr:" apparaît avant ou dans le même terme que son pré-requis: "},
+        maxterms:{en: "The maximum recommended number of terms is ",fr:"La durée maximale recommandée est "},
+        maxterms2:{en:", but you have scheduled ",fr:"terms, mais vous en avez"},
+        has:{en:" has ",fr:" a "},
+        lesscredits:{en:" credits, which is less than the recommended amount (",fr:" crédits, ce qui est moins que le montant recommandé ("},
+        morecredits:{en:" credits, which is more than the recommended amount (",fr:" crédits, ce qui est plus que le montant recommandé ("},
+        total:{en:"There is a total of ",fr:"Il y a un total de "},
+        noerrors:{en:"There are no errors to report!",fr:"Il n'y a aucune erreur!"},
+        errorstart:{en:"The validation process has found the following errors:\n\n",fr:"Le processus de validation a détecté les erreurs suivantes:\n\n"}
     }
 }
 

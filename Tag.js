@@ -163,11 +163,11 @@ class Tag {
     unassignFrom(parent){
         if(parent instanceof Workflow){
             parent.removeTagSet(this);
-            parent.makeUndo("Tagset Removed",parent);
+            parent.updated("Tagset Removed",parent);
             
         }else if(parent instanceof CFNode||parent instanceof WFLink){
             parent.removeTag(this,parent.wf instanceof Programflow);
-            parent.wf.makeUndo("Tag Removed",parent);
+            parent.wf.updated("Tag Removed",parent);
             if(parent.wf.view){
                 var eb = parent.wf.view.editbar;
                 if(eb.node==parent){

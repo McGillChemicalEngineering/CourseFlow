@@ -105,7 +105,8 @@ class Workflowview{
         };
         this.container.contextItem={dummyObject:true};
         document.body.contextItem = this.wf;
-        
+        console.log(this.wf.settings.settingsKey.validation);
+        if(this.wf.settings.settingsKey.validation.value){$("#validateviewbar").removeClass("disabled");}
         $("#expand").removeClass("disabled");
         $("#collapse").removeClass("disabled");
         $("#expandviewbar").removeClass("disabled");
@@ -172,7 +173,7 @@ class Workflowview{
         this.container.innerHTML="";
         document.body.contextItem = this.wf.project;
         
-        
+        $("#validateviewbar").addClass("disabled");
         $("#expand").addClass("disabled");
         $("#collapse").addClass("disabled");
         $("#expandviewbar").addClass("disabled");
@@ -413,7 +414,7 @@ class Workflowview{
             this.graph.setCellStyles("fillColor","#bbbbbb;",[week.view.vertex]);
         }
         else{
-            this.graph.setCellStyles("fillColor","#"+(0xe5e5e5+(week.index%2)*0x090909).toString(16)+";",[week.view.vertex]);
+            this.graph.setCellStyles("fillColor","#"+(0xe0e0e0+(week.index%2)*0x0F0F0F).toString(16)+";",[week.view.vertex]);
             this.graph.setCellStyles("fontColor","#000000;",[week.view.vertex]);
         }
     }
@@ -618,7 +619,7 @@ class Workflowview{
                     node.setWeek(cell.week);
                     cell.week.addNode(node,0,startIndex);
                     wf.view.bringCommentsToFront();
-                    wf.makeUndo("Add Node",node);
+                    wf.updated("Add Node",node);
 
                 }
                 this.lastCell=null;
@@ -669,7 +670,7 @@ class Workflowview{
                 if(cell!=null && cell.isNode){
                     gaEvent('Bracket','Add to Node',wf.name,wf.brackets.length);
                     wf.addBracket(strategy,cell.node);
-                    wf.makeUndo("Add Bracket",strategy);
+                    wf.updated("Add Bracket",strategy);
                 }
                 if(cell!=null&&cell.isWeek){
                     gaEvent('Bracket','Add to Week',wf.name,wf.brackets.length);
@@ -677,7 +678,7 @@ class Workflowview{
                     var startIndex = cell.week.view.getNextIndexFromPoint(y);
                     makeLoad(function(){
                         wf.addNodesFromXML(cell.week,startIndex,xml);
-                        wf.makeUndo("Add Strategy",strategy);
+                        wf.updated("Add Strategy",strategy);
                     });
                 }
                 this.lastCell=null;
@@ -770,10 +771,10 @@ class Workflowview{
                 while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
                 if(cell!=null && cell.isNode){
                     cell.node.addTag(thistag,true,cell.node.wf instanceof Programflow);
-                    wf.makeUndo("Add Tag",cell.node);
-                }else if(cell!=null && wf.linkTagging && cell.isLink){
+                    wf.updated("Add Tag",cell.node);
+                }else if(cell!=null && wf.settings.settingsKey.linktagging && cell.isLink){
                     cell.link.addTag(thistag,true,cell.link.wf instanceof Programflow);
-                    wf.makeUndo("Add Tag",cell.link);
+                    wf.updated("Add Tag",cell.link);
                 }
                 this.lastCell=null;
 
@@ -781,7 +782,7 @@ class Workflowview{
             return dropfunction;
         }
         
-        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.linkTagging)));});
+        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.settings.settingsKey.linktagging)));});
         tag.view.addDrop(button);
         if(tag.depth<=this.wf.getTagDepth())button.makeEditable(false,false,true,this.wf);
         button.makeExpandable();
@@ -1127,7 +1128,7 @@ class Workflowview{
                         var oldColName=cell.node.column;
                         cell.node.setColumn(newColName);
                         cell.node.week.columnUpdated(cell.node,oldColName);
-                        cell.node.wf.makeUndo("Node Moved",cell.node);
+                        cell.node.wf.updated("Node Moved",cell.node);
                     }
                     //Check the y
                     //First we check whether we are inside a new week; if we are then it hardly matters where we are relative to the nodes within the old week.
@@ -1139,11 +1140,11 @@ class Workflowview{
                         var newIndex = week.view.getNearestNode(newy,node.column);
                         if(index!=newIndex){
                             week.shiftNode(index,newIndex,node.column);
-                            node.wf.makeUndo("Node Moved",node);
+                            node.wf.updated("Node Moved",node);
                         }
                     }else{
                         node.changeWeek(weekChange,graph);
-                        node.wf.makeUndo("Node Moved",node);
+                        node.wf.updated("Node Moved",node);
                     }
                 }else if(cells.length==1 && cells[0].isHead){
                     //as above but with only the horizontal movement
@@ -1157,12 +1158,12 @@ class Workflowview{
                     if(colIndex>0 && Math.abs(columns[colIndex].view.pos-newx)>Math.abs(columns[colIndex-1].view.pos-newx)){
                         //swap this column with that to the left
                         wf.swapColumns(colIndex,colIndex-1);
-                        wf.makeUndo("Column Moved");
+                        wf.updated("Column Moved");
                     }
                     if(colIndex<columns.length-1 && Math.abs(columns[colIndex].view.pos-newx)>Math.abs(columns[colIndex+1].view.pos-newx)){
                         //swap this column with that to the right
                         wf.swapColumns(colIndex,colIndex+1);
-                        wf.makeUndo("Column Moved");
+                        wf.updated("Column Moved");
                     }
                     
                 }

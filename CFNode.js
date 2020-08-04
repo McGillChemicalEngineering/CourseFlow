@@ -312,7 +312,7 @@ class CFNode {
         node.setColumn(this.column);
         node.setWeek(this.week);
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
-        this.wf.makeUndo("Add Node",node);
+        this.wf.updated("Add Node",node);
         return node;
     }
     
@@ -328,7 +328,7 @@ class CFNode {
         }
         while(node.fixedLinksOut.length>0)node.fixedLinksOut[0].deleteSelf();
         this.week.addNode(node,0,this.week.nodes.indexOf(this)+1);
-        this.wf.makeUndo("Add Node",node);
+        this.wf.updated("Add Node",node);
         if(node.view.categoryChanged)node.view.categoryChanged();
     }
     
@@ -439,7 +439,7 @@ class CFNode {
         if(parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
-            if(this.wf.advancedOutcomes){
+            if(this.wf.settings.settingsKey.advancedoutcomes){
                 var addParent=null;
                 for(i=0;i<children.length;i++){
                     if(!this.hasTag(children[i])){
@@ -541,7 +541,7 @@ class CFNode {
         menu.addItem(LANGUAGE_TEXT.node.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
                 node.deleteSelf();
-                node.wf.makeUndo("Delete Node",node);
+                node.wf.updated("Delete Node",node);
             }
         });
         
@@ -889,7 +889,7 @@ class WFLink{
         if(parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
-            if(this.wf.advancedOutcomes){
+            if(this.wf.settings.settingsKey.advancedoutcomes){
                 var addParent=null;
                 for(i=0;i<children.length;i++){
                     if(!this.hasTag(children[i])){
@@ -939,7 +939,7 @@ class WFLink{
     validateTag(tag){
         var searchtags = [];
         var degree;
-        if(this.wf.advancedOutcomes){
+        if(this.wf.settings.settingsKey.advancedoutcomes){
             var ts = tag;
             while(this.getTagIndex(ts)<0&&ts.parentTag!=null)ts = ts.parentTag;
             var index = this.getTagIndex(ts);

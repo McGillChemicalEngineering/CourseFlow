@@ -26,6 +26,11 @@ class Week {
         this.collapsed=false;
     }
     
+    getName(){
+        if(this.name)return this.name;
+        return this.getDefaultName();
+    }
+    
     setNameSilent(name){
         if(name!=null && name!=""){
             //name = name.replace(/&/g," and ").replace(/</g,"[").replace(/>/g,"]");
@@ -198,7 +203,7 @@ class Week {
         menu.addItem(LANGUAGE_TEXT.week.delete[week.getType()][USER_LANGUAGE],'resources/images/delrect24.png',function(){
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[week.getType()][USER_LANGUAGE])){
                 week.deleteSelf();
-                week.wf.makeUndo("Delete Week",week);
+                week.wf.updated("Delete Week",week);
             }
         });
         

@@ -192,7 +192,7 @@ class Weekview{
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
             w.insertBelow();
-            w.wf.makeUndo("Add Week",w);
+            w.wf.updated("Add Week",w);
         });
         this.vertex.cellOverlays.push(overlay);
         //this.graph.addCellOverlay(this.vertex, overlay);
@@ -215,7 +215,7 @@ class Weekview{
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[w.getType()][USER_LANGUAGE])){
                 graph.clearSelection();
                 w.deleteSelf();
-                w.wf.makeUndo("Delete Week",w);
+                w.wf.updated("Delete Week",w);
             }
         });
         this.vertex.cellOverlays.push(overlay);
@@ -384,6 +384,22 @@ class Weekview{
             this.addCopyOverlay();
             this.addMoveOverlays();
             this.addMinimizeOverlay(this.week.collapsed);
+        }
+    }
+    
+    addError(error){
+        if(this.errorVertices==null)this.errorVertices=[];
+        var vertex = this.graph.insertVertex(this.vertex,null,'',16,16,24,24,defaultWarningStyle+"image=resources/images/validationerror24.png;");
+        this.errorVertices.push(vertex);
+        vertex.getTooltip = function(){console.log("tooltip");return error.text;}
+        error.vertex=vertex;
+    }
+    
+    removeError(error){
+        if(error.vertex&&this.errorVertices.indexOf(error.vertex)>=0){
+            this.graph.removeCells([error.vertex]);
+            this.errorVertices.splice(this.errorVertices.indexOf(error.vertex),1);
+            error.vertex=null;
         }
     }
     

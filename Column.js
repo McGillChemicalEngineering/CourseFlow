@@ -135,7 +135,7 @@ class Column {
             if(col.wf.columns.length==1)alert(LANGUAGE_TEXT.column.deletelast[USER_LANGUAGE]);
             else if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecolumn[USER_LANGUAGE])){
                 col.deleteSelf();
-                col.wf.makeUndo("Delete Column",col);
+                col.wf.updated("Delete Column",col);
             }
         });
         if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],'resources/images/spectrum24.png', function(){

@@ -266,7 +266,7 @@ class Nodeview{
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
                 graph.clearSelection();
                 n.deleteSelf();
-                n.wf.makeUndo("Delete Node",n);
+                n.wf.updated("Delete Node",n);
             }
         });
         this.vertex.cellOverlays.push(overlay);
@@ -415,7 +415,21 @@ class Nodeview{
         this.graph.cellLabelChanged(this.timeNode,this.node.getTimeString());
     }
     
+    addError(error){
+        if(this.errorVertices==null)this.errorVertices=[];
+        var vertex = this.graph.insertVertex(this.vertex,null,'',8,8,24,24,defaultWarningStyle+"image=resources/images/validationerror24.png;");
+        this.errorVertices.push(vertex);
+        vertex.getTooltip = function(){console.log("tooltip");return error.text;}
+        error.vertex=vertex;
+    }
     
+    removeError(error){
+        if(error.vertex&&this.errorVertices.indexOf(error.vertex)>=0){
+            this.graph.removeCells([error.vertex]);
+            this.errorVertices.splice(this.errorVertices.indexOf(error.vertex),1);
+            error.vertex=null;
+        }
+    }
 
     
 }
@@ -460,7 +474,7 @@ class WFLinkview{
             if(mxUtils.confirm("Delete this link?")){
                 graph.clearSelection();
                 link.deleteSelf();
-                link.node.wf.makeUndo("Delete Link",link);
+                link.node.wf.updated("Delete Link",link);
             }
         });
     }
@@ -537,14 +551,14 @@ class WFLinkview{
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
             n.deleteSelf();
-            n.node.wf.makeUndo("Delete Link",n);
+            n.node.wf.updated("Delete Link",n);
         });
         this.vertex.cellOverlays.push(overlay);
         //n.graph.addCellOverlay(n.vertex, overlay);
     }
     
     mouseIn(){
-        if(this.link.wf.linkTagging && this.vertex&&this.tagPreview){
+        if(this.link.wf.settings.settingsKey.linktagging && this.vertex&&this.tagPreview){
            // this.graph.orderCells(false,[this.vertex]);
             
             var edgestate = this.graph.view.getState(this.vertex);
@@ -743,7 +757,7 @@ class WFAutolinkview extends WFLinkview{
             if(mxUtils.confirm("This is the automatically generated link for this node. If deleted, this will prevent the node from automatically linking to that below it. Do you want to proceed?")){
                 graph.clearSelection();
                 link.deleteSelf();
-                link.node.wf.makeUndo("Delete Link",link);
+                link.node.wf.updated("Delete Link",link);
             }
         });
     }
@@ -777,7 +791,7 @@ class WFAutolinkview extends WFLinkview{
             if(mxUtils.confirm("This is the automatically generated link for this node. If deleted, this will prevent the node from automatically linking to that below it. Do you want to proceed?")){
                 graph.clearSelection();
                 n.deleteSelf();
-                n.node.wf.makeUndo("Delete Link",n);
+                n.node.wf.updated("Delete Link",n);
             }
         });
         this.vertex.cellOverlays.push(overlay);
@@ -798,7 +812,7 @@ class NodeTagView{
     updateVertex(){
         var completeness = this.nodeTag.degree;
         var str = "";
-        if(this.nodeTag.node.wf.advancedOutcomes && (completeness & 1) == 0){
+        if(this.nodeTag.node.wf.settings.settingsKey.advancedoutcomes && (completeness & 1) == 0){
             this.vertex.csvtext="";
             if(completeness & 2){str+="<div class='firstoutcomelevel'>"+"I"+"</div>";}
             if(completeness & 4){str+="<div class='secondoutcomelevel'>"+"D"+"</div>";}

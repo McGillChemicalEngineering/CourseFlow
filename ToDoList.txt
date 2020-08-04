@@ -1,0 +1,100 @@
+Business #: 72418 2738 BC0001 
+
+People to check in on/follow up with periodically:
+Carol Hawthorne
+Ying Li
+Dalia Radwan
+Salvatore Costanzo (Concordia cont ed)
+Shehrazade Bakrally (Concordia cont ed)
+Cory Legassic
+
+/*******************************************
+Student Feedback McGill:
+ Here is a list of feedback from students which could potentially make the CFlow more useful:
+    They suggested creating a little tutorial video on the info shown in CFlow (which I can do) and some text/legends to explain the different content.
+    In the main view, it would potentially be better to have the course learning outcomes higher on the list and the graduate attributes at the end (though I imagine this just depends on the order of data entry?)
+    In the main categories (e.g. Chem eng fundamentals etc) which we proposed they think we should add a "Computational courses" category. If we can create our own icons and categories I can do this myself or test out what it looks like if I add this.
+More relevant to you:
+    Can we make the "toggle" to the outcome view a bit more obvious (larger button maybe)?
+    In the error messages, can we add input about which semester a course is offered - some courses are only offered in fall or winter. If a student drags a fall course into a winter term ideally there would be an error message about this.
+
+
+McGill stuff:
+	(100+100) New icons/set them up with ability to change icons
+		columns: General, Chemical Engineering Fundamentals, Science-Based Courses, Experiential and Design-Based Courses, Specialized Courses
+	(100) Engineering-specific nomenclature
+	(1500) validation(?)
+	(1000) training and implementation
+		Create their own forked project
+		Work with the student
+	(200) student view options
+		Option to not allow students to change the category of a course
+		Read only
+		hide/show comments
+		show/hide arrows by default (could make them width 0 but then they still get highlighted on click and hover)
+	
+	
+	
+Unbudgeted stuff:
+	Make courses only draggable to particular semesters (like winter/fall)
+	Different outcome types for graduate attributes or soft skills
+	Cross-heirarchy linking
+	Make it so that different levels in the heirarchy are independent (if you have KB.1 KB.2 KB.3, don't necessarily have KB and vice versa)
+	Be able to "move" (change nodes of) arrows
+	In theory we could have the hours breakdown inclass/outclass/tutorial hours and have it calculate these totals.
+
+/*******************************************
+
+
+High Priority Bugs:
+//Issue with lowest in heirarchy of tags in advanced outcomes
+Comments can be dragged "behind" description box and then can no longer be clicked to be edited/deleted/moved. Needs to be fixed asap. Simple solution is to not allow comments above the first week.
+
+
+High Priority:
+Create a bunch of videos
+Strategy text
+Make the tags in the nodebar look better (smaller, cleaner, show all text on mouseover)
+We seem to be able to doubly link nodes (same ports). Should we prevent this?
+
+Medium Priority:
+colouring is weird on outcome table due to the alternation, sometimes hidden rows have odd numbers which means the alternation no longer holds for the visible ones
+Translate help docs
+Add descriptions of icons from ALA team
+New orchestration icon
+Can also probably save arrow location/bends. Uses an array of "control points" in mxgeometry. 
+Check out passing of information from one site to another - could be useful for creating even more general links to any courseflow?
+Have an "add node" button in empty weeks
+Automatic calculation of resize for dropped nodes instead of textheight
+Duplicate workflow option on project overview.
+Potential linking of activities to activities (perhaps a setting to enable this more advanced behaviour)
+
+
+Low Priority:
+Comments not sticky in safari?
+We may want to add the ability to add resource links independently of the description (as a single unit)
+Comments could be "part of the thing they are attached to", i.e. show up in the editbar
+Recognize where page breaks should be
+Don't forget automatic addition of outcomes to linked wfs has been completely disabled due to the messiness that degree of completion would cause. May be for the best...
+
+Low priority bugs:
+
+Ease of use/intuitiveness:
+Change the left toolbar so that it sits inline with the graph container.
+Have a way to link the strategies to the saltise website
+
+Core components:
+Learning objectives should be shorter? Start with verb. Use the learning outcome document/guidelines
+Course Outcomes: Add performance criteria for each - a list of criteria by which the outcome is assessed. Needs to be there for at least depth 0 and 1.
+
+Long term:
+
+Touch compatible
+
+Strategies should use xml files directly, not the temporary javascript definitions.
+
+Simultaneous codesign.
+
+Add ability to include files/materials (pdfs etc) in the package.
+
+

@@ -33,8 +33,6 @@ class Workflow{
         this.id = this.project.genID();
         this.tagSets=[];
         this.isActive=false;
-        this.advancedOutcomes=false;
-        this.linkTagging=false;
         this.undoHistory=[];
         this.currentUndo;
         this.undoEnabled=false;
@@ -42,6 +40,8 @@ class Workflow{
         this.legendCoords;
         this.outcomeSortType;
         this.isSimple = (this instanceof Activityflow);
+        this.settings = new WorkflowSettings();
+        this.errorlist=[];
     }
     
     getDefaultName(){return "Untitled Workflow";}
@@ -55,8 +55,9 @@ class Workflow{
         xml+=makeXML(this.description,"wfdescription",true);
         xml+=makeXML(this.id,"wfid");
         xml+=this.typeToXML();
-        if(this.advancedOutcomes)xml+=makeXML(this.advancedOutcomes,"advancedoutcomes");
-        if(this.linkTagging)xml+=makeXML(this.linkTagging,"linktagging");
+        for(var prop in this.settings.settingsKey){
+            if(this.settings.settingsKey[prop].value)xml+=makeXML(this.settings.settingsKey[prop].value,prop);
+        }
         
         var usedWF = [];
         for(var i=0;i<this.children.length;i++)usedWF.push(this.children[i].id);
@@ -149,10 +150,14 @@ class Workflow{
         this.setAuthor(getXMLVal(xmlData,"wfauthor",true));
         var description = getXMLVal(xmlData,"wfdescription",true);
         if(description)this.setDescription(description);
-        var advancedoutcomes = getXMLVal(xmlData,"advancedoutcomes");
-        if(advancedoutcomes)this.advancedOutcomes=true;
-        var linktagging = getXMLVal(xmlData,"linktagging");
-        if(linktagging)this.linkTagging=true;
+        for(var prop in this.settings.settingsKey){
+            var settingType = this.settings.settingsKey[prop].type;
+            var settingValue = getXMLVal(xmlData,prop);
+            console.log(settingValue);
+            if(settingValue&&settingType=="checkbox")this.settings.settingsKey[prop].value=true;
+            else if(settingValue&&settingType=="number")this.settings.settingsKey[prop].value=int(settingValue);
+        }
+        
         this.id = getXMLVal(xmlData,"wfid");
         this.tagsetArray = getXMLVal(xmlData,"tagsetARRAY");
         this.usedWF = getXMLVal(xmlData,"usedwfARRAY");
@@ -372,6 +377,7 @@ class Workflow{
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
+            if(this.settings.settingsKey.validation)this.validate();
             this.undoEnabled=true;
         }catch(err){
             alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
@@ -782,8 +788,12 @@ class Workflow{
         
     }
     
-    //Call to create an undo event, which will debounce calls
     makeUndo(type,source=null){
+        this.addUndo(type,source);
+    }
+    
+    //Call to create an undo/update event, which will debounce calls
+    updated(type,source){
         var debouncetime=500;
         var prevUndoCall = this.lastUndoCall;
         this.lastUndoCall=Date.now();
@@ -792,7 +802,15 @@ class Workflow{
             clearTimeout(this.lastCallTimer);
         }
         var wf = this;
-        this.lastCallTimer = setTimeout(function(){if(wf.isActive)wf.addUndo(type,source)},debouncetime);
+        this.lastCallTimer = setTimeout(function(){
+            if(wf.isActive){
+                wf.makeUndo(type,source);
+                if(wf.settings.settingsKey.validation){wf.validate();}
+            }
+        },debouncetime);
+        
+        
+        
     }
         
     addUndo(type,source){
@@ -959,6 +977,37 @@ class Workflow{
         head.innerHTML = LANGUAGE_TEXT.project.selectoptions[USER_LANGUAGE]+":";
         div.appendChild(head);
         
+        var newsettings={};
+        for(var prop in this.settings.settingsKey){
+            newsettings[prop] = this.createSettingsOption(LANGUAGE_TEXT.workflow.settings[prop][USER_LANGUAGE], this.settings.settingsKey[prop]);
+            var settingdiv = newsettings[prop].parentElement;
+            div.appendChild(settingdiv);
+            if(!settingdiv.setting.sub){
+                newsettings[prop].onchange = function(){
+                    if(this.type=="checkbox"){
+                        var thisdiv = this.parentElement;
+                        var nextdiv = thisdiv.nextSibling;
+                        console.log(nextdiv);
+                        while(nextdiv&&nextdiv.setting&&nextdiv.setting.sub){
+                            console.log("changing class");
+                            if(this.checked)nextdiv.classList.remove("disabled");
+                            else(nextdiv.classList.add("disabled"));
+                            nextdiv = nextdiv.nextSibling;
+                        }
+                    }
+                }
+            }else{
+                var lastdiv = newsettings[prop].parentElement.previousSibling;
+                while(lastdiv&&lastdiv.setting){
+                    if(!lastdiv.setting.sub){if(lastdiv.setting.type=="checkbox"&&!lastdiv.setting.value)newsettings[prop].parentElement.classList.add("disabled");break;}
+                    lastdiv = lastdiv.previousSibling;
+                }
+            }
+        }
+        
+        
+        
+        /*
         var advancedoutcomes = this.createCheckboxOption("Advanced Outcomes");
         advancedoutcomes.checked=this.advancedOutcomes;
         div.appendChild(advancedoutcomes.parentElement);
@@ -967,40 +1016,186 @@ class Workflow{
         linktagging.checked = this.linkTagging;
         div.appendChild(linktagging.parentElement);
         
+        var validation = this.createCheckboxOption("Validation");
+        validation.checked = this.validation;
+        div.appendChild(validation.parentElement);
+        
+        
+        
+        var reqtime = this.createNumberOption("Req Credits",this.reqtime);
+        div.appendChild(reqtime.parentElement);
+        var mintime = this.createNumberOption("Min Credits Per Term",this.mintime);
+        div.appendChild(mintime.parentElement);
+        var maxtime = this.createNumberOption("Max Credits Per Term",this.maxtime);
+        div.appendChild(maxtime.parentElement);
+        var maxterm = this.createNumberOption("Max Terms",this.maxtterm);
+        div.appendChild(maxterm.parentElement);
+        
+        */
+        
         
         var button = document.createElement('button');
         div.appendChild(button);
         button.innerHTML = "OK";
-        button.onclick=function(){document.body.removeChild(div);wf.changeSettings(advancedoutcomes.checked,linktagging.checked);wf.project.settingsDisplayed=false;};
+        button.onclick=function(){
+            var newSettingsVals={};
+            for(var prop in wf.settings.settingsKey){
+                var newval;
+                var type = wf.settings.settingsKey[prop].type;
+                if(type=="number"){
+                    if(newsettings[prop].value=="")newval=null;
+                    else newval = int(newsettings[prop].value);
+                }else if(type=="checkbox"){
+                    newval = newsettings[prop].checked;
+                }
+                newSettingsVals[prop]=newval;
+            }
+            
+            document.body.removeChild(div);
+            wf.changeSettings(newSettingsVals);
+            wf.project.settingsDisplayed=false;
+        };
         document.body.appendChild(div);
     }
     
-    
-    createCheckboxOption(string,value){
+    createSettingsOption(string,setting){
+        console.log(setting);
         var div = document.createElement('div');
-        var checkbox = document.createElement('input');
-        checkbox.type="checkbox";
-        checkbox.value=value;
-        checkbox.style.display = "inline-block";
+        div.className="settingdiv";
+        var input = document.createElement('input');
+        input.type=setting.type;
+        input.value=setting.value;
+        if(setting.type=="checkbox"&&setting.value)input.checked=true;
+        input.style.display = "inline-block";
         var label = document.createElement('div');
         label.innerHTML = string;
+        if(setting.type!="checkbox")label.innerHTML+=":";
         label.style.display = "inline-block";
-        div.appendChild(checkbox);
-        div.appendChild(label);
-        return checkbox;
+        div.appendChild(input);
+        if(setting.sub)div.classList.add("subsetting");
+        if(setting.type=="checkbox")div.appendChild(label);
+        else div.insertBefore(label,input);
+        div.setting = setting;
+        return input;
     }
     
-    changeSettings(advancedOutcomes,linkTagging){
-       var settingsChanged = false;
-        if(advancedOutcomes!=this.advancedOutcomes){
-            this.advancedOutcomes=advancedOutcomes;
-            settingsChanged = true;
+    
+    changeSettings(newSettingsVals){
+        var settingsChanged = false;
+        for(var prop in this.settings.settingsKey){
+            var setting = this.settings.settingsKey[prop];
+            if(setting.value!=newSettingsVals[prop]){
+                console.log(prop);
+                console.log(setting.value);
+                console.log(newSettingsVals[prop]);
+                setting.value=newSettingsVals[prop];
+                settingsChanged=true;
+            }
         }
-        if(linkTagging!=this.linkTagging){
-            this.linkTagging=linkTagging;
-            settingsChanged = true;
+        if(settingsChanged&&this.view){this.view.settingsChanged();this.updated("settings",this);}
+        
+    }
+    
+    validate(showAlert=false){
+        console.log("validating");
+        if(this.validating||this.settings.settingsKey.validation.value!=true)return;
+        this.validating = true;
+        this.clearValidationErrors();
+        this.errorlist=[];
+        var errortext = "";
+        var credits = [];
+        for(var i=0;i<this.weeks.length;i++){
+            var w = this.weeks[i];
+            var weektime = 0;
+            for(var j=0;j<w.nodes.length;j++){
+                var n = w.nodes[j];
+                //check prereqs
+                for(var k=0;k<n.fixedLinksOut.length;k++){
+                    var link = n.fixedLinksOut[k];
+                    var target = link.targetNode;
+                    if(!target)continue;
+                    console.log(link.style);
+                    if(link.style=="dashed"){
+                        if(n.week.index>target.week.index){
+                            var errorstring = target.name+LANGUAGE_TEXT.validation.appearsbeforecoreq[USER_LANGUAGE]+n.name;
+                            this.errorlist.push(new WorkflowError(target,errorstring));
+                            errortext+=errorstring+"\n";
+                        }
+                    }else if(n.week.index>=target.week.index){
+                        var errorstring = target.name+LANGUAGE_TEXT.validation.appearsbeforeprereq[USER_LANGUAGE]+n.name
+                        this.errorlist.push(new WorkflowError(target,errorstring));
+                        errortext+=errorstring+"\n";
+                    }
+                }
+                if(n.time.value)weektime+=int(n.time.value);
+                
+            }
+            credits.push(weektime);
         }
-        if(settingsChanged&&this.view)this.view.settingsChanged();
+        
+        //check maxterms
+        if(this.settings.settingsKey.maxterm.value){
+            var maxterm = this.settings.settingsKey.maxterm.value;
+            if(maxterm>this.weeks.length){
+                var errorstring = LANGUAGE_TEXT.validation.maxterms[USER_LANGUAGE]+maxterm+LANGUAGE_TEXT.validation.maxterms2[USER_LANGUAGE]+this.weeks.length;
+                this.errorlist.push(new WorkflowError(this.weeks[this.weeks.length-1],errorstring));
+                errortext+=errorstring+"\n";
+            }
+        }
+        var totalcredits =0;
+        var mintime = this.settings.settingsKey.mintime.value;
+        var maxtime = this.settings.settingsKey.maxtime.value;
+        if(mintime||maxtime)for(var i=0;i<credits.length;i++){
+            if(mintime&&credits[i]<mintime){
+                var errorstring = this.weeks[i].getName()+LANGUAGE_TEXT.validation.has[USER_LANGUAGE]+credits[i]+LANGUAGE_TEXT.validation.lesscredits[USER_LANGUAGE]+mintime+")";
+                this.errorlist.push(new WorkflowError(this.weeks[i],errorstring));
+                errortext+=errorstring+"\n";
+            }
+            if(maxtime&&credits[i]>maxtime){
+                var errorstring = this.weeks[i].getName()+LANGUAGE_TEXT.validation.has[USER_LANGUAGE]+credits[i]+LANGUAGE_TEXT.validation.morecredits[USER_LANGUAGE]+maxtime+")";
+                this.errorlist.push(new WorkflowError(this.weeks[i],errorstring));
+                errortext+=errorstring +"\n";
+            }
+            totalcredits+=credits[i];
+        }
+        var reqtime = this.settings.settingsKey.reqtime.value;
+        if(reqtime&&totalcredits<=reqtime){
+            var errorstring = LANGUAGE_TEXT.validation.total[USER_LANGUAGE]+totalcredits+LANGUAGE_TEXT.validation.lesscredits[USER_LANGUAGE]+reqtime+")";
+            this.errorlist.push(new WorkflowError(this.weeks[i],errorstring));
+            errortext+=errorstring;
+        }
+        if(errortext=="")errortext=LANGUAGE_TEXT.validation.noerrors[USER_LANGUAGE];
+        if(showAlert)alert(LANGUAGE_TEXT.validation.errorstart[USER_LANGUAGE]+errortext);
+        this.addValidationErrors();
+        this.validating = false;
+    }
+    
+    
+    //Goes through our validation errors and if there are adequate views we add them
+    addValidationErrors(){
+        for(var i=0;i<this.errorlist.length;i++){
+            var error = this.errorlist[i];
+            try{
+                if(error.node.view.addError){
+                    error.node.view.addError(error);
+                }
+            }catch(err){
+                console.log("error node not found");
+            }
+        }
+    }
+    
+    clearValidationErrors(){
+        console.log("CLEARED");
+        if(this.errorlist==null)return;
+        for(var i=0;i<this.errorlist.length;i++){
+            var error = this.errorlist[i];
+            try{
+                error.node.view.removeError(error);
+            }catch(err){
+                console.log("error node not found");
+            }
+        }
     }
 
 }
@@ -1160,5 +1355,13 @@ class Programflow extends Workflow{
     getDepth(){return 0;}
     
     
+    
+}
+
+class WorkflowError{
+    constructor(node,text){
+        this.text = text;
+        this.node=node;
+    }
     
 }

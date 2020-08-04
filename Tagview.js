@@ -68,7 +68,7 @@ class Tagview{
         overlay.addListener(mxEvent.CLICK, function(sender, plusEvent){
             graph.clearSelection();
             node.removeTag(tag,node.wf instanceof Programflow);
-            node.wf.makeUndo("Remove Tag",node);
+            node.wf.updated("Remove Tag",node);
         });
         tagLabel.cellOverlays = [overlay];
         
@@ -91,7 +91,7 @@ class Tagview{
         button.b.hasListener=true;
         button.b.isToggled=false;
         button.b.onclick= null;
-        if(node.wf.advancedOutcomes){
+        if(node.wf.settings.settingsKey.advancedoutcomes){
             var checkbox = document.createElement('input');
             checkbox.type="number";
             checkbox.readOnly=true;
@@ -104,7 +104,7 @@ class Tagview{
                 
                 node.removeTag(tag,node.wf instanceof Programflow);
                 node.addTag(tag,true,node.wf instanceof Programflow,int(checkbox.value));
-                node.wf.makeUndo("Add Tag",node);
+                node.wf.updated("Add Tag",node);
             }
             button.outcomecheckbox=checkbox;
         }
@@ -136,7 +136,7 @@ class Tagview{
         console.log(this.tag);
         for(var i=0;i<this.nodeTags.length;i++){
             console.log("turning highlighting on ("+on+") on node "+this.nodeTags[i].node.id);
-            if(this.nodeTags[i].node instanceof CFNode || this.nodeTags[i].node.wf.linkTagging)this.nodeTags[i].node.view.highlight(on);
+            if(this.nodeTags[i].node instanceof CFNode || this.nodeTags[i].node.wf.settings.settingsKey.linktagging)this.nodeTags[i].node.view.highlight(on);
             console.log(this.nodeTags);
         }
         if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);

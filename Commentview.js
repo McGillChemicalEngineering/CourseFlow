@@ -96,7 +96,7 @@ class Commentview{
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecomment[USER_LANGUAGE])){
                 graph.clearSelection();
                 n.deleteSelf();
-                n.wf.makeUndo("Delete Comment",n);
+                n.wf.updated("Delete Comment",n);
             }
         });
         this.vertex.cellOverlays.push(overlay);

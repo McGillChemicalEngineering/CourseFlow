@@ -50,7 +50,9 @@ h4{
 body, html{
     overflow:hidden;
     margin:0px;
+    height:100%;
 }
+
 
 body{
     background:#EEEEEE;
@@ -826,6 +828,8 @@ div.highlighted{
     width: calc(100% - 242px);
     background:#FFFFFF;
     box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
+    overflow:auto;
+    height:calc(100% - 140px);
 }
 
 .helptextwrapper li{
@@ -1695,6 +1699,29 @@ input.outcomecheckbox[type=number]{
     width:560px;
     height:300px;
     white-space:normal;
+}
+
+.settingdiv{
+    text-align:left;
+}
+
+.settingdiv div{
+    width:200px;
+}
+
+.settingdiv.subsetting{
+    margin-left:20px;
+}
+
+.settingdiv div+input{
+    margin-left:20px;
+    box-sizing:border-box;
+    width:60px;
+}
+
+
+.subsetting input{
+    color:inherit;
 }
 
  /* The switch - the box around the slider */

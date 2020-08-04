@@ -308,7 +308,7 @@ class Outcomeview{
                 for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
                     var nv = this.categoryViews[j].nodeViews[k];
                     var tc;
-                    if(this.wf.advancedOutcomes)tc = new AdvancedOutcomeTableCell(this.tagViews[i].tag,nv);
+                    if(this.wf.settings.settingsKey.advancedoutcomes)tc = new AdvancedOutcomeTableCell(this.tagViews[i].tag,nv);
                     else tc = new OutcomeTableCell(this.tagViews[i].tag,nv);
                     tc.createVertex(this.tagViews[i].vertex);
                     cellRow.push(tc);
@@ -381,7 +381,7 @@ class Outcomeview{
         //legendDiv.appendChild(document.createElement('hr'));
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.complete[USER_LANGUAGE],"check");
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.partial[USER_LANGUAGE],"nocheck");
-        if(this.wf.advancedOutcomes){
+        if(this.wf.settings.settingsKey.advancedoutcomes){
             this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.introduce[USER_LANGUAGE],"I","firstoutcomelevel");
             this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.develop[USER_LANGUAGE],"D","secondoutcomelevel");
             this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.advance[USER_LANGUAGE],"A","thirdoutcomelevel");
@@ -618,7 +618,7 @@ class Outcomeview{
                 for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
                     var nv = this.categoryViews[j].nodeViews[k];
                     var tc;
-                    if(this.wf.advancedOutcomes)tc = new AdvancedOutcomeTableCell(allTags[i],nv);
+                    if(this.wf.settings.settingsKey.advancedoutcomes)tc = new AdvancedOutcomeTableCell(allTags[i],nv);
                     else tc = new OutcomeTableCell(allTags[i],nv);
                     tc.createVertex(allTags[i].view.vertex);
                     cellRow.push(tc);
@@ -1228,10 +1228,10 @@ class OutcomeCategoryview{
         if(sortType=="week"){
             this.wf.updateWeekIndices();
             for(var i=0;i<cvs.length-1;i++)cvs[i].nameChanged();
-            this.wf.makeUndo("Week Moved",myitem);
+            this.wf.updated("Week Moved",myitem);
         }else if(sortType=="column"){
             this.wf.view.populateDisplayBar();
-            this.wf.makeUndo("Column Moved",myitem);
+            this.wf.updated("Column Moved",myitem);
         }
         
     }
@@ -1416,12 +1416,12 @@ class OutcomeNodeview{
             if(this.cv==target.cv)return;
             if(sort=="icon"){
                 this.nodes[0].setLeftIcon(target.cv.value);
-                wf.makeUndo("Icon Changed",node);
+                wf.updated("Icon Changed",node);
                 return;
             }
             if(sort=="column"){
                 this.nodes[0].setColumn(target.cv.value);
-                wf.makeUndo("Node Moved",node);
+                wf.updated("Node Moved",node);
                 return;
             }
         }
@@ -1474,7 +1474,7 @@ class OutcomeNodeview{
         if(!node)return;
         if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
             node.deleteSelf();
-            node.wf.makeUndo("Delete Node",node);
+            node.wf.updated("Delete Node",node);
         }
     }
     
@@ -1639,7 +1639,7 @@ class OutcomeNodeview{
         var tagViews = this.cv.wf.view.tagViews;
         for(var j=0;j<tableCells.length;j++){
             var newCell;
-            if(this.cv.wf.advancedOutcomes)newCell = new AdvancedOutcomeTableCell(tagViews[j].tag,nv);
+            if(this.cv.wf.settings.settingsKey.advancedoutcomes)newCell = new AdvancedOutcomeTableCell(tagViews[j].tag,nv);
             else newCell = new OutcomeTableCell(tagViews[j].tag,nv);
             newCell.createVertex(tagViews[j].vertex,tableCells[j][index-1].vertex);
             tableCells[j].splice(index-1,0,newCell);
@@ -1826,7 +1826,7 @@ class OutcomeTagview{
             this.vertex.parentElement.insertBefore(tagArray[i].view.vertex,tvtarget);
         }
         wf.moveChild(this.tag,target.tag,isAfter);
-        wf.makeUndo("Tagset Moved",this.tag);
+        wf.updated("Tagset Moved",this.tag);
         
     }
     
@@ -1942,10 +1942,10 @@ class OutcomeTableCell{
             checkbox.onclick=function(){
                 if(checkbox.checked){
                     node.addTag(tag,false,node.wf instanceof Programflow);
-                    node.wf.makeUndo("Add Tag",node);
+                    node.wf.updated("Add Tag",node);
                 }else{
                     node.removeTag(tag,node.wf instanceof Programflow);
-                    node.wf.makeUndo("Remove Tag",node);
+                    node.wf.updated("Remove Tag",node);
                 }
             }
             if(tag&&tag.project.readOnly)checkbox.disabled=true;
@@ -2031,11 +2031,11 @@ class AdvancedOutcomeTableCell extends OutcomeTableCell{
                 else checkbox.value=(checkbox.value<<1)%16;
                 if(checkbox.value==0){
                     node.removeTag(tag,node.wf instanceof Programflow);
-                    node.wf.makeUndo("Remove Tag",node);
+                    node.wf.updated("Remove Tag",node);
                 }else{
                     node.removeTag(tag,node.wf instanceof Programflow);
                     node.addTag(tag,false,node.wf instanceof Programflow,checkbox.value);
-                    node.wf.makeUndo("Add Tag",node);
+                    node.wf.updated("Add Tag",node);
                 }
             }
             if(tag&&tag.project.readOnly)checkbox.disabled=true;
@@ -2188,7 +2188,7 @@ class ProgramOutcomeCategoryview extends OutcomeCategoryview{
             node.week=week;
             week.addNode(node);
             wf.view.nodeAdded(node);
-            wf.makeUndo("Node Added",node);
+            wf.updated("Node Added",node);
             return node;
         }
         
