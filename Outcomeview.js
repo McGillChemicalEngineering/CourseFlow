@@ -308,7 +308,8 @@ class Outcomeview{
                 for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
                     var nv = this.categoryViews[j].nodeViews[k];
                     var tc;
-                    if(this.wf.settings.settingsKey.advancedoutcomes)tc = new AdvancedOutcomeTableCell(this.tagViews[i].tag,nv);
+                    console.log(this.wf.settings.settingsKey.advancedoutcomes.value);
+                    if(this.wf.settings.settingsKey.advancedoutcomes.value)tc = new AdvancedOutcomeTableCell(this.tagViews[i].tag,nv);
                     else tc = new OutcomeTableCell(this.tagViews[i].tag,nv);
                     tc.createVertex(this.tagViews[i].vertex);
                     cellRow.push(tc);
@@ -381,7 +382,7 @@ class Outcomeview{
         //legendDiv.appendChild(document.createElement('hr'));
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.complete[USER_LANGUAGE],"check");
         this.drawLegendLine(legendDiv,LANGUAGE_TEXT.outcomeview.partial[USER_LANGUAGE],"nocheck");
-        if(this.wf.settings.settingsKey.advancedoutcomes){
+        if(this.wf.settings.settingsKey.advancedoutcomes.value){
             this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.introduce[USER_LANGUAGE],"I","firstoutcomelevel");
             this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.develop[USER_LANGUAGE],"D","secondoutcomelevel");
             this.drawLegendLineText(legendDiv,LANGUAGE_TEXT.outcomeview.advance[USER_LANGUAGE],"A","thirdoutcomelevel");
@@ -618,7 +619,7 @@ class Outcomeview{
                 for(var k=0;k<this.categoryViews[j].nodeViews.length;k++){
                     var nv = this.categoryViews[j].nodeViews[k];
                     var tc;
-                    if(this.wf.settings.settingsKey.advancedoutcomes)tc = new AdvancedOutcomeTableCell(allTags[i],nv);
+                    if(this.wf.settings.settingsKey.advancedoutcomes.value)tc = new AdvancedOutcomeTableCell(allTags[i],nv);
                     else tc = new OutcomeTableCell(allTags[i],nv);
                     tc.createVertex(allTags[i].view.vertex);
                     cellRow.push(tc);
@@ -1639,7 +1640,7 @@ class OutcomeNodeview{
         var tagViews = this.cv.wf.view.tagViews;
         for(var j=0;j<tableCells.length;j++){
             var newCell;
-            if(this.cv.wf.settings.settingsKey.advancedoutcomes)newCell = new AdvancedOutcomeTableCell(tagViews[j].tag,nv);
+            if(this.cv.wf.settings.settingsKey.advancedoutcomes.value)newCell = new AdvancedOutcomeTableCell(tagViews[j].tag,nv);
             else newCell = new OutcomeTableCell(tagViews[j].tag,nv);
             newCell.createVertex(tagViews[j].vertex,tableCells[j][index-1].vertex);
             tableCells[j].splice(index-1,0,newCell);

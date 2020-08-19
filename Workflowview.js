@@ -772,7 +772,7 @@ class Workflowview{
                 if(cell!=null && cell.isNode){
                     cell.node.addTag(thistag,true,cell.node.wf instanceof Programflow);
                     wf.updated("Add Tag",cell.node);
-                }else if(cell!=null && wf.settings.settingsKey.linktagging && cell.isLink){
+                }else if(cell!=null && wf.settings.settingsKey.linktagging.value && cell.isLink){
                     cell.link.addTag(thistag,true,cell.link.wf instanceof Programflow);
                     wf.updated("Add Tag",cell.link);
                 }
@@ -782,7 +782,7 @@ class Workflowview{
             return dropfunction;
         }
         
-        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.settings.settingsKey.linktagging)));});
+        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.settings.settingsKey.linktagging.value)));});
         tag.view.addDrop(button);
         if(tag.depth<=this.wf.getTagDepth())button.makeEditable(false,false,true,this.wf);
         button.makeExpandable();
@@ -847,15 +847,12 @@ class Workflowview{
         
 
         var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
-        var styleC = getComputedStyle(document.getElementById("graphContainer"));
-        var styleW = getComputedStyle(document.getElementById("graphWrapper"));
-        var styleB = getComputedStyle($(".bodywrapper")[0]);
-        draggable.leftPos = int(styleB.left)+int(styleC.marginLeft);
-        if(int(styleB.width)>int(styleW.width))draggable.leftPos+=int(styleB.width)/2-int(styleW.width)/2;
-        draggable.topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
-            var cell = this.getDropTarget(graph,evt.pageX+8-this.leftPos+int($('.bodywrapper')[0].scrollLeft)-graph.view.getTranslate().x,evt.pageY-this.topPos+int($('.bodywrapper')[0].scrollTop)-graph.view.getTranslate().y,evt);
+            var boundRect = $("#graphContainer")[0].getBoundingClientRect();
+            var leftPos = boundRect.x;
+            var topPos = boundRect.y;
+            var cell = this.getDropTarget(graph,evt.pageX-leftPos,evt.pageY-topPos,evt);
             while(cell!=null&&graph.isPart(cell)){cell=graph.getModel().getParent(cell);}
             if(draggable.lastCell!=null&&cell!=draggable.lastCell){graph.view.getState(draggable.lastCell).shape.node.firstChild.classList.remove("validdrop");draggable.lastCell=null;}
             
@@ -905,13 +902,10 @@ class Workflowview{
             else if(cell.isBracket)comparent=cell.bracket;
             else if(cell.isHead)comparent=cell.column;
             else if(cell.isWeek)comparent=cell.week;
-            var styleC = getComputedStyle(document.getElementById("graphContainer"));
-            var styleW = getComputedStyle(document.getElementById("graphWrapper"));
-            var styleB = getComputedStyle($(".bodywrapper")[0]);
-            var leftPos = int(styleB.left)+int(styleC.marginLeft);
-            if(int(styleB.width)>int(styleW.width))leftPos+=int(styleB.width)/2-int(styleW.width)/2;
-            var topPos = int(styleB.top)+int(styleC.top)+int(styleB.marginTop)+int(styleC.marginTop);
-            var com = new WFComment(wf,evt.pageX-leftPos+int($('.bodywrapper')[0].scrollLeft)-graph.view.getTranslate().x,evt.pageY-topPos+int($('.bodywrapper')[0].scrollTop)-graph.view.getTranslate().y,comparent);
+            var boundRect = $("#graphContainer")[0].getBoundingClientRect();
+            var leftPos = boundRect.x;
+            var topPos = boundRect.y;
+            var com = new WFComment(wf,evt.pageX-leftPos,evt.pageY-topPos,comparent);
             com.view = new Commentview(graph,com);
             com.view.createVertex();
             wf.addComment(com);

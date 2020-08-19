@@ -1913,7 +1913,9 @@ path.highlightedred{
 
 .readonly .movehandle{display:none !important;}
 
-
+.warningquestionmark{
+    cursor:help !important;
+}
     
 .printpreview .expanddiv{display:none;}
 .printpreview .movehandle{display:none;}

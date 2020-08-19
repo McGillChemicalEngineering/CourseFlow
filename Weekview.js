@@ -393,6 +393,12 @@ class Weekview{
         this.errorVertices.push(vertex);
         vertex.getTooltip = function(){console.log("tooltip");return error.text;}
         error.vertex=vertex;
+        
+        var gstate = this.graph.view.getState(vertex);
+        try{
+            var g = gstate.shape.node;
+            g.classList.add("warningquestionmark");
+        }catch(err){}
     }
     
     removeError(error){

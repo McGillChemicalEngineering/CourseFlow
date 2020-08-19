@@ -377,7 +377,7 @@ class Workflow{
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
             if(this.currentUndo>0)$("#undo").removeClass("disabled");
             if(this.currentUndo<this.undoHistory.length-1)$("#redo").removeClass("disabled");
-            if(this.settings.settingsKey.validation)this.validate();
+            if(this.settings.settingsKey.validation.value)this.validate();
             this.undoEnabled=true;
         }catch(err){
             alert(LANGUAGE_TEXT.errors.wfopen[USER_LANGUAGE]);
@@ -805,7 +805,7 @@ class Workflow{
         this.lastCallTimer = setTimeout(function(){
             if(wf.isActive){
                 wf.makeUndo(type,source);
-                if(wf.settings.settingsKey.validation){wf.validate();}
+                if(wf.settings.settingsKey.validation.value){wf.validate();}
             }
         },debouncetime);
         

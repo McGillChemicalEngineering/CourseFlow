@@ -439,7 +439,7 @@ class CFNode {
         if(parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
-            if(this.wf.settings.settingsKey.advancedoutcomes){
+            if(this.wf.settings.settingsKey.advancedoutcomes.value){
                 var addParent=null;
                 for(i=0;i<children.length;i++){
                     if(!this.hasTag(children[i])){
@@ -889,7 +889,7 @@ class WFLink{
         if(parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
-            if(this.wf.settings.settingsKey.advancedoutcomes){
+            if(this.wf.settings.settingsKey.advancedoutcomes.value){
                 var addParent=null;
                 for(i=0;i<children.length;i++){
                     if(!this.hasTag(children[i])){
@@ -939,7 +939,7 @@ class WFLink{
     validateTag(tag){
         var searchtags = [];
         var degree;
-        if(this.wf.settings.settingsKey.advancedoutcomes){
+        if(this.wf.settings.settingsKey.advancedoutcomes.value){
             var ts = tag;
             while(this.getTagIndex(ts)<0&&ts.parentTag!=null)ts = ts.parentTag;
             var index = this.getTagIndex(ts);

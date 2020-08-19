@@ -91,7 +91,7 @@ class Tagview{
         button.b.hasListener=true;
         button.b.isToggled=false;
         button.b.onclick= null;
-        if(node.wf.settings.settingsKey.advancedoutcomes){
+        if(node.wf.settings.settingsKey.advancedoutcomes.value){
             var checkbox = document.createElement('input');
             checkbox.type="number";
             checkbox.readOnly=true;
@@ -136,7 +136,7 @@ class Tagview{
         console.log(this.tag);
         for(var i=0;i<this.nodeTags.length;i++){
             console.log("turning highlighting on ("+on+") on node "+this.nodeTags[i].node.id);
-            if(this.nodeTags[i].node instanceof CFNode || this.nodeTags[i].node.wf.settings.settingsKey.linktagging)this.nodeTags[i].node.view.highlight(on);
+            if(this.nodeTags[i].node instanceof CFNode || this.nodeTags[i].node.wf.settings.settingsKey.linktagging.value)this.nodeTags[i].node.view.highlight(on);
             console.log(this.nodeTags);
         }
         if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);

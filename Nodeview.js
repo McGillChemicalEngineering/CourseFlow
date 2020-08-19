@@ -421,6 +421,12 @@ class Nodeview{
         this.errorVertices.push(vertex);
         vertex.getTooltip = function(){console.log("tooltip");return error.text;}
         error.vertex=vertex;
+        
+        var gstate = this.graph.view.getState(vertex);
+        try{
+            var g = gstate.shape.node;
+            g.classList.add("warningquestionmark");
+        }catch(err){}
     }
     
     removeError(error){
@@ -496,7 +502,8 @@ class WFLinkview{
         this.tagPreview.cellOverlays=[];
         this.tagPreview.isTagPreview=true;
         this.tagPreview.node=this.link;
-        this.graph.orderCells(true,[this.tagPreview]);
+        this.graph.orderCells(false,[this.tagPreview]);
+        this.graph.toggleCells(false,[this.tagPreview]);
         if(this.link.tags.length<1)this.graph.toggleCells(false,[this.tagPreview]);
     }
     
@@ -558,7 +565,7 @@ class WFLinkview{
     }
     
     mouseIn(){
-        if(this.link.wf.settings.settingsKey.linktagging && this.vertex&&this.tagPreview){
+        if(this.link.wf.settings.settingsKey.linktagging.value && this.vertex&&this.tagPreview){
            // this.graph.orderCells(false,[this.vertex]);
             
             var edgestate = this.graph.view.getState(this.vertex);
@@ -812,7 +819,7 @@ class NodeTagView{
     updateVertex(){
         var completeness = this.nodeTag.degree;
         var str = "";
-        if(this.nodeTag.node.wf.settings.settingsKey.advancedoutcomes && (completeness & 1) == 0){
+        if(this.nodeTag.node.wf.settings.settingsKey.advancedoutcomes.value && (completeness & 1) == 0){
             this.vertex.csvtext="";
             if(completeness & 2){str+="<div class='firstoutcomelevel'>"+"I"+"</div>";}
             if(completeness & 4){str+="<div class='secondoutcomelevel'>"+"D"+"</div>";}

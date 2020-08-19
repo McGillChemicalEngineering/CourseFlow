@@ -32,6 +32,7 @@ McGill stuff:
 		Read only
 		hide/show comments
 		show/hide arrows by default (could make them width 0 but then they still get highlighted on click and hover)
+make the <!> thing have a <?> mouseover arrow
 	
 	
 	
@@ -47,6 +48,7 @@ Unbudgeted stuff:
 
 
 High Priority Bugs:
+ADVANCED TAGGING (ALL OPTIONS??? ALWAYS ENABLED!)
 //Issue with lowest in heirarchy of tags in advanced outcomes
 Comments can be dragged "behind" description box and then can no longer be clicked to be edited/deleted/moved. Needs to be fixed asap. Simple solution is to not allow comments above the first week.
 
