@@ -1035,7 +1035,7 @@ class Workflowview{
             graph.isCellConnectable = function(){return false;}
             
         }
-        graph.cellsDisconnectable=false;
+        //graph.cellsDisconnectable=false;
         graph.setAllowDanglingEdges(false);
         graph.connectionHandler.select = false;
         //graph.view.setTranslate(20, 20);
@@ -1474,7 +1474,34 @@ class Workflowview{
             return edge;
         }
         
-        
+        //Handle changing the edge's target or source
+        mxEdgeHandler.prototype.connect = function(edge,terminal,isSource,isClone,me){
+            
+            var link = edge.link;
+            if(!link||link instanceof WFAutolink)return;
+            
+            var returnval = edgeConnectPrototype.apply(this,arguments);
+            console.log(edge);
+            console.log(link);
+            try{
+                var originalNode = link.node;
+                if(isSource){
+                    originalNode.fixedLinksOut.splice(originalNode.fixedLinksOut.indexOf(link),1);
+                    link.node = terminal.node;
+                    terminal.node.fixedLinksOut.push(link);
+                }else{
+                    link.targetNode.linksIn.splice(link.targetNode.linksIn.indexOf(link),1);
+                    link.targetNode = terminal.node;
+                    link.targetNode.linksIn.push(link);
+                    link.id = link.targetNode.id;
+                }
+                var ps = link.view.getPortStyle();
+                if(ps)link.portStyle = ps;
+                
+            }catch(err){console.log("there was a problem changing the edge");}
+            console.log(returnval);
+            return returnval;
+        }
         
         this.graph = graph;
         

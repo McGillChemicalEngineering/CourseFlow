@@ -209,7 +209,13 @@ const iconsList={
         {text:{en:'Artifact',fr:"Artefact"},value:'artifact'},
         {text:{en:'Individual',fr:"Individuel"},value:'solo'},
         {text:{en:'Group',fr:"Groupe"},value:'group'},
-        {text:{en:'Class',fr:"Classe"},value:'class'}
+        {text:{en:'Class',fr:"Classe"},value:'class'},
+        {text:{en:'Science',fr:"Science"},value:'science'},
+        {text:{en:'General',fr:"Général"},value:'general'},
+        {text:{en:'Chemistry',fr:"Chimie"},value:'chem'},
+        {text:{en:'Specialized',fr:"Spécialisé"},value:'target'},
+        {text:{en:'Puzzle',fr:"Puzzle"},value:'puzzle'},
+        {text:{en:'Design',fr:"Conception"},value:'design'}
     ]
 };
 
@@ -642,6 +648,7 @@ Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
 
 // These should be defined only once, otherwise they end up iterating through themselves multiple times.
 var insertEdgePrototype = mxConnectionHandler.prototype.insertEdge;
+var edgeConnectPrototype = mxEdgeHandler.prototype.connect;
 var drawPreviewPrototype = mxVertexHandler.prototype.drawPreview;
 
 
