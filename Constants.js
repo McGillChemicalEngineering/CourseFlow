@@ -104,7 +104,7 @@ const wfStartX=cellSpacing;
 const wfStartY=cellSpacing;
 const defaultIconPadding=12;
 const defaultTextPadding=0;
-const defaultIconWidth=36;
+const defaultIconWidth=24;
 const bracketWidth=10;
 const bracketTabWidth=80;
 const bracketTabHeight=80;
@@ -134,15 +134,15 @@ const defaultWFAreaStyle = 'editable=0;fillColor=#FFFFFF;movable=0;resizable=0;s
 const defaultLegendStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor='+SALTISEBLUE+';strokeWidth=4;verticalAlign=ALIGN_TOP;fontSize=14;fontStyle=1;fontColor='+SALTISEBLUE+';spacingTop=8';
 const defaultLegendLineStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor=none;fontSize=12;fontStyle=1;fontColor='+SALTISEBLUE+';constituent=1;imageAlign=left;imageWidth=24;imageHeight=24;overflow=hidden;';
 const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-40)+";imageHeight="+(colIconSize-40)+";fontSize=16;fontStyle=5;fontColor=black;";
-const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=none;fontSize=14;fontColor=white;fillColor=none;overflow=hidden;editable=0;fontStyle=1;fontFamily=arial;";
-const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=black;strokeWidth=2;editable=0;fontColor=black;resizable=0;";
+const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=white;strokeWidth=none;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;fontStyle=1;fontFamily=arial;";
+const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=none;fillColor=white;strokeWidth=none;editable=0;fontColor=black;arcSize=10;absoluteArcSize=1;rounded=1;resizable=0;";
 const defaultIconStyle="shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=none;";
-const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=black;strokeWidth=2;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
+const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=white;strokeWidth=none;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
 const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fontStyle=1;fontColor=black;fillColor=none;strokeColor=none;align=left;";
 const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=20;absoluteArcSize=1;spacingLeft=20;";
 const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
 const defaultTagPreviewStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=center;verticalAlign=top;rounded=1;arcSize=50;";
-const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=black;fontSize=40;align=left;strokeWidth=2;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;fontColor=black;";
+const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=white;strokeWidth=none;fontSize=40;align=left;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;fontColor=black;";
 const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;editable=0;strokeColor=none;fontSize=14;fillColor=none;fontColor=black;verticalAlign=middle;";
 const defaultLinkIconStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;verticalAlign=middle;shape=image;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
@@ -535,23 +535,23 @@ const LANGUAGE_TEXT = {
         has:{en:" has ",fr:" a "},
         lesscredits:{en:" credits, which is less than the recommended amount (",fr:" crédits, ce qui est moins que le montant recommandé ("},
         morecredits:{en:" credits, which is more than the recommended amount (",fr:" crédits, ce qui est plus que le montant recommandé ("},
-        total:{en:"There is a total of ",fr:"Il y a un total de "},
+        total:{en:"There are a total of ",fr:"Il y a un total de "},
         noerrors:{en:"There are no errors to report!",fr:"Il n'y a aucune erreur!"},
         errorstart:{en:"The validation process has found the following errors:\n\n",fr:"Le processus de validation a détecté les erreurs suivantes:\n\n"}
     }
 }
 
 const columnValues={
-    HW:{image:"homework",colour:SALTISELIGHTBLUE},
-    AC:{image:"lesson",colour:SALTISEGREEN},
-    SA:{image:"assessment",colour:SALTISERED},
-    FA:{image:"artifact",colour:SALTISEORANGE},
-    OOC:{image:"home",colour:SALTISELIGHTBLUE},
-    ICI:{image:"instruct",colour:SALTISEORANGE},
-    OOCI:{image:"ooci",colour:SALTISERED},
-    ICS:{image:"students",colour:SALTISEGREEN},
-    CO:{image:"instruct",colour:SALTISEGREEN},
-    CUS:{image:"instruct",colour:"#a3b9df"},
+    HW:{image:"homework",colour:"#ad351d"},
+    AC:{image:"lesson",colour:"#ed4a28"},
+    SA:{image:"assessment",colour:"#f7ba2a"},
+    FA:{image:"artifact",colour:"#ed8934"},
+    OOC:{image:"home",colour:"#114cd4"},
+    ICI:{image:"instruct",colour:"#11b3d4"},
+    OOCI:{image:"ooci",colour:"#0b118a"},
+    ICS:{image:"students",colour:"#04d07d"},
+    CO:{image:"instruct",colour:"#08e08d"},
+    CUS:{image:"instruct",colour:"#6738ff"},
     CUSP:{image:"other",colour:SALTISEGREEN}
 }
 

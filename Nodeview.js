@@ -48,7 +48,8 @@ class Nodeview{
         if(this.addLeftIcon()){left+=this.lefticonnode.w()+2*defaultIconPadding;width-=this.lefticonnode.w()+2*defaultIconPadding;}
         var name = LANGUAGE_TEXT.node.defaulttext[USER_LANGUAGE];
         if(this.node.name)name=this.node.name;
-        this.namenode = this.graph.insertVertex(this.vertex,null,name,left,0,width,minCellHeight,defaultNameStyle);
+        this.namenode = this.graph.insertVertex(this.vertex,null,name,0,10,defaultCellWidth,minCellHeight-10,defaultNameStyle+"labelWidth="+width+";");
+        this.graph.orderCells(true,[this.namenode]);
         var node = this.node;
         this.namenode.valueChanged = function(value){
             var value1 = node.setNameSilent(value);
@@ -106,10 +107,10 @@ class Nodeview{
         if(this.node.getIconCategory("right")){
             var style = defaultIconStyle;
             if(this.node.righticon){
-                style+="image="+iconpath+this.node.righticon+"48.png;";
+                style+="image="+iconpath+this.node.righticon+"24.png;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),this.node.righticon,null);
             }
-            this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,style);
+            this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,8,defaultIconWidth,minCellHeight,style);
             return true;
         }
         return false;
@@ -119,10 +120,10 @@ class Nodeview{
         if(this.node.getIconCategory("left")){
             var style = defaultIconStyle;
             if(this.node.lefticon){
-                style+="image="+iconpath+this.node.lefticon+"48.png;";
+                style+="image="+iconpath+this.node.lefticon+"24.png;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),this.node.lefticon,null);
             }
-            this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,0,defaultIconWidth,minCellHeight,style);
+            this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,8,defaultIconWidth,minCellHeight,style);
             return true;
         }
         return false;
@@ -131,14 +132,14 @@ class Nodeview{
     leftIconUpdated(oldvalue){
         var newvalue = this.node.lefticon;
         this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),newvalue,oldvalue);
-        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"48.png",[this.lefticonnode]);
+        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"24.png",[this.lefticonnode]);
         else this.graph.setCellStyles("image",null,[this.lefticonnode]);
     }
     
     rightIconUpdated(oldvalue){
         var newvalue = this.node.righticon;
         this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),newvalue,oldvalue);
-        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"48.png",[this.righticonnode]);
+        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"24.png",[this.righticonnode]);
         else this.graph.setCellStyles("image",null,[this.righticonnode]);
     }
 

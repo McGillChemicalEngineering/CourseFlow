@@ -370,8 +370,8 @@ class Workflow{
             
             $("#outcomeview").removeClass("disabled");
             $("#outcomeviewbar").removeClass("disabled");
-            $("#settingsviewbar").removeClass("disabled");
-            $("#settings").removeClass("disabled");
+            if(!this.project.readOnly)$("#settingsviewbar").removeClass("disabled");
+            if(!this.project.readOnly)$("#settings").removeClass("disabled");
             if(!this.project.readOnly)$("#duplicatewf").removeClass("disabled");
             $("#export").removeClass("disabled");
             $("#export").get()[0].innerHTML = LANGUAGE_TEXT.menus.exportwf[USER_LANGUAGE];
@@ -1161,7 +1161,7 @@ class Workflow{
         var reqtime = this.settings.settingsKey.reqtime.value;
         if(reqtime&&totalcredits<=reqtime){
             var errorstring = LANGUAGE_TEXT.validation.total[USER_LANGUAGE]+totalcredits+LANGUAGE_TEXT.validation.lesscredits[USER_LANGUAGE]+reqtime+")";
-            this.errorlist.push(new WorkflowError(this.weeks[i],errorstring));
+            this.errorlist.push(new WorkflowError(this.weeks[this.weeks.length-1],errorstring));
             errortext+=errorstring;
         }
         if(errortext=="")errortext=LANGUAGE_TEXT.validation.noerrors[USER_LANGUAGE];

@@ -99,6 +99,7 @@ class Tagview{
             checkbox.value=1;
             button.b.appendChild(checkbox);
             checkbox.onclick=function(){
+                if(node.wf.project.readOnly)return;
                 checkbox.value=(int(checkbox.value)<<1)%16;
                 if(checkbox.value==0)checkbox.value=1;
                 
