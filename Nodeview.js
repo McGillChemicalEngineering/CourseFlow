@@ -37,7 +37,9 @@ class Nodeview{
         var width = defaultCellWidth;
         if(this.node.wf.weeks[0] instanceof Term)width=200;
         var h = minCellHeight+cellDropdownHeight+cellDropdownPadding;
-        if(this.node.isDropped)h+=this.node.textHeight;
+        var textHeightOffset = 0;
+        if(this.node.isDropped)textHeightOffset = this.getTextSize();
+        h+=textHeightOffset;
         var vertexStyle = this.node.getVertexStyle();
         if(this.node.isDropped)vertexStyle = vertexStyle.replace("resizable=0","resizable=1");
         this.vertex=this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,h,vertexStyle);
@@ -58,7 +60,7 @@ class Nodeview{
         var text = '';
         if(this.node.text)text = this.node.text;
         h=1;
-        if(this.node.isDropped)h+=this.node.textHeight;
+        h+=textHeightOffset;
         this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b(),this.vertex.w()-2*defaultTextPadding,h,defaultTextStyle);
         var dropDownStyle = defaultDropDownStyle;
         if(this.node.isDropped)dropDownStyle+="image=resources/images/droptriangleup.png;fontColor=white;";
@@ -100,6 +102,7 @@ class Nodeview{
         this.graph.cellLabelChanged(this.textnode,text);
         if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')this.graph.cellLabelChanged(this.dropNode,'...');
         else this.graph.cellLabelChanged(this.dropNode,'');
+        if(this.node.isDropped)this.updateSize();
     }
     
     addRightIcon(){
@@ -195,10 +198,8 @@ class Nodeview{
     }
     
     dropDownToggled(){
-        var mult = 1;
-        if(this.node.isDropped)mult=-1;
-        this.graph.resizeCell(this.vertex,new mxGeometry(this.vertex.x(),this.vertex.y(),this.vertex.w(),this.vertex.h()+mult*this.node.textHeight));
-        this.graph.setCellStyles('resizable',1-this.node.isDropped,[this.vertex]);
+        this.updateSize(!this.node.isDropped);
+        //this.graph.setCellStyles('resizable',1-this.node.isDropped,[this.vertex]);
         if(this.node.isDropped){
             this.graph.setCellStyles('image',"resources/images/droptriangle.png",[this.dropNode]);
             this.graph.setCellStyles('fontColor','black',[this.dropNode]);
@@ -207,6 +208,26 @@ class Nodeview{
             this.graph.setCellStyles('fontColor','white',[this.dropNode]);
         }
         
+    }
+    
+    updateSize(isDropped=this.node.isDropped){
+        var y = 0;
+        if(isDropped)y=this.getTextSize();
+        this.graph.resizeCell(this.vertex,new mxGeometry(this.vertex.x(),this.vertex.y(),this.vertex.w(),minCellHeight+cellDropdownHeight+cellDropdownPadding+y));
+    }
+    
+    getTextSize(){
+        var tempdiv = document.createElement('div');
+        tempdiv.innerHTML = this.node.text;
+        tempdiv.style.width=defaultCellWidth+"px";
+        tempdiv.classList.add("tempdropdiv");
+        $('body')[0].appendChild(tempdiv);
+        var rect = tempdiv.getBoundingClientRect();
+        tempdiv.parentElement.removeChild(tempdiv);
+        var y = rect.height;
+        console.log(tempdiv.innerHTML);
+        this.node.textHeight = y;
+        return y;
     }
     
     insertBelow(node){

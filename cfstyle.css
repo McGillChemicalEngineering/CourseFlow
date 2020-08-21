@@ -1916,6 +1916,26 @@ path.highlightedred{
 .warningquestionmark{
     cursor:help !important;
 }
+
+
+.tempdropdiv{
+    white-space: normal;
+    line-height:1.2;
+    overflow-wrap:normal;
+    font-size:12px;
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left:2px;
+    padding-right:2px;
+    
+}
+
+p{
+    margin:0;
+}
+p + p{
+    margin-top:5px;
+}
     
 .printpreview .expanddiv{display:none;}
 .printpreview .movehandle{display:none;}

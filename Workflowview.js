@@ -905,7 +905,11 @@ class Workflowview{
             var boundRect = $("#graphContainer")[0].getBoundingClientRect();
             var leftPos = boundRect.x;
             var topPos = boundRect.y;
-            var com = new WFComment(wf,evt.pageX-leftPos,evt.pageY-topPos,comparent);
+            var x = evt.pageX-leftPos;
+            var y = evt.pageY-topPos;
+            if(x<wfStartX)x=wfStartX;
+            if(y<wf.weeks[0].view.vertex.y()-10)y=wf.weeks[0].view.vertex.y()-10;
+            var com = new WFComment(wf,x,y,comparent);
             com.view = new Commentview(graph,com);
             com.view.createVertex();
             wf.addComment(com);
@@ -1067,7 +1071,7 @@ class Workflowview{
                 var x = comment.x+dx;
                 var y = comment.y+dy;
                 if(x<wfStartX)dx=wfStartX-comment.x;
-                if(y<wfStartY)dy=wfStartY-comment.y;
+                if(y<wf.weeks[0].view.vertex.y()-10)dy=wf.weeks[0].view.vertex.y()-10-comment.y;
                 if(x>wf.weeks[wf.weeks.length-1].view.vertex.r()+200)dx=wf.weeks[wf.weeks.length-1].view.vertex.r()+200-comment.x;
                 if(y>wf.weeks[wf.weeks.length-1].view.vertex.b()+200)dy=wf.weeks[wf.weeks.length-1].view.vertex.b()+200-comment.y;
                 comment.x+=dx;
@@ -1466,6 +1470,11 @@ class Workflowview{
         
         //make the non-default connections through our own functions, so that we can keep track of what is linked to what. The prototype is saved in Constants, so that we don't keep overwriting it.
         mxConnectionHandler.prototype.insertEdge = function(parent,id,value,source,target,style){
+            if(source.isNode&&target.isNode){
+                for(var i=0;i<source.node.fixedLinksOut.length;i++){
+                    if(source.node.fixedLinksOut[i].targetNode==target.node)return null;
+                }
+            }
             var edge = insertEdgePrototype.apply(this,arguments);
             if(source.isNode && target.isNode){
                 graph.setCellStyle(defaultEdgeStyle,[edge]);
@@ -1479,6 +1488,13 @@ class Workflowview{
             
             var link = edge.link;
             if(!link||link instanceof WFAutolink)return;
+            var newSource;
+            var newTarget;
+            if(isSource){newSource=terminal.node;newTarget=edge.link.targetNode;}
+            else {newSource=edge.link.node;newTarget=terminal.node;}
+            if(newSource&&newTarget)for(var i=0;i<newSource.fixedLinksOut.length;i++){
+                if(newSource.fixedLinksOut[i].targetNode==newTarget)return;
+            }
             
             var returnval = edgeConnectPrototype.apply(this,arguments);
             console.log(edge);
