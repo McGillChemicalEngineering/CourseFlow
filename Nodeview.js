@@ -48,7 +48,7 @@ class Nodeview{
         if(this.addLeftIcon()){left+=this.lefticonnode.w()+2*defaultIconPadding;width-=this.lefticonnode.w()+2*defaultIconPadding;}
         var name = LANGUAGE_TEXT.node.defaulttext[USER_LANGUAGE];
         if(this.node.name)name=this.node.name;
-        this.namenode = this.graph.insertVertex(this.vertex,null,name,0,10,defaultCellWidth,minCellHeight-10,defaultNameStyle+"labelWidth="+width+";");
+        this.namenode = this.graph.insertVertex(this.vertex,null,name,defaultNamePadding,10,defaultCellWidth-2*defaultNamePadding,minCellHeight,defaultNameStyle+"labelWidth="+width+";");
         this.graph.orderCells(true,[this.namenode]);
         var node = this.node;
         this.namenode.valueChanged = function(value){
@@ -60,13 +60,13 @@ class Nodeview{
         if(this.node.text)text = this.node.text;
         h=1;
         if(this.node.isDropped)h+=this.node.textHeight;
-        this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b(),this.vertex.w()-2*defaultTextPadding,h,defaultTextStyle);
+        this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b()-10,this.vertex.w()-2*defaultTextPadding,h+10,defaultTextStyle);
         var dropDownStyle = defaultDropDownStyle;
         if(this.node.isDropped)dropDownStyle+="image=resources/images/droptriangleup.png;fontColor=white;";
         else dropDownStyle+="image=resources/images/droptriangle.png;fontColor=black;";
         var dropText='';
         if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')dropText='...';
-        this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
+        this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,defaultDropPadding,this.textnode.b()-11+cellDropdownPadding,this.vertex.w()-2*defaultDropPadding,cellDropdownHeight-defaultDropPadding,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
         var linkStyle = defaultLinkIconStyle;
