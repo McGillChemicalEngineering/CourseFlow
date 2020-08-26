@@ -418,7 +418,8 @@ li div{
 li img{
     display: inline-block;
     vertical-align:middle;
-    height:100%;    
+    height:24px;
+    width:24px;
 }
 
 ul .expanddiv{
@@ -655,6 +656,11 @@ ol .expanddiv{
     display:none;
     height:100%;
     cursor:move;
+}
+
+.movehandle img{
+    width:24px;
+    height:24px;
 }
 
 ol .movehandle{
@@ -1033,6 +1039,7 @@ div.highlighted{
     vertical-align:middle;
     display:inline-block;
     margin-right:5px;
+    width:24px;
 }
 
 .outcometable .tagcell .tagtext{
@@ -1152,6 +1159,10 @@ input.outcomecheckbox[type=number]{
     display:inline-block;
 }
 
+.outcomecellicon img{
+    width:16px;
+    height:16px;
+}
 
 .outcometable .outcomecellicon .firstoutcomelevel{
     color:#11ca11;
@@ -1495,6 +1506,10 @@ input.outcomecheckbox[type=number]{
     color:#FFFFFF;
 }
 
+.mxPopupMenuIcon img{
+    width:24px;
+}
+
 .projectoverview{
     margin:40px;
     width:800px;
@@ -1609,6 +1624,7 @@ input.outcomecheckbox[type=number]{
 
 .wftoolbar .showhide img{
     filter:grayscale(100%);
+    width:36px;
 }
 
 .wftoolbar .showhide.toggled img{
@@ -1623,6 +1639,10 @@ input.outcomecheckbox[type=number]{
     position:absolute;
     left:-24px;
     top:2px;
+}
+
+.expandheaderdiv img{
+    width:16px;
 }
 
 .wftoolbar hr{
@@ -1646,6 +1666,7 @@ input.outcomecheckbox[type=number]{
 .floatbardiv img{
     display:inline-block;
     vertical-align: middle;
+    width:24px;
 }
 
 .floatbardiv div{
@@ -1791,6 +1812,11 @@ input:checked + .slider:before {
     display:inline-block;
     vertical-align:top;
     height:100%;
+}
+
+.viewbar > div > img{
+    width:36px;
+    height:36px;
 }
 
 .viewbar .outcomeviewtext{

@@ -958,7 +958,7 @@ class Workflow{
         menu.addItem(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE],'',function(){
             $("#duplicatewf").click();
         });
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             
             if(layout instanceof Activityflow)layout.project.showHelp('activityhelp.html');
             else if(layout instanceof Courseflow)layout.project.showHelp('coursehelp.html');

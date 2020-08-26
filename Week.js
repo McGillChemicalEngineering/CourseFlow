@@ -194,20 +194,20 @@ class Week {
     populateMenu(menu){
         var week = this;
         
-        menu.addItem(LANGUAGE_TEXT.week.createbelow[week.getType()][USER_LANGUAGE],'resources/images/add24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.week.createbelow[week.getType()][USER_LANGUAGE],iconpath+'add.svg',function(){
             week.insertBelow(); 
         });
-        menu.addItem(LANGUAGE_TEXT.week.duplicate[week.getType()][USER_LANGUAGE],'resources/images/copy24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.week.duplicate[week.getType()][USER_LANGUAGE],iconpath+'copy.svg',function(){
             week.duplicateWeek(); 
         });
-        menu.addItem(LANGUAGE_TEXT.week.delete[week.getType()][USER_LANGUAGE],'resources/images/delrect24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.week.delete[week.getType()][USER_LANGUAGE],iconpath+'delrect.svg',function(){
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deleteweek[week.getType()][USER_LANGUAGE])){
                 week.deleteSelf();
                 week.wf.updated("Delete Week",week);
             }
         });
         
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             p.showHelp('weekhelp.html');
         });
         
@@ -230,18 +230,18 @@ class WFArea extends Week{
         var week = this;
         var p = this.wf.project;
         
-        var sub = menu.addItem(LANGUAGE_TEXT.week.options[USER_LANGUAGE],'resources/images/weekstyle24.png');
-        menu.addItem(LANGUAGE_TEXT.week.simple[USER_LANGUAGE],'resources/images/weekstylesimple24.png',function(){
+        var sub = menu.addItem(LANGUAGE_TEXT.week.options[USER_LANGUAGE],iconpath+'weekstyle.svg');
+        menu.addItem(LANGUAGE_TEXT.week.simple[USER_LANGUAGE],iconpath+'weekstylesimple.svg',function(){
             week.wf.toggleSimple(true);
         },sub);
-        menu.addItem(LANGUAGE_TEXT.week.parts[USER_LANGUAGE],'resources/images/weekstyleparts24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.week.parts[USER_LANGUAGE],iconpath+'weekstyleparts.svg',function(){
             week.wf.toggleSimple(false);
         },sub);
         
         if(!week.wf.isSimple){
             super.populateMenu(menu);
         } else {
-            menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+            menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             p.showHelp('weekhelp.html');
         });
         }

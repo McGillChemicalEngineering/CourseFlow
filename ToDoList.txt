@@ -91,3 +91,9 @@ Simultaneous codesign.
 Add ability to include files/materials (pdfs etc) in the package.
 
 
+
+Instructions for the chem eng folks:
+-How to use github/set up github
+-How to make changes to the actual file
+-How to make changes to the code (very basic)
+-

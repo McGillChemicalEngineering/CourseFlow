@@ -29,7 +29,7 @@ class Tagbuilder{
         container.style.height="initial";
         container.style.overflow="initial";
         this.wrapperDiv = document.createElement('div');
-        this.wrapperDiv.innerHTML=LANGUAGE_TEXT.tag.tagbuilder[USER_LANGUAGE]+" <img src='resources/images/info32.png' width=16px id='outcomeinfo'></p>";
+        this.wrapperDiv.innerHTML=LANGUAGE_TEXT.tag.tagbuilder[USER_LANGUAGE]+" <img src='"+iconpath+"info.svg' width=16px id='outcomeinfo'></p>";
         var p = this.tag.project;
         this.wrapperDiv.className = "competencywrapper";
         container.appendChild(this.wrapperDiv);

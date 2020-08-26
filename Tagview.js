@@ -55,7 +55,7 @@ class Tagview{
         var style = defaultTagStyle;
         style+="strokeColor="+this.graph.getCellStyle(node.view.vertex)['fillColor'];
         var tagLabel = this.graph.insertVertex(node.view.tagBox,null,tag.name,tagBoxPadding,tagBoxPadding,node.view.tagBox.w()-2*tagBoxPadding,tagHeight,style);
-        var overlay = new mxCellOverlay(new mxImage('resources/images/del48.png', 16, 16), 'Remove this tag');
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'del.svg', 16, 16), 'Remove this tag');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});

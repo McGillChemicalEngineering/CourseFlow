@@ -97,12 +97,12 @@ class Bracket {
     populateMenu(menu){
         var bracket = this;
         var p = this.wf.project;
-        menu.addItem(LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE],iconpath+'delrect.svg',function(){
             bracket.deleteSelf();
             bracket.wf.updated("Delete Bracket",bracket);
         });
         
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'/info.svg',function(){
             p.showHelp('brackethelp.html');
         });
     }

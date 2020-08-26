@@ -24,7 +24,7 @@ class Project{
         this.terminologySet = "standard";
         this.outcomesview = false;
         this.container=container;
-        this.sidenav = new WFToolbar(this,document.getElementById("sidenav"),"left","layoutnav36");
+        this.sidenav = new WFToolbar(this,document.getElementById("sidenav"),"left","layoutnav");
         this.navigatorDivs = {};
         this.newWFDiv = document.getElementById("newWFDiv");
         this.nameDiv = this.sidenav.addBlock(LANGUAGE_TEXT.layoutnav.navigator[USER_LANGUAGE],null,null,'3');
@@ -60,24 +60,7 @@ class Project{
         }
         
         
-        //Add the ability to edit the name of the project
-        /*var nameIcon = document.createElement('img');
-        nameIcon.src="resources/images/edit16.png";
-        nameIcon.style.width='16px';
-        var nameDiv = this.nameDiv;
-        nameDiv.parentElement.onclick=function(){
-            if(p.readOnly)return;
-            else p.requestName(LANGUAGE_TEXT.layoutnav.projectreanmetitle[USER_LANGUAGE]);
-            
-        }*/
-        /*var editNameDiv = document.createElement('div');
-        editNameDiv.className="deletelayoutdiv";
-        editNameDiv.appendChild(nameIcon);
-        editNameDiv.style.display="inline-block";
-        editNameDiv.style.top="0px";
-        nameDiv.parentElement.style.position="relative";
-        nameDiv.parentElement.appendChild(editNameDiv);
-        */
+        
         this.createNavigators();
         this.createFloatBar();
         this.createViewBar();
@@ -905,7 +888,7 @@ class Project{
         div.appendChild(img);
         div.appendChild(textdiv);
         textdiv.id = id+"text";
-        img.src="resources/images/"+imgname+"24.png";
+        img.src=iconpath+imgname+".svg";
         textdiv.innerHTML = text;
         return div;
     }
@@ -939,7 +922,7 @@ class Project{
         div.classList.add("topdropwrapper")
         div.appendChild(img);
         div.appendChild(textdiv);
-        img.src="resources/images/"+imgname+"36.png";
+        img.src=iconpath+imgname+".svg";
         textdiv.innerHTML = text;
         div.classList.add("disabled");
         return div;
@@ -1139,7 +1122,7 @@ class Project{
         menu.addItem(LANGUAGE_TEXT.menus.openproject[USER_LANGUAGE],'',function(){
             $("#open").click();
         });
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             p.showHelp('help.html');
         });
         

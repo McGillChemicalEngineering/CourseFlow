@@ -82,7 +82,7 @@ class Commentview{
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this.comment;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 12, 12), LANGUAGE_TEXT.comment.delete[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'delrect.svg', 12, 12), LANGUAGE_TEXT.comment.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});

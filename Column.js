@@ -131,14 +131,14 @@ class Column {
     populateMenu(menu){
         var col = this;
         if(col.name.substr(0,3)=='CUS')this.populateIconMenu(menu,iconsList['column']);
-        menu.addItem(LANGUAGE_TEXT.column.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.column.delete[USER_LANGUAGE],iconpath+'delrect.svg',function(){
             if(col.wf.columns.length==1)alert(LANGUAGE_TEXT.column.deletelast[USER_LANGUAGE]);
             else if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletecolumn[USER_LANGUAGE])){
                 col.deleteSelf();
                 col.wf.updated("Delete Column",col);
             }
         });
-        if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],'resources/images/spectrum24.png', function(){
+        if(col.name.substr(0,3)=='CUS')menu.addItem(LANGUAGE_TEXT.column.colourpicker[USER_LANGUAGE],iconpath+'spectrum.svg', function(){
             var input = document.createElement('input');
             input.className = "jscolor";
             input.type="color";
@@ -149,7 +149,7 @@ class Column {
             input.click();
         });
         
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             p.showHelp('columnhelp.html');
         });
     }
@@ -158,10 +158,10 @@ class Column {
     populateIconMenu(menu,iconArray){
         var col = this;
         if(iconArray==null||iconArray.length==0)return;
-        var sub = menu.addItem(LANGUAGE_TEXT.column.icon[USER_LANGUAGE],'resources/images/lefticon24.png');
+        var sub = menu.addItem(LANGUAGE_TEXT.column.icon[USER_LANGUAGE],iconpath+'lefticon.svg');
         for(var i=0;i<iconArray.length;i++){
             var tempfunc = function(value){
-                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
+                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'.svg',function(){
                     col.setImage(value.value);
                 },sub);
             }

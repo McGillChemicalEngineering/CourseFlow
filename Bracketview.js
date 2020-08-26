@@ -38,7 +38,7 @@ class Bracketview{
         var circle = this.graph.insertVertex(square,null,'',5,5,bracketTabWidth-10,bracketTabHeight-10,bracketCircleStyle)
         var style = bracketIconStyle;
         if(this.bracket.icon){
-            style+="image="+iconpath+this.bracket.icon+".png;";
+            style+="image="+iconpath+this.bracket.icon+".svg;";
             this.bracket.wf.view.legendUpdate('strategy',this.bracket.icon,null);
         }
         this.iconVertex = this.graph.insertVertex(circle,null,'',0,0,circle.w(),circle.h(),style);
@@ -48,7 +48,7 @@ class Bracketview{
     }
     
     iconChanged(){
-        this.graph.setCellStyles("image",iconpath+this.bracket.icon+".png",[this.iconVertex]);
+        this.graph.setCellStyles("image",iconpath+this.bracket.icon+".svg",[this.iconVertex]);
     }
     
     
@@ -83,7 +83,7 @@ class Bracketview{
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this.bracket;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'delrect.svg', 24, 24), LANGUAGE_TEXT.bracket.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});

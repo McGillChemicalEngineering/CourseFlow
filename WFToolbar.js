@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>*/
 
 class WFToolbar{
-    constructor(project,container,direction="left",icon="pin36"){
+    constructor(project,container,direction="left",icon="pin"){
         this.blocks=[];
         this.width="240px";
         this.project=project;
@@ -54,7 +54,7 @@ class WFToolbar{
         }
         this.container.style.width="0px";
         var showicon = document.createElement('img');
-        showicon.src="resources/images/"+icon+".png";
+        showicon.src=iconpath+icon+".svg";
         this.showhide.appendChild(showicon);
         showicon.onclick = function(){
             wft.toggleShow();
@@ -83,16 +83,16 @@ class WFToolbar{
             var headercollapse = document.createElement('div');
             headercollapse.classList.add("expandheaderdiv");
             var headercollapseimg = document.createElement('img');
-            headercollapseimg.src = "resources/images/arrowdown16.png";
+            headercollapseimg.src = iconpath+"arrowdown.svg";
             headercollapse.appendChild(headercollapseimg);
             header.appendChild(headercollapse);
             header.onclick = function(){
                 if(div.style.display=="none"){
                     div.style.display="";
-                    headercollapseimg.src = "resources/images/arrowdown16.png";
+                    headercollapseimg.src = iconpath+"arrowdown.svg";
                 }else{
                     div.style.display="none";
-                    headercollapseimg.src = "resources/images/arrowright16.png";
+                    headercollapseimg.src = iconpath+"arrowright.svg";
                 }
 
 
