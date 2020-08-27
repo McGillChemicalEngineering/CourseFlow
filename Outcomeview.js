@@ -354,7 +354,7 @@ class Outcomeview{
                 tags = tag.getAllTags(tags);
                 var ptag = tag.parentTag;
                 while(ptag){
-                    tags.splice(0,0,tag.parentTag);
+                    tags.splice(0,0,ptag);
                     ptag=ptag.parentTag;
                 }
             }
