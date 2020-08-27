@@ -354,8 +354,9 @@ class Outcomeview{
                 tags = tag.getAllTags(tags);
                 var ptag = tag.parentTag;
                 while(ptag){
-                    tags.splice(0,0,tag.parentTag);
+                    tags.splice(0,0,ptag);
                     ptag=ptag.parentTag;
+                    console.log(tags);
                 }
             }
             setTimeout(function(){
@@ -1922,6 +1923,7 @@ class OutcomeTableCell{
         this.vertex;
         this.checkbox;
         this.validationImg;
+        this.unlink = nodeview.cv.wf.settings.settingsKey.unlinkoutcomes.value;
     }
     
     createVertex(parent,createBefore){
@@ -1964,7 +1966,9 @@ class OutcomeTableCell{
             if(this.validationImg)this.validationImg.src="";
             return;
         }
-        var completeness = this.validateParents(this.tag);
+        
+        var completeness=0;
+        if(!this.unlink)completeness = this.validateParents(this.tag);
         if(completeness==0)completeness=this.validateTag(this.tag);
         if(completeness==1){
             this.checkbox.checked=true;
@@ -2000,7 +2004,14 @@ class OutcomeTableCell{
             if(this.nodeview.nodes[i].hasTag(tag))return 1.0;
         }
         var completeness = 0.0;
-        for(var i=0;i<tag.children.length;i++){
+        //if unlinked, we just search through for any children and return something between 0 and 1 if we find one
+        if(this.unlink){
+            for(var i=0;i<tag.children.length;i++){
+                var comp = this.validateTag(tag.children[i]);
+                if(comp>0)return 0.5;
+            }
+        }
+        else for(var i=0;i<tag.children.length;i++){
             completeness+=this.validateTag(tag.children[i])/tag.children.length;
         }
         return completeness;
@@ -2055,7 +2066,9 @@ class AdvancedOutcomeTableCell extends OutcomeTableCell{
             if(this.validationImg)this.validationImg.src="";
             return;
         }
-        var completeness = this.validateParents(this.tag);
+        
+        var completeness = 0;
+        if(!this.unlink) completeness = this.validateParents(this.tag);
         if(completeness==0)completeness=this.validateTag(this.tag);
         this.checkbox.value=completeness;
         if(completeness!=0){
@@ -2100,6 +2113,7 @@ class AdvancedOutcomeTableCell extends OutcomeTableCell{
             var index = this.nodeview.nodes[i].getTagIndex(tag);
             if(index>=0)completeness = completeness | this.nodeview.nodes[i].tags[index].degree;
         }
+        if(this.unlink)return completeness;
         var completenessChildren=0;
         if(tag.children.length>0){
             completenessChildren = 15;

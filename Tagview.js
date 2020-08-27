@@ -81,7 +81,7 @@ class Tagview{
         button.makeExpandable();
         for(var i=0;i<this.tag.children.length;i++){
             if(this.tag.children[i].view){
-                this.tag.children[i].view.addNodeButton(node,button.childdiv);
+                if(!node.wf.settings.settingsKey.unlinkoutcomes.value)this.tag.children[i].view.addNodeButton(node,button.childdiv);
             }
         }
         var tagview = this;
@@ -123,6 +123,8 @@ class Tagview{
     }
     
     updateNodeHighlight(on){
+        //Check if unlinking of outcome tiers is enabled; in that case the parents should not be highlighted
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
         if(on)this.highlighted=true;
         else{
             this.highlighted=false;
@@ -139,7 +141,7 @@ class Tagview{
             if(this.nodeTags[i].node instanceof CFNode || this.nodeTags[i].node.wf.settings.settingsKey.linktagging.value)this.nodeTags[i].node.view.highlight(on);
             console.log(this.nodeTags);
         }
-        if(this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);
+        if(!unlink&&this.tag.parentTag&&this.tag.parentTag.view)this.tag.parentTag.view.updateNodeHighlight(on);
     }
     
     highlight(on){
@@ -195,17 +197,23 @@ class Tagview{
     }
     
     validateSelf(col){
-        var completeness = this.validateParents(this.tag,col);
+        //if outcome tiers are unlinked, we don't check the parents. Having a parent isn't sufficient.
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
+        var completeness = 0;
+        if(!unlink)completeness = this.validateParents(this.tag,col);
         if(completeness == 0)completeness = this.validateTag(this.tag,col);
         if(completeness > 0.990)return true;
         else return false;
     }
     
     validateTag(tag,col){
+        //if outcome tiers are unlinked, we don't check the children. Having all children isn't sufficient.
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
         var nodeTags = tag.view.nodeTags;
         for(var i=0;i<nodeTags.length;i++){
             if(nodeTags[i].node.column==col)return 1.0;
         }
+        if(unlink) return 0;
         var completeness = 0.0;
         for(var i=0;i<tag.children.length;i++){
             completeness+=this.validateTag(tag.children[i],col)/tag.children.length;

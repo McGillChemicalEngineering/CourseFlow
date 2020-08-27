@@ -30,6 +30,28 @@ McGill stuff:
 	//(200) student view options
 		show/hide arrows by default (could make them width 0 but then they still get highlighted on click and hover)
 	
+Tag unlinking:
+	//When adding tag, don't add parent or remove children
+	//When removing tag, don't remove parent or add other children
+	//In Nodeview, don't show all children, just the ones that are actually added
+	//When highlighting, don't highlight if we just have (children??? maybe this one actually)/parents
+	//Node indicators shouldn't "trickle down" to children in the nodebar to lower levels 
+	//Replicate all these changes in the links
+	
+	In outcomeview, shouldn't change the inputs of lower tiers
+		In outcomeview, double check to make sure IDA work as intended
+		In outcomeview, issue in updating routine, cut off from the top level
+	
+	
+	Do we want the "partial completion" to use the full checkmark? Maybe! Ask Corrinne
+	
+	Potentially may want to still organize nodes heirarchically in the nodeview (but this would require going in and refreshing them when a new one is added)
+	
+	The tag validation that checks paths will definitely need some tweaking as well.
+	
+	Make sure there's a clean transition back from unlinked to not (i.e. what happens to the tier 3 outcome when it has its tier 2 outcome already attached to a node)
+	
+	
 	
 	
 Unbudgeted stuff:
@@ -45,6 +67,7 @@ Unbudgeted stuff:
 
 High Priority Bugs:
 //Issue with lowest in heirarchy of tags in advanced outcomes
+The savefile name, if not default, doesn't get cleared upon creating a new project.
 
 High Priority:
 Create a bunch of videos

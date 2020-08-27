@@ -414,13 +414,16 @@ class CFNode {
     }
     
     addTag(tag,show=true,addToLinked=false,degree){
+        //check if outcome levels are unlinked in the workflow
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
         //temporarily disable the attribution of tags to linked workflow. This has become an issue since the advanced outcome tagging messes with it
         addToLinked=false;
-        if(this.hasTagOrAncestor(tag))return;
+        if(this.hasTagOrAncestor(tag)&&!unlink)return;
+        else if(unlink&&this.hasTag(tag))return;
         var n = this;
         //Remove any children of the tag we are adding
         var allTags = tag.getAllTags([]);
-        for(var i=0;i<this.tags.length;i++){
+        if(!unlink)for(var i=0;i<this.tags.length;i++){
             if(allTags.indexOf(this.tags[i].tag)>=0){
                 this.removeTag(this.tags[i].tag,false);
                 i--;
@@ -436,7 +439,7 @@ class CFNode {
         }
         //Check to see if we have all children of the parent, if the parent exists. If advanced outcomes are active, they all have to have the same degree
         var parentTag = tag.parentTag;
-        if(parentTag!=null){
+        if(!unlink&&parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
             if(this.wf.settings.settingsKey.advancedoutcomes.value){
@@ -468,13 +471,15 @@ class CFNode {
     }
     
     removeTag(tag,removeFromLinked=false){
+        //check if outcome levels are unlinked in the workflow
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
         //removed from linked temporarily disabled
         removeFromLinked=false;
         var removed = null;
         while(this.hasTag(tag)){
             removed = this.tags.splice(this.getTagIndex(tag),1)[0];
         }
-        if(removed==null&&tag.parentTag!=null){
+        if(!unlink&&removed==null&&tag.parentTag!=null){
             var degreeToAdd;
             if(this.hasTag(tag.parentTag))degreeToAdd = this.tags[this.getTagIndex(tag.parentTag)].degree;
             if(this.removeTag(tag.parentTag,false))for(var i=0;i<tag.parentTag.children.length;i++){
@@ -868,13 +873,16 @@ class WFLink{
     }
     
     addTag(tag,show=true,addToLinked=false,degree){
+        //check if outcome levels are unlinked in the workflow
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
         //temporarily disable the attribution of tags to linked workflow. This has become an issue since the advanced outcome tagging messes with it
         addToLinked=false;
-        if(this.hasTagOrAncestor(tag))return;
+        if(this.hasTagOrAncestor(tag)&&!unlink)return;
+        else if(unlink&&this.hasTag(tag))return;
         var n = this;
         //Remove any children of the tag we are adding
         var allTags = tag.getAllTags([]);
-        for(var i=0;i<this.tags.length;i++){
+        if(!unlink)for(var i=0;i<this.tags.length;i++){
             if(allTags.indexOf(this.tags[i].tag)>=0){
                 this.removeTag(this.tags[i].tag,false);
                 i--;
@@ -886,7 +894,7 @@ class WFLink{
         if(this.view)this.view.tagAdded(nodeTag,show);
         //Check to see if we have all children of the parent, if the parent exists. If advanced outcomes are active, they all have to have the same degree
         var parentTag = tag.parentTag;
-        if(parentTag!=null){
+        if(!unlink&&parentTag!=null){
             var children = parentTag.getAllTags([],parentTag.depth+1);
             children.splice(0,1);
             if(this.wf.settings.settingsKey.advancedoutcomes.value){
@@ -918,13 +926,15 @@ class WFLink{
     }
     
     removeTag(tag,removeFromLinked=false){
+        //check if outcome levels are unlinked in the workflow
+        var unlink = this.wf.settings.settingsKey.unlinkoutcomes.value;
         //removed from linked temporarily disabled
         removeFromLinked=false;
         var removed = null;
         while(this.hasTag(tag)){
             removed = this.tags.splice(this.getTagIndex(tag),1)[0];
         }
-        if(removed==null&&tag.parentTag!=null){
+        if(!unlink&&removed==null&&tag.parentTag!=null){
             var degreeToAdd;
             if(this.hasTag(tag.parentTag))degreeToAdd = this.tags[this.getTagIndex(tag.parentTag)].degree;
             if(this.removeTag(tag.parentTag,false))for(var i=0;i<tag.parentTag.children.length;i++){
