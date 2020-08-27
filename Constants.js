@@ -279,13 +279,14 @@ const LANGUAGE_TEXT = {
     },
     workflow:{
         settings:{
-            advancedoutcomes:{en:"Advanced Outcomes",fr:""},
-            linktagging:{en:"Link Tagging Enabled",fr:""},
-            validation:{en:"Validation",fr:""},
-            reqtime:{en:"Required Credits",fr:""},
-            mintime:{en:"Minimum Credits/Term",fr:""},
-            maxtime:{en:"Maximum Credits/Term",fr:""},
-            maxterm:{en:"Maximum Terms",fr:""}
+            advancedoutcomes:{en:"Advanced Outcomes",fr:"Acquis Avancés"},
+            linktagging:{en:"Link Tagging Enabled",fr:"Étiquette de Liens"},
+            validation:{en:"Validation",fr:"Validation"},
+            reqtime:{en:"Required Credits",fr:"Crédits Requis"},
+            mintime:{en:"Minimum Credits/Term",fr:"Crédits Minimum/Session"},
+            maxtime:{en:"Maximum Credits/Term",fr:"Crédits Maximum/Session"},
+            maxterm:{en:"Maximum Terms",fr:"Sessions Maximum"},
+            unlinkoutcomes:{en:"Unlink Outcomes",fr:"Dissocier les Acquis"}
         },
         activity:{en:"Activity",fr:"Activité"},
         course:{en:"Course",fr:"Cours"},
