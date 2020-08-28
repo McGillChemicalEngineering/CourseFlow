@@ -1085,6 +1085,8 @@ class Workflow{
         for(var prop in this.settings.settingsKey){
             var setting = this.settings.settingsKey[prop];
             if(setting.value!=newSettingsVals[prop]){
+                //if we're setting unlinkoutcomes to false, then clean the hierarchy up
+                if(prop=="unlinkoutcomes"&&setting.value==true)this.cleanTagHierarchy();
                 console.log(prop);
                 console.log(setting.value);
                 console.log(newSettingsVals[prop]);
@@ -1094,6 +1096,38 @@ class Workflow{
         }
         if(settingsChanged&&this.view){this.view.settingsChanged();this.updated("settings",this);}
         
+    }
+    
+    cleanTagHierarchy(){
+        for(var i=0;i<this.weeks.length;i++){
+            for(var j=0;j<this.weeks[i].nodes.length;j++){
+                var node = this.weeks[i].nodes[j];
+                this.cleanTagHierarchyOnNode(node);
+                for(var k=0;k<node.fixedLinksOut.length;k++){
+                    var link = node.fixedLinksOut[k];
+                    this.cleanTagHierarchyOnNode(link);
+                }
+            }
+        }
+    }
+    
+    cleanTagHierarchyOnNode(node){
+        var toClean=[];
+        for(var i=0;i<node.tags.length;i++){
+            this.cleanTagHierarchyForTag(node,node.tags[i].tag,toClean);
+        }
+        console.log(toClean);
+        for(var i=0;i<toClean.length;i++){
+            node.tags.splice(node.tags.indexOf(toClean[i]),1);
+        }
+    }
+    
+    cleanTagHierarchyForTag(node,tag,toClean){
+        for(var i=0;i<tag.children.length;i++){
+            var nt = node.getTag(tag.children[i]);
+            if(nt!=null&&toClean.indexOf(nt)<0)toClean.push(nt);
+            this.cleanTagHierarchyForTag(node,tag.children[i],toClean);
+        }
     }
     
     validate(showAlert=false){

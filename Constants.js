@@ -286,7 +286,7 @@ const LANGUAGE_TEXT = {
             mintime:{en:"Minimum Credits/Term",fr:"Crédits Minimum/Session"},
             maxtime:{en:"Maximum Credits/Term",fr:"Crédits Maximum/Session"},
             maxterm:{en:"Maximum Terms",fr:"Sessions Maximum"},
-            unlinkoutcomes:{en:"Unlink Outcomes",fr:"Dissocier les Acquis"}
+            unlinkoutcomes:{en:"Independent Outcome Tiers",fr:"Dissocier les Niveaux d'Acquis"}
         },
         activity:{en:"Activity",fr:"Activité"},
         course:{en:"Course",fr:"Cours"},
