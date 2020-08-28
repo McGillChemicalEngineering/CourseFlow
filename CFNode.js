@@ -1008,11 +1008,15 @@ class NodeTag{
 
 class WFLinkPath{
     constructor(startlink,searchtags,parent,linkschecked,degree){
+        //check if outcome tiers are unlinked
+        this.unlink = startlink.wf.settings.settingsKey.unlinkoutcomes.value;
+        
         this.degree=degree;
-        this.searchtags=searchtags;
+        if(this.unlink)this.searchtags=[searchtags[0]];
+        else this.searchtags=searchtags;
         this.tagParents=[];
         var tag = this.searchtags[0];
-        while(tag.parentTag !=null){tag=tag.parentTag;this.tagParents.push(tag);}
+        if(!this.unlink)while(tag.parentTag !=null){tag=tag.parentTag;this.tagParents.push(tag);}
         this.parent=parent;
         this.link=startlink;
         this.subPaths=[];
