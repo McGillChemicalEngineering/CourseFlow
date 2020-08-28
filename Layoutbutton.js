@@ -78,6 +78,42 @@ class Layoutbutton {
         }
     }
     
+    updateChildrenUnlinked(){
+        if(this.childdiv.childNodes.length>0){
+            this.bdiv.classList.add("haschildren");
+            var des = {};
+            des = this.getNumberOfDescendants(des);
+            var text = "... ";
+            for (var propt in des){
+                var s = propt;
+                if(des[propt]!=1){
+                    s=s.replace(/y$/,"ie").replace(/s$/,"");
+                    s+="s";
+                }
+                text+=des[propt]+" ";
+                text+=s+", ";
+            }
+            text = text.replace(/, $/,"");
+            this.hiddenchildren.innerHTML = text;
+        }else{
+            this.bdiv.classList.remove("haschildren");
+            if(this.bdiv.classList.contains("expanded"))this.collapse();
+        }
+    }
+    
+    getNumberOfDescendants(des){
+        var children = this.childdiv.childNodes;
+        for(var i=0;i<children.length;i++){
+            var child = children[i];
+            console.log(child.button.layout.getNameType());
+            var type = child.button.layout.getNameType();
+            if(des[type]==null)des[type]=1;
+            else des[type]=des[type]+1;
+            des = child.button.getNumberOfDescendants(des);
+        }
+        return des;
+    }
+    
     updateButton(){
         this.namediv.innerHTML = this.layout.name;
         if(this.layout.getIcon())this.icon.src=iconpath+this.layout.getIcon()+".svg";

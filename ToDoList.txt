@@ -43,13 +43,12 @@ Tag unlinking:
 		//In outcomeview, issue in updating routine, cut off from the top level
 	
 	
-	Potentially may want to still organize nodes heirarchically in the nodeview (but this would require going in and refreshing them when a new one is added)
+	//Potentially may want to still organize nodes heirarchically in the nodeview (but this would require going in and refreshing them when a new one is added)
 	
 	//The tag validation that checks paths will definitely need some tweaking as well.
 	
 	//Make sure there's a clean transition back from unlinked to not (i.e. what happens to the tier 3 outcome when it has its tier 2 outcome already attached to a node)
 	
-	I made a change a while ago that allowed a user to change the ports for a link. Make sure that the node's linksIn array is also updated.
 	
 	
 Unbudgeted stuff:

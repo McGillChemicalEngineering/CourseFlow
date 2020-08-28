@@ -352,6 +352,16 @@ class Nodeview{
         for(var i=0;i<this.node.wf.tagSets.length;i++)allTags = this.node.wf.tagSets[i].getAllID(allTags);
         var nodeList = this.tagBoxDiv.childNodes;
         var arr = [].slice.call(nodeList);
+        //if outcome tiers are unlinked, remove children from each layout div, since this we add manually in the following for loop
+        var unlink=this.node.wf.settings.settingsKey.unlinkoutcomes.value;
+        if(unlink){
+            for(var i=0;i<arr.length;i++){
+                for(var j=0;j<arr[i].button.childdiv.childNodes.length;j++){
+                    arr.push(arr[i].button.childdiv.childNodes[j]);
+                }
+            }
+            
+        }
         arr.sort(function(a,b){
             try{
                 var tagA = a.button.layout.id;
@@ -364,9 +374,30 @@ class Nodeview{
             }
             
         });
-        for(var i=0;i<arr.length;i++){
+        for(var i=0;i<arr.length;i++){var added=false;
+            //if outcome tiers are unlinked, try to recreate the hierarchy for the tags that DO exist
+            if(unlink){
+                console.log("sort of sort");
+                var tag = arr[i].button.layout;
+                var ptag = tag.parentTag;
+                while(ptag){
+                    for(var j=0;j<arr.length;j++){
+                        if(arr[j].button.layout==ptag){
+                            console.log(arr[j].button.childdiv);
+                            //arr[i].button.moveInto(arr[j].button);
+                            arr[j].button.childdiv.appendChild(arr[i]);
+                            added=true;
+                            break;
+                        }
+                    }
+                    if(added)break;
+                    ptag = ptag.parentTag;
+                }
+            }
+            if(added)continue;
             this.tagBoxDiv.appendChild(arr[i]);
         }
+        if(unlink)for(var i=0;i<arr.length;i++)arr[i].button.updateChildrenUnlinked();
     }
     
     
@@ -748,6 +779,16 @@ class WFLinkview{
         for(var i=0;i<this.link.wf.tagSets.length;i++)allTags = this.link.wf.tagSets[i].getAllID(allTags);
         var nodeList = this.tagBoxDiv.childNodes;
         var arr = [].slice.call(nodeList);
+        //if outcome tiers are unlinked, remove children from each layout div, since this we add manually in the following for loop
+        var unlink = this.link.node.wf.settings.settingsKey.unlinkoutcomes.value;
+        if(unlink){
+            for(var i=0;i<arr.length;i++){
+                for(var j=0;j<arr[i].button.childdiv.childNodes.length;j++){
+                    arr.push(arr[i].button.childdiv.childNodes[j]);
+                }
+            }
+            
+        }
         arr.sort(function(a,b){
             try{
                 var tagA = a.button.layout.id;
@@ -761,8 +802,30 @@ class WFLinkview{
             
         });
         for(var i=0;i<arr.length;i++){
+            var added=false;
+            //if outcome tiers are unlinked, try to recreate the hierarchy for the tags that DO exist
+            if(unlink){
+                console.log("sort of sort");
+                var tag = arr[i].button.layout;
+                var ptag = tag.parentTag;
+                while(ptag){
+                    for(var j=0;j<arr.length;j++){
+                        if(arr[j].button.layout==ptag){
+                            console.log(arr[j].button.childdiv);
+                            //arr[i].button.moveInto(arr[j].button);
+                            arr[j].button.childdiv.appendChild(arr[i]);
+                            added=true;
+                            break;
+                        }
+                    }
+                    if(added)break;
+                    ptag = ptag.parentTag;
+                }
+            }
+            if(added)continue;
             this.tagBoxDiv.appendChild(arr[i]);
         }
+        if(unlink)for(var i=0;i<arr.length;i++)arr[i].button.updateChildrenUnlinked();
     }
     
     fillTags(){
@@ -854,7 +917,19 @@ class NodeTagView{
     }
     
     removed(){
+        var unlink = this.nodeTag.node.wf.settings.settingsKey.unlinkoutcomes.value;
+        var parent = this.vertex.bdiv.parentElement;
+        if(unlink){
+            for(var i=0;i<this.vertex.childdiv.childNodes.length;i++){
+                parent.appendChild(this.vertex.childdiv.childNodes[i]);
+            }
+        }
         if(this.vertex)this.vertex.bdiv.parentElement.removeChild(this.vertex.bdiv);
+        if(unlink)try{
+            if(parent.parentElement.button)parent.parentElement.button.updateChildrenUnlinked();
+        }catch(err){
+            console.log("Failed to update children");
+        }
     }
     
     positionSelf(){
