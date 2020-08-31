@@ -215,7 +215,9 @@ const iconsList={
         {text:{en:'Chemistry',fr:"Chimie"},value:'chem'},
         {text:{en:'Specialized',fr:"Spécialisé"},value:'target'},
         {text:{en:'Puzzle',fr:"Puzzle"},value:'puzzle'},
-        {text:{en:'Design',fr:"Conception"},value:'design'}
+        {text:{en:'Design',fr:"Conception"},value:'design'},
+        {text:{en:'Gears',fr:'Engrenages'},value:'gears'},
+        {text:{en:'Industry',fr:'Industrie'},value:'process'}
     ]
 };
 
