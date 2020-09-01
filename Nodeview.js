@@ -48,7 +48,7 @@ class Nodeview{
         if(this.addLeftIcon()){left+=this.lefticonnode.w()+2*defaultIconPadding;width-=this.lefticonnode.w()+2*defaultIconPadding;}
         var name = LANGUAGE_TEXT.node.defaulttext[USER_LANGUAGE];
         if(this.node.name)name=this.node.name;
-        this.namenode = this.graph.insertVertex(this.vertex,null,name,defaultNamePadding,10,defaultCellWidth-2*defaultNamePadding,minCellHeight,defaultNameStyle+"labelWidth="+width+";");
+        this.namenode = this.graph.insertVertex(this.vertex,null,name,defaultNamePadding,10,this.vertex.w()-2*defaultNamePadding,minCellHeight,defaultNameStyle+"labelWidth="+width+";");
         this.graph.orderCells(true,[this.namenode]);
         var node = this.node;
         this.namenode.valueChanged = function(value){
