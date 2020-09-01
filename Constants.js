@@ -94,7 +94,7 @@ makeHTML = function(text){
 
 //constants declaration
 const cellSpacing = 20;
-const emptyWeekSize=60;
+const emptyWeekSize=50;
 const colIconSize=100;
 const defaultCellWidth=260;
 const minCellHeight=40;

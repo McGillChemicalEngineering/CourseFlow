@@ -347,7 +347,7 @@ class Weekview{
             var node = week.nodes[i];
             node.view = new Nodeview(this.graph,node);
             var y;
-            if(i==0)y=week.view.vertex.y()+2*cellSpacing;
+            if(i==0)y=week.view.vertex.y()+cellSpacing*1.5;
             else y=week.nodes[i-1].view.vertex.b()+cellSpacing;
             node.view.createVertex(0,y);
             node.view.fillTags();
@@ -602,7 +602,7 @@ class Termview extends Weekview{
                 var node = nodes[i];
                 node.view = new Nodeview(this.graph,node);
                 var y;
-                if(i==0)y=week.view.vertex.y()+2*cellSpacing;
+                if(i==0)y=week.view.vertex.y()+cellSpacing*1.5;
                 else y=nodes[i-1].view.vertex.b()+cellSpacing;
                 node.view.createVertex(0,y);
                 node.view.fillTags();
