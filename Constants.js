@@ -256,6 +256,7 @@ const LANGUAGE_TEXT = {
         terminology:{en:'Terminology',fr:"Terminologie"},
         terminologystandard:{en:'Standard',fr:"Standard"},
         terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
+        terminologyeng:{en:'Engineering',fr:'Ingénierie'},
         genhelp:{en:'General Help',fr:"Aide generale"},
         layouthelp:{en:'About the Layout',fr:"À propos de la mise en page"},
         privacypolicy:{en:'Privacy Policy',fr:"Politique de confidentialité"},
@@ -374,6 +375,12 @@ const LANGUAGE_TEXT = {
             depth0:{en:"Competency",fr:"Compétence"},
             depth1:{en:"Element of Competency",fr:"Éléments de compétence"},
             depth2:{en:"Learning Outcome",fr:"Objectif d'apprentissage"},
+            depth3:{en:"Tag",fr:"Tag"}
+        },
+        eng:{
+            depth0:{en:"Graduate Attribute",fr:"Qualités requises des diplômés"},
+            depth1:{en:"Attribute Indicator",fr:"Indicateurs de qualité"},
+            depth2:{en:"Course Outcome",fr:"Acquis de cours"},
             depth3:{en:"Tag",fr:"Tag"}
         },
         new:{en:"New",fr:"Nouveau"},
@@ -588,6 +595,7 @@ function setMenuLanguage(){
     $("#terminology").children().first().html(LANGUAGE_TEXT.menus.terminology[USER_LANGUAGE]);
     $("#terminologystandard").children().first().html(LANGUAGE_TEXT.menus.terminologystandard[USER_LANGUAGE]);
     $("#terminologycegep").children().first().html(LANGUAGE_TEXT.menus.terminologycegep[USER_LANGUAGE]);
+    $("#terminologyeng").children().first().html(LANGUAGE_TEXT.menus.terminologyeng[USER_LANGUAGE]);
     $("#language").html(LANGUAGE_TEXT.menus.language[USER_LANGUAGE]);
     $("#help").html(LANGUAGE_TEXT.menus.help[USER_LANGUAGE]);
     $("#genhelp").children().first().html(LANGUAGE_TEXT.menus.genhelp[USER_LANGUAGE]);

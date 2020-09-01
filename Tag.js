@@ -206,6 +206,11 @@ class Tag {
             case 1: return "elementofcompetency";
             case 2: return "learningobjective";
             default: return "";
+        }else if(term == "eng")switch(this.depth){
+            case 0: return "graduateattribute";
+            case 1: return "attributeindicator";
+            case 2: return "course";
+            default: return "";
         }
     }
     

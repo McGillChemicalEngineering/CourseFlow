@@ -47,6 +47,7 @@ class Project{
         $("#layouthelp").removeClass("disabled");
         $("#terminology").removeClass("disabled");
         $("#terminologycegep").removeClass("disabled");
+        $("#terminologyeng").removeClass("disabled");
         document.body.contextItem=p;
         $("#sidenav").get()[0].contextItem=p;
         $("#topnav").get()[0].contextItem=p;
@@ -269,8 +270,10 @@ class Project{
         
         var terminologyStandard = document.getElementById("terminologystandard");
         var terminologyCegep = document.getElementById("terminologycegep");
+        var terminologyEng = document.getElementById("terminologyeng");
         terminologyStandard.onclick=function(){p.setTerminology("standard");}
         terminologyCegep.onclick=function(){p.setTerminology("cegep");}
+        terminologyEng.onclick=function(){p.setTerminology("eng");}
         
         
         $("#english").get()[0].onclick = function(){
@@ -639,6 +642,7 @@ class Project{
         this.terminologySet= "standard";
         $("#terminologycegep").removeClass("disabled");
         $("#terminologystandard").addClass("disabled");
+        $("#terminologyeng").removeClass("disabled");
         for(var i=0;i<this.buttons.length;i++)this.buttons[i].updateButton();
         this.idNum="0";
         if(this.readOnly)this.makeReadOnly(false);
@@ -1083,9 +1087,15 @@ class Project{
         if(term=="standard"){
             $("#terminologycegep").removeClass("disabled");
             $("#terminologystandard").addClass("disabled");
+            $("#terminologyeng").removeClass("disabled");
         }else if(term=="cegep"){
             $("#terminologycegep").addClass("disabled");
             $("#terminologystandard").removeClass("disabled");
+            $("#terminologyeng").removeClass("disabled");
+        }else if(term=="eng"){
+            $("#terminologycegep").removeClass("disabled");
+            $("#terminologystandard").removeClass("disabled");
+            $("#terminologyeng").addClass("disabled");
         }
     }
     
