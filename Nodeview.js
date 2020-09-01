@@ -35,7 +35,7 @@ class Nodeview{
     
     createVertex(x,y){
         var width = defaultCellWidth;
-        if(this.node.wf.weeks[0] instanceof Term)width=200;
+        if(this.node.wf.weeks[0] instanceof Term)width=160;
         var h = minCellHeight+cellDropdownHeight+cellDropdownPadding;
         if(this.node.isDropped)h+=this.node.textHeight;
         var vertexStyle = this.node.getVertexStyle();
