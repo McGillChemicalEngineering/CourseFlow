@@ -112,8 +112,10 @@ function makeSplashpage(container){
     window.addEventListener("message",function(evt){
         console.log(evt);
         console.log("Message Received!");
-        if(project==null)project = new Project(container);
-        project.fromXML(evt.data);
+        try{
+            if(project==null)project = new Project(container);
+            project.fromXML(evt.data);
+        }catch(err){}
         setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
     });
     if(window!=window.parent)window.parent.postMessage("ready","*");
