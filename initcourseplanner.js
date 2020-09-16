@@ -110,6 +110,7 @@ function makeSplashpage(container){
     
     //postmessage listening
     window.addEventListener("message",function(evt){
+        console.log(evt);
         console.log("Message Received!");
         if(project==null)project = new Project(container);
         project.fromXML(evt.data);
