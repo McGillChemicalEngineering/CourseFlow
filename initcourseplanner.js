@@ -117,8 +117,13 @@ function makeSplashpage(container){
             if(project==null)project = new Project(container);
             project.fromXML(evt.data);
             success=True;
-        }catch(err){}
-        if(success)setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
+        }catch(err){
+            console.log("failed to build project from message");
+        }
+        if(success){
+            console.log("successfully built project from message");
+            setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
+        }
     });
     if(window!=window.parent)window.parent.postMessage("ready","*");
     console.log("frame is ready");
