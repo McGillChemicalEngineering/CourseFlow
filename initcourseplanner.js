@@ -111,7 +111,7 @@ function makeSplashpage(container){
     //postmessage listening
     window.addEventListener("message",function(evt){
         console.log(evt);
-        console.log("Message Received!");
+        console.log("Message Received! Attempting to build project...");
         var success=False;
         try{
             if(project==null)project = new Project(container);
