@@ -35,7 +35,7 @@ class Nodeview{
     
     createVertex(x,y){
         var width = defaultCellWidth;
-        if(this.node.wf.weeks[0] instanceof Term)width=200;
+        if(this.node.wf.weeks[0] instanceof Term)width=160;
         var h = minCellHeight+cellDropdownHeight+cellDropdownPadding;
         var textHeightOffset = 0;
         if(this.node.isDropped)textHeightOffset = this.getTextSize();
@@ -50,7 +50,8 @@ class Nodeview{
         if(this.addLeftIcon()){left+=this.lefticonnode.w()+2*defaultIconPadding;width-=this.lefticonnode.w()+2*defaultIconPadding;}
         var name = LANGUAGE_TEXT.node.defaulttext[USER_LANGUAGE];
         if(this.node.name)name=this.node.name;
-        this.namenode = this.graph.insertVertex(this.vertex,null,name,left,0,width,minCellHeight,defaultNameStyle);
+        this.namenode = this.graph.insertVertex(this.vertex,null,name,defaultNamePadding,10,this.vertex.w()-2*defaultNamePadding,minCellHeight,defaultNameStyle+"labelWidth="+width+";");
+        this.graph.orderCells(true,[this.namenode]);
         var node = this.node;
         this.namenode.valueChanged = function(value){
             var value1 = node.setNameSilent(value);
@@ -60,14 +61,14 @@ class Nodeview{
         var text = '';
         if(this.node.text)text = this.node.text;
         h=1;
-        h+=textHeightOffset;
-        this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b(),this.vertex.w()-2*defaultTextPadding,h,defaultTextStyle);
+        if(this.node.isDropped)h+=this.node.textHeight;
+        this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b()-10,this.vertex.w()-2*defaultTextPadding,h+10,defaultTextStyle);
         var dropDownStyle = defaultDropDownStyle;
         if(this.node.isDropped)dropDownStyle+="image="+iconpath+"droptriangleup.svg;fontColor=white;";
         else dropDownStyle+="image="+iconpath+"droptriangledown.svg;fontColor=black;";
         var dropText='';
         if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')dropText='...';
-        this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,0,this.textnode.b()-1+cellDropdownPadding,this.vertex.w(),cellDropdownHeight,dropDownStyle);
+        this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,defaultDropPadding,this.textnode.b()-11+cellDropdownPadding,this.vertex.w()-2*defaultDropPadding,cellDropdownHeight-defaultDropPadding,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
         var linkStyle = defaultLinkIconStyle;
@@ -112,7 +113,7 @@ class Nodeview{
                 style+="image="+iconpath+this.node.righticon+".svg;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),this.node.righticon,null);
             }
-            this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,0,defaultIconWidth,minCellHeight,style);
+            this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,8,defaultIconWidth,minCellHeight,style);
             return true;
         }
         return false;
@@ -125,7 +126,7 @@ class Nodeview{
                 style+="image="+iconpath+this.node.lefticon+".svg;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),this.node.lefticon,null);
             }
-            this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,0,defaultIconWidth,minCellHeight,style);
+            this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,8,defaultIconWidth,minCellHeight,style);
             return true;
         }
         return false;
@@ -174,7 +175,7 @@ class Nodeview{
     }
     
     makeFlushWithAbove(index,column=null){
-        if(index==0) this.moveNode(0,this.node.week.view.vertex.y()+2*cellSpacing-this.vertex.y());
+        if(index==0) this.moveNode(0,this.node.week.view.vertex.y()+cellSpacing-this.vertex.y());
         else {
             var nodes;
             if(column==null)nodes = this.node.week.nodes;

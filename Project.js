@@ -36,6 +36,7 @@ class Project{
         this.loadAppend=false;
         this.name = LANGUAGE_TEXT.menus.newproject[USER_LANGUAGE];
         this.readOnly=false;
+        this.nodesMovable=false;
         this.floatbar = $("#floatbar")[0];
         
         $("#save").removeClass("disabled");
@@ -176,7 +177,7 @@ class Project{
         var exportHTML = document.getElementById('exporthtml');
         exportHTML.onclick = function(){
             gaEvent('Save/Open','ExportHTML',p.name);
-            p.showHTMLOptions();
+            p.showExportOptions(true);
         }
         
         var exportCSV = document.getElementById('exportcsv');
@@ -202,7 +203,7 @@ class Project{
         var saveReadOnly = document.getElementById('savereadonly');
         saveReadOnly.onclick = function(){
             gaEvent('Save/Open','Save Read Only',p.name);
-            p.saveProject(true);
+            p.showExportOptions(false);
         }
         
         var printWF = document.getElementById("print");
@@ -382,12 +383,12 @@ class Project{
 		
     }
     
-    saveProject(readOnly=false){
-        this.toXML(readOnly);
+    saveProject(options){
+        this.toXML(options);
         var filename;
         if(this.filename)filename=this.filename;
         else filename = this.name.replace(/[&,\[\]<>:\*\\/?|"']/g,"");
-        if(readOnly)filename+="_ReadOnly";
+        if(options&&options.readonly)filename+="_ReadOnly";
         filename+='.CFlow';
         this.saveXML(this.xmlData,filename);
     }
@@ -466,13 +467,10 @@ class Project{
         
     }
     
-    exportHTML(readonly,hidecomments){
-        this.toXML(readonly);
+    exportHTML(options){
+        this.toXML(options);
         var suffix = this.name.replace(/[^a-zA-Z0-9]/g,'');
         var xmlData = this.xmlData.replace(/\n/g,'').replace(/"/g,'\\"').replace(/link/g,'"+"link"+"');
-        if(hidecomments){
-            xmlData = xmlData.replace(/<comment>/g,'<hiddencomment>').replace(/<\/comment>/g,'</hiddencomment>');
-        }
         var str = '<iframe style="margin:0px;width:100%;height:1200px;border:0px;" src="https://wfm.saltise.ca/CourseFlow/courseplanner.html" id="actualpage'+suffix+'"></iframe>\n';
         str = str+ '<script>\n';
         str = str+ 'var xmlstr'+suffix+' = "';
@@ -488,7 +486,7 @@ class Project{
         this.createMessage(str);
     }
     
-    showHTMLOptions(){
+    showExportOptions(toHTML=false){
         var p = this;
         var div = document.createElement('div');
         div.className = 'messagediv';
@@ -500,12 +498,19 @@ class Project{
         div.appendChild(readonly.parentElement);
         var hidecomments = this.createCheckboxOption("Hide Comments");
         div.appendChild(hidecomments.parentElement);
+        var nodesmovable = this.createCheckboxOption("Nodes Movable in Read-Only");
+        div.appendChild(nodesmovable.parentElement);
         
         
         var button = document.createElement('button');
         div.appendChild(button);
         button.innerHTML = "OK";
-        button.onclick=function(){document.body.removeChild(div);p.exportHTML(readonly.checked,hidecomments.checked);};
+        button.onclick=function(){
+            var options = {readonly:readonly.checked,hidecomments:hidecomments.checked,nodesmovable:nodesmovable.checked}
+            document.body.removeChild(div);
+            if(toHTML)p.exportHTML(options);
+            else p.saveProject(options);
+        };
         document.body.appendChild(div);
     }
     
@@ -619,17 +624,23 @@ class Project{
     
     
     
-    toXML(readOnly=false){
+    toXML(options){
         var xml = "";
         var serializer = new XMLSerializer();
         xml+=makeXML(this.name,"prname",true);
         xml+=makeXML(this.idNum,"idnum");
         xml+=makeXML(this.terminologySet,"terminologyset");
-        if(readOnly)xml+=makeXML("true","readonly");
+        if(options){
+            if(options.readonly)xml+=makeXML("true","readonly");
+            if(options.nodesmovable)xml+=makeXML("true","nodesmovable");
+        }
         for(var prop in this.workflows){
             for(var i=0;i<this.workflows[prop].length;i++){
                 xml+=this.workflows[prop][i].toXML();
             }
+        }
+        if(options&&options.hidecomments){
+            xml = xml.replace(/<comment>/g,'<hiddencomment>').replace(/<\/comment>/g,'</hiddencomment>');
         }
         this.xmlData = makeXML(xml,"project");
     }
@@ -646,6 +657,7 @@ class Project{
         for(var i=0;i<this.buttons.length;i++)this.buttons[i].updateButton();
         this.idNum="0";
         if(this.readOnly)this.makeReadOnly(false);
+        this.nodesMovable=false;
         this.changeActive(this);
     }
     
@@ -663,6 +675,9 @@ class Project{
             var readOnly = getXMLVal(xmlDoc,"readonly");
             if(readOnly)this.makeReadOnly(true);
             else this.makeReadOnly(false);
+            var nodesMovable = getXMLVal(xmlDoc,"nodesmovable");
+            if(nodesMovable)this.nodesMovable=true;
+            else this.nodesMovable=false;
         }
         var addedWF = [];
         var xmltags = [];

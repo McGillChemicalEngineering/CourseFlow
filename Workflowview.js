@@ -1035,7 +1035,7 @@ class Workflowview{
         
         //graph.panningHandler.useLeftButtonForPanning = true;
         if(p.readOnly){
-            graph.cellsMovable=false;
+            if(!p.nodesMovable)graph.cellsMovable=false;
             graph.cellsEditable=false;
             graph.cellsResizable=false;
             graph.isCellConnectable = function(){return false;}
@@ -1124,7 +1124,7 @@ class Workflowview{
                     //Start by checking whether we need to move in the x direction
                     var colIndex=wf.getColIndex(cell.node.column);
                     var newColName = wf.view.findNearestColumn(newx);
-                    if(newColName!=cell.node.column){
+                    if(newColName!=cell.node.column&&(!wf.project.readOnly)){
                         var oldColName=cell.node.column;
                         cell.node.setColumn(newColName);
                         cell.node.week.columnUpdated(cell.node,oldColName);
