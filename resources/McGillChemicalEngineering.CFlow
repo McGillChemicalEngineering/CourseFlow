@@ -1,0 +1,1933 @@
+<project><prname>McGill Chemical Engineering </prname>
+<idnum>2841</idnum>
+<terminologyset>standard</terminologyset>
+<workflow><wfname>Chemical Engineering</wfname>
+<wfauthor>undefined</wfauthor>
+<wfdescription>undefined</wfdescription>
+<wfid>1</wfid>
+<wftype>program</wftype>
+<advancedoutcomes>true</advancedoutcomes>
+<linktagging>true</linktagging>
+<validation>true</validation>
+<reqtime>117</reqtime>
+<maxtime>18</maxtime>
+<usedwfARRAY></usedwfARRAY>
+<tagsetARRAY>22,241,873,875,880,891,896,903,962,969,974,985,996,1008,1018,1077,1082,1095,1103,1107,1117,1126,1138,1149,1158,1169</tagsetARRAY>
+<wfdata><column><columnname>CUS1</columnname>
+<columnimage>chem</columnimage>
+<columncolour>#543498</columncolour>
+<columntext>Chemical Engineering
+ Fundamentals</columntext>
+<columnnodetext>Chemical Engineering
+ Fundamentals</columnnodetext>
+<columnoutcomevisibility>true</columnoutcomevisibility>
+</column>
+<column><columnname>CUS2</columnname>
+<columnimage>science</columnimage>
+<columncolour>#369934</columncolour>
+<columntext>Science-Based Courses</columntext>
+<columnnodetext>Science-Based Courses</columnnodetext>
+<columnoutcomevisibility>true</columnoutcomevisibility>
+</column>
+<column><columnname>CUS3</columnname>
+<columnimage>design</columnimage>
+<columncolour>#349698</columncolour>
+<columntext>Experiential and 
+Design-Based Courses</columntext>
+<columnnodetext>Experiential and 
+Design-Based Courses</columnnodetext>
+<columnoutcomevisibility>true</columnoutcomevisibility>
+</column>
+<column><columnname>CUS4</columnname>
+<columnimage>target</columnimage>
+<columncolour>#72176c</columncolour>
+<columntext>Specialized Courses</columntext>
+<columnnodetext>Specialized Courses</columnnodetext>
+<columnoutcomevisibility>true</columnoutcomevisibility>
+</column>
+<column><columnname>CUS5</columnname>
+<columnimage>general</columnimage>
+<columncolour>#d67a2e</columncolour>
+<columntext>General Courses</columntext>
+<columnnodetext>General Courses</columnnodetext>
+<columnoutcomevisibility>true</columnoutcomevisibility>
+</column>
+<week><weekid>20</weekid>
+<weekname>Semester 1</weekname>
+<node><name>CHEE 200: Chemical Engineering Principles 1</name>
+<id>42</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Introduction to the design of industrial processes. Survey of unit operations, and systems of units. Elementary material balances, first and second laws of thermodynamics, use of property tables and charts, steady flow processes. Relationships between thermodynamic properties, property estimation techniques. Laboratory and design exercise.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to U0 students.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>49</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>82</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>875</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 231: Data Analysis and Design of Experiments</name>
+<id>50</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Foundation of the design and execution of experiments based on statistical principles and of the results analysis. Topics: Data visualization, significant digits; uncertainty, precision, accuracy, propagation of uncertainty; univariate data analysis, normal distribution; sampling distribution and point estimates, confidence intervals, hypothesis testing; simple and multiple linear regression; design of experiments.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to U0 students.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>66</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INw;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>156</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>896</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 291: Instrumentation and Measurement 1</name>
+<id>66</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Introductions to safe laboratory practices, technical report-writing, electrically-based measurements and modern methods for instrumentation and control. Goals are that students can safely perform accurate measurements of physical variables without detailed theoretical knowledge. Common software for report writing and instrumentation are introduced and used extensively.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-3-6&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 231&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to U0 students.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>307</textheight>
+<timevalue>4</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>141</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+</link>
+<link><targetid>156</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INw;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>903</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEM 212: Introductory Organic Chemistry 1</name>
+<id>46</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Chemistry: A survey of reactions of aliphatic and aromatic compounds including modern concepts of bonding, mechanisms, conformational analysis, and stereochemistry.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter, Summer&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEM 110&amp;nbsp;or equivalent.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEM 120&amp;nbsp;or equivalent.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who are taking or have taken&amp;nbsp;CHEM 211&amp;nbsp;or equivalent&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Each lab section is limited enrolment&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Note: Some CEGEP programs provide equivalency for this course. For more information, please see the Department of Chemistry's Web page (&lt;a href="http://www.chemistry.mcgill.ca/advising/outside/equivalent.htm" target="_blank"&gt;http://www.chemistry.mcgill.ca/advising/outside/equivalent.htm&lt;/a&gt;).&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>4</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>83</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>241</nodetagid>
+</nodetag>
+</node>
+<node><name>MATH 262: Intermediate Calculus</name>
+<id>44</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Mathematics &amp;amp; Statistics (Sci): Series and power series, including Taylor's theorem. Brief review of vector geometry. Vector functions and curves. Partial differentiation and differential calculus for vector valued functions. Unconstrained and constrained extremal problems. Multiple integrals including surface area and change of variables.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter, Summer&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisites:&amp;nbsp;&lt;a href="http://www.mcgill.ca/study/2020-2021/courses/MATH-141" target="_blank"&gt;MATH 141&lt;/a&gt;,&amp;nbsp;&lt;a href="http://www.mcgill.ca/study/2020-2021/courses/MATH-133" target="_blank"&gt;MATH 133&lt;/a&gt;&amp;nbsp;or equivalent.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restrictions: Open only to students in the Faculty of Engineering. Not open to students who are taking or have taken&amp;nbsp;&lt;a href="http://www.mcgill.ca/study/2020-2021/courses/MATH-151" target="_blank"&gt;MATH 151&lt;/a&gt;,&amp;nbsp;&lt;a href="http://www.mcgill.ca/study/2020-2021/courses/MATH-152" target="_blank"&gt;MATH 152&lt;/a&gt;, OR&amp;nbsp;&lt;a href="http://www.mcgill.ca/study/2020-2021/courses/MATH-222" target="_blank"&gt;MATH 222&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>82</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>85</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>113</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+</node>
+</week>
+<week><weekid>18</weekid>
+<weekname>Semester 2</weekname>
+<node><name>CHEM 234: Topics in Organic Chemistry</name>
+<id>83</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Chemistry: Modern spectroscopic techniques for structure determination. The chemistry of alcohols, ethers, carbonyl compounds, and amines, with special attention to mechanistic aspects. Special topics.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter, Summer&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEM 212&amp;nbsp;or equivalent&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: For Chemical Engineers only or permission of department.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>873</nodetagid>
+</nodetag>
+</node>
+<node><name>COMP 208: Computer Programming for Physical Sciences and Engineering</name>
+<id>84</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Computer Science (Sci): Programming and problem solving in a high level computer language: variables, expressions, types, functions, conditionals, loops, objects and classes. Introduction to algorithms such as searching and sorting. Modular software design, libraries, file input and output, debugging. Emphasis on applications in Physical Sciences and Engineering, such as root finding, numerical integration, diffusion, Monte Carlo methods.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;MATH 141&amp;nbsp;or equivalent.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;MATH 133&amp;nbsp;or equivalent.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restrictions: Credit can be given only for one of&amp;nbsp;COMP 202,&amp;nbsp;COMP 204, or&amp;nbsp;COMP 208.&amp;nbsp;COMP 208&amp;nbsp;cannot be taken for credit with or after&amp;nbsp;COMP 250&amp;nbsp;or&amp;nbsp;COMP 206.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;COMP 202&amp;nbsp;is intended as a general introductory course, while&amp;nbsp;COMP 208&amp;nbsp;is intended for students with sufficient math background and in (non-life) science or engineering fields.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>48</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+</link>
+</node>
+<node><name>MATH 263: Ordinary Differential Equations for Engineers</name>
+<id>85</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Mathematics &amp;amp; Statistics (Sci): First order ODEs. Second and higher order linear ODEs. Series solutions at ordinary and regular singular points. Laplace transforms. Linear systems of differential equations with a short review of linear algebra.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter, Summer&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;MATH 262.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restrictions: Open only to students in the Faculty of Engineering. Not open to students who are taking or have taken&amp;nbsp;MATH 315&amp;nbsp;or&amp;nbsp;MATH 325.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>113</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>48</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+</node>
+<node><name>CHEE 204: Chemical Engineering Principles 2</name>
+<id>49</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Material and energy balances in chemical processes. Introduction to process design. Problem solving in the design of various industrial processes such as combustion, humidification, separation processes (evaporation, crystallization), and other reactive systems used in the diverse areas of chemical engineering.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-2-4&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 200&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>107</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<link><targetid>48</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INn;</portstyle>
+</link>
+<link><targetid>123</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>880</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 220: Chemical Engineering Thermodynamics</name>
+<id>82</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Application of thermodynamic equilibrium; free energy and equilibrium; phase rule; chemical reaction equilibrium for homogenous and multicomponent/multiphase systems. Application to the design of binary distillation. Laboratory exercise.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1.5-4.5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 200&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite(s):&amp;nbsp;MATH 262&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>123</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<link><targetid>117</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INw;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>891</nodetagid>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+</node>
+<node><name>FACC 100: Introduction to the Engineering Profession</name>
+<id>51</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS5</column>
+<textHTML>&lt;p&gt;Faculty Course: Introduction to engineering practice; rights and code of conduct for students; professional conduct and ethics; engineer's duty to society and the environment; sustainable development; occupational health and safety; overview of the engineering disciplines taught at McGill.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 1.5-0-1.5&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>1</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>110</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<link><targetid>174</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+</node>
+</week>
+<week><weekid>17</weekid>
+<weekname>Semester 3</weekname>
+<node><name>CHEE 370: Elements of Biotechnology</name>
+<id>86</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Biological macromolecules; cell structure and metabolism; industrially significant microbes; enzyme kinetics; introduction to molecular biology and genetic engineering, laboratory exercises.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>129</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>996</nodetagid>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+</node>
+<node><name>CHEE 380: Materials Science</name>
+<id>108</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Structure/property relationship for metals, ceramics, polymers and composite materials. Atomic and molecular structure, bonds, electronic band structure and semi-conductors. Order in solids: crystal structure, disorders, solid phases. Mechanical properties and fracture, physico-chemical properties, design. Laboratory exercises.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>126</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1008</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 314: Fluid Mechanics</name>
+<id>107</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Fluid properties; dimensional analysis; drag; packed/fluidized beds; macroscopic energy balances, Bernoulli's equation and linear momentum theorem; flowmeters, pipeline systems, non-Newtonian fluids, microscopic balances leading to continuity and Navier-Stokes equations; boundary layer approximation; turbulence. Laboratory exercises.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-2-4&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite(s):&amp;nbsp;CHEE 204&amp;nbsp;or&amp;nbsp;BIEN 200&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;MATH 264.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>120</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>969</nodetagid>
+</nodetag>
+<nodetag><nodetagid>240</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+</node>
+<node><name>CHEE 390: Computational Methods in Chemical Engineering</name>
+<id>48</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Linear systems of algebraic equations, Gaussian elimination; non-linear algebraic systems: Taylor series, incremental search, bisection method, linear interpolation, Newton-Raphson's method; differentiation and integration; initial value problems: Euler's and Runge Kutta's methods, stiff equations, adaptive solvers; boundary value problems; curve fitting; numerical optimization; probability theory and stochastic simulation: Monte Carlo method.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisites:&amp;nbsp;CHEE 204,&amp;nbsp;COMP 208,&amp;nbsp;MATH 263&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;MATH 264&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>135</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1018</nodetagid>
+</nodetag>
+</node>
+<node><name>FACC 250: Responsibilities of the Professional Engineer</name>
+<id>110</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS5</column>
+<textHTML>&lt;p&gt;Faculty Course: A course designed to provide all Engineering students with further training regarding their responsibilities as future Professional Engineers. Particular focus will be placed on three professional characteristics that future engineers must demonstrate: i) professionalism, ii) ethical and equitable behaviour, and iii) consideration of the impact of engineering on society and the environment.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 0-0-0.5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite(s):&amp;nbsp;FACC 100&amp;nbsp;or&amp;nbsp;BREE 205&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction(s): Restricted to undergraduate students registered in the Bioengineering, Bioresource Engineering, Chemical Engineering, Civil Engineering, Computer Engineering, Electrical Engineering, Materials Engineering, Mechanical Engineering, Mining Engineering, and Software Engineering (Faculty of Engineering) program.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>0</timevalue>
+<timeunit>cr</timeunit>
+</node>
+<node><name>MATH 264: Advanced Calculus for Engineers</name>
+<id>113</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Mathematics &amp;amp; Statistics (Sci): Review of multiple integrals. Differential and integral calculus of vector fields including the theorems of Gauss, Green, and Stokes. Introduction to partial differential equations, separation of variables, Sturm-Liouville problems, and Fourier series.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter, Summer&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;MATH 262&amp;nbsp;or&amp;nbsp;MATH 151&amp;nbsp;or&amp;nbsp;MATH 152&amp;nbsp;or equivalent.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;MATH 263&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restrictions: Open only to students in the Faculty of Engineering. Not open to students who are taking or have taken&amp;nbsp;MATH 319&amp;nbsp;or&amp;nbsp;MATH 475.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>107</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>48</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>150</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+</link>
+</node>
+</week>
+<week><weekid>16</weekid>
+<weekname>Semester 4</weekname>
+<node><name>CHEE 484: Materials Engineering</name>
+<id>126</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Processes for forming and producing engineering materials such as amorphous, semicrystalline, textured and crystal-oriented substances and composites. Phase transformations, nucleation and growth. Effect of processing variables on the properties of the finished article. Process of blending and alloying. Shaping and joining operations. Vessel equipment design for chemical engineering applications.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 380&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>135</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>237</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1158</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 474: Biochemical Engineering</name>
+<id>129</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Bioreactor design for biotechnology and environmental applications; microbial growth kinetics; application of transport phenomena and selected chemical engineering unit operations. Bioreactor instrumentation and performance optimization. Air and media sterilization processes. Selected operations of downstream processing and product recovery.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 370&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 315&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>240</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1149</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 315: Heat and Mass Transfer</name>
+<id>120</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Transport of heat and mass by diffusion and convection; transport of heat by radiation; diffusion; convective mass transfer; drying; absorption; mathematical formulation of problems and equipment design for heat and mass transfer; laboratory exercises.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-2-4&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 314&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>123</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>129</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INw;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>135</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<link><targetid>138</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<link><targetid>47</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>974</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 351: Separation Processes</name>
+<id>123</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Concepts underlying equilibrium based separation, design of processes and equipment for distillation, absorption/stripping, liquid extraction, washing, and leaching. Consideration of mass transfer effects.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-2-4&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 220&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisites:&amp;nbsp;CHEE 204,&amp;nbsp;CHEE 315&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>47</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>985</nodetagid>
+</nodetag>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+</node>
+<node><name>FACC 300: Engineering Economy</name>
+<id>132</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS5</column>
+<textHTML>&lt;p&gt;Faculty Course: Introduction to the basic concepts required for the economic assessment of engineering projects. Topics include: accounting methods, marginal analysis, cash flow and time value of money, taxation and depreciation, discounted cash flow analysis techniques, cost of capital, inflation, sensitivity and risk analysis, analysis of R and D, ongoing as well as new investment opportunities.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter, Summer&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who have taken&amp;nbsp;MIME 310.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>153</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+</node>
+<node><name>CHEE 310: Physical Chemistry for Engineers</name>
+<id>117</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS2</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Introduction to chemical kinetics, adsorption, surface tension, and electrochemistry. Topics emphasize applications of physical chemistry for chemical engineers.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 220&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students having taken&amp;nbsp;CHEM 233.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>138</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>962</nodetagid>
+</nodetag>
+</node>
+</week>
+<week><weekid>2</weekid>
+<node><name>CHEE 453: Process Design</name>
+<id>47</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Analysis of design alternatives. Structure of process design systems, degrees of freedom, information flow. Computer-aided process and plant design programs, physical properties, specifications, recycle convergence, optimization, economics, scheduling of batch and continuous processes. Hazard identification in process design.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-3-6&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite(s):&amp;nbsp;CHEE 315;&amp;nbsp;CHEE 351&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>4</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>141</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>144</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>153</targetid>
+<portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>236</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>239</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1107</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 456: Design Project 1</name>
+<id>144</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Introduction to a process design and economic evaluation of projects, including environmental and safety aspects, for a major industrial operation. The following topics are also covered: plant site selection and social acceptability, plant ergonomics, ethics in engineering design, process safety, loss prevention and risk mitigation, green process design. Students work in small groups under an experienced plant design supervisor.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-0-9&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 453&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Must be taken in the semester preceding&amp;nbsp;CHEE 457.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>4</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>236</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>237</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>238</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>239</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>240</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1126</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 400: Principles of Energy Conversion</name>
+<id>135</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Fossil fuels, renewable and nuclear energy resources and use. Principles of energy conversion and thermodynamic engine cycles. Solar radiation, heat, mechanical, chemical, nuclear, and electrical energy conversion processes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 315,&amp;nbsp;CHEE 484&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 390&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>147</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1077</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 423: Chemical Reaction Engineering</name>
+<id>138</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Review of fundamental concepts in chemical reaction thermodynamics and kinetics. Mass and energy balances for homogenous ideal reactors. Batch, semi-batch and continuous operation. Minimization of by-product and pollution production. Heterogenous reactions, effect of heat and mass transfer on the global rate. Laboratory exercises.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisites:&amp;nbsp;CHEE 310,&amp;nbsp;CHEE 315&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>141</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>156</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>150</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1095</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 455: Process Control </name>
+<id>141</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Dynamic modelling of processes, the Laplace transform, transfer functions, transient responses, first and higher-order systems, empirical determination of models, time delay approximation, open and closed loop responses, feedback control, applications of standard controller features, stability, controller tuning, frequency response analysis, feedforward and ratio control, cascade control.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 291&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite(s):&amp;nbsp;CHEE 423,&amp;nbsp;CHEE 453&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>156</targetid>
+<portstyle>sourcePort=OUTs;targetPort=INn;</portstyle>
+<linkstyle>dashed</linkstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+</node>
+</week>
+<week><weekid>3</weekid>
+<node><name>CHEE 401: Energy Systems Engineering</name>
+<id>147</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Applied engineering principles of major energy technologies, including quantitative performance evaluation, cost and environmental impact. Criteria for energy system selection. System engineering methodologies for energy, including efficiency, project scope, trade-offs, energy consumption, and environmental impact.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 400&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>237</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>239</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>240</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1082</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 491: Instrumentation and Measurement 2</name>
+<id>156</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Measurement devices, valves, controllers and actuators; common failure modes and error sources; P&amp;amp;ID; static and dynamic responses; first and higher-order instrument responses; calibration and biases; frequency response analysis; chemical analysis; elements of spectroscopy; optical measurements; NI-LabVIEW integration project for a set of typical instruments used in chemical engineering.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-3-6&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite(s):&amp;nbsp;CHEE 231,&amp;nbsp;CHEE 291&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite(s):&amp;nbsp;CHEE 423,&amp;nbsp;CHEE 455&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who have taken&amp;nbsp;CHEE 393&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>4</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1169</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 457: Design Project 2</name>
+<id>153</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Introduction to a process design and economic evaluation of projects, including environmental and safety aspects, for a major industrial operation. The following topics are also covered: plant site selection and social acceptability, plant ergonomics, ethics in engineering design, process safety, loss prevention and risk mitigation, green process design. Students work in small groups under an experienced plant design supervisor.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 2-2-11&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 456.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;FACC 300.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Must be taken in the semester following&amp;nbsp;CHEE 456.&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>5</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>235</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>236</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>237</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>239</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>240</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1138</nodetagid>
+</nodetag>
+</node>
+<node><name>CHEE 440: Process Modelling</name>
+<id>150</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS1</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Principles of mathematical modelling in chemical engineering: problem formulation, solution, discrete systems; difference and difference-differential equations, methods of solution; understanding system behaviour, optimization.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisites:&amp;nbsp;MATH 264&amp;nbsp;and&amp;nbsp;CHEE 423&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who have taken&amp;nbsp;CHEE 340&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1103</nodetagid>
+</nodetag>
+</node>
+</week>
+<week><weekid>115</weekid>
+<node><name>FACC 400: Engineering Professional Practice</name>
+<id>174</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS5</column>
+<textHTML>&lt;p&gt;Faculty Course: Laws, regulations and codes governing engineering professional practice. Responsibility and liability. Environmental legislation. Project and organization management. Relations between engineer and client. Technical practice - analysis, design, execution and operation.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Terms: Fall, Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 1.5-1-0.5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisites:&amp;nbsp;FACC 100&amp;nbsp;or&amp;nbsp;BREE 205&amp;nbsp;and at least 60 program credits (B.Eng./B.S.E. students in the Faculty of Engineering) or 45 program credits (B.Eng. Bioresource) students.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who have taken&amp;nbsp;MIME 221.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>1</timevalue>
+<timeunit>cr</timeunit>
+</node>
+<node><name>Complementary Studies Group A (Impact) course</name>
+<id>168</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS5</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>237</nodetagid>
+</nodetag>
+</node>
+<node><name>Complementary Studies Group B (HSS) course</name>
+<id>165</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS5</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>240</nodetagid>
+</nodetag>
+</node>
+<node><name>Technical Complementary - Group A</name>
+<id>171</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+</node>
+<node><name>Technical Complementary - Group B</name>
+<id>177</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+</node>
+<node><name>Technical Complementary - Group C</name>
+<id>180</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+</node>
+</week>
+<wflegendx>940</wflegendx>
+<wflegendy>400</wflegendy>
+</wfdata></workflow>
+<tag><tagname>Graduate Attributes</tagname>
+<tagid>22</tagid>
+<iscollapsed>false</iscollapsed>
+<tag><tagname>KB - Knowledge Base for Engineering</tagname>
+<tagid>228</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>PA - Problem Analysis</tagname>
+<tagid>230</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>IN - Investigation</tagname>
+<tagid>231</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>DE - Design</tagname>
+<tagid>232</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>ET - Use of engineering tools</tagname>
+<tagid>233</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>IT - Individual and team work</tagname>
+<tagid>234</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>CS - Communication Skills</tagname>
+<tagid>235</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>PR - Professionalism</tagname>
+<tagid>236</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>IE - Impact of engineering on society and the environment</tagname>
+<tagid>237</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>EE - Ethics and equity</tagname>
+<tagid>238</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>EP - Economics and project management</tagname>
+<tagid>239</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>LL - Life-long learning</tagname>
+<tagid>240</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEM 212</tagname>
+<tagid>241</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Alkanes &amp; cycloalkanes: Underst. prop&apos;s, nomenclature, conformations, &amp; halogenation										</tagname>
+<tagid>863</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand definitions, nomenclature, and applications of stereochemistry</tagname>
+<tagid>864</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand properties, reactions and mechanisms of alkyl halides										</tagname>
+<tagid>865</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand elimination reactions and mechanisms</tagname>
+<tagid>866</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand properties, nomenclature, synthesis, reactions &amp; mechanisms of alkenes and alkynes										</tagname>
+<tagid>867</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand synthesis, reactions and mechanisms of aromatic compounds										</tagname>
+<tagid>868</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand properties, reactions and mechanisms of conjugated unsaturated systems										</tagname>
+<tagid>869</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop laboratory skills and abilities.										</tagname>
+<tagid>870</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Maintain an accurate lab notebook.										</tagname>
+<tagid>871</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Communicate laboratory results scientifically.										</tagname>
+<tagid>872</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEM 234</tagname>
+<tagid>873</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Understand infrared, NMR, MS, alcohols, ethers, acids, aldehydes / ketones, &amp; amines										</tagname>
+<tagid>874</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 200</tagname>
+<tagid>875</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>To understand and use  the laws of  mass and energy conservations 										</tagname>
+<tagid>876</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To understand and use   the first and second laws of thermodynamics 										</tagname>
+<tagid>877</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop skills to solve steady-state engineering problems for chemical processes 										</tagname>
+<tagid>878</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To learn to  report engineering data in a proper manner (significant figures, units, etc)										</tagname>
+<tagid>879</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 204</tagname>
+<tagid>880</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Explain the different terminologies used in thermochemistry, thermochemical processes</tagname>
+<tagid>881</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Determine heat of reaction from standard heats of formation										</tagname>
+<tagid>882</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate adiabatic reaction temperature through an iterative process										</tagname>
+<tagid>883</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the concept of key components and reactions										</tagname>
+<tagid>884</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Draw consistent block flow and detailed process flow diagram										</tagname>
+<tagid>885</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Evaluate a chemical process consisting of multiple reactors with/without recycle										</tagname>
+<tagid>886</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate lower and higher heating value of gaseous, liquid and solid fuels</tagname>
+<tagid>887</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Conduct combustion calculations and determine air-to-fuel ratio</tagname>
+<tagid>888</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Use steam tables, T-S diagrams to calculate and visualize steam and gas cycles</tagname>
+<tagid>889</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Evaluate a coal/biomass/gas fired power plant										</tagname>
+<tagid>890</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 220</tagname>
+<tagid>891</tagid>
+<iscollapsed>false</iscollapsed>
+<tag><tagname>Calculate changes in thermodynamic properties or real pure fluids for changes of state</tagname>
+<tagid>892</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate changes in thermodynamic properties or real binary mixtures for changes of state										</tagname>
+<tagid>893</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate and use fugacity and activity to determine vapor-liquid equilibrium										</tagname>
+<tagid>894</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate and use fugacity and activity to determine chemical reaction equilibrium										</tagname>
+<tagid>895</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 231</tagname>
+<tagid>896</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Understand and use basic statistical tools										</tagname>
+<tagid>897</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the concept of random variables and probability distribution functions 										</tagname>
+<tagid>898</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate confidence intervals and build hypothesis tests										</tagname>
+<tagid>899</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Build and evaluate empirical models										</tagname>
+<tagid>900</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Design and evaluate engineering experiments</tagname>
+<tagid>901</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Learn to use statistical tables to evaluate significance										</tagname>
+<tagid>902</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 291</tagname>
+<tagid>903</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Master technical report writing and use of writing tools										</tagname>
+<tagid>904</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Track propagation of errors using NIST protocols										</tagname>
+<tagid>905</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Laboratory safety training (WHMIS)</tagname>
+<tagid>906</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identify components of measurement systems and sensors										</tagname>
+<tagid>907</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Define instrument performance characteristics and related terminology										</tagname>
+<tagid>908</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate uncertainty arising from instrument error										</tagname>
+<tagid>909</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Explain the operation of instruments used to measure various physical variables (temperature, pressure, flow rate, density, chemical composition)</tagname>
+<tagid>910</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Discuss the scientific principles behind the measurement of a given variable										</tagname>
+<tagid>911</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Analyze and explain experimental data obtained from instruments and analytical techniques										</tagname>
+<tagid>912</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Compare and contrast different characterization techniques for measuring a variable										</tagname>
+<tagid>913</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Design protocols to measure a property of interest in gases, liquids or solids</tagname>
+<tagid>914</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Design protocols to calibrate measurement systems										</tagname>
+<tagid>915</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 310</tagname>
+<tagid>962</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Develop reaction rate models chemical and catalytic reactions and perform calculations to determine them										</tagname>
+<tagid>963</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Comprehend the influence of temperature on reaction kinetics										</tagname>
+<tagid>964</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the phenomena of surface tension 										</tagname>
+<tagid>965</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Comprehend the phenomena of adsorption equilibrium/kinetics and apply it for selected engineering applications</tagname>
+<tagid>966</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply fundamental concepts of reaction &amp; phase equilibrium to electrochemical systems										</tagname>
+<tagid>967</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Be able to design and conduct an experiments to measure reactions kinetics, surface tension, adsorption equilibria										</tagname>
+<tagid>968</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 314</tagname>
+<tagid>969</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Introduce basic principles of fluid mechanics										</tagname>
+<tagid>970</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop analytical problem solving skills and strategies										</tagname>
+<tagid>971</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop hands-on hypothesis-testing and experimental skills										</tagname>
+<tagid>972</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Become familiar with standard fluid measurement systems										</tagname>
+<tagid>973</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 315</tagname>
+<tagid>974</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>How to make reasonable assumptions										</tagname>
+<tagid>975</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Choose appropriate coordinate system										</tagname>
+<tagid>976</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Perform shell balances</tagname>
+<tagid>977</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Difference between Fick&apos;s law and combined flux										</tagname>
+<tagid>978</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Differentiate between advection and convection										</tagname>
+<tagid>979</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Sketch results without solving equations 										</tagname>
+<tagid>980</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Predict outcomes by using real life observations 										</tagname>
+<tagid>981</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Decompose complicated problems into simpler multistep ones										</tagname>
+<tagid>982</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identify appropriate boundary conditions (Robin, Neumann, etc) and apply them										</tagname>
+<tagid>983</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Choose appropriate correlations for convective problems										</tagname>
+<tagid>984</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 351</tagname>
+<tagid>985</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Perform flash calculations without enthalpy balance										</tagname>
+<tagid>986</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Estimate multicomponent bubble and dew points										</tagname>
+<tagid>987</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Extend a single flash drum to a series of flash drums to a counter-current cascade										</tagname>
+<tagid>988</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Perform external and internal balances on distillation columns										</tagname>
+<tagid>989</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply the McCabe-Theile method to size binary distillation columns										</tagname>
+<tagid>990</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Design multicomponent distillation column using Exact Matrix Solution and Approximate Shortcut methods										</tagname>
+<tagid>991</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply mass transfer concepts to size columns based on HTU-NTU concepts										</tagname>
+<tagid>992</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Determine packed bed height based on mass transfer limited processes										</tagname>
+<tagid>993</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Adapt McCable-Theile approach to gas absorption and stripping columns										</tagname>
+<tagid>994</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate the number of equilibrium stages in liquid-liquid extraction for immiscible and partially miscible systems										</tagname>
+<tagid>995</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 370</tagname>
+<tagid>996</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Comprehend the structure and function of basic biological compounds.										</tagname>
+<tagid>997</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Comprehend the reactions and processes involved in cell growth and gene expression.										</tagname>
+<tagid>998</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Comprehend genetic engineering strategies used to produce foreign proteins in cells.										</tagname>
+<tagid>999</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop enzyme kinetics models from first principles and apply the models obtained.										</tagname>
+<tagid>1000</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Design, conduct and analyse molecular biotechnology experiments.										</tagname>
+<tagid>1001</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Participate in teamwork during laboratories and presentations.</tagname>
+<tagid>1002</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Communicate experimental results and biotech. concepts in written and oral reports.										</tagname>
+<tagid>1003</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the societal and economical impact of certain advances in biotechnology.										</tagname>
+<tagid>1004</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand fundamental bioreactor design criteria for cell survival and growth.										</tagname>
+<tagid>1005</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Locate external sources of information on biotechnology and engage in self-direction.										</tagname>
+<tagid>1006</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 380</tagname>
+<tagid>1008</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Develop a fundamental understanding of materials structure at all levels (atomic to macro)										</tagname>
+<tagid>1009</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the role of order and structural disorder (crystals, defects, amorphous materials)										</tagname>
+<tagid>1010</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand and analyse solid phase diagrams										</tagname>
+<tagid>1011</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand elastic/plastic deformation and structure-property ctrl on deformation</tagname>
+<tagid>1012</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop a general design capability of materials based on structure/property relationship at all levels										</tagname>
+<tagid>1013</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop a knowledge on corrosion phenomena and related material design										</tagname>
+<tagid>1014</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the concepts of fracture &amp; fatigue, and the related design aspects 										</tagname>
+<tagid>1015</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop a practical knowledge/experience of stress-strain and corrosion measurements										</tagname>
+<tagid>1016</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Initiate design aspects evaluations through material design software (CES Edupak 2014)										</tagname>
+<tagid>1017</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 390</tagname>
+<tagid>1018</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Numerical limitations, floating point error, etc.										</tagname>
+<tagid>1019</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Difference between relative and absolute tolerance and when to use them										</tagname>
+<tagid>1020</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Detection, avoidance and how to handle singularities 										</tagname>
+<tagid>1021</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>How to combine numerical methods to improve stability and speed										</tagname>
+<tagid>1022</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>How to verify accuracy or uniqueness of solution exp. Reciprocal condition number										</tagname>
+<tagid>1023</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Use error behaviour to improve numerical method (Richardson</tagname>
+<tagid>1024</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Difference between implicit and explicit methods										</tagname>
+<tagid>1025</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identify stiff differential equations and how to solve 										</tagname>
+<tagid>1026</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Recursive vs iterative techniques</tagname>
+<tagid>1027</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Choose appropriate convergence criteria and stepping parameters </tagname>
+<tagid>1028</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 400</tagname>
+<tagid>1077</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Develop a quantitative knowledge of primary energy resources										</tagname>
+<tagid>1078</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Learn and apply the scientific principles involved in energy conversion and conversion efficiencies										</tagname>
+<tagid>1079</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop a working knowledge of engineering models and applications of energy conversion devices and processes.								</tagname>
+<tagid>1080</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Learn the methods and controls to optimize the use of renewable energy										</tagname>
+<tagid>1081</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 401</tagname>
+<tagid>1082</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Describe global patterns of energy supply and consumption.										</tagname>
+<tagid>1083</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Describe energy management strategies.										</tagname>
+<tagid>1084</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Explain the local, regional and global environmental effects of energy.										</tagname>
+<tagid>1085</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply systems engineering methodologies to new energy technologies.										</tagname>
+<tagid>1086</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Differentiate the environmental, economic and social impacts of major energy technologies.										</tagname>
+<tagid>1087</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Analyze the economic viability of energy systems projects.										</tagname>
+<tagid>1088</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Criticize energy management strategies.										</tagname>
+<tagid>1089</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Compare different forms of energy, their performance and impact.										</tagname>
+<tagid>1090</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Assess the technical performance of energy conversion technologies.										</tagname>
+<tagid>1091</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Evaluate the sustainability of energy systems using life-cycle analysis and risk-based models.										</tagname>
+<tagid>1092</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Choose among energy technologies based on technical and environmental selection criteria.										</tagname>
+<tagid>1093</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Synthesize and communicate technical information related to energy systems to a broad audience.										</tagname>
+<tagid>1094</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 423</tagname>
+<tagid>1095</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Concepts and terminologies in chemical reaction engineering.										</tagname>
+<tagid>1096</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Types of chemical reactors and reactions										</tagname>
+<tagid>1097</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Ideal and non-ideal reactor concepts										</tagname>
+<tagid>1098</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Derive general design and performance equations for a specific reactor type										</tagname>
+<tagid>1099</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Derive specific design and performance equations for a specific reactor type										</tagname>
+<tagid>1100</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Calculate reactant conversion and product selectivity for different reactor types										</tagname>
+<tagid>1101</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Select the type and design a reactor based on required performance										</tagname>
+<tagid>1102</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 440</tagname>
+<tagid>1103</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Develop working knowledge of the science of mathematical modelling in chemical engineering process. 								</tagname>
+<tagid>1104</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop system-based analytical skills to integrate chemical engineering processes and process modelling.										</tagname>
+<tagid>1105</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop the mathematical skills to solve process models for design, control and prediction.										</tagname>
+<tagid>1106</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 453</tagname>
+<tagid>1107</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>To learn the role of the Process Engineer in a plant design environment										</tagname>
+<tagid>1108</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To learn the steps in formulating a process design										</tagname>
+<tagid>1109</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To learn about the interaction between all disciplines and aspects of design										</tagname>
+<tagid>1110</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To select, size and/or design common process engineering equipment										</tagname>
+<tagid>1111</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To develop coherent process flow diagrams and instrumentation diagrams										</tagname>
+<tagid>1112</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To convert a process diagram into a computer simulation program										</tagname>
+<tagid>1113</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To specify materials of construction for various processes and equipment										</tagname>
+<tagid>1114</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To perform economic analyses of processes and compare alternatives										</tagname>
+<tagid>1115</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>To include safety and environmental concerns in the design of a process										</tagname>
+<tagid>1116</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 455</tagname>
+<tagid>1117</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Understanding of incentives for process control.										</tagname>
+<tagid>1118</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Visualization and understanding of the dynamics of simple instruments and systems.										</tagname>
+<tagid>1119</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identification of key independent (manipulated) and dependent (controlled) process variables.										</tagname>
+<tagid>1120</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Model identification and parameter estimation.										</tagname>
+<tagid>1121</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identification of process control goals and proper control strategies.</tagname>
+<tagid>1122</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Analysis of the behaviour of controlled processes.										</tagname>
+<tagid>1123</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Controller tuning.										</tagname>
+<tagid>1124</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Specifications of control system components.										</tagname>
+<tagid>1125</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 456</tagname>
+<tagid>1126</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Critically evaluate assumptions, options and results related to engineering problems										</tagname>
+<tagid>1127</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply energy and material balances to complex chemical engineering processes										</tagname>
+<tagid>1128</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply engineering &amp; science principles and empirical laws to the design of units										</tagname>
+<tagid>1129</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identify process and equipment limitations to integrate safety measures										</tagname>
+<tagid>1130</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Recognize the potential environmental and social impact of chemical processes										</tagname>
+<tagid>1131</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Set up project schedule and calculate operation and capital costs										</tagname>
+<tagid>1132</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop and apply principles of effective communication										</tagname>
+<tagid>1134</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Function effectively on a team										</tagname>
+<tagid>1135</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop strategies to improve time management skills										</tagname>
+<tagid>1136</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Integrate sustainable design practices</tagname>
+<tagid>1137</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 457</tagname>
+<tagid>1138</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Critically evaluate assumptions, options and results related to engineering problems										</tagname>
+<tagid>1139</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply energy and material balances to complex chemical engineering processes										</tagname>
+<tagid>1140</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply engineering &amp; science principles and empirical laws to the design of units										</tagname>
+<tagid>1141</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Identify process and equipment limitations to integrate safety measures</tagname>
+<tagid>1142</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Recognize the potential environmental and social impact of chemical processes										</tagname>
+<tagid>1143</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Set up project schedule and calculate operation and capital costs										</tagname>
+<tagid>1144</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Apply principles of effective communication										</tagname>
+<tagid>1145</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Function effectively on a team										</tagname>
+<tagid>1146</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop strategies to improve time management skills										</tagname>
+<tagid>1147</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Integrate sustainable design practices										</tagname>
+<tagid>1148</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 474</tagname>
+<tagid>1149</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Describe and apply growth and bioproduct formation models										</tagname>
+<tagid>1150</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Relate nutrient concentration in a bioreactor to mass transfer and consumption terms										</tagname>
+<tagid>1151</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Select the mode of bioreactor operation for a given bioproduct										</tagname>
+<tagid>1152</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Size a bioreactor taking into account heat and mass transfer requirements										</tagname>
+<tagid>1153</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Select an appropriate downstream processing strategy for a given bioproduct										</tagname>
+<tagid>1154</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Size and predict the performance of common downstream processing unit operations										</tagname>
+<tagid>1155</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Discuss regulatory and quality assurance principles in biochemical engineering										</tagname>
+<tagid>1156</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Learn to work as a team to solve an open-ended problem										</tagname>
+<tagid>1157</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 484</tagname>
+<tagid>1158</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Develop materials process design strategies through an engineering look at phase transformations 										</tagname>
+<tagid>1159</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the principles of nucleation and growth of a new solid phase										</tagname>
+<tagid>1160</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop engineering tools for the casting and forming processes 										</tagname>
+<tagid>1161</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop an engineering knowledge of the various cutting and joining operations										</tagname>
+<tagid>1162</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop the capability for the engineering design of vessels										</tagname>
+<tagid>1163</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Understand the principles and eng.  tools for the processing of metals, ceramics, polymers and composites  										</tagname>
+<tagid>1164</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Introduce new materials technologies (nanomaterials)										</tagname>
+<tagid>1165</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Extrapolate structure/properties/materials system design relation ships through case studies (Fuel cells)										</tagname>
+<tagid>1166</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop a knowledge on sustainability in materials (sustainability index; energy recovery; closing loop of  mat. life)										</tagname>
+<tagid>1167</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop design and sustainability analysis expertise through CES Edupak softmare (mat. databank)										</tagname>
+<tagid>1168</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+<tag><tagname>CHEE 491</tagname>
+<tagid>1169</tagid>
+<iscollapsed>true</iscollapsed>
+<tag><tagname>Obtain practical experience in implementing solutions to real-world problems										</tagname>
+<tagid>1170</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop prototyping skills in simple electronics										</tagname>
+<tagid>1171</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Characterize sensor operation and make use-case decisions										</tagname>
+<tagid>1172</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Investigate control algorithms and their real-world utility</tagname>
+<tagid>1173</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Design experiments to address an open-ended engineering problem										</tagname>
+<tagid>1174</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+<tag><tagname>Develop abilities to work effectively as a team member and leader</tagname>
+<tagid>1175</tagid>
+<iscollapsed>true</iscollapsed>
+</tag>
+</tag>
+</project>
