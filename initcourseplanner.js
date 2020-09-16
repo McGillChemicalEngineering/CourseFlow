@@ -112,11 +112,13 @@ function makeSplashpage(container){
     window.addEventListener("message",function(evt){
         console.log(evt);
         console.log("Message Received!");
+        var success=False;
         try{
             if(project==null)project = new Project(container);
             project.fromXML(evt.data);
-            setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
+            success=True;
         }catch(err){}
+        if(success)setTimeout(function(){splashpage.style.opacity="0";splashpage.style.display="none";},500);
     });
     if(window!=window.parent)window.parent.postMessage("ready","*");
     console.log("frame is ready");
