@@ -43,7 +43,7 @@ class ProjectOverview{
         var editNameDiv = document.createElement('div');
         var nameIcon = document.createElement('img');
         
-        nameIcon.src="resources/images/edit16.png";
+        nameIcon.src=iconpath+"edit.svg";
         nameIcon.style.width='16px';
         editNameDiv.className="deletelayoutdiv";
         editNameDiv.appendChild(nameIcon);

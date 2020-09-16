@@ -317,9 +317,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="2967.16"
-     inkscape:cy="-1824.7483"
+     inkscape:zoom="0.50000001"
+     inkscape:cx="1420.0099"
+     inkscape:cy="-3277.214"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -2769,5 +2769,23 @@
          x="3060.3906"
          y="2986.1665"
          style="font-weight:bold;font-size:142.13642883px;line-height:1.25;fill:#000000;fill-opacity:1">!</tspan></text>
+    <rect
+       transform="matrix(0,1,1,0,0,0)"
+       inkscape:export-ydpi="10.718252"
+       inkscape:export-xdpi="10.718252"
+       y="1443.5585"
+       x="4221.2612"
+       height="201.52547"
+       width="201.52547"
+       id="rect8350-1"
+       style="fill:none;stroke:none;stroke-width:12.50000191;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1477.0156,4284.932 71.4178,71.4178 70.3572,-70.3571"
+       id="path8357-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-xdpi="10.718252"
+       inkscape:export-ydpi="10.718252" />
   </g>
 </svg>

@@ -99,7 +99,7 @@ class Legend{
             y+=header.h()+2;
             this.vertices.push(header);
             for(var i=0;i<reducedList[prop].length;i++){
-                var label = this.graph.insertVertex(this.vertex,null,reducedList[prop][i].text[USER_LANGUAGE],2,y,this.vertex.w()-4,24,defaultLegendLineStyle+"image="+iconpath+reducedList[prop][i].value+"24.png;fontColor=black;align=left;spacingLeft=40;");
+                var label = this.graph.insertVertex(this.vertex,null,reducedList[prop][i].text[USER_LANGUAGE],2,y,this.vertex.w()-4,24,defaultLegendLineStyle+"image="+iconpath+reducedList[prop][i].value+".svg;fontColor=black;align=left;spacingLeft=40;");
                 y+=label.h()+2;
                 this.vertices.push(label);
             }

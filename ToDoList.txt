@@ -27,12 +27,8 @@ McGill stuff:
 	(1000) training and implementation
 		Create their own forked project
 		Work with the student
-	(200) student view options
-		Option to not allow students to change the category of a course
-		Read only
-		hide/show comments
+	//(200) student view options
 		show/hide arrows by default (could make them width 0 but then they still get highlighted on click and hover)
-make the <!> thing have a <?> mouseover arrow
 	
 	
 	
@@ -48,16 +44,12 @@ Unbudgeted stuff:
 
 
 High Priority Bugs:
-ADVANCED TAGGING (ALL OPTIONS??? ALWAYS ENABLED!)
 //Issue with lowest in heirarchy of tags in advanced outcomes
-Comments can be dragged "behind" description box and then can no longer be clicked to be edited/deleted/moved. Needs to be fixed asap. Simple solution is to not allow comments above the first week.
-
 
 High Priority:
 Create a bunch of videos
 Strategy text
 Make the tags in the nodebar look better (smaller, cleaner, show all text on mouseover)
-We seem to be able to doubly link nodes (same ports). Should we prevent this?
 
 Medium Priority:
 colouring is weird on outcome table due to the alternation, sometimes hidden rows have odd numbers which means the alternation no longer holds for the visible ones
@@ -67,7 +59,6 @@ New orchestration icon
 Can also probably save arrow location/bends. Uses an array of "control points" in mxgeometry. 
 Check out passing of information from one site to another - could be useful for creating even more general links to any courseflow?
 Have an "add node" button in empty weeks
-Automatic calculation of resize for dropped nodes instead of textheight
 Duplicate workflow option on project overview.
 Potential linking of activities to activities (perhaps a setting to enable this more advanced behaviour)
 
@@ -100,3 +91,9 @@ Simultaneous codesign.
 Add ability to include files/materials (pdfs etc) in the package.
 
 
+
+Instructions for the chem eng folks:
+-How to use github/set up github
+-How to make changes to the actual file
+-How to make changes to the code (very basic)
+-

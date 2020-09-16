@@ -80,7 +80,7 @@ class Layoutbutton {
     
     updateButton(){
         this.namediv.innerHTML = this.layout.name;
-        if(this.layout.getIcon())this.icon.src="resources/data/"+this.layout.getIcon()+"24.png";
+        if(this.layout.getIcon())this.icon.src=iconpath+this.layout.getIcon()+".svg";
     }
     
     
@@ -102,7 +102,7 @@ class Layoutbutton {
         edit.className="deletelayoutdiv";
         if(renamable){
             var nameIcon = document.createElement('img');
-            nameIcon.src="resources/images/edit16.png";
+            nameIcon.src=iconpath+"edit.svg";
             nameIcon.style.width='16px';
             nameIcon.onclick=function(){
                 bl.renameClick();
@@ -111,7 +111,7 @@ class Layoutbutton {
         }
         if(deletable){
             var delicon = document.createElement('img');
-            delicon.src="resources/images/delrect16.png";
+            delicon.src=iconpath+"delrect.svg";
             delicon.style.width='16px';
             delicon.onclick=function(){
                 bl.deleteClick();
@@ -136,7 +136,7 @@ class Layoutbutton {
         if(parent==null&&this.container.layout!=null)parent = this.container.layout;
         this.unassignParent = parent;
         var unassignicon = document.createElement('img');
-        unassignicon.src="resources/images/unassign16.png";
+        unassignicon.src=iconpath+"unassign.svg";
         unassignicon.style.width='16px';
         unassignicon.onclick=function(){
             b.unassignClick();
@@ -232,7 +232,7 @@ class Layoutbutton {
         var movehandle = document.createElement('div');
         movehandle.className = "movehandle";
         var up = document.createElement('img');
-        up.src = "resources/images/movehandle24.png";
+        up.src = iconpath+"movehandle.svg";
         up.draggable=false;
         movehandle.onmousedown=function(evt){
             if(evt.buttons>1)return;
@@ -319,7 +319,7 @@ class Layoutbutton {
         var bl = this;
         var expandDiv = document.createElement('div');
         expandDiv.className="expanddiv";
-        this.expandIcon.src="resources/images/arrowright16.png";
+        this.expandIcon.src=iconpath+"arrowright.svg";
         this.expandIcon.style.width='16px';
         this.expandIcon.onclick=function(){
             if(bl.bdiv.classList.contains("expanded")){bl.collapse();}
@@ -332,12 +332,12 @@ class Layoutbutton {
     
     expand(){
         this.bdiv.classList.add("expanded");
-        this.expandIcon.src="resources/images/arrowdown16.png";
+        this.expandIcon.src=iconpath+"arrowdown.svg";
     }
     
     collapse(){
         this.bdiv.classList.remove("expanded");
-        this.expandIcon.src="resources/images/arrowright16.png";
+        this.expandIcon.src=iconpath+"arrowright.svg";
     }
     
     makeActive(){
@@ -388,7 +388,7 @@ class Layoutbutton {
         this.indicatorWrap.innerHTML="";
         if(isComplete){
             var check = document.createElement('img');
-            check.src = "resources/images/check16.png";
+            check.src = iconpath+"check.svg";
             check.style.width='16px';
             check.style.verticalAlign="middle";
             this.indicatorWrap.appendChild(check);
@@ -402,21 +402,21 @@ class Layoutbutton {
     
     populateMenu(menu){
         var b = this;
-        if(this.renamable)menu.addItem(LANGUAGE_TEXT.workflow.rename[USER_LANGUAGE],'resources/images/edit24.png',function(){
+        if(this.renamable)menu.addItem(LANGUAGE_TEXT.workflow.rename[USER_LANGUAGE],iconpath+'edit.svg',function(){
             b.renameClick();
         });
-        if(this.deletable)menu.addItem(LANGUAGE_TEXT.workflow.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+        if(this.deletable)menu.addItem(LANGUAGE_TEXT.workflow.delete[USER_LANGUAGE],iconpath+'delrect.svg',function(){
             b.deleteClick();
         });
-         if(this.unassignable)menu.addItem(LANGUAGE_TEXT.workflow.unassign[USER_LANGUAGE],'resources/images/unassign24.png',function(){
+         if(this.unassignable)menu.addItem(LANGUAGE_TEXT.workflow.unassign[USER_LANGUAGE],iconpath+'unassign.svg',function(){
             b.unassignClick();
         });
         
-        if(this.createfunction)menu.addItem(LANGUAGE_TEXT.workflow.createchild[USER_LANGUAGE],'resources/images/createchild24.png',function(){
+        if(this.createfunction)menu.addItem(LANGUAGE_TEXT.workflow.createchild[USER_LANGUAGE],iconpath+'createchild.svg',function(){
             b.createfunction();
         });
         
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             var layout = b.layout;
             if(layout instanceof Tag)layout.project.showHelp('outcomehelp.html');
             else if(layout instanceof Activityflow)layout.project.showHelp('activityhelp.html');
@@ -441,7 +441,7 @@ class EditBarTagButton extends Layoutbutton{
         var layout = this.layout;
         if(parent==null&&this.container.layout!=null)parent = this.container.layout;
         var unassignicon = document.createElement('img');
-        unassignicon.src="resources/images/unassign16.png";
+        unassignicon.src=iconpath+"unassign.svg";
         unassignicon.style.width='16px';
         unassignicon.onclick=function(){
             unassignicon.classList.add("detached");

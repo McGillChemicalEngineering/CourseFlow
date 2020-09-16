@@ -180,7 +180,7 @@ class Weekview{
     //Add the overlay to create new weeks
     addPlusOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), LANGUAGE_TEXT.week.createbelow[w.getType()][USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'add.svg', 24, 24), LANGUAGE_TEXT.week.createbelow[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -201,7 +201,7 @@ class Weekview{
     //Add the overlay to delete the week
     addDelOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.week.delete[w.getType()][USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'delrect.svg', 24, 24), LANGUAGE_TEXT.week.delete[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -224,7 +224,7 @@ class Weekview{
     
     addCopyOverlay(){
         var w = this.week;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), LANGUAGE_TEXT.week.duplicate[w.getType()][USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'copy.svg', 24, 24), LANGUAGE_TEXT.week.duplicate[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -244,8 +244,8 @@ class Weekview{
     
     addMoveOverlays(){
         var w = this.week;
-        var overlayUp = new mxCellOverlay(new mxImage('resources/images/moveup24.png', 16, 16), LANGUAGE_TEXT.week.move[w.getType()][USER_LANGUAGE]);
-        var overlayDown = new mxCellOverlay(new mxImage('resources/images/movedown24.png', 16, 16), LANGUAGE_TEXT.week.move[w.getType()][USER_LANGUAGE]);
+        var overlayUp = new mxCellOverlay(new mxImage(iconpath+'moveup.svg', 16, 16), LANGUAGE_TEXT.week.move[w.getType()][USER_LANGUAGE]);
+        var overlayDown = new mxCellOverlay(new mxImage(iconpath+'movedown.svg', 16, 16), LANGUAGE_TEXT.week.move[w.getType()][USER_LANGUAGE]);
         overlayUp.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -280,8 +280,8 @@ class Weekview{
     //Add the overlay to collapse the week
     addMinimizeOverlay(collapsed=false){
         var w = this.week;
-        var imgsrc = 'resources/images/minus24.png';
-        if(collapsed)imgsrc = 'resources/images/plus24.png';
+        var imgsrc = iconpath+'minus.svg';
+        if(collapsed)imgsrc = iconpath+'plus.svg';
         var overlay = new mxCellOverlay(new mxImage(imgsrc, 24, 24), LANGUAGE_TEXT.week.collapse[w.getType()][USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
@@ -366,7 +366,7 @@ class Weekview{
     populateMenu(menu){
         var graph = this.graph;
         var week=this.week;
-        menu.addItem(LANGUAGE_TEXT.week.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
+        menu.addItem(LANGUAGE_TEXT.week.modifytext[USER_LANGUAGE], iconpath+'text.svg', function(){
             graph.startEditingAtCell(week.view.vertex);
         });
         week.populateMenu(menu);
@@ -389,7 +389,7 @@ class Weekview{
     
     addError(error){
         if(this.errorVertices==null)this.errorVertices=[];
-        var vertex = this.graph.insertVertex(this.vertex,null,'',16,16,24,24,defaultWarningStyle+"image=resources/images/validationerror24.png;");
+        var vertex = this.graph.insertVertex(this.vertex,null,'',16,16,24,24,defaultWarningStyle+"image="+iconpath+"validationerror.svg;");
         this.errorVertices.push(vertex);
         vertex.getTooltip = function(){console.log("tooltip");return error.text;}
         error.vertex=vertex;

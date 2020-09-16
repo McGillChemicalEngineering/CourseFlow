@@ -33,7 +33,7 @@ class Columnview{
     
     createVertex(){
         var col = this.column;
-        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(), null,col.text,this.pos,wfStartY+240, colIconSize, colIconSize,defaultHeadStyle+'image=resources/data/'+col.image+'.png;');
+        this.vertex = this.graph.insertVertex(this.graph.getDefaultParent(), null,col.text,this.pos,wfStartY+240, colIconSize, colIconSize,defaultHeadStyle+'image='+iconpath+col.image+'.svg;');
         this.vertex.isHead=true;
         this.vertex.column=col;
         this.vertex.valueChanged = function(value){
@@ -48,7 +48,7 @@ class Columnview{
     }
     
     imageUpdated(){
-        this.graph.setCellStyles('image','resources/data/'+this.column.image+'.png',[this.vertex]);
+        this.graph.setCellStyles('image',iconpath+this.column.image+'.svg',[this.vertex]);
         this.column.wf.view.populateNodeBar();
     }
     
@@ -79,7 +79,7 @@ class Columnview{
         var col=this.column;
         var graph = this.graph;
         
-        menu.addItem(LANGUAGE_TEXT.column.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
+        menu.addItem(LANGUAGE_TEXT.column.modifytext[USER_LANGUAGE], iconpath+'text.svg', function(){
 				graph.startEditingAtCell(col.view.vertex);
         });
         col.populateMenu(menu);

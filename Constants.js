@@ -135,8 +135,8 @@ const defaultWeekStyle = 'fillColor=#e6e6e6;movable=0;resizable=0;strokeColor=no
 const defaultWFAreaStyle = 'editable=0;fillColor=#FFFFFF;movable=0;resizable=0;strokeColor=black;verticalAlign=ALIGN_TOP;align=ALIGN_LEFT;fontSize=14;fontStyle=1;fontColor=black;';
 const defaultLegendStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor='+SALTISEBLUE+';strokeWidth=4;verticalAlign=ALIGN_TOP;fontSize=14;fontStyle=1;fontColor='+SALTISEBLUE+';spacingTop=8';
 const defaultLegendLineStyle = 'shape=label;editable=0;fillColor=#FFFFFF;resizable=0;strokeColor=none;fontSize=12;fontStyle=1;fontColor='+SALTISEBLUE+';constituent=1;imageAlign=left;imageWidth=24;imageHeight=24;overflow=hidden;';
-const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-40)+";imageHeight="+(colIconSize-40)+";fontSize=16;fontStyle=5;fontColor=black;";
-const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=white;strokeWidth=1;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;fontStyle=1;fontFamily=arial;verticalAlign=top;";
+const defaultHeadStyle = "shape=label;fillColor=none;strokeColor=none;imageVerticalAlign=top;verticalAlign=bottom;imageAlign=center;resizable=0;imageWidth="+(colIconSize-60)+";imageHeight="+(colIconSize-60)+";fontSize=16;fontStyle=5;fontColor=black;";
+const defaultNameStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=white;strokeWidth=1;fontSize=12;fontColor=white;fillColor=white;overflow=hidden;editable=0;fontStyle=1;fontFamily=arial;verticalAlign=top;";
 const defaultWFNodeStyle="whiteSpace=wrap;strokeColor=black;fillColor=white;strokeWidth=1;editable=0;fontColor=black;arcSize=10;absoluteArcSize=1;rounded=1;resizable=0;";
 const defaultIconStyle="shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=none;";
 const defaultTextStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeColor=white;strokeWidth=1;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;";
@@ -153,9 +153,9 @@ const invisibleStyle = "editable=0;movable=0;resizable=0;fillColor=none;strokeCo
 const bracketTriangleStyle = "shape=triangle;editable=0;movable=0;resizable=0;fillColor=#ed4528;strokeColor=none;rotation=180;constituent=1;";
 const bracketSquareStyle = "shape=label;editable=0;movable=0;resizable=0;imageAlign=right;fillColor=#ed4528;strokeColor=#ed4528;constituent=1;";
 const bracketCircleStyle = "shape=ellipse;fillColor=white;strokeColor=#ed4528;editable=0;movable=0;resizable=0;constituent=1;";
-const bracketIconStyle = "shape=label;fillColor=none;strokeColor=none;editable=0;movable=0;resizable=0;imageAlign=center;imageWidth=48;imageHeight=48;constituent=1;"
+const bracketIconStyle = "shape=label;fillColor=none;strokeColor=none;editable=0;movable=0;resizable=0;imageAlign=center;imageWidth=36;imageHeight=36;constituent=1;"
 const defaultEdgeStyle = "editable=0;movable=0;resizable=0;bendable=0;edgeStyle=orthogonalEdgeStyle;strokeColor=black;rounded=1;fontColor=black;labelBackgroundColor=white;labelBorderColor=black;labelPadding=2;";
-const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;resizable=0;whiteSpace=wrap;fillColor=#ffff88;strokeColor=black;image=resources/images/comment32.png;";
+const defaultCommentStyle = "shape=label;imageAlign=center;padding=4;editable=0;resizable=0;whiteSpace=wrap;imageWidth=32;imageHeight=32;fillColor=#ffff88;strokeColor=black;image=resources/images_svg/comment.svg;";
 const defaultWarningStyle = "shape=image;constituent=1;resizable=0;editable=0;strokeColor=none;fillColor=white;"
 
 //Icons
@@ -217,11 +217,13 @@ const iconsList={
         {text:{en:'Chemistry',fr:"Chimie"},value:'chem'},
         {text:{en:'Specialized',fr:"Spécialisé"},value:'target'},
         {text:{en:'Puzzle',fr:"Puzzle"},value:'puzzle'},
-        {text:{en:'Design',fr:"Conception"},value:'design'}
+        {text:{en:'Design',fr:"Conception"},value:'design'},
+        {text:{en:'Gears',fr:'Engrenages'},value:'gears'},
+        {text:{en:'Industry',fr:'Industrie'},value:'process'}
     ]
 };
 
-const iconpath='resources/data/';
+const iconpath='resources/images_svg/';
 
 
 //Language
@@ -256,6 +258,7 @@ const LANGUAGE_TEXT = {
         terminology:{en:'Terminology',fr:"Terminologie"},
         terminologystandard:{en:'Standard',fr:"Standard"},
         terminologycegep:{en:'CEGEP',fr:"CÉGEP"},
+        terminologyeng:{en:'Engineering',fr:'Ingénierie'},
         genhelp:{en:'General Help',fr:"Aide generale"},
         layouthelp:{en:'About the Layout',fr:"À propos de la mise en page"},
         privacypolicy:{en:'Privacy Policy',fr:"Politique de confidentialité"},
@@ -281,13 +284,14 @@ const LANGUAGE_TEXT = {
     },
     workflow:{
         settings:{
-            advancedoutcomes:{en:"Advanced Outcomes",fr:""},
-            linktagging:{en:"Link Tagging Enabled",fr:""},
-            validation:{en:"Validation",fr:""},
-            reqtime:{en:"Required Credits",fr:""},
-            mintime:{en:"Minimum Credits/Term",fr:""},
-            maxtime:{en:"Maximum Credits/Term",fr:""},
-            maxterm:{en:"Maximum Terms",fr:""}
+            advancedoutcomes:{en:"Advanced Outcomes",fr:"Acquis Avancés"},
+            linktagging:{en:"Link Tagging Enabled",fr:"Étiquette de Liens"},
+            validation:{en:"Validation",fr:"Validation"},
+            reqtime:{en:"Required Credits",fr:"Crédits Requis"},
+            mintime:{en:"Minimum Credits/Term",fr:"Crédits Minimum/Session"},
+            maxtime:{en:"Maximum Credits/Term",fr:"Crédits Maximum/Session"},
+            maxterm:{en:"Maximum Terms",fr:"Sessions Maximum"},
+            unlinkoutcomes:{en:"Unlink Outcomes",fr:"Dissocier les Acquis"}
         },
         activity:{en:"Activity",fr:"Activité"},
         course:{en:"Course",fr:"Cours"},
@@ -373,6 +377,12 @@ const LANGUAGE_TEXT = {
             depth0:{en:"Competency",fr:"Compétence"},
             depth1:{en:"Element of Competency",fr:"Éléments de compétence"},
             depth2:{en:"Learning Outcome",fr:"Objectif d'apprentissage"},
+            depth3:{en:"Tag",fr:"Tag"}
+        },
+        eng:{
+            depth0:{en:"Graduate Attribute",fr:"Qualités requises des diplômés"},
+            depth1:{en:"Attribute Indicator",fr:"Indicateurs de qualité"},
+            depth2:{en:"Course Outcome",fr:"Acquis de cours"},
             depth3:{en:"Tag",fr:"Tag"}
         },
         new:{en:"New",fr:"Nouveau"},
@@ -587,6 +597,7 @@ function setMenuLanguage(){
     $("#terminology").children().first().html(LANGUAGE_TEXT.menus.terminology[USER_LANGUAGE]);
     $("#terminologystandard").children().first().html(LANGUAGE_TEXT.menus.terminologystandard[USER_LANGUAGE]);
     $("#terminologycegep").children().first().html(LANGUAGE_TEXT.menus.terminologycegep[USER_LANGUAGE]);
+    $("#terminologyeng").children().first().html(LANGUAGE_TEXT.menus.terminologyeng[USER_LANGUAGE]);
     $("#language").html(LANGUAGE_TEXT.menus.language[USER_LANGUAGE]);
     $("#help").html(LANGUAGE_TEXT.menus.help[USER_LANGUAGE]);
     $("#genhelp").children().first().html(LANGUAGE_TEXT.menus.genhelp[USER_LANGUAGE]);

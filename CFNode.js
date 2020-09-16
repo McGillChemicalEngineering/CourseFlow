@@ -523,29 +523,29 @@ class CFNode {
         var p = this.wf.project;
         
         
-        menu.addItem(LANGUAGE_TEXT.node.modifytext[USER_LANGUAGE], 'resources/images/text24.png', function(){
+        menu.addItem(LANGUAGE_TEXT.node.modifytext[USER_LANGUAGE], iconpath+'text.svg', function(){
             if(node.view)node.view.startTitleEdit();
         });
         
         this.populateIconMenu(menu,node.getLeftIconList(),"Left");
         this.populateIconMenu(menu,node.getRightIconList(),"Right");
         
-        if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow','resources/images/enterlinked24.png',function(){
+        if(node.linkedWF!=null)menu.addItem('Go To Linked Workflow',iconpath+'enterlinked.svg',function(){
             var linkedWF = node.linkedWF;
             if(linkedWF!=null)p.changeActive(p.getWFByID(linkedWF));
         });
         this.populateLinkedWFMenu(menu,node.getLinkedWFList());
-        menu.addItem(LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE],'resources/images/copy24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE],iconpath+'copy.svg',function(){
            node.duplicateNode(); 
         });
-        menu.addItem(LANGUAGE_TEXT.node.delete[USER_LANGUAGE],'resources/images/delrect24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.node.delete[USER_LANGUAGE],iconpath+'delrect.svg',function(){
             if(mxUtils.confirm(LANGUAGE_TEXT.confirm.deletenode[USER_LANGUAGE])){
                 node.deleteSelf();
                 node.wf.updated("Delete Node",node);
             }
         });
         
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             p.showHelp('nodehelp.html');
         });
     }
@@ -556,10 +556,10 @@ class CFNode {
         if(icon=="Left")text = LANGUAGE_TEXT.node.lefticon[USER_LANGUAGE];
         else if(icon=="Right")text = LANGUAGE_TEXT.node.righticon[USER_LANGUAGE];
         if(iconArray==null||iconArray.length==0)return;
-        var sub = menu.addItem(text,'resources/images/'+icon.toLowerCase()+'icon24.png');
+        var sub = menu.addItem(text,iconpath+icon.toLowerCase()+'icon.svg');
         for(var i=0;i<iconArray.length;i++){
             var tempfunc = function(value){
-                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'24.png',function(){
+                menu.addItem(value.text[USER_LANGUAGE],iconpath+value.value+'.svg',function(){
                     node.setIcon(value.value,icon.toLowerCase());
                 },sub);
             }
@@ -570,7 +570,7 @@ class CFNode {
     populateLinkedWFMenu(menu,WFArray){
         var node = this;
         if(WFArray==null)return;
-        var sub = menu.addItem(LANGUAGE_TEXT.node.setlinkedwf[USER_LANGUAGE],'resources/images/plusblack24.png');
+        var sub = menu.addItem(LANGUAGE_TEXT.node.setlinkedwf[USER_LANGUAGE],iconpath+'plusblack.svg');
         menu.addItem("None",'',function(){node.setLinkedWF("");},sub)
         for(var i=0;i<WFArray.length;i++){
             var tempfunc = function(value){

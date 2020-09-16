@@ -37,7 +37,9 @@ class Nodeview{
         var width = defaultCellWidth;
         if(this.node.wf.weeks[0] instanceof Term)width=160;
         var h = minCellHeight+cellDropdownHeight+cellDropdownPadding;
-        if(this.node.isDropped)h+=this.node.textHeight;
+        var textHeightOffset = 0;
+        if(this.node.isDropped)textHeightOffset = this.getTextSize();
+        h+=textHeightOffset;
         var vertexStyle = this.node.getVertexStyle();
         if(this.node.isDropped)vertexStyle = vertexStyle.replace("resizable=0","resizable=1");
         this.vertex=this.graph.insertVertex(this.graph.getDefaultParent(),null,'',x,y,width,h,vertexStyle);
@@ -62,15 +64,15 @@ class Nodeview{
         if(this.node.isDropped)h+=this.node.textHeight;
         this.textnode = this.graph.insertVertex(this.vertex,null,text,defaultTextPadding,this.namenode.b()-10,this.vertex.w()-2*defaultTextPadding,h+10,defaultTextStyle);
         var dropDownStyle = defaultDropDownStyle;
-        if(this.node.isDropped)dropDownStyle+="image=resources/images/droptriangleup.png;fontColor=white;";
-        else dropDownStyle+="image=resources/images/droptriangle.png;fontColor=black;";
+        if(this.node.isDropped)dropDownStyle+="image="+iconpath+"droptriangleup.svg;fontColor=white;";
+        else dropDownStyle+="image="+iconpath+"droptriangledown.svg;fontColor=black;";
         var dropText='';
         if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')dropText='...';
         this.dropNode = this.graph.insertVertex(this.vertex,null,dropText,defaultDropPadding,this.textnode.b()-11+cellDropdownPadding,this.vertex.w()-2*defaultDropPadding,cellDropdownHeight-defaultDropPadding,dropDownStyle);
         this.dropNode.isDrop = true;
         this.dropNode.node = this.node;
         var linkStyle = defaultLinkIconStyle;
-        if(node.linkedWF!=null)linkStyle+="image=resources/images/wflink16.png;";
+        if(node.linkedWF!=null)linkStyle+="image=resources/images/wflink.svg;";
         this.linkIcon = this.graph.insertVertex(this.dropNode,null,'',this.dropNode.r()-24,2,16,16,linkStyle);
         var timeadj = 0;
         if(window.navigator.userAgent.match("Chrome"))timeadj=-2;
@@ -101,13 +103,14 @@ class Nodeview{
         this.graph.cellLabelChanged(this.textnode,text);
         if(text!=null&&text.replace(/(<p\>|<\/p>|<br>|\n| |[^a-zA-Z0-9])/g,'')!='')this.graph.cellLabelChanged(this.dropNode,'...');
         else this.graph.cellLabelChanged(this.dropNode,'');
+        if(this.node.isDropped)this.updateSize();
     }
     
     addRightIcon(){
         if(this.node.getIconCategory("right")){
             var style = defaultIconStyle;
             if(this.node.righticon){
-                style+="image="+iconpath+this.node.righticon+"24.png;";
+                style+="image="+iconpath+this.node.righticon+".svg;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),this.node.righticon,null);
             }
             this.righticonnode = this.graph.insertVertex(this.vertex,null,'',this.vertex.w()-defaultIconWidth-defaultIconPadding,8,defaultIconWidth,minCellHeight,style);
@@ -120,7 +123,7 @@ class Nodeview{
         if(this.node.getIconCategory("left")){
             var style = defaultIconStyle;
             if(this.node.lefticon){
-                style+="image="+iconpath+this.node.lefticon+"24.png;";
+                style+="image="+iconpath+this.node.lefticon+".svg;";
                 this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),this.node.lefticon,null);
             }
             this.lefticonnode = this.graph.insertVertex(this.vertex,null,'',defaultIconPadding,8,defaultIconWidth,minCellHeight,style);
@@ -132,20 +135,20 @@ class Nodeview{
     leftIconUpdated(oldvalue){
         var newvalue = this.node.lefticon;
         this.node.wf.view.legendUpdate(this.node.getIconCategory("left"),newvalue,oldvalue);
-        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"24.png",[this.lefticonnode]);
+        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+".svg",[this.lefticonnode]);
         else this.graph.setCellStyles("image",null,[this.lefticonnode]);
     }
     
     rightIconUpdated(oldvalue){
         var newvalue = this.node.righticon;
         this.node.wf.view.legendUpdate(this.node.getIconCategory("right"),newvalue,oldvalue);
-        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+"24.png",[this.righticonnode]);
+        if(newvalue!=null)this.graph.setCellStyles("image",iconpath+newvalue+".svg",[this.righticonnode]);
         else this.graph.setCellStyles("image",null,[this.righticonnode]);
     }
 
     linkedWFUpdated(value,oldvalue){
         if(value&&!oldvalue){
-            this.graph.setCellStyles("image","resources/images/wflink16.png",[this.linkIcon]);
+            this.graph.setCellStyles("image",iconpath+"wflink.svg",[this.linkIcon]);
         }
         else if(oldvalue&&!value){
             this.graph.setCellStyles("image",null,[this.linkIcon]);
@@ -196,18 +199,36 @@ class Nodeview{
     }
     
     dropDownToggled(){
-        var mult = 1;
-        if(this.node.isDropped)mult=-1;
-        this.graph.resizeCell(this.vertex,new mxGeometry(this.vertex.x(),this.vertex.y(),this.vertex.w(),this.vertex.h()+mult*this.node.textHeight));
-        this.graph.setCellStyles('resizable',1-this.node.isDropped,[this.vertex]);
+        this.updateSize(!this.node.isDropped);
+        //this.graph.setCellStyles('resizable',1-this.node.isDropped,[this.vertex]);
         if(this.node.isDropped){
-            this.graph.setCellStyles('image',"resources/images/droptriangle.png",[this.dropNode]);
+            this.graph.setCellStyles('image',iconpath+"droptriangledown.svg",[this.dropNode]);
             this.graph.setCellStyles('fontColor','black',[this.dropNode]);
         }else {
-            this.graph.setCellStyles('image',"resources/images/droptriangleup.png",[this.dropNode]);
+            this.graph.setCellStyles('image',iconpath+"droptriangleup.svg",[this.dropNode]);
             this.graph.setCellStyles('fontColor','white',[this.dropNode]);
         }
         
+    }
+    
+    updateSize(isDropped=this.node.isDropped){
+        var y = 0;
+        if(isDropped)y=this.getTextSize();
+        this.graph.resizeCell(this.vertex,new mxGeometry(this.vertex.x(),this.vertex.y(),this.vertex.w(),minCellHeight+cellDropdownHeight+cellDropdownPadding+y));
+    }
+    
+    getTextSize(){
+        var tempdiv = document.createElement('div');
+        tempdiv.innerHTML = this.node.text;
+        tempdiv.style.width=defaultCellWidth+"px";
+        tempdiv.classList.add("tempdropdiv");
+        $('body')[0].appendChild(tempdiv);
+        var rect = tempdiv.getBoundingClientRect();
+        tempdiv.parentElement.removeChild(tempdiv);
+        var y = rect.height;
+        console.log(tempdiv.innerHTML);
+        this.node.textHeight = y;
+        return y;
     }
     
     insertBelow(node){
@@ -233,7 +254,7 @@ class Nodeview{
     
     addPlusOverlay(){
         var n = this.node;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/add48.png', 24, 24), LANGUAGE_TEXT.node.createbelow[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'add.svg', 24, 24), LANGUAGE_TEXT.node.createbelow[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -253,7 +274,7 @@ class Nodeview{
     //Add the overlay to delete the node
     addDelOverlay(){
         var n = this.node;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), LANGUAGE_TEXT.node.delete[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'delrect.svg', 24, 24), LANGUAGE_TEXT.node.delete[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -276,7 +297,7 @@ class Nodeview{
     
     addCopyOverlay(){
         var n = this.node;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/copy48.png', 24, 24), LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE]);
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'copy.svg', 24, 24), LANGUAGE_TEXT.node.duplicate[USER_LANGUAGE]);
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var pt = state.view.getPoint(state, {x: 0, y: 0, relative: true});
@@ -392,7 +413,7 @@ class Nodeview{
     
     populateMenu(menu){
         var node=this.node;
-        menu.addItem(LANGUAGE_TEXT.node.showhide[USER_LANGUAGE],'resources/images/view24.png',function(){node.toggleDropDown();});
+        menu.addItem(LANGUAGE_TEXT.node.showhide[USER_LANGUAGE],iconpath+'view.svg',function(){node.toggleDropDown();});
         node.populateMenu(menu);
     }
     
@@ -418,7 +439,7 @@ class Nodeview{
     
     addError(error){
         if(this.errorVertices==null)this.errorVertices=[];
-        var vertex = this.graph.insertVertex(this.vertex,null,'',8,8,24,24,defaultWarningStyle+"image=resources/images/validationerror24.png;");
+        var vertex = this.graph.insertVertex(this.vertex,null,'',8,8,24,24,defaultWarningStyle+"image="+iconpath+"validationerror.svg;");
         this.errorVertices.push(vertex);
         vertex.getTooltip = function(){console.log("tooltip");return error.text;}
         error.vertex=vertex;
@@ -470,14 +491,14 @@ class WFLinkview{
         var graph = this.graph;
         var p = this.link.node.wf.project;
         var link=this.link;
-        menu.addItem('Edit label', 'resources/images/text24.png', function(){
+        menu.addItem('Edit label', iconpath+'text.svg', function(){
 				graph.startEditingAtCell(link.view.vertex);
         });
-        menu.addItem('Toggle Dashed','resources/images/dashed24.png',function(){
+        menu.addItem('Toggle Dashed',iconpath+'dashed.svg',function(){
             if(link.style!="dashed")link.changeStyle("dashed"); 
             else(link.changeStyle(null));
         });
-        menu.addItem('Delete Link','resources/images/delrect24.png',function(){
+        menu.addItem('Delete Link',iconpath+'delrect.svg',function(){
             if(mxUtils.confirm("Delete this link?")){
                 graph.clearSelection();
                 link.deleteSelf();
@@ -536,7 +557,7 @@ class WFLinkview{
         var graph = this.graph;
         if(this.vertex.cellOverlays==null)this.vertex.cellOverlays=[];
         var n = this.link;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 12, 12), 'Delete this link');
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'delrect.svg', 12, 12), 'Delete this link');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var edgestate = graph.view.getState(n.view.vertex)
@@ -761,7 +782,7 @@ class WFAutolinkview extends WFLinkview{
         var graph = this.graph;
         var p = this.link.node.wf.project;
         var link=this.link;
-        menu.addItem('Delete Link','resources/images/delrect24.png',function(){
+        menu.addItem('Delete Link',iconpath+'delrect.svg',function(){
             if(mxUtils.confirm("This is the automatically generated link for this node. If deleted, this will prevent the node from automatically linking to that below it. Do you want to proceed?")){
                 graph.clearSelection();
                 link.deleteSelf();
@@ -774,7 +795,7 @@ class WFAutolinkview extends WFLinkview{
     addDelOverlay(){
         if(this.vertex.cellOverlays==null)this.vertex.cellOverlays=[];
         var n = this.link;
-        var overlay = new mxCellOverlay(new mxImage('resources/images/delrect48.png', 24, 24), 'Delete this link');
+        var overlay = new mxCellOverlay(new mxImage(iconpath+'delrect.svg', 24, 24), 'Delete this link');
         overlay.getBounds = function(state){ //overrides default bounds
             var bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
             var edgestate = graph.view.getState(n.view.vertex)
@@ -826,7 +847,7 @@ class NodeTagView{
             if(completeness & 4){str+="<div class='secondoutcomelevel'>"+"D"+"</div>";}
             if(completeness & 8){str+="<div class='thirdoutcomelevel'>"+"A"+"</div>";}
         }else{
-            str="<img src='resources/images/check16.png'>"
+            str="<img src='"+iconpath+"check.svg'>";
         }
         if(this.vertex){
             this.vertex.updateButton(str,completeness);

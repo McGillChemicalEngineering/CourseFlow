@@ -67,7 +67,7 @@ class Workflowview{
         var parent = graph.getDefaultParent();
         var minimap = document.getElementById('outlineContainer');
         
-        this.toolbar = new WFToolbar(this.wf.project,document.getElementById('nbContainer'),"right","nodebar36");
+        this.toolbar = new WFToolbar(this.wf.project,document.getElementById('nbContainer'),"right","nodebar");
         this.toolbar.container.classList.add("nodebar");
         
         //create views for the tags
@@ -629,7 +629,7 @@ class Workflowview{
     
         var allColumns = this.wf.getPossibleColumns();
         for(var i=0;i<allColumns.length;i++){
-            var button = this.addNodebarItem(this.nodeBarDiv,allColumns[i].nodetext,'resources/data/'+allColumns[i].image+'24.png',makeDropFunction(allColumns[i].name,this.wf),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
+            var button = this.addNodebarItem(this.nodeBarDiv,allColumns[i].nodetext,iconpath+allColumns[i].image+'.svg',makeDropFunction(allColumns[i].name,this.wf),null,function(cellToValidate){return (cellToValidate!=null&&cellToValidate.isWeek);});
             button.style.borderColor=allColumns[i].colour;
             button.style.borderWidth='3px';
         }
@@ -689,7 +689,7 @@ class Workflowview{
         
         
         for(var i=0;i<bracketList.length;i++){
-            this.addNodebarItem(this.bracketBarDiv,bracketList[i].text[USER_LANGUAGE],'resources/data/'+bracketList[i]['value']+'24.png',makeDropFunction(bracketList[i],this.wf),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
+            this.addNodebarItem(this.bracketBarDiv,bracketList[i].text[USER_LANGUAGE],iconpath+bracketList[i]['value']+'.svg',makeDropFunction(bracketList[i],this.wf),null,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||cellToValidate.isWeek));});
         }
     }
     
@@ -698,7 +698,7 @@ class Workflowview{
     generateColumnFloat(){
         var colFloatContainer = document.createElement('div');
         var colFloat = document.createElement('div');
-        colFloatContainer.className = "columnfloatcontainer"
+        colFloatContainer.className = "columnfloatcontainer";
         colFloat.className="columnfloat";
         this.container.parentElement.insertBefore(colFloatContainer,this.container);
         colFloatContainer.appendChild(colFloat);
@@ -781,8 +781,8 @@ class Workflowview{
             }
             return dropfunction;
         }
-        
-        this.addNodebarItem(button.bwrap,tag.name,"resources/data/"+tag.getIcon()+"24.png",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.settings.settingsKey.linktagging.value)));});
+        console.log(tag.getIcon());
+        this.addNodebarItem(button.bwrap,tag.name,iconpath+tag.getIcon()+".svg",makeDropFunction(tag,this.wf),button,function(cellToValidate){return (cellToValidate!=null&&(cellToValidate.isNode||(cellToValidate.isLink&&cellToValidate.link.node.wf.settings.settingsKey.linktagging.value)));});
         tag.view.addDrop(button);
         if(tag.depth<=this.wf.getTagDepth())button.makeEditable(false,false,true,this.wf);
         button.makeExpandable();
@@ -833,6 +833,7 @@ class Workflowview{
             img = document.createElement("img");
             namediv = document.createElement("div");
             img.setAttribute('src',image);
+            img.style.width="24px";
             namediv.innerText = name;
             line.appendChild(img);
             line.appendChild(namediv);
@@ -844,8 +845,9 @@ class Workflowview{
         }
         // Creates the image which is used as the drag icon (preview)
         var dragimg = img.cloneNode(true);
+        dragimg.style.width="24px";
         
-
+        console.log(dragimg);
         var draggable = mxUtils.makeDraggable(line, graph, dropfunction,dragimg,-12,-16);
         var defaultMouseMove = draggable.mouseMove;
         draggable.mouseMove = function(evt){
@@ -896,7 +898,7 @@ class Workflowview{
         if (cell != null){
             while (graph.isPart(cell)){cell=cell.getParent();}
         }
-        menu.addItem(LANGUAGE_TEXT.workflowview.addcomment[USER_LANGUAGE],'resources/images/comment24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.addcomment[USER_LANGUAGE],iconpath+'comment.svg',function(){
             var comparent =null;
             if(cell)if(cell.isNode)comparent=cell.node;
             else if(cell.isBracket)comparent=cell.bracket;
@@ -905,7 +907,11 @@ class Workflowview{
             var boundRect = $("#graphContainer")[0].getBoundingClientRect();
             var leftPos = boundRect.x;
             var topPos = boundRect.y;
-            var com = new WFComment(wf,evt.pageX-leftPos,evt.pageY-topPos,comparent);
+            var x = evt.pageX-leftPos;
+            var y = evt.pageY-topPos;
+            if(x<wfStartX)x=wfStartX;
+            if(y<wf.weeks[0].view.vertex.y()-10)y=wf.weeks[0].view.vertex.y()-10;
+            var com = new WFComment(wf,x,y,comparent);
             com.view = new Commentview(graph,com);
             com.view.createVertex();
             wf.addComment(com);
@@ -920,7 +926,7 @@ class Workflowview{
             else this.populateMenu(menu);
         }else this.populateMenu(menu);
 
-        /*menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        /*menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'/info.svg',function(){
             if(cell==null){
                 if(wf instanceof Activityflow)wf.project.showHelp("activityhelp.html");
                 else if (wf instanceof Courseflow)wf.project.showHelp("coursehelp.html");
@@ -947,13 +953,13 @@ class Workflowview{
     populateMenu(menu){
        var wfv = this;
         var graph = this.graph;
-        menu.addItem(LANGUAGE_TEXT.workflowview.edittitle[USER_LANGUAGE],'resources/images/text24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.edittitle[USER_LANGUAGE],iconpath+'text.svg',function(){
             graph.startEditingAtCell(wfv.titleNode);
         });
-        menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],'resources/images/text24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.editauthor[USER_LANGUAGE],iconpath+'text.svg',function(){
             graph.startEditingAtCell(wfv.authorNode);
         });
-        menu.addItem(LANGUAGE_TEXT.workflowview.editdescription[USER_LANGUAGE],'resources/images/text24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.editdescription[USER_LANGUAGE],iconpath+'text.svg',function(){
             wfv.descriptionNode.edit();
         });
         
@@ -1067,7 +1073,7 @@ class Workflowview{
                 var x = comment.x+dx;
                 var y = comment.y+dy;
                 if(x<wfStartX)dx=wfStartX-comment.x;
-                if(y<wfStartY)dy=wfStartY-comment.y;
+                if(y<wf.weeks[0].view.vertex.y()-10)dy=wf.weeks[0].view.vertex.y()-10-comment.y;
                 if(x>wf.weeks[wf.weeks.length-1].view.vertex.r()+200)dx=wf.weeks[wf.weeks.length-1].view.vertex.r()+200-comment.x;
                 if(y>wf.weeks[wf.weeks.length-1].view.vertex.b()+200)dy=wf.weeks[wf.weeks.length-1].view.vertex.b()+200-comment.y;
                 comment.x+=dx;
@@ -1365,7 +1371,7 @@ class Workflowview{
         graph.setConnectable(true);
         // Replaces the port image
 			graph.setPortsEnabled(false);
-			mxConstraintHandler.prototype.pointImage = new mxImage('resources/images/port24.png', 10, 10);
+			mxConstraintHandler.prototype.pointImage = new mxImage(iconpath+'port.svg', 10, 10);
         var ports = new Array();
         ports['OUTw'] = {x: 0, y: 0.6, perimeter: true, constraint: 'west'};
         ports['OUTe'] = {x: 1, y: 0.6, perimeter: true, constraint: 'east'};
@@ -1466,6 +1472,11 @@ class Workflowview{
         
         //make the non-default connections through our own functions, so that we can keep track of what is linked to what. The prototype is saved in Constants, so that we don't keep overwriting it.
         mxConnectionHandler.prototype.insertEdge = function(parent,id,value,source,target,style){
+            if(source.isNode&&target.isNode){
+                for(var i=0;i<source.node.fixedLinksOut.length;i++){
+                    if(source.node.fixedLinksOut[i].targetNode==target.node)return null;
+                }
+            }
             var edge = insertEdgePrototype.apply(this,arguments);
             if(source.isNode && target.isNode){
                 graph.setCellStyle(defaultEdgeStyle,[edge]);
@@ -1479,6 +1490,13 @@ class Workflowview{
             
             var link = edge.link;
             if(!link||link instanceof WFAutolink)return;
+            var newSource;
+            var newTarget;
+            if(isSource){newSource=terminal.node;newTarget=edge.link.targetNode;}
+            else {newSource=edge.link.node;newTarget=terminal.node;}
+            if(newSource&&newTarget)for(var i=0;i<newSource.fixedLinksOut.length;i++){
+                if(newSource.fixedLinksOut[i].targetNode==newTarget)return;
+            }
             
             var returnval = edgeConnectPrototype.apply(this,arguments);
             console.log(edge);

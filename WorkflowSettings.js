@@ -24,7 +24,8 @@ class WorkflowSettings{
             reqtime:{type:"number",sub:true},
             mintime:{type:"number",sub:true},
             maxtime:{type:"number",sub:true},
-            maxterm:{type:"number",sub:true}
+            maxterm:{type:"number",sub:true},
+            unlinkoutcomes:{type:"checkbox"}
         }
     }
     

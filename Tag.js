@@ -206,6 +206,11 @@ class Tag {
             case 1: return "elementofcompetency";
             case 2: return "learningobjective";
             default: return "";
+        }else if(term == "eng")switch(this.depth){
+            case 0: return "graduateattribute";
+            case 1: return "attributeindicator";
+            case 2: return "course";
+            default: return "";
         }
     }
     
@@ -313,7 +318,7 @@ class Tag {
         menu.addItem(LANGUAGE_TEXT.menus.duplicate[USER_LANGUAGE],'',function(){
             $("#duplicatewf").click();
         });
-        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],'resources/images/info24.png',function(){
+        menu.addItem(LANGUAGE_TEXT.workflowview.whatsthis[USER_LANGUAGE],iconpath+'info.svg',function(){
             layout.project.showHelp("outcomehelp.html");
         });
     }
