@@ -144,7 +144,7 @@ const defaultTitleStyle="whiteSpace=nowrap;resizable=0;movable=0;fontSize=22;fon
 const defaultTagBoxStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=20;absoluteArcSize=1;spacingLeft=20;";
 const defaultTagStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=left;verticalAlign=top;rounded=1;arcSize=50;spacingLeft=20;";
 const defaultTagPreviewStyle="whiteSpace=wrap;constituent=1;resizable=0;strokeWidth=3;fontSize=12;fontColor=black;fillColor=white;overflow=hidden;editable=0;align=center;verticalAlign=top;rounded=1;arcSize=50;";
-const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=white;strokeWidth=1;rounded=1;arcSize=10;absoluteArcSize=1;fontSize=40;align=left;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=4;imageAlign=center;fontColor=black;";
+const defaultDropDownStyle="constituent=1;resizable=0;spacingTop=-20;spacingLeft=10;editable=0;strokeColor=white;strokeWidth=1;rounded=1;arcSize=10;absoluteArcSize=1;fontSize=40;align=left;fillColor=#FFFFFF;shape=label;imageWidth=12;imageHeight=12;imageAlign=center;fontColor=black;";
 const defaultTimeStyle="constituent=1;resizable=0;spacingTop=0;align=right;editable=0;strokeColor=none;fontSize=14;fillColor=none;fontColor=black;verticalAlign=middle;";
 const defaultLinkIconStyle="constituent=1;resizable=0;spacingTop=0;align=right;spacingRight=10;editable=0;strokeColor=none;fontSize=16;fillColor=none;fontColor=black;verticalAlign=middle;shape=image;";
 const defaultBracketStyle="editable=0;fillColor=none;strokeColor=none;";
