@@ -112,11 +112,11 @@ function makeSplashpage(container){
     window.addEventListener("message",function(evt){
         console.log(evt);
         console.log("Message Received! Attempting to build project...");
-        var success=False;
+        var success=false;
         try{
             if(project==null)project = new Project(container);
             project.fromXML(evt.data);
-            success=True;
+            success=true;
         }catch(err){
             console.log("failed to build project from message");
         }
