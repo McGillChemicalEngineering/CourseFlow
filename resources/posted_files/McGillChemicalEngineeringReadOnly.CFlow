@@ -1,11 +1,11 @@
 <project><prname>McGill Chemical Engineering </prname>
-<idnum>3118</idnum>
+<idnum>3717</idnum>
 <terminologyset>standard</terminologyset>
 <readonly>true</readonly>
 <nodesmovable>true</nodesmovable>
 <workflow><wfname>Chemical Engineering</wfname>
-<wfauthor>undefined</wfauthor>
-<wfdescription>undefined</wfdescription>
+<wfauthor>McGill Department of Chemical Engineering</wfauthor>
+<wfdescription>&lt;p&gt;Click a course to see the details, or hover over the circle next to it to see its graduate attributes and outcomes.&lt;/p&gt;</wfdescription>
 <wfid>1</wfid>
 <wftype>program</wftype>
 <advancedoutcomes>true</advancedoutcomes>
@@ -16,7 +16,7 @@
 <usedwfARRAY></usedwfARRAY>
 <tagsetARRAY>22,241,873,875,880,891,896,903,962,969,974,985,996,1008,1018,1077,1082,1095,1103,1107,1117,1126,1138,1149,1158,1169</tagsetARRAY>
 <wfdata><column><columnname>CUS1</columnname>
-<columnimage>chem</columnimage>
+<columnimage>gears</columnimage>
 <columncolour>#543498</columncolour>
 <columntext>Chemical Engineering
  Fundamentals</columntext>
@@ -32,7 +32,7 @@
 <columnoutcomevisibility>true</columnoutcomevisibility>
 </column>
 <column><columnname>CUS3</columnname>
-<columnimage>design</columnimage>
+<columnimage>process</columnimage>
 <columncolour>#349698</columncolour>
 <columntext>Experiential and 
 Design-Based Courses</columntext>
@@ -117,7 +117,7 @@ Design-Based Courses</columnnodetext>
 <id>66</id>
 <lefticon>undefined</lefticon>
 <righticon>undefined</righticon>
-<column>CUS4</column>
+<column>CUS3</column>
 <textHTML>&lt;p&gt;Chemical Engineering: Introductions to safe laboratory practices, technical report-writing, electrically-based measurements and modern methods for instrumentation and control. Goals are that students can safely perform accurate measurements of physical variables without detailed theoretical knowledge. Common software for report writing and instrumentation are introduced and used extensively.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-3-6&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 231&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to U0 students.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
 <linkedwf>undefined</linkedwf>
 <textheight>307</textheight>
@@ -486,7 +486,7 @@ Design-Based Courses</columnnodetext>
 <timevalue>3</timevalue>
 <timeunit>cr</timeunit>
 <link><targetid>135</targetid>
-<portstyle>sourcePort=OUTw;targetPort=INe;</portstyle>
+<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
 </link>
 <nodetag><nodetagid>228</nodetagid>
 <nodetagdegree>4</nodetagdegree>
@@ -561,15 +561,15 @@ Design-Based Courses</columnnodetext>
 <portstyle>sourcePort=OUTe;targetPort=INw;</portstyle>
 <linkstyle>dashed</linkstyle>
 </link>
-<link><targetid>135</targetid>
-<portstyle>sourcePort=OUTe;targetPort=INe;</portstyle>
-</link>
 <link><targetid>138</targetid>
 <portstyle>sourcePort=OUTw;targetPort=INw;</portstyle>
 </link>
 <link><targetid>47</targetid>
 <portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
 <linkstyle>dashed</linkstyle>
+</link>
+<link><targetid>135</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INw;</portstyle>
 </link>
 <nodetag><nodetagid>228</nodetagid>
 <nodetagdegree>4</nodetagdegree>
@@ -651,6 +651,7 @@ Design-Based Courses</columnnodetext>
 </node>
 </week>
 <week><weekid>2</weekid>
+<weekname>Semester 5</weekname>
 <node><name>CHEE 453: Process Design</name>
 <id>47</id>
 <lefticon>undefined</lefticon>
@@ -727,28 +728,6 @@ Design-Based Courses</columnnodetext>
 <nodetag><nodetagid>1126</nodetagid>
 </nodetag>
 </node>
-<node><name>CHEE 400: Principles of Energy Conversion</name>
-<id>135</id>
-<lefticon>undefined</lefticon>
-<righticon>undefined</righticon>
-<column>CUS1</column>
-<textHTML>&lt;p&gt;Chemical Engineering: Fossil fuels, renewable and nuclear energy resources and use. Principles of energy conversion and thermodynamic engine cycles. Solar radiation, heat, mechanical, chemical, nuclear, and electrical energy conversion processes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 315,&amp;nbsp;CHEE 484&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 390&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
-<linkedwf>undefined</linkedwf>
-<textheight>100</textheight>
-<timevalue>3</timevalue>
-<timeunit>cr</timeunit>
-<link><targetid>147</targetid>
-<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
-</link>
-<nodetag><nodetagid>228</nodetagid>
-<nodetagdegree>8</nodetagdegree>
-</nodetag>
-<nodetag><nodetagid>230</nodetagid>
-<nodetagdegree>8</nodetagdegree>
-</nodetag>
-<nodetag><nodetagid>1077</nodetagid>
-</nodetag>
-</node>
 <node><name>CHEE 423: Chemical Reaction Engineering</name>
 <id>138</id>
 <lefticon>undefined</lefticon>
@@ -815,8 +794,31 @@ Design-Based Courses</columnnodetext>
 <nodetagdegree>4</nodetagdegree>
 </nodetag>
 </node>
+<node><name>CHEE 400: Principles of Energy Conversion</name>
+<id>135</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS4</column>
+<textHTML>&lt;p&gt;Chemical Engineering: Fossil fuels, renewable and nuclear energy resources and use. Principles of energy conversion and thermodynamic engine cycles. Solar radiation, heat, mechanical, chemical, nuclear, and electrical energy conversion processes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Fall&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-1-5&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite:&amp;nbsp;CHEE 315,&amp;nbsp;CHEE 484&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite:&amp;nbsp;CHEE 390&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>3</timevalue>
+<timeunit>cr</timeunit>
+<link><targetid>147</targetid>
+<portstyle>sourcePort=OUTe;targetPort=INn;</portstyle>
+</link>
+<nodetag><nodetagid>228</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>230</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1077</nodetagid>
+</nodetag>
+</node>
 </week>
 <week><weekid>3</weekid>
+<weekname>Semester 6</weekname>
 <node><name>CHEE 401: Energy Systems Engineering</name>
 <id>147</id>
 <lefticon>undefined</lefticon>
@@ -854,31 +856,6 @@ Design-Based Courses</columnnodetext>
 <nodetag><nodetagid>1082</nodetagid>
 </nodetag>
 </node>
-<node><name>CHEE 491: Instrumentation and Measurement 2</name>
-<id>156</id>
-<lefticon>undefined</lefticon>
-<righticon>undefined</righticon>
-<column>CUS4</column>
-<textHTML>&lt;p&gt;Chemical Engineering : Measurement devices, valves, controllers and actuators; common failure modes and error sources; P&amp;amp;ID; static and dynamic responses; first and higher-order instrument responses; calibration and biases; frequency response analysis; chemical analysis; elements of spectroscopy; optical measurements; NI-LabVIEW integration project for a set of typical instruments used in chemical engineering.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-3-6&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite(s):&amp;nbsp;CHEE 231,&amp;nbsp;CHEE 291&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite(s):&amp;nbsp;CHEE 423,&amp;nbsp;CHEE 455&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who have taken&amp;nbsp;CHEE 393&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
-<linkedwf>undefined</linkedwf>
-<textheight>100</textheight>
-<timevalue>4</timevalue>
-<timeunit>cr</timeunit>
-<nodetag><nodetagid>231</nodetagid>
-<nodetagdegree>4</nodetagdegree>
-</nodetag>
-<nodetag><nodetagid>232</nodetagid>
-<nodetagdegree>4</nodetagdegree>
-</nodetag>
-<nodetag><nodetagid>233</nodetagid>
-<nodetagdegree>8</nodetagdegree>
-</nodetag>
-<nodetag><nodetagid>234</nodetagid>
-<nodetagdegree>2</nodetagdegree>
-</nodetag>
-<nodetag><nodetagid>1169</nodetagid>
-</nodetag>
-</node>
 <node><name>CHEE 457: Design Project 2</name>
 <id>153</id>
 <lefticon>undefined</lefticon>
@@ -913,6 +890,31 @@ Design-Based Courses</columnnodetext>
 <nodetag><nodetagid>1138</nodetagid>
 </nodetag>
 </node>
+<node><name>CHEE 491: Instrumentation and Measurement 2</name>
+<id>156</id>
+<lefticon>undefined</lefticon>
+<righticon>undefined</righticon>
+<column>CUS3</column>
+<textHTML>&lt;p&gt;Chemical Engineering : Measurement devices, valves, controllers and actuators; common failure modes and error sources; P&amp;amp;ID; static and dynamic responses; first and higher-order instrument responses; calibration and biases; frequency response analysis; chemical analysis; elements of spectroscopy; optical measurements; NI-LabVIEW integration project for a set of typical instruments used in chemical engineering.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Term: Winter&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Contact Hours: 3-3-6&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Prerequisite(s):&amp;nbsp;CHEE 231,&amp;nbsp;CHEE 291&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Corequisite(s):&amp;nbsp;CHEE 423,&amp;nbsp;CHEE 455&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Restriction: Not open to students who have taken&amp;nbsp;CHEE 393&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</textHTML>
+<linkedwf>undefined</linkedwf>
+<textheight>100</textheight>
+<timevalue>4</timevalue>
+<timeunit>cr</timeunit>
+<nodetag><nodetagid>231</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>232</nodetagid>
+<nodetagdegree>4</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>233</nodetagid>
+<nodetagdegree>8</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>234</nodetagid>
+<nodetagdegree>2</nodetagdegree>
+</nodetag>
+<nodetag><nodetagid>1169</nodetagid>
+</nodetag>
+</node>
 <node><name>CHEE 440: Process Modelling</name>
 <id>150</id>
 <lefticon>undefined</lefticon>
@@ -934,6 +936,7 @@ Design-Based Courses</columnnodetext>
 </node>
 </week>
 <week><weekid>115</weekid>
+<weekname>Semester 7</weekname>
 <node><name>FACC 400: Engineering Professional Practice</name>
 <id>174</id>
 <lefticon>undefined</lefticon>
@@ -956,6 +959,7 @@ Design-Based Courses</columnnodetext>
 <timevalue>3</timevalue>
 <timeunit>cr</timeunit>
 <nodetag><nodetagid>237</nodetagid>
+<nodetagdegree>8</nodetagdegree>
 </nodetag>
 </node>
 <node><name>Complementary Studies Group B (HSS) course</name>
@@ -969,6 +973,7 @@ Design-Based Courses</columnnodetext>
 <timevalue>3</timevalue>
 <timeunit>cr</timeunit>
 <nodetag><nodetagid>240</nodetagid>
+<nodetagdegree>8</nodetagdegree>
 </nodetag>
 </node>
 <node><name>Technical Complementary - Group A</name>
